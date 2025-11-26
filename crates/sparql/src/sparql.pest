@@ -1,0 +1,755 @@
+// SPARQL 1.1 Query Language Grammar
+// Based on W3C SPARQL 1.1 Specification
+// https://www.w3.org/TR/sparql11-query/
+// Apache Jena ARQ: https://github.com/apache/jena/blob/main/jena-arq/Grammar/Final/sparql_11-final.jj
+
+// Entry point
+QueryUnit = { SOI ~ Query ~ EOI }
+UpdateUnit = { SOI ~ Update ~ EOI }
+
+// [1] Query
+Query = {
+    Prologue ~
+    ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery ) ~
+    ValuesClause
+}
+
+// [2] Update
+Update = { Prologue ~ ( Update1 ~ ( ";" ~ Update )? )? }
+
+// [3] Prologue
+Prologue = { ( BaseDecl | PrefixDecl )* }
+
+// [4] BaseDecl
+BaseDecl = { ^"BASE" ~ IRIREF }
+
+// [5] PrefixDecl
+PrefixDecl = { ^"PREFIX" ~ PNAME_NS ~ IRIREF }
+
+// [6] SelectQuery
+SelectQuery = {
+    SelectClause ~
+    DatasetClause* ~
+    WhereClause ~
+    SolutionModifier
+}
+
+// [7] SubSelect
+SubSelect = {
+    SelectClause ~
+    WhereClause ~
+    SolutionModifier ~
+    ValuesClause
+}
+
+// [8] SelectClause
+SelectClause = {
+    ^"SELECT" ~ ( ^"DISTINCT" | ^"REDUCED" )? ~
+    ( ( Var | ( "(" ~ Expression ~ ^"AS" ~ Var ~ ")" ) )+ | "*" )
+}
+
+// [9] ConstructQuery
+ConstructQuery = {
+    ^"CONSTRUCT" ~
+    ( ConstructTemplate ~ DatasetClause* ~ WhereClause ~ SolutionModifier
+    | DatasetClause* ~ ^"WHERE" ~ "{" ~ TriplesTemplate? ~ "}" ~ SolutionModifier
+    )
+}
+
+// [10] DescribeQuery
+DescribeQuery = {
+    ^"DESCRIBE" ~ ( VarOrIri+ | "*" ) ~
+    DatasetClause* ~
+    WhereClause? ~
+    SolutionModifier
+}
+
+// [11] AskQuery
+AskQuery = {
+    ^"ASK" ~
+    DatasetClause* ~
+    WhereClause ~
+    SolutionModifier
+}
+
+// [12] DatasetClause
+DatasetClause = {
+    ^"FROM" ~ ( DefaultGraphClause | NamedGraphClause )
+}
+
+// [13] DefaultGraphClause
+DefaultGraphClause = { SourceSelector }
+
+// [14] NamedGraphClause
+NamedGraphClause = { ^"NAMED" ~ SourceSelector }
+
+// [15] SourceSelector
+SourceSelector = { iri }
+
+// [16] WhereClause
+WhereClause = { ^"WHERE"? ~ GroupGraphPattern }
+
+// [17] SolutionModifier
+SolutionModifier = { GroupClause? ~ HavingClause? ~ OrderClause? ~ LimitOffsetClauses? }
+
+// [18] GroupClause
+GroupClause = { ^"GROUP" ~ ^"BY" ~ GroupCondition+ }
+
+// [19] GroupCondition
+GroupCondition = {
+    BuiltInCall
+  | FunctionCall
+  | "(" ~ Expression ~ ( ^"AS" ~ Var )? ~ ")"
+  | Var
+}
+
+// [20] HavingClause
+HavingClause = { ^"HAVING" ~ HavingCondition+ }
+
+// [21] HavingCondition
+HavingCondition = { Constraint }
+
+// [22] OrderClause
+OrderClause = { ^"ORDER" ~ ^"BY" ~ OrderCondition+ }
+
+// [23] OrderCondition
+OrderCondition = {
+    ( ( ^"ASC" | ^"DESC" ) ~ BrackettedExpression )
+  | ( Constraint | Var )
+}
+
+// [24] LimitOffsetClauses
+LimitOffsetClauses = {
+    LimitClause ~ OffsetClause?
+  | OffsetClause ~ LimitClause?
+}
+
+// [25] LimitClause
+LimitClause = { ^"LIMIT" ~ INTEGER }
+
+// [26] OffsetClause
+OffsetClause = { ^"OFFSET" ~ INTEGER }
+
+// [27] ValuesClause
+ValuesClause = { ( ^"VALUES" ~ DataBlock )? }
+
+// [28] Update1
+Update1 = { Load | Clear | Drop | Add | Move | Copy | Create | InsertData | DeleteData | DeleteWhere | Modify }
+
+// [29] Load
+Load = { ^"LOAD" ~ ^"SILENT"? ~ iri ~ ( ^"INTO" ~ GraphRef )? }
+
+// [30] Clear
+Clear = { ^"CLEAR" ~ ^"SILENT"? ~ GraphRefAll }
+
+// [31] Drop
+Drop = { ^"DROP" ~ ^"SILENT"? ~ GraphRefAll }
+
+// [32] Create
+Create = { ^"CREATE" ~ ^"SILENT"? ~ GraphRef }
+
+// [33] Add
+Add = { ^"ADD" ~ ^"SILENT"? ~ GraphOrDefault ~ ^"TO" ~ GraphOrDefault }
+
+// [34] Move
+Move = { ^"MOVE" ~ ^"SILENT"? ~ GraphOrDefault ~ ^"TO" ~ GraphOrDefault }
+
+// [35] Copy
+Copy = { ^"COPY" ~ ^"SILENT"? ~ GraphOrDefault ~ ^"TO" ~ GraphOrDefault }
+
+// [36] InsertData
+InsertData = { ^"INSERT" ~ ^"DATA" ~ QuadData }
+
+// [37] DeleteData
+DeleteData = { ^"DELETE" ~ ^"DATA" ~ QuadData }
+
+// [38] DeleteWhere
+DeleteWhere = { ^"DELETE" ~ ^"WHERE" ~ QuadPattern }
+
+// [39] Modify
+Modify = {
+    ( ^"WITH" ~ iri )? ~
+    ( DeleteClause ~ InsertClause? | InsertClause ) ~
+    UsingClause* ~
+    ^"WHERE" ~ GroupGraphPattern
+}
+
+// [40] DeleteClause
+DeleteClause = { ^"DELETE" ~ QuadPattern }
+
+// [41] InsertClause
+InsertClause = { ^"INSERT" ~ QuadPattern }
+
+// [42] UsingClause
+UsingClause = {
+    ^"USING" ~ ( iri | ^"NAMED" ~ iri )
+}
+
+// [43] GraphOrDefault
+GraphOrDefault = { ^"DEFAULT" | ^"GRAPH"? ~ iri }
+
+// [44] GraphRef
+GraphRef = { ^"GRAPH" ~ iri }
+
+// [45] GraphRefAll
+GraphRefAll = {
+    GraphRef | ^"DEFAULT" | ^"NAMED" | ^"ALL"
+}
+
+// [46] QuadPattern
+QuadPattern = { "{" ~ Quads ~ "}" }
+
+// [47] QuadData
+QuadData = { "{" ~ Quads ~ "}" }
+
+// [48] Quads
+Quads = { TriplesTemplate? ~ ( QuadsNotTriples ~ "."? ~ TriplesTemplate? )* }
+
+// [49] QuadsNotTriples
+QuadsNotTriples = { ^"GRAPH" ~ VarOrIri ~ "{" ~ TriplesTemplate? ~ "}" }
+
+// [50] TriplesTemplate
+TriplesTemplate = { TriplesSameSubject ~ ( "." ~ TriplesTemplate? )? }
+
+// [51] GroupGraphPattern
+GroupGraphPattern = {
+    "{" ~ ( SubSelect | GroupGraphPatternSub ) ~ "}"
+}
+
+// [52] GroupGraphPatternSub
+GroupGraphPatternSub = {
+    TriplesBlock? ~
+    ( GraphPatternNotTriples ~ "."? ~ TriplesBlock? )*
+}
+
+// [53] TriplesBlock
+TriplesBlock = {
+    TriplesSameSubjectPath ~ ( "." ~ TriplesBlock? )?
+}
+
+// [54] GraphPatternNotTriples
+GraphPatternNotTriples = {
+    GroupOrUnionGraphPattern
+  | OptionalGraphPattern
+  | MinusGraphPattern
+  | GraphGraphPattern
+  | ServiceGraphPattern
+  | Filter
+  | Bind
+  | InlineData
+}
+
+// [55] OptionalGraphPattern
+OptionalGraphPattern = { ^"OPTIONAL" ~ GroupGraphPattern }
+
+// [56] GraphGraphPattern
+GraphGraphPattern = { ^"GRAPH" ~ VarOrIri ~ GroupGraphPattern }
+
+// [57] ServiceGraphPattern
+ServiceGraphPattern = { ^"SERVICE" ~ ^"SILENT"? ~ VarOrIri ~ GroupGraphPattern }
+
+// [58] Bind
+Bind = { ^"BIND" ~ "(" ~ Expression ~ ^"AS" ~ Var ~ ")" }
+
+// [59] InlineData
+InlineData = { ^"VALUES" ~ DataBlock }
+
+// [60] DataBlock
+DataBlock = {
+    InlineDataOneVar | InlineDataFull
+}
+
+// [61] InlineDataOneVar
+InlineDataOneVar = { Var ~ "{" ~ DataBlockValue* ~ "}" }
+
+// [62] InlineDataFull
+InlineDataFull = { ( NIL | "(" ~ Var* ~ ")" ) ~ "{" ~ ( "(" ~ DataBlockValue* ~ ")" | NIL )* ~ "}" }
+
+// [63] DataBlockValue
+DataBlockValue = { iri | RDFLiteral | NumericLiteral | BooleanLiteral | ^"UNDEF" }
+
+// [64] MinusGraphPattern
+MinusGraphPattern = { ^"MINUS" ~ GroupGraphPattern }
+
+// [65] GroupOrUnionGraphPattern
+GroupOrUnionGraphPattern = {
+    GroupGraphPattern ~ ( ^"UNION" ~ GroupGraphPattern )*
+}
+
+// [66] Filter
+Filter = { ^"FILTER" ~ Constraint }
+
+// [67] Constraint
+Constraint = {
+    BrackettedExpression | BuiltInCall | FunctionCall
+}
+
+// [68] FunctionCall
+FunctionCall = { iri ~ ArgList }
+
+// [69] ArgList
+ArgList = {
+    NIL
+  | "(" ~ ^"DISTINCT"? ~ Expression ~ ( "," ~ Expression )* ~ ")"
+}
+
+// [70] ExpressionList
+ExpressionList = {
+    NIL
+  | "(" ~ Expression ~ ( "," ~ Expression )* ~ ")"
+}
+
+// [71] ConstructTemplate
+ConstructTemplate = { "{" ~ ConstructTriples? ~ "}" }
+
+// [72] ConstructTriples
+ConstructTriples = {
+    TriplesSameSubject ~ ( "." ~ ConstructTriples? )?
+}
+
+// [73] TriplesSameSubject
+TriplesSameSubject = {
+    VarOrTerm ~ PropertyListNotEmpty
+  | TriplesNode ~ PropertyList
+}
+
+// [74] PropertyList
+PropertyList = { PropertyListNotEmpty? }
+
+// [75] PropertyListNotEmpty
+PropertyListNotEmpty = {
+    Verb ~ ObjectList ~ ( ";" ~ ( Verb ~ ObjectList )? )*
+}
+
+// [76] Verb
+Verb = { VarOrIri | "a" }
+
+// [77] ObjectList
+ObjectList = { Object ~ ( "," ~ Object )* }
+
+// [78] Object
+Object = { GraphNode }
+
+// [79] TriplesSameSubjectPath
+TriplesSameSubjectPath = {
+    VarOrTerm ~ PropertyListPathNotEmpty
+  | TriplesNodePath ~ PropertyListPath
+}
+
+// [80] PropertyListPath
+PropertyListPath = { PropertyListPathNotEmpty? }
+
+// [81] PropertyListPathNotEmpty
+PropertyListPathNotEmpty = {
+    ( VerbPath | VerbSimple ) ~ ObjectListPath ~
+    ( ";" ~ ( ( VerbPath | VerbSimple ) ~ ObjectListPath )? )*
+}
+
+// [82] VerbPath
+VerbPath = { Path }
+
+// [83] VerbSimple
+VerbSimple = { Var }
+
+// [84] ObjectListPath
+ObjectListPath = { ObjectPath ~ ( "," ~ ObjectPath )* }
+
+// [85] ObjectPath
+ObjectPath = { GraphNodePath }
+
+// [86] Path
+Path = { PathAlternative }
+
+// [87] PathAlternative
+PathAlternative = { PathSequence ~ ( "|" ~ PathSequence )* }
+
+// [88] PathSequence
+PathSequence = { PathEltOrInverse ~ ( "/" ~ PathEltOrInverse )* }
+
+// [89] PathElt
+// Non-atomic to preserve inner structure for parser
+PathElt = { PathPrimary ~ PathMod? }
+
+// [90] PathEltOrInverse
+PathEltOrInverse = { "^"? ~ PathElt }
+
+// [91] PathMod
+// IMPORTANT: "?" must not match when followed by a letter (that would be a variable)
+// Using negative lookahead to prevent matching "?" before variable names
+PathMod = { ("?" ~ !PN_CHARS_U) | "*" | "+" }
+
+// [92] PathPrimary
+PathPrimary = {
+    iri
+  | "a"
+  | "!" ~ PathNegatedPropertySet
+  | "(" ~ Path ~ ")"
+}
+
+// [93] PathNegatedPropertySet
+PathNegatedPropertySet = {
+    PathOneInPropertySet
+  | "(" ~ ( PathOneInPropertySet ~ ( "|" ~ PathOneInPropertySet )* )? ~ ")"
+}
+
+// [94] PathOneInPropertySet
+PathOneInPropertySet = { "^"? ~ ( iri | "a" ) }
+
+// [95] Integer
+Integer = { INTEGER }
+
+// [96] TriplesNode
+TriplesNode = { Collection | BlankNodePropertyList }
+
+// [97] BlankNodePropertyList
+BlankNodePropertyList = { "[" ~ PropertyListNotEmpty ~ "]" }
+
+// [98] TriplesNodePath
+TriplesNodePath = { CollectionPath | BlankNodePropertyListPath }
+
+// [99] BlankNodePropertyListPath
+BlankNodePropertyListPath = { "[" ~ PropertyListPathNotEmpty ~ "]" }
+
+// [100] Collection
+Collection = { "(" ~ GraphNode+ ~ ")" }
+
+// [101] CollectionPath
+CollectionPath = { "(" ~ GraphNodePath+ ~ ")" }
+
+// [102] GraphNode
+GraphNode = { VarOrTerm | TriplesNode }
+
+// [103] GraphNodePath
+GraphNodePath = { VarOrTerm | TriplesNodePath }
+
+// [104] VarOrTerm
+VarOrTerm = { Var | GraphTerm }
+
+// [105] VarOrIri
+VarOrIri = { Var | iri }
+
+// [106] Var
+Var = { VAR1 | VAR2 }
+
+// [107] GraphTerm
+GraphTerm = {
+    iri
+  | RDFLiteral
+  | NumericLiteral
+  | BooleanLiteral
+  | BlankNode
+  | NIL
+}
+
+// [108] Expression
+Expression = { ConditionalOrExpression }
+
+// [109] ConditionalOrExpression
+ConditionalOrExpression = {
+    ConditionalAndExpression ~ ( "||" ~ ConditionalAndExpression )*
+}
+
+// [110] ConditionalAndExpression
+ConditionalAndExpression = {
+    ValueLogical ~ ( "&&" ~ ValueLogical )*
+}
+
+// [111] ValueLogical
+ValueLogical = { RelationalExpression }
+
+// [112] RelationalExpression
+RelationalExpression = {
+    NumericExpression ~
+    ( "=" ~ NumericExpression
+    | "!=" ~ NumericExpression
+    | "<" ~ NumericExpression
+    | ">" ~ NumericExpression
+    | "<=" ~ NumericExpression
+    | ">=" ~ NumericExpression
+    | ^"IN" ~ ExpressionList
+    | ^"NOT" ~ ^"IN" ~ ExpressionList
+    )?
+}
+
+// [113] NumericExpression
+NumericExpression = { AdditiveExpression }
+
+// [114] AdditiveExpression
+AdditiveExpression = {
+    MultiplicativeExpression ~
+    ( "+" ~ MultiplicativeExpression
+    | "-" ~ MultiplicativeExpression
+    | ( NumericLiteralPositive | NumericLiteralNegative ) ~ ( ( "*" | "/" ) ~ UnaryExpression )?
+    )*
+}
+
+// [115] MultiplicativeExpression
+MultiplicativeExpression = {
+    UnaryExpression ~ ( "*" ~ UnaryExpression | "/" ~ UnaryExpression )*
+}
+
+// [116] UnaryExpression
+UnaryExpression = {
+    "!" ~ PrimaryExpression
+  | "+" ~ PrimaryExpression
+  | "-" ~ PrimaryExpression
+  | PrimaryExpression
+}
+
+// [117] PrimaryExpression
+PrimaryExpression = {
+    BrackettedExpression
+  | BuiltInCall
+  | iriOrFunction
+  | RDFLiteral
+  | NumericLiteral
+  | BooleanLiteral
+  | Var
+}
+
+// [118] BrackettedExpression
+BrackettedExpression = { "(" ~ Expression ~ ")" }
+
+// [119] BuiltInCall
+BuiltInCall = {
+    Aggregate
+  | ^"STR" ~ "(" ~ Expression ~ ")"
+  | ^"LANG" ~ "(" ~ Expression ~ ")"
+  | ^"LANGMATCHES" ~ "(" ~ Expression ~ "," ~ Expression ~ ")"
+  | ^"DATATYPE" ~ "(" ~ Expression ~ ")"
+  | ^"BOUND" ~ "(" ~ Var ~ ")"
+  | ^"IRI" ~ "(" ~ Expression ~ ")"
+  | ^"URI" ~ "(" ~ Expression ~ ")"
+  | ^"BNODE" ~ ( "(" ~ Expression ~ ")" | NIL )
+  | ^"RAND" ~ NIL
+  | ^"ABS" ~ "(" ~ Expression ~ ")"
+  | ^"CEIL" ~ "(" ~ Expression ~ ")"
+  | ^"FLOOR" ~ "(" ~ Expression ~ ")"
+  | ^"ROUND" ~ "(" ~ Expression ~ ")"
+  | ^"CONCAT" ~ ExpressionList
+  | SubstringExpression
+  | ^"STRLEN" ~ "(" ~ Expression ~ ")"
+  | StrReplaceExpression
+  | ^"UCASE" ~ "(" ~ Expression ~ ")"
+  | ^"LCASE" ~ "(" ~ Expression ~ ")"
+  | ^"ENCODE_FOR_URI" ~ "(" ~ Expression ~ ")"
+  | ^"CONTAINS" ~ "(" ~ Expression ~ "," ~ Expression ~ ")"
+  | ^"STRSTARTS" ~ "(" ~ Expression ~ "," ~ Expression ~ ")"
+  | ^"STRENDS" ~ "(" ~ Expression ~ "," ~ Expression ~ ")"
+  | ^"STRBEFORE" ~ "(" ~ Expression ~ "," ~ Expression ~ ")"
+  | ^"STRAFTER" ~ "(" ~ Expression ~ "," ~ Expression ~ ")"
+  | ^"YEAR" ~ "(" ~ Expression ~ ")"
+  | ^"MONTH" ~ "(" ~ Expression ~ ")"
+  | ^"DAY" ~ "(" ~ Expression ~ ")"
+  | ^"HOURS" ~ "(" ~ Expression ~ ")"
+  | ^"MINUTES" ~ "(" ~ Expression ~ ")"
+  | ^"SECONDS" ~ "(" ~ Expression ~ ")"
+  | ^"TIMEZONE" ~ "(" ~ Expression ~ ")"
+  | ^"TZ" ~ "(" ~ Expression ~ ")"
+  | ^"NOW" ~ NIL
+  | ^"UUID" ~ NIL
+  | ^"STRUUID" ~ NIL
+  | ^"MD5" ~ "(" ~ Expression ~ ")"
+  | ^"SHA1" ~ "(" ~ Expression ~ ")"
+  | ^"SHA256" ~ "(" ~ Expression ~ ")"
+  | ^"SHA384" ~ "(" ~ Expression ~ ")"
+  | ^"SHA512" ~ "(" ~ Expression ~ ")"
+  | ^"COALESCE" ~ ExpressionList
+  | ^"IF" ~ "(" ~ Expression ~ "," ~ Expression ~ "," ~ Expression ~ ")"
+  | ^"STRLANG" ~ "(" ~ Expression ~ "," ~ Expression ~ ")"
+  | ^"STRDT" ~ "(" ~ Expression ~ "," ~ Expression ~ ")"
+  | ^"sameTerm" ~ "(" ~ Expression ~ "," ~ Expression ~ ")"
+  | ^"isIRI" ~ "(" ~ Expression ~ ")"
+  | ^"isURI" ~ "(" ~ Expression ~ ")"
+  | ^"isBLANK" ~ "(" ~ Expression ~ ")"
+  | ^"isLITERAL" ~ "(" ~ Expression ~ ")"
+  | ^"isNUMERIC" ~ "(" ~ Expression ~ ")"
+  | RegexExpression
+  | ExistsFunc
+  | NotExistsFunc
+}
+
+// [120] RegexExpression
+RegexExpression = {
+    ^"REGEX" ~ "(" ~ Expression ~ "," ~ Expression ~ ( "," ~ Expression )? ~ ")"
+}
+
+// [121] SubstringExpression
+SubstringExpression = {
+    ^"SUBSTR" ~ "(" ~ Expression ~ "," ~ Expression ~ ( "," ~ Expression )? ~ ")"
+}
+
+// [122] StrReplaceExpression
+StrReplaceExpression = {
+    ^"REPLACE" ~ "(" ~ Expression ~ "," ~ Expression ~ "," ~ Expression ~ ( "," ~ Expression )? ~ ")"
+}
+
+// [123] ExistsFunc
+ExistsFunc = { ^"EXISTS" ~ GroupGraphPattern }
+
+// [124] NotExistsFunc
+NotExistsFunc = { ^"NOT" ~ ^"EXISTS" ~ GroupGraphPattern }
+
+// [125] Aggregate
+Aggregate = {
+    ^"COUNT" ~ "(" ~ ^"DISTINCT"? ~ ( "*" | Expression ) ~ ")"
+  | ^"SUM" ~ "(" ~ ^"DISTINCT"? ~ Expression ~ ")"
+  | ^"MIN" ~ "(" ~ ^"DISTINCT"? ~ Expression ~ ")"
+  | ^"MAX" ~ "(" ~ ^"DISTINCT"? ~ Expression ~ ")"
+  | ^"AVG" ~ "(" ~ ^"DISTINCT"? ~ Expression ~ ")"
+  | ^"SAMPLE" ~ "(" ~ ^"DISTINCT"? ~ Expression ~ ")"
+  | ^"GROUP_CONCAT" ~ "(" ~ ^"DISTINCT"? ~ Expression ~ ( ";" ~ ^"SEPARATOR" ~ "=" ~ String )? ~ ")"
+}
+
+// [126] iriOrFunction
+iriOrFunction = { iri ~ ArgList? }
+
+// [127] RDFLiteral
+RDFLiteral = { String ~ ( LANGTAG | ( "^^" ~ iri ) )? }
+
+// [128] NumericLiteral
+NumericLiteral = {
+    NumericLiteralUnsigned
+  | NumericLiteralPositive
+  | NumericLiteralNegative
+}
+
+// [129] NumericLiteralUnsigned
+NumericLiteralUnsigned = { DOUBLE | DECIMAL | INTEGER }
+
+// [130] NumericLiteralPositive
+NumericLiteralPositive = { DOUBLE_POSITIVE | DECIMAL_POSITIVE | INTEGER_POSITIVE }
+
+// [131] NumericLiteralNegative
+NumericLiteralNegative = { DOUBLE_NEGATIVE | DECIMAL_NEGATIVE | INTEGER_NEGATIVE }
+
+// [132] BooleanLiteral
+BooleanLiteral = { ^"true" | ^"false" }
+
+// [133] String
+String = {
+    STRING_LITERAL1
+  | STRING_LITERAL2
+  | STRING_LITERAL_LONG1
+  | STRING_LITERAL_LONG2
+}
+
+// [134] iri
+iri = { IRIREF | PrefixedName }
+
+// [135] PrefixedName
+PrefixedName = { PNAME_LN | PNAME_NS }
+
+// [136] BlankNode
+BlankNode = { BLANK_NODE_LABEL | ANON }
+
+// Terminals
+
+// Simplified IRIREF - matches angle brackets with any non-special chars
+IRIREF = @{ "<" ~ (!(">" | "<" | "\"" | "{" | "}" | "|" | "^" | "`" | "\\") ~ ANY)* ~ ">" }
+
+PNAME_NS = @{ PN_PREFIX? ~ ":" }
+PNAME_LN = @{ PNAME_NS ~ PN_LOCAL }
+
+BLANK_NODE_LABEL = @{ "_:" ~ ( PN_CHARS_U | ASCII_DIGIT ) ~ ( ( PN_CHARS | "." )* ~ PN_CHARS )? }
+
+VAR1 = @{ "?" ~ VARNAME }
+VAR2 = @{ "$" ~ VARNAME }
+
+LANGTAG = @{ "@" ~ ASCII_ALPHA+ ~ ( "-" ~ ( ASCII_ALPHA | ASCII_DIGIT )+ )* }
+
+INTEGER = @{ ASCII_DIGIT+ }
+DECIMAL = @{ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT* | "." ~ ASCII_DIGIT+ }
+DOUBLE = @{
+    ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT* ~ EXPONENT
+  | "." ~ ASCII_DIGIT+ ~ EXPONENT
+  | ASCII_DIGIT+ ~ EXPONENT
+}
+
+INTEGER_POSITIVE = @{ "+" ~ INTEGER }
+DECIMAL_POSITIVE = @{ "+" ~ DECIMAL }
+DOUBLE_POSITIVE = @{ "+" ~ DOUBLE }
+
+INTEGER_NEGATIVE = @{ "-" ~ INTEGER }
+DECIMAL_NEGATIVE = @{ "-" ~ DECIMAL }
+DOUBLE_NEGATIVE = @{ "-" ~ DOUBLE }
+
+EXPONENT = @{ ^"e" ~ ( "+" | "-" )? ~ ASCII_DIGIT+ }
+
+STRING_LITERAL1 = @{ "'" ~ ( !("'" | "\\" | "\n" | "\r") ~ ANY | ECHAR | UCHAR )* ~ "'" }
+STRING_LITERAL2 = @{ "\"" ~ ( !("\"" | "\\" | "\n" | "\r") ~ ANY | ECHAR | UCHAR )* ~ "\"" }
+
+STRING_LITERAL_LONG1 = @{
+    "'''" ~ ( ( "'" | "''" )? ~ ( !("'''" | "\\") ~ ANY | ECHAR | UCHAR ) )* ~ "'''"
+}
+
+STRING_LITERAL_LONG2 = @{
+    "\"\"\"" ~ ( ( "\"" | "\"\"" )? ~ ( !("\"\"\"" | "\\") ~ ANY | ECHAR | UCHAR ) )* ~ "\"\"\""
+}
+
+ECHAR = @{ "\\" ~ ( "t" | "b" | "n" | "r" | "f" | "\"" | "'" | "\\" ) }
+
+NIL = { "(" ~ WS* ~ ")" }
+
+WS = _{ WHITESPACE+ }
+
+ANON = { "[" ~ WS* ~ "]" }
+
+PN_CHARS_BASE = @{
+    ASCII_ALPHA
+  | '\u{00C0}'..'\u{00D6}'
+  | '\u{00D8}'..'\u{00F6}'
+  | '\u{00F8}'..'\u{02FF}'
+  | '\u{0370}'..'\u{037D}'
+  | '\u{037F}'..'\u{1FFF}'
+  | '\u{200C}'..'\u{200D}'
+  | '\u{2070}'..'\u{218F}'
+  | '\u{2C00}'..'\u{2FEF}'
+  | '\u{3001}'..'\u{D7FF}'
+  | '\u{F900}'..'\u{FDCF}'
+  | '\u{FDF0}'..'\u{FFFD}'
+}
+
+PN_CHARS_U = @{ PN_CHARS_BASE | "_" }
+
+VARNAME = @{
+    ( PN_CHARS_U | ASCII_DIGIT ) ~
+    ( PN_CHARS_U | ASCII_DIGIT | "-" | "_" )*
+}
+
+PN_CHARS = @{
+    PN_CHARS_U
+  | "-"
+  | ASCII_DIGIT
+}
+
+// [168] PN_PREFIX - Fixed for PEG greedy matching
+// Original W3C: PN_CHARS_BASE ((PN_CHARS|'.')* PN_CHARS)?
+// Issue: Greedy * consumes all PN_CHARS, leaving none for required ending
+// Fix: Check that we don't end with dot, using negative lookahead
+PN_PREFIX = @{ PN_CHARS_BASE ~ (!":" ~ (PN_CHARS | "."))* }
+
+PN_LOCAL = @{
+    ( PN_CHARS_U | ":" | ASCII_DIGIT | PLX ) ~
+    ( ( PN_CHARS | "." | ":" | PLX )* ~ ( PN_CHARS | ":" | PLX ) )?
+}
+
+PLX = @{ PERCENT | PN_LOCAL_ESC }
+
+PERCENT = @{ "%" ~ HEX ~ HEX }
+
+HEX = @{ ASCII_DIGIT | 'A'..'F' | 'a'..'f' }
+
+PN_LOCAL_ESC = @{
+    "\\" ~ ( "_" | "~" | "." | "-" | "!" | "$" | "&" | "'" | "(" | ")" | "*" | "+" | "," | ";" | "=" | "/" | "?" | "#" | "@" | "%" )
+}
+
+UCHAR = @{
+    "\\u" ~ HEX ~ HEX ~ HEX ~ HEX
+  | "\\U" ~ HEX ~ HEX ~ HEX ~ HEX ~ HEX ~ HEX ~ HEX ~ HEX
+}
+
+// Whitespace and comments
+WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
+
+COMMENT = _{ "#" ~ ( !("\r" | "\n") ~ ANY )* }

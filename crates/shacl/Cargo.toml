@@ -1,0 +1,19 @@
+[package]
+name = "shacl"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "SHACL validation engine"
+
+[dependencies]
+rdf-model = { path = "../rdf-model" }
+storage = { path = "../storage" }
+sparql = { path = "../sparql" }
+thiserror = { workspace = true }
+regex = "1"
+
+[dev-dependencies]
+proptest = { workspace = true }

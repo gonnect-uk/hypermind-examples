@@ -1,0 +1,153 @@
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix dbr: <http://dbpedia.org/resource/> .
+@prefix schema: <http://schema.org/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+
+# Christopher Nolan Movies
+dbr:Inception a dbo:Film ;
+    rdfs:label "Inception" ;
+    dbo:director dbr:Christopher_Nolan ;
+    dbo:starring dbr:Leonardo_DiCaprio, dbr:Joseph_Gordon-Levitt, dbr:Ellen_Page ;
+    dbo:genre dbr:Science_Fiction, dbr:Thriller ;
+    schema:aggregateRating "8.8"^^xsd:float ;
+    schema:datePublished "2010-07-16"^^xsd:date ;
+    dc:description "A thief who steals corporate secrets through dream-sharing technology" .
+
+dbr:The_Dark_Knight a dbo:Film ;
+    rdfs:label "The Dark Knight" ;
+    dbo:director dbr:Christopher_Nolan ;
+    dbo:starring dbr:Christian_Bale, dbr:Heath_Ledger, dbr:Aaron_Eckhart ;
+    dbo:genre dbr:Action, dbr:Crime, dbr:Drama ;
+    schema:aggregateRating "9.0"^^xsd:float ;
+    schema:datePublished "2008-07-18"^^xsd:date ;
+    dc:description "Batman faces the Joker in a battle for Gotham's soul" .
+
+dbr:Interstellar a dbo:Film ;
+    rdfs:label "Interstellar" ;
+    dbo:director dbr:Christopher_Nolan ;
+    dbo:starring dbr:Matthew_McConaughey, dbr:Anne_Hathaway, dbr:Jessica_Chastain ;
+    dbo:genre dbr:Science_Fiction, dbr:Drama ;
+    schema:aggregateRating "8.6"^^xsd:float ;
+    schema:datePublished "2014-11-07"^^xsd:date ;
+    dc:description "Astronauts travel through a wormhole to save humanity" .
+
+dbr:The_Prestige a dbo:Film ;
+    rdfs:label "The Prestige" ;
+    dbo:director dbr:Christopher_Nolan ;
+    dbo:starring dbr:Christian_Bale, dbr:Hugh_Jackman, dbr:Scarlett_Johansson ;
+    dbo:genre dbr:Mystery, dbr:Thriller ;
+    schema:aggregateRating "8.5"^^xsd:float ;
+    schema:datePublished "2006-10-20"^^xsd:date ;
+    dc:description "Two magicians engage in a deadly rivalry" .
+
+# Martin Scorsese Movies
+dbr:The_Wolf_of_Wall_Street a dbo:Film ;
+    rdfs:label "The Wolf of Wall Street" ;
+    dbo:director dbr:Martin_Scorsese ;
+    dbo:starring dbr:Leonardo_DiCaprio, dbr:Jonah_Hill, dbr:Margot_Robbie ;
+    dbo:genre dbr:Biography, dbr:Comedy, dbr:Crime ;
+    schema:aggregateRating "8.2"^^xsd:float ;
+    schema:datePublished "2013-12-25"^^xsd:date ;
+    dc:description "The rise and fall of stockbroker Jordan Belfort" .
+
+dbr:Shutter_Island a dbo:Film ;
+    rdfs:label "Shutter Island" ;
+    dbo:director dbr:Martin_Scorsese ;
+    dbo:starring dbr:Leonardo_DiCaprio, dbr:Mark_Ruffalo, dbr:Ben_Kingsley ;
+    dbo:genre dbr:Mystery, dbr:Thriller ;
+    schema:aggregateRating "8.2"^^xsd:float ;
+    schema:datePublished "2010-02-19"^^xsd:date ;
+    dc:description "A U.S. Marshal investigates a psychiatric facility" .
+
+# Quentin Tarantino Movies
+dbr:Pulp_Fiction a dbo:Film ;
+    rdfs:label "Pulp Fiction" ;
+    dbo:director dbr:Quentin_Tarantino ;
+    dbo:starring dbr:John_Travolta, dbr:Samuel_L_Jackson, dbr:Uma_Thurman ;
+    dbo:genre dbr:Crime, dbr:Drama ;
+    schema:aggregateRating "8.9"^^xsd:float ;
+    schema:datePublished "1994-10-14"^^xsd:date ;
+    dc:description "Interconnected stories of Los Angeles criminals" .
+
+dbr:Django_Unchained a dbo:Film ;
+    rdfs:label "Django Unchained" ;
+    dbo:director dbr:Quentin_Tarantino ;
+    dbo:starring dbr:Jamie_Foxx, dbr:Christoph_Waltz, dbr:Leonardo_DiCaprio ;
+    dbo:genre dbr:Western, dbr:Drama ;
+    schema:aggregateRating "8.4"^^xsd:float ;
+    schema:datePublished "2012-12-25"^^xsd:date ;
+    dc:description "A freed slave teams with a bounty hunter" .
+
+# Denis Villeneuve Movies
+dbr:Blade_Runner_2049 a dbo:Film ;
+    rdfs:label "Blade Runner 2049" ;
+    dbo:director dbr:Denis_Villeneuve ;
+    dbo:starring dbr:Ryan_Gosling, dbr:Harrison_Ford, dbr:Ana_de_Armas ;
+    dbo:genre dbr:Science_Fiction, dbr:Thriller ;
+    schema:aggregateRating "8.0"^^xsd:float ;
+    schema:datePublished "2017-10-06"^^xsd:date ;
+    dc:description "A young blade runner uncovers a secret that could plunge society into chaos" .
+
+dbr:Arrival a dbo:Film ;
+    rdfs:label "Arrival" ;
+    dbo:director dbr:Denis_Villeneuve ;
+    dbo:starring dbr:Amy_Adams, dbr:Jeremy_Renner, dbr:Forest_Whitaker ;
+    dbo:genre dbr:Science_Fiction, dbr:Drama ;
+    schema:aggregateRating "7.9"^^xsd:float ;
+    schema:datePublished "2016-11-11"^^xsd:date ;
+    dc:description "A linguist works with the military to communicate with aliens" .
+
+# Directors
+dbr:Christopher_Nolan a dbo:Person ;
+    rdfs:label "Christopher Nolan" ;
+    dbo:birthDate "1970-07-30"^^xsd:date ;
+    dbo:occupation dbr:Film_Director, dbr:Screenwriter, dbr:Producer .
+
+dbr:Martin_Scorsese a dbo:Person ;
+    rdfs:label "Martin Scorsese" ;
+    dbo:birthDate "1942-11-17"^^xsd:date ;
+    dbo:occupation dbr:Film_Director, dbr:Screenwriter, dbr:Producer .
+
+dbr:Quentin_Tarantino a dbo:Person ;
+    rdfs:label "Quentin Tarantino" ;
+    dbo:birthDate "1963-03-27"^^xsd:date ;
+    dbo:occupation dbr:Film_Director, dbr:Screenwriter, dbr:Actor .
+
+dbr:Denis_Villeneuve a dbo:Person ;
+    rdfs:label "Denis Villeneuve" ;
+    dbo:birthDate "1967-10-03"^^xsd:date ;
+    dbo:occupation dbr:Film_Director, dbr:Screenwriter .
+
+# Actors
+dbr:Leonardo_DiCaprio a dbo:Person ;
+    rdfs:label "Leonardo DiCaprio" ;
+    dbo:birthDate "1974-11-11"^^xsd:date ;
+    dbo:occupation dbr:Actor, dbr:Producer .
+
+dbr:Christian_Bale a dbo:Person ;
+    rdfs:label "Christian Bale" ;
+    dbo:birthDate "1974-01-30"^^xsd:date ;
+    dbo:occupation dbr:Actor .
+
+dbr:Matthew_McConaughey a dbo:Person ;
+    rdfs:label "Matthew McConaughey" ;
+    dbo:birthDate "1969-11-04"^^xsd:date ;
+    dbo:occupation dbr:Actor, dbr:Producer .
+
+dbr:Ryan_Gosling a dbo:Person ;
+    rdfs:label "Ryan Gosling" ;
+    dbo:birthDate "1980-11-12"^^xsd:date ;
+    dbo:occupation dbr:Actor, dbr:Director .
+
+# Genres
+dbr:Science_Fiction a dbo:Genre ; rdfs:label "Science Fiction" .
+dbr:Thriller a dbo:Genre ; rdfs:label "Thriller" .
+dbr:Action a dbo:Genre ; rdfs:label "Action" .
+dbr:Crime a dbo:Genre ; rdfs:label "Crime" .
+dbr:Drama a dbo:Genre ; rdfs:label "Drama" .
+dbr:Mystery a dbo:Genre ; rdfs:label "Mystery" .
+dbr:Biography a dbo:Genre ; rdfs:label "Biography" .
+dbr:Comedy a dbo:Genre ; rdfs:label "Comedy" .
+dbr:Western a dbo:Genre ; rdfs:label "Western" .

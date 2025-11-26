@@ -1,0 +1,68 @@
+{
+  "app": {
+    "name": "Risk Analyzer",
+    "version": "1.0.0",
+    "bundleId": "com.universalkg.riskanalyzer"
+  },
+  "graphdb": {
+    "ttlDataset": "insurance-policies",
+    "prefixMapping": {
+      "ins": "http://zenya.com/domain/insurance/",
+      "schema": "http://schema.org/",
+      "rdfs": "http://www.w3.org/2000/01/rdf-schema#"
+    }
+  },
+  "queries": {
+    "policies": "SELECT ?policy ?holder ?risk ?score ?status WHERE { ?policy a ins:Policy . ?policy ins:policyHolder ?holderRef . ?holderRef rdfs:label ?holder . ?policy ins:riskLevel ?risk . ?policy ins:riskScore ?score . ?policy ins:underwritingStatus ?status . } ORDER BY DESC(?score)",
+    "violations": "SELECT ?violation ?type ?severity ?description ?action WHERE { ?violation a ins:PolicyViolation . ?violation ins:violationType ?type . ?violation ins:severity ?severity . ?violation ins:description ?description . ?violation ins:recommendedAction ?action . } ORDER BY ?severity"
+  },
+  "theme": {
+    "primaryColor": "#007AFF",
+    "accentColor": "#FF9500",
+    "backgroundColor": "#FFFFFF"
+  },
+  "statistics": {
+    "metrics": [
+      {
+        "key": "totalPolicies",
+        "label": "Policies",
+        "icon": "doc.text",
+        "color": "#007AFF",
+        "predicate": "type",
+        "objectFilter": "insurance/Policy"
+      },
+      {
+        "key": "totalViolations",
+        "label": "Violations",
+        "icon": "exclamationmark.triangle",
+        "color": "#FF9500",
+        "predicate": "type",
+        "objectFilter": "insurance/PolicyViolation"
+      },
+      {
+        "key": "highRisk",
+        "label": "High Risk",
+        "icon": "flame",
+        "color": "#FF3B30",
+        "predicate": "riskLevel",
+        "objectFilter": "High"
+      },
+      {
+        "key": "mediumRisk",
+        "label": "Medium",
+        "icon": "exclamationmark",
+        "color": "#FFCC00",
+        "predicate": "riskLevel",
+        "objectFilter": "Medium"
+      },
+      {
+        "key": "lowRisk",
+        "label": "Low Risk",
+        "icon": "checkmark.circle",
+        "color": "#34C759",
+        "predicate": "riskLevel",
+        "objectFilter": "Low"
+      }
+    ]
+  }
+}

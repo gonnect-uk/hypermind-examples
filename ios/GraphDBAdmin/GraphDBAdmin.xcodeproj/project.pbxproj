@@ -1,0 +1,472 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0831363A1C647A0094704368 /* gonnect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BDEA0F76A210D00C0CE1E41 /* gonnect.swift */; };
+		0DDB07C6B9A8BC6E39318DE5 /* Combine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21073A569FA55C4E8DC790A0 /* Combine.framework */; };
+		0EC5BA57E5B7FD09D20D124F /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = 971E1A3A0F5BC64B3CC312F5 /* config.json */; };
+		2A74F792AF50B698C20A3865 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE55BE08EC27ADEBC60818E0 /* Charts.framework */; };
+		3CF1CD331C658C6E3923A4B1 /* GonnectNanoGraphDB.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E1670376F87A3D5D2EC5FE5 /* GonnectNanoGraphDB.xcframework */; };
+		438503BBA907FC9AA713281C /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2959748FCABC9DFBB46CB2F /* SwiftUI.framework */; };
+		44574CADBAC7FC8B88A234D4 /* movies_catalog.ttl in Resources */ = {isa = PBXBuildFile; fileRef = E712EDE920B2EB633E6F8328 /* movies_catalog.ttl */; };
+		4EB679B7C2FA60D84676EE1F /* GraphDBAdminApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD2620F26DB37927BA4C0160 /* GraphDBAdminApp.swift */; };
+		5A2399A37BBE943B6345D654 /* SceneKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC5F5E313BA55B967BB4B2DF /* SceneKit.framework */; };
+		7637003B8877CF1DAF4B57AF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 861780E0DA33C77CD121FB3B /* Preview Assets.xcassets */; };
+		8BBBB6F5EF7DAC0C4753354E /* financial_compliance.ttl in Resources */ = {isa = PBXBuildFile; fileRef = 9C223F4781B236ACC25D5A2F /* financial_compliance.ttl */; };
+		C8D89FF4895C8BF263C4617F /* product_catalog.ttl in Resources */ = {isa = PBXBuildFile; fileRef = 4EAF2322AC36B7F4E928A08D /* product_catalog.ttl */; };
+		DA3568AB7B977EB0AEF6D25B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA0441465E3A3C83CF5027F /* ContentView.swift */; };
+		DAC02EA909B75BA0DC0BB2C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 39F6AAE7D01AB52822892D79 /* Assets.xcassets */; };
+		F24DB0F7963B921F5D0A8BCB /* database-catalog.ttl in Resources */ = {isa = PBXBuildFile; fileRef = F454D1DAE659CF88A79CD7EA /* database-catalog.ttl */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		21073A569FA55C4E8DC790A0 /* Combine.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Combine.framework; path = System/Library/Frameworks/Combine.framework; sourceTree = SDKROOT; };
+		2BDEA0F76A210D00C0CE1E41 /* gonnect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = gonnect.swift; sourceTree = "<group>"; };
+		39F6AAE7D01AB52822892D79 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3AA0441465E3A3C83CF5027F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		4EAF2322AC36B7F4E928A08D /* product_catalog.ttl */ = {isa = PBXFileReference; path = product_catalog.ttl; sourceTree = "<group>"; };
+		617ADDA97CB3EDBCC39C3290 /* gonnectFFI.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = gonnectFFI.modulemap; sourceTree = "<group>"; };
+		6E1670376F87A3D5D2EC5FE5 /* GonnectNanoGraphDB.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GonnectNanoGraphDB.xcframework; path = ../Frameworks/GonnectNanoGraphDB.xcframework; sourceTree = "<group>"; };
+		861780E0DA33C77CD121FB3B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		971E1A3A0F5BC64B3CC312F5 /* config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = config.json; sourceTree = "<group>"; };
+		9C223F4781B236ACC25D5A2F /* financial_compliance.ttl */ = {isa = PBXFileReference; path = financial_compliance.ttl; sourceTree = "<group>"; };
+		A51E87312C449497F2D7E561 /* gonnectFFI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gonnectFFI.h; sourceTree = "<group>"; };
+		A527BD9DFED47A328988A675 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		B2959748FCABC9DFBB46CB2F /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		C352FD4809CB341DF255BEB0 /* gonnect-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "gonnect-Bridging-Header.h"; sourceTree = "<group>"; };
+		DE55BE08EC27ADEBC60818E0 /* Charts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Charts.framework; path = System/Library/Frameworks/Charts.framework; sourceTree = SDKROOT; };
+		DEE4B7BEC24BDAEC4FC48401 /* GraphDBAdmin.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GraphDBAdmin.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E712EDE920B2EB633E6F8328 /* movies_catalog.ttl */ = {isa = PBXFileReference; path = movies_catalog.ttl; sourceTree = "<group>"; };
+		F454D1DAE659CF88A79CD7EA /* database-catalog.ttl */ = {isa = PBXFileReference; path = "database-catalog.ttl"; sourceTree = "<group>"; };
+		FC5F5E313BA55B967BB4B2DF /* SceneKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SceneKit.framework; path = System/Library/Frameworks/SceneKit.framework; sourceTree = SDKROOT; };
+		FD2620F26DB37927BA4C0160 /* GraphDBAdminApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphDBAdminApp.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A98F5678C4E0F0D7CEA47020 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3CF1CD331C658C6E3923A4B1 /* GonnectNanoGraphDB.xcframework in Frameworks */,
+				438503BBA907FC9AA713281C /* SwiftUI.framework in Frameworks */,
+				0DDB07C6B9A8BC6E39318DE5 /* Combine.framework in Frameworks */,
+				2A74F792AF50B698C20A3865 /* Charts.framework in Frameworks */,
+				5A2399A37BBE943B6345D654 /* SceneKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0CEB1E9860D1AAF6E1AC62A8 /* Datasets */ = {
+			isa = PBXGroup;
+			children = (
+				9C223F4781B236ACC25D5A2F /* financial_compliance.ttl */,
+				E712EDE920B2EB633E6F8328 /* movies_catalog.ttl */,
+				4EAF2322AC36B7F4E928A08D /* product_catalog.ttl */,
+			);
+			name = Datasets;
+			path = ../datasets;
+			sourceTree = "<group>";
+		};
+		4029C1628A748D7678555624 /* GraphDBAdmin */ = {
+			isa = PBXGroup;
+			children = (
+				3AA0441465E3A3C83CF5027F /* ContentView.swift */,
+				FD2620F26DB37927BA4C0160 /* GraphDBAdminApp.swift */,
+				A527BD9DFED47A328988A675 /* Info.plist */,
+				FF7A6A79D168AFD62D09A514 /* Preview Content */,
+			);
+			path = GraphDBAdmin;
+			sourceTree = "<group>";
+		};
+		A1F896F2EEE3046A7EF5DC05 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DE55BE08EC27ADEBC60818E0 /* Charts.framework */,
+				21073A569FA55C4E8DC790A0 /* Combine.framework */,
+				6E1670376F87A3D5D2EC5FE5 /* GonnectNanoGraphDB.xcframework */,
+				FC5F5E313BA55B967BB4B2DF /* SceneKit.framework */,
+				B2959748FCABC9DFBB46CB2F /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A2A7CD65D6F568451DF1DB7D /* Generated */ = {
+			isa = PBXGroup;
+			children = (
+				C352FD4809CB341DF255BEB0 /* gonnect-Bridging-Header.h */,
+				2BDEA0F76A210D00C0CE1E41 /* gonnect.swift */,
+				A51E87312C449497F2D7E561 /* gonnectFFI.h */,
+				617ADDA97CB3EDBCC39C3290 /* gonnectFFI.modulemap */,
+			);
+			name = Generated;
+			path = ../Generated;
+			sourceTree = "<group>";
+		};
+		A2D378D8E87D18E62BCB768F /* datasets */ = {
+			isa = PBXGroup;
+			children = (
+				F454D1DAE659CF88A79CD7EA /* database-catalog.ttl */,
+			);
+			path = datasets;
+			sourceTree = "<group>";
+		};
+		CDA0E37A5D0AD060DEE0703E /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				39F6AAE7D01AB52822892D79 /* Assets.xcassets */,
+				971E1A3A0F5BC64B3CC312F5 /* config.json */,
+				A2D378D8E87D18E62BCB768F /* datasets */,
+			);
+			name = Resources;
+			path = GraphDBAdmin/Resources;
+			sourceTree = "<group>";
+		};
+		D5FCDEA0F6B1E92F7C5904A1 = {
+			isa = PBXGroup;
+			children = (
+				0CEB1E9860D1AAF6E1AC62A8 /* Datasets */,
+				A2A7CD65D6F568451DF1DB7D /* Generated */,
+				4029C1628A748D7678555624 /* GraphDBAdmin */,
+				CDA0E37A5D0AD060DEE0703E /* Resources */,
+				A1F896F2EEE3046A7EF5DC05 /* Frameworks */,
+				DE33E82FFCDECEEA3529F4A7 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DE33E82FFCDECEEA3529F4A7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DEE4B7BEC24BDAEC4FC48401 /* GraphDBAdmin.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FF7A6A79D168AFD62D09A514 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				861780E0DA33C77CD121FB3B /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		7D5CD1098641121FCEEA912F /* GraphDBAdmin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 46E41F12825D7C8209B74EAA /* Build configuration list for PBXNativeTarget "GraphDBAdmin" */;
+			buildPhases = (
+				B7CD31AD8ABE788CEDDDB3AC /* Check Generated Bindings */,
+				5148380223C26EADBB5BC86F /* Sources */,
+				9A3F01F21DABFA2614E357A5 /* Resources */,
+				A98F5678C4E0F0D7CEA47020 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GraphDBAdmin;
+			packageProductDependencies = (
+			);
+			productName = GraphDBAdmin;
+			productReference = DEE4B7BEC24BDAEC4FC48401 /* GraphDBAdmin.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3DBDCD3DC4961818122DF932 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+			};
+			buildConfigurationList = 79D3CB0B936278003C34AC5B /* Build configuration list for PBXProject "GraphDBAdmin" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = D5FCDEA0F6B1E92F7C5904A1;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				7D5CD1098641121FCEEA912F /* GraphDBAdmin */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9A3F01F21DABFA2614E357A5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DAC02EA909B75BA0DC0BB2C2 /* Assets.xcassets in Resources */,
+				7637003B8877CF1DAF4B57AF /* Preview Assets.xcassets in Resources */,
+				0EC5BA57E5B7FD09D20D124F /* config.json in Resources */,
+				F24DB0F7963B921F5D0A8BCB /* database-catalog.ttl in Resources */,
+				8BBBB6F5EF7DAC0C4753354E /* financial_compliance.ttl in Resources */,
+				44574CADBAC7FC8B88A234D4 /* movies_catalog.ttl in Resources */,
+				C8D89FF4895C8BF263C4617F /* product_catalog.ttl in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		B7CD31AD8ABE788CEDDDB3AC /* Check Generated Bindings */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Check Generated Bindings";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ ! -f \"${PROJECT_DIR}/../Generated/gonnect.swift\" ]; then\n  echo \"error: Generated Swift bindings not found. Run 'make generate-bindings' first.\"\n  exit 1\nfi\necho \"✓ Generated bindings found\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5148380223C26EADBB5BC86F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA3568AB7B977EB0AEF6D25B /* ContentView.swift in Sources */,
+				4EB679B7C2FA60D84676EE1F /* GraphDBAdminApp.swift in Sources */,
+				0831363A1C647A0094704368 /* gonnect.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		9870AE7A93BD7E1204C7576B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		9AA9E8B9336395B9EA0A7098 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_ASSET_PATHS = "\"GraphDBAdmin/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"../Frameworks\"",
+				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../Generated";
+				INFOPLIST_FILE = GraphDBAdmin/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*]" = "$(inherited) $(SRCROOT)/../Frameworks/GonnectNanoGraphDB.xcframework/ios-arm64";
+				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]" = "$(inherited) $(SRCROOT)/../Frameworks/GonnectNanoGraphDB.xcframework/ios-arm64_x86_64-simulator";
+				OTHER_LDFLAGS = "$(inherited) -lmobile_ffi -lc++ -framework Security -framework Foundation";
+				PRODUCT_BUNDLE_IDENTIFIER = com.gonnect.graphdbadmin;
+				PRODUCT_NAME = "GraphDB Admin";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/../Generated";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/../Generated/gonnect-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		D56C704C501A7EE483A0CBB0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_ASSET_PATHS = "\"GraphDBAdmin/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"../Frameworks\"",
+				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../Generated";
+				INFOPLIST_FILE = GraphDBAdmin/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*]" = "$(inherited) $(SRCROOT)/../Frameworks/GonnectNanoGraphDB.xcframework/ios-arm64";
+				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]" = "$(inherited) $(SRCROOT)/../Frameworks/GonnectNanoGraphDB.xcframework/ios-arm64_x86_64-simulator";
+				OTHER_LDFLAGS = "$(inherited) -lmobile_ffi -lc++ -framework Security -framework Foundation";
+				PRODUCT_BUNDLE_IDENTIFIER = com.gonnect.graphdbadmin;
+				PRODUCT_NAME = "GraphDB Admin";
+				SDKROOT = iphoneos;
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/../Generated";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/../Generated/gonnect-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E169F769684022665978EFA1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		46E41F12825D7C8209B74EAA /* Build configuration list for PBXNativeTarget "GraphDBAdmin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D56C704C501A7EE483A0CBB0 /* Debug */,
+				9AA9E8B9336395B9EA0A7098 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		79D3CB0B936278003C34AC5B /* Build configuration list for PBXProject "GraphDBAdmin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9870AE7A93BD7E1204C7576B /* Debug */,
+				E169F769684022665978EFA1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3DBDCD3DC4961818122DF932 /* Project object */;
+}

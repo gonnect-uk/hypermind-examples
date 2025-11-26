@@ -1,0 +1,73 @@
+name: ComplianceGuardian
+options:
+  bundleIdPrefix: com.gonnect
+  deploymentTarget:
+    iOS: 16.0
+
+settings:
+  MARKETING_VERSION: 1.0.0
+  CURRENT_PROJECT_VERSION: 1
+  DEVELOPMENT_TEAM: "" # Set your Team ID here
+
+targets:
+  ComplianceGuardian:
+    type: application
+    platform: iOS
+
+    sources:
+      - path: ComplianceGuardian
+        type: group
+      - path: ../Generated
+        type: group
+        name: Generated
+      - path: ../datasets
+        type: group
+        name: Datasets
+        buildPhase: resources
+
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+        PRODUCT_NAME: ComplianceGuardian
+        PRODUCT_BUNDLE_IDENTIFIER: com.gonnect.ComplianceGuardian
+        SWIFT_VERSION: 5.9
+        IPHONEOS_DEPLOYMENT_TARGET: 16.0
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ENABLE_PREVIEWS: YES
+
+        # Framework search paths
+        FRAMEWORK_SEARCH_PATHS: $(inherited) $(SRCROOT)/../Frameworks
+
+        # Swift import paths for Generated bindings
+        SWIFT_INCLUDE_PATHS: "$(SRCROOT)/../Generated"
+
+        # Header search paths
+        HEADER_SEARCH_PATHS: "$(SRCROOT)/../Generated"
+
+        # Bridging header for C types
+        SWIFT_OBJC_BRIDGING_HEADER: "$(SRCROOT)/../Generated/gonnect-Bridging-Header.h"
+
+        # Library search paths (for simulator and device)
+        LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]: $(inherited) $(SRCROOT)/../Frameworks/GonnectNanoGraphDB.xcframework/ios-arm64_x86_64-simulator
+        LIBRARY_SEARCH_PATHS[sdk=iphoneos*]: $(inherited) $(SRCROOT)/../Frameworks/GonnectNanoGraphDB.xcframework/ios-arm64
+
+        # Other linker flags - link static library directly
+        OTHER_LDFLAGS: $(inherited) -lmobile_ffi -lc++ -framework Security -framework Foundation
+
+    dependencies:
+      - sdk: ../Frameworks/GonnectNanoGraphDB.xcframework/ios-arm64_x86_64-simulator/libmobile_ffi.a
+        embed: false
+
+    preBuildScripts:
+      - name: "Check Generated Bindings"
+        script: |
+          if [ ! -f "${PROJECT_DIR}/../Generated/gonnect.swift" ]; then
+            echo "error: Generated Swift bindings not found. Run 'make generate-bindings' first."
+            exit 1
+          fi
+          echo "✓ Generated bindings found"

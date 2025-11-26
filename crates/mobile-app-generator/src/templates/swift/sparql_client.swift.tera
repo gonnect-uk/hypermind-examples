@@ -1,0 +1,70 @@
+import Foundation
+
+class SPARQLClient {
+    static let shared = SPARQLClient()
+
+    private let endpoint = "{{ endpoint }}"
+
+    private init() {}
+
+    func executeQuery(_ query: String) async throws -> [[String: String]] {
+        guard let url = URL(string: endpoint) else {
+            throw SPARQLError.invalidURL
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/sparql-query", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpBody = query.data(using: .utf8)
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse,
+              (200...299).contains(httpResponse.statusCode) else {
+            throw SPARQLError.requestFailed
+        }
+
+        let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        guard let results = json?["results"] as? [String: Any],
+              let bindings = results["bindings"] as? [[String: Any]] else {
+            return []
+        }
+
+        return bindings.compactMap { binding in
+            var result: [String: String] = [:]
+            for (key, value) in binding {
+                if let valueDict = value as? [String: String],
+                   let stringValue = valueDict["value"] {
+                    result[key] = stringValue
+                }
+            }
+            return result.isEmpty ? nil : result
+        }
+    }
+
+    func executeUpdate(_ update: String) async throws {
+        guard let url = URL(string: endpoint.replacingOccurrences(of: "/query", with: "/update")) else {
+            throw SPARQLError.invalidURL
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/sparql-update", forHTTPHeaderField: "Content-Type")
+        request.httpBody = update.data(using: .utf8)
+
+        let (_, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse,
+              (200...299).contains(httpResponse.statusCode) else {
+            throw SPARQLError.updateFailed
+        }
+    }
+}
+
+enum SPARQLError: Error {
+    case invalidURL
+    case requestFailed
+    case updateFailed
+    case parseFailed
+}

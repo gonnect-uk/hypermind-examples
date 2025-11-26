@@ -1,0 +1,25 @@
+[package]
+name = "hypergraph"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Native hypergraph algebra beyond RDF triples"
+
+[dependencies]
+rdf-model = { path = "../rdf-model" }
+parking_lot = { workspace = true }
+smallvec = { workspace = true }
+ahash = { workspace = true }
+rustc-hash = { workspace = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+proptest = { workspace = true }
+criterion = { workspace = true }
+
+[[bench]]
+name = "hypergraph_benchmark"
+harness = false

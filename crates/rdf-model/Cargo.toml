@@ -1,0 +1,26 @@
+[package]
+name = "rdf-model"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Zero-copy RDF/RDF-star type system with string interning"
+
+[dependencies]
+parking_lot = { workspace = true }
+smallvec = { workspace = true }
+ahash = { workspace = true }
+rustc-hash = { workspace = true }
+bumpalo = { workspace = true }
+serde = { workspace = true, optional = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+proptest = { workspace = true }
+criterion = { workspace = true }
+
+[features]
+default = []
+serde = ["dep:serde"]

@@ -1,0 +1,8 @@
+// Placeholder template for field components
+import SwiftUI
+
+struct GenericField: View {
+    var body: some View {
+        TextField("Field", text: .constant(""))
+    }
+}

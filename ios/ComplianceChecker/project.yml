@@ -1,0 +1,84 @@
+# XcodeGen Project Configuration - ComplianceChecker
+# Generated mobile app for Financial Compliance Verification
+
+name: ComplianceChecker
+options:
+  bundleIdPrefix: com.zenya.generated
+  deploymentTarget:
+    iOS: "17.0"
+  developmentLanguage: en
+
+targets:
+  ComplianceChecker:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: ComplianceChecker
+        type: group
+        excludes:
+          - Resources
+      - path: ../Generated
+        type: group
+        name: Generated
+      - path: ../datasets
+        type: group
+        name: Datasets
+        buildPhase: resources
+      - path: ComplianceChecker/Resources
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.zenya.generated.compliancechecker
+        PRODUCT_NAME: ComplianceChecker
+        INFOPLIST_FILE: ComplianceChecker/Info.plist
+        SWIFT_VERSION: "5.9"
+        IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+        ENABLE_PREVIEWS: YES
+        DEVELOPMENT_ASSET_PATHS: '"ComplianceChecker/Preview Content"'
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        SWIFT_INCLUDE_PATHS: "$(SRCROOT)/../Generated"
+        HEADER_SEARCH_PATHS: "$(SRCROOT)/../Generated"
+
+        # Bridging header for C types
+        SWIFT_OBJC_BRIDGING_HEADER: "$(SRCROOT)/../Generated/gonnect-Bridging-Header.h"
+
+        # Library search paths (for simulator and device)
+        LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]: $(inherited) $(SRCROOT)/../Frameworks/GonnectNanoGraphDB.xcframework/ios-arm64_x86_64-simulator
+        LIBRARY_SEARCH_PATHS[sdk=iphoneos*]: $(inherited) $(SRCROOT)/../Frameworks/GonnectNanoGraphDB.xcframework/ios-arm64
+
+        # Other linker flags - link static library directly
+        OTHER_LDFLAGS: $(inherited) -lmobile_ffi -lc++ -framework Security -framework Foundation
+      configs:
+        Debug:
+          SWIFT_OPTIMIZATION_LEVEL: "-Onone"
+        Release:
+          SWIFT_OPTIMIZATION_LEVEL: "-O"
+          SWIFT_COMPILATION_MODE: wholemodule
+    preBuildScripts:
+      - name: "Check Generated Bindings"
+        script: |
+          if [ ! -f "${PROJECT_DIR}/../Generated/gonnect.swift" ]; then
+            echo "error: Generated Swift bindings not found."
+            exit 1
+          fi
+          echo "✓ Generated bindings found"
+    dependencies:
+      - framework: ../Frameworks/GonnectNanoGraphDB.xcframework
+        embed: false
+      - sdk: SwiftUI.framework
+      - sdk: Combine.framework
+schemes:
+  ComplianceChecker:
+    build:
+      targets:
+        ComplianceChecker: all
+    run:
+      config: Debug
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release

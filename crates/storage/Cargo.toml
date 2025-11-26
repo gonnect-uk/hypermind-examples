@@ -1,0 +1,46 @@
+[package]
+name = "storage"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Pluggable storage backends (in-memory, RocksDB, LMDB)"
+
+[dependencies]
+rdf-model = { path = "../rdf-model" }
+hypergraph = { path = "../hypergraph" }
+parking_lot = { workspace = true }
+smallvec = { workspace = true }
+ahash = { workspace = true }
+rustc-hash = { workspace = true }
+thiserror = { workspace = true }
+serde = { workspace = true }
+rayon = "1.8"  # Parallel iteration for bulk operations
+dashmap = { workspace = true }  # Lock-free concurrent hash map
+
+# Storage backends (optional features)
+rocksdb = { workspace = true, optional = true }
+heed = { workspace = true, optional = true }
+
+# Compression
+lz4 = { workspace = true, optional = true }
+zstd = { workspace = true, optional = true }
+
+[dev-dependencies]
+proptest = { workspace = true }
+criterion = { workspace = true }
+tempfile = "3.8"
+
+[features]
+default = ["in-memory"]
+in-memory = []
+rocksdb-backend = ["dep:rocksdb", "dep:lz4"]
+lmdb-backend = ["dep:heed"]
+compression = ["dep:zstd"]
+all-backends = ["rocksdb-backend", "lmdb-backend", "compression"]
+
+[[bench]]
+name = "triple_store_benchmark"
+harness = false

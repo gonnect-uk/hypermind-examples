@@ -1,0 +1,37 @@
+# Rust
+/target/
+**/*.rs.bk
+*.pdb
+Cargo.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Simulators
+mac_sim.app/
+mac_sim.zip
+*.dmg
+
+# Generated files
+/web-dashboard/client/dist/
+/web-dashboard/client/node_modules/
+
+# Logs
+*.log
+logs/
+
+# Data files
+/data/recorded_sessions/
+/data/training_data/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+venv/
+.venv/

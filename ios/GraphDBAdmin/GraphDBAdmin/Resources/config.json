@@ -1,0 +1,60 @@
+{
+  "app": {
+    "name": "GraphDB Admin",
+    "version": "1.0.0",
+    "bundleId": "com.gonnect.graphdbadmin"
+  },
+  "graphdb": {
+    "ttlDataset": "database-catalog",
+    "prefixMapping": {
+      "db": "http://zenya.com/domain/database/",
+      "rdfs": "http://www.w3.org/2000/01/rdf-schema#"
+    }
+  },
+  "queries": {
+    "graphs": "SELECT ?graph ?label ?tripleCount ?domain WHERE { ?graph a db:NamedGraph . ?graph rdfs:label ?label . ?graph db:tripleCount ?tripleCount . ?graph db:domain ?domain . }",
+    "entities": "SELECT ?entity ?label ?type ?graph WHERE { ?entity a db:Entity . ?entity rdfs:label ?label . ?entity db:entityType ?type . ?entity db:graph ?graph . }",
+    "performance": "SELECT ?metric ?lookupTime ?lookupRate ?insertRate ?memoryPerTriple WHERE { ?metric a db:PerformanceData . ?metric db:lookupTime ?lookupTime . ?metric db:lookupRate ?lookupRate . ?metric db:insertRate ?insertRate . ?metric db:memoryPerTriple ?memoryPerTriple . }"
+  },
+  "theme": {
+    "primaryColor": "#AF52DE",
+    "accentColor": "#007AFF",
+    "backgroundColor": "#FFFFFF"
+  },
+  "statistics": {
+    "metrics": [
+      {
+        "key": "totalGraphs",
+        "label": "Graphs",
+        "icon": "chart.bar.doc.horizontal",
+        "color": "#AF52DE",
+        "predicate": "type",
+        "objectFilter": "NamedGraph"
+      },
+      {
+        "key": "totalEntities",
+        "label": "Entities",
+        "icon": "cube",
+        "color": "#007AFF",
+        "predicate": "type",
+        "objectFilter": "Entity"
+      },
+      {
+        "key": "totalPredicates",
+        "label": "Predicates",
+        "icon": "arrow.right",
+        "color": "#34C759",
+        "predicate": "type",
+        "objectFilter": "Predicate"
+      },
+      {
+        "key": "totalQueries",
+        "label": "Queries",
+        "icon": "magnifyingglass",
+        "color": "#FF9500",
+        "predicate": "type",
+        "objectFilter": "SPARQLQuery"
+      }
+    ]
+  }
+}

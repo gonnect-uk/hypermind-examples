@@ -1,0 +1,170 @@
+//! Real Performance Benchmark with Actual Data
+//!
+//! This benchmark loads real RDF data and measures actual query performance
+
+use std::time::{Duration, Instant};
+use std::sync::Arc;
+use rdf_model::{Node, Triple, Quad, Dictionary};
+use storage::{InMemoryBackend, QuadStore};
+use sparql::{Executor, Query, parse_query};
+
+#[test]
+#[ignore] // Run with: cargo test --package sparql real_benchmark -- --ignored --nocapture
+fn real_benchmark() {
+    println!("\n=== Rust KGDB Real Performance Benchmark ===\n");
+
+    // Initialize store
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    println!("1. Loading insurance.ttl dataset...");
+    let load_start = Instant::now();
+
+    // Load test data - insurance ontology (313 lines)
+    let test_data = include_str!("../../../insurance.ttl");
+    let triple_count = load_turtle_data(&dict, &mut store, test_data);
+
+    let load_time = load_start.elapsed();
+    println!("   ✓ Loaded {} triples in {:?}", triple_count, load_time);
+    println!("   ✓ Load rate: {:.0} triples/sec\n", triple_count as f64 / load_time.as_secs_f64());
+
+    // Create query executor
+    let mut executor = Executor::new(&store);
+
+    // Benchmark Suite
+    println!("2. Running Query Benchmarks...\n");
+
+    // Query 1: Simple triple pattern (SELECT * WHERE { ?s ?p ?o } LIMIT 10)
+    benchmark_query(&mut executor, &dict, "Simple Triple Pattern",
+        "SELECT * WHERE { ?s ?p ?o } LIMIT 10", 10);
+
+    // Query 2: Type query (count all OWL classes)
+    benchmark_query(&mut executor, &dict, "Count OWL Classes",
+        "PREFIX owl: <http://www.w3.org/2002/07/owl#> SELECT (COUNT(?s) as ?count) WHERE { ?s a owl:Class }", 5);
+
+    // Query 3: Property query
+    benchmark_query(&mut executor, &dict, "Find Object Properties",
+        "PREFIX owl: <http://www.w3.org/2002/07/owl#> SELECT ?prop WHERE { ?prop a owl:ObjectProperty }", 5);
+
+    // Query 4: Complex pattern with FILTER
+    benchmark_query(&mut executor, &dict, "Complex FILTER Query",
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?s ?label WHERE { ?s rdfs:label ?label . FILTER(LANG(?label) = 'en') }", 5);
+
+    // Memory usage estimation
+    println!("\n3. Memory Usage Analysis:\n");
+    let dict_size = dict.len();
+    let store_triples = triple_count;
+
+    // Rough memory calculation
+    let dict_memory_kb = dict_size * 50 / 1024; // ~50 bytes per string estimate
+    let triples_memory_kb = store_triples * 24 / 1024; // 3 * 8 bytes per triple
+    let total_memory_kb = dict_memory_kb + triples_memory_kb;
+
+    println!("   Dictionary entries: {}", dict_size);
+    println!("   Triple count: {}", store_triples);
+    println!("   Estimated memory: ~{} KB", total_memory_kb);
+    println!("   Memory per triple: ~{} bytes", total_memory_kb * 1024 / store_triples);
+
+    println!("\n=== Benchmark Complete ===\n");
+}
+
+fn load_turtle_data<B: storage::StorageBackend>(dict: &Arc<Dictionary>, store: &mut QuadStore<B>, ttl: &str) -> usize {
+    // Simple Turtle parser for basic triples
+    let mut count = 0;
+
+    for line in ttl.lines() {
+        let line = line.trim();
+
+        // Skip comments and empty lines
+        if line.is_empty() || line.starts_with('#') || line.starts_with('@') {
+            continue;
+        }
+
+        // Parse simple triple: <subject> <predicate> <object> .
+        if line.ends_with('.') && line.contains('<') {
+            if let Some(quad) = parse_simple_triple(dict, line) {
+                let _ = store.insert(quad);
+                count += 1;
+            }
+        }
+    }
+
+    count
+}
+
+fn parse_simple_triple<'a>(dict: &'a Arc<Dictionary>, line: &str) -> Option<Quad<'a>> {
+    // Very simple parser - just for demonstration
+    let parts: Vec<&str> = line.trim_end_matches('.').split_whitespace().collect();
+
+    if parts.len() >= 3 {
+        let subject = dict.intern(parts[0].trim_matches('<').trim_matches('>'));
+        let predicate = dict.intern(parts[1].trim_matches('<').trim_matches('>'));
+        let object_str = parts[2..].join(" ").trim_matches('<').trim_matches('>').to_string();
+        let object = dict.intern(&object_str);
+
+        let triple = Triple {
+            subject: Node::iri(subject),
+            predicate: Node::iri(predicate),
+            object: Node::iri(object),
+        };
+
+        Some(Quad::new(triple.subject, triple.predicate, triple.object, None))
+    } else {
+        None
+    }
+}
+
+fn benchmark_query<B: storage::StorageBackend>(
+    executor: &mut Executor<B>,
+    dict: &Arc<Dictionary>,
+    name: &str,
+    query_str: &str,
+    iterations: usize
+) {
+    println!("   Benchmarking: {}", name);
+
+    let mut times = Vec::new();
+    let mut result_count = 0;
+
+    // Parse query once
+    let query = match parse_query(query_str, dict) {
+        Ok(q) => q,
+        Err(e) => {
+            println!("      Error parsing query: {:?}", e);
+            return;
+        }
+    };
+
+    // Warmup
+    if let Query::Select { algebra, .. } = &query {
+        if let Ok(results) = executor.execute(algebra) {
+            result_count = results.len();
+        }
+    }
+
+    // Measured runs
+    for _ in 0..iterations {
+        let start = Instant::now();
+        if let Query::Select { algebra, .. } = &query {
+            if let Ok(results) = executor.execute(algebra) {
+                let _ = results.len(); // Consume results
+            }
+        }
+        times.push(start.elapsed());
+    }
+
+    // Calculate statistics
+    times.sort();
+    let mean = Duration::from_nanos((times.iter().map(|d| d.as_nanos()).sum::<u128>() / times.len() as u128) as u64);
+    let median = times[times.len() / 2];
+    let min = times[0];
+    let max = times[times.len() - 1];
+
+    println!("      Results: {} rows", result_count);
+    println!("      Mean:   {:?}", mean);
+    println!("      Median: {:?}", median);
+    println!("      Min:    {:?}", min);
+    println!("      Max:    {:?}", max);
+    println!();
+}

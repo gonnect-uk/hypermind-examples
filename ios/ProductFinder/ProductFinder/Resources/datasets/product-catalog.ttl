@@ -1,0 +1,372 @@
+@prefix : <http://zenya.com/retail/> .
+@prefix prod: <http://zenya.com/domain/product/> .
+@prefix schema: <https://schema.org/> .
+@prefix meta: <http://zenya.com/ontology/mobile-app/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# =============================================================================
+# PRODUCT FINDER - Professional Retail Catalog Dataset
+# Compliant with universal-meta-ontology.ttl
+# Enables instant offline product search (2.78 microseconds!)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# CATEGORIES (5 Categories with Hierarchy)
+# -----------------------------------------------------------------------------
+
+:CategoryElectronics a prod:Category ;
+    rdfs:label "Electronics" ;
+    prod:categoryId "CAT-001" ;
+    prod:displayOrder 1 ;
+    prod:icon "cpu" ;
+    prod:productCount 4 ;
+    prod:description "Smartphones, tablets, and electronic devices" .
+
+:CategoryComputers a prod:Category ;
+    rdfs:label "Computers" ;
+    prod:categoryId "CAT-002" ;
+    prod:displayOrder 2 ;
+    prod:icon "laptopcomputer" ;
+    prod:productCount 2 ;
+    prod:description "Laptops, desktops, and workstations" .
+
+:CategoryAudio a prod:Category ;
+    rdfs:label "Audio" ;
+    prod:categoryId "CAT-003" ;
+    prod:displayOrder 3 ;
+    prod:icon "headphones" ;
+    prod:productCount 3 ;
+    prod:description "Headphones, speakers, and audio equipment" .
+
+:CategoryAccessories a prod:Category ;
+    rdfs:label "Accessories" ;
+    prod:categoryId "CAT-004" ;
+    prod:displayOrder 4 ;
+    prod:icon "keyboard" ;
+    prod:productCount 2 ;
+    prod:description "Keyboards, mice, and peripherals" .
+
+:CategoryDisplays a prod:Category ;
+    rdfs:label "Displays" ;
+    prod:categoryId "CAT-005" ;
+    prod:displayOrder 5 ;
+    prod:icon "display" ;
+    prod:productCount 2 ;
+    prod:description "Monitors and displays" .
+
+# -----------------------------------------------------------------------------
+# BRANDS (6 Brands)
+# -----------------------------------------------------------------------------
+
+:BrandApple a prod:Brand ;
+    rdfs:label "Apple" ;
+    prod:brandId "BRD-001" ;
+    schema:logo "apple.logo" ;
+    prod:productCount 4 ;
+    prod:avgRating 4.8 .
+
+:BrandSamsung a prod:Brand ;
+    rdfs:label "Samsung" ;
+    prod:brandId "BRD-002" ;
+    prod:productCount 2 ;
+    prod:avgRating 4.5 .
+
+:BrandSony a prod:Brand ;
+    rdfs:label "Sony" ;
+    prod:brandId "BRD-003" ;
+    prod:productCount 1 ;
+    prod:avgRating 4.7 .
+
+:BrandDell a prod:Brand ;
+    rdfs:label "Dell" ;
+    prod:brandId "BRD-004" ;
+    prod:productCount 1 ;
+    prod:avgRating 4.3 .
+
+:BrandLogitech a prod:Brand ;
+    rdfs:label "Logitech" ;
+    prod:brandId "BRD-005" ;
+    prod:productCount 2 ;
+    prod:avgRating 4.6 .
+
+:BrandLG a prod:Brand ;
+    rdfs:label "LG" ;
+    prod:brandId "BRD-006" ;
+    prod:productCount 2 ;
+    prod:avgRating 4.4 .
+
+# -----------------------------------------------------------------------------
+# PRODUCTS (12 Products with Full Details)
+# -----------------------------------------------------------------------------
+
+:Product001 a schema:Product, prod:Product ;
+    rdfs:label "iPhone 15 Pro" ;
+    schema:name "iPhone 15 Pro" ;
+    schema:description "Latest flagship smartphone with A17 Pro chip, titanium design, and ProMotion display" ;
+    schema:price 999.00 ;
+    schema:priceCurrency "USD" ;
+    schema:sku "APPLE-IP15-PRO-128" ;
+    prod:brand :BrandApple ;
+    prod:category :CategoryElectronics ;
+    schema:inStock true ;
+    prod:stockQuantity 45 ;
+    prod:rating 4.9 ;
+    prod:reviewCount 1247 ;
+    prod:releaseDate "2023-09-22"^^xsd:date ;
+    prod:warranty "1 year" ;
+    prod:color "Natural Titanium" ;
+    schema:image "iphone15pro.jpg" .
+
+:Product002 a schema:Product, prod:Product ;
+    rdfs:label "MacBook Pro 14\"" ;
+    schema:name "MacBook Pro 14\"" ;
+    schema:description "Professional laptop with M3 Pro chip, 18-hour battery, and Liquid Retina XDR display" ;
+    schema:price 1999.00 ;
+    schema:priceCurrency "USD" ;
+    schema:sku "APPLE-MBP14-M3-512" ;
+    prod:brand :BrandApple ;
+    prod:category :CategoryComputers ;
+    schema:inStock true ;
+    prod:stockQuantity 23 ;
+    prod:rating 4.8 ;
+    prod:reviewCount 892 ;
+    prod:releaseDate "2023-10-30"^^xsd:date ;
+    prod:warranty "1 year" ;
+    prod:color "Space Black" ;
+    schema:image "macbookpro14.jpg" .
+
+:Product003 a schema:Product, prod:Product ;
+    rdfs:label "AirPods Pro 2" ;
+    schema:name "AirPods Pro 2" ;
+    schema:description "Wireless earbuds with H2 chip, adaptive audio, and personalized spatial audio" ;
+    schema:price 249.00 ;
+    schema:priceCurrency "USD" ;
+    schema:sku "APPLE-APP-PRO-2" ;
+    prod:brand :BrandApple ;
+    prod:category :CategoryAudio ;
+    schema:inStock true ;
+    prod:stockQuantity 156 ;
+    prod:rating 4.7 ;
+    prod:reviewCount 3421 ;
+    prod:releaseDate "2023-09-12"^^xsd:date ;
+    prod:warranty "1 year" ;
+    prod:color "White" ;
+    schema:image "airpodspro2.jpg" .
+
+:Product004 a schema:Product, prod:Product ;
+    rdfs:label "Sony WH-1000XM5" ;
+    schema:name "Sony WH-1000XM5" ;
+    schema:description "Premium noise-cancelling headphones with 30-hour battery and multipoint connection" ;
+    schema:price 399.00 ;
+    schema:priceCurrency "USD" ;
+    schema:sku "SONY-WH1000XM5-BLK" ;
+    prod:brand :BrandSony ;
+    prod:category :CategoryAudio ;
+    schema:inStock true ;
+    prod:stockQuantity 67 ;
+    prod:rating 4.8 ;
+    prod:reviewCount 2156 ;
+    prod:releaseDate "2022-05-20"^^xsd:date ;
+    prod:warranty "2 years" ;
+    prod:color "Black" ;
+    schema:image "sonywh1000xm5.jpg" .
+
+:Product005 a schema:Product, prod:Product ;
+    rdfs:label "Samsung Galaxy S24 Ultra" ;
+    schema:name "Samsung Galaxy S24 Ultra" ;
+    schema:description "Flagship Android phone with S Pen, AI features, and 200MP camera" ;
+    schema:price 1299.00 ;
+    schema:priceCurrency "USD" ;
+    schema:sku "SAMSUNG-S24-ULTRA-256" ;
+    prod:brand :BrandSamsung ;
+    prod:category :CategoryElectronics ;
+    schema:inStock false ;
+    prod:stockQuantity 0 ;
+    prod:rating 4.6 ;
+    prod:reviewCount 1834 ;
+    prod:releaseDate "2024-01-17"^^xsd:date ;
+    prod:warranty "1 year" ;
+    prod:color "Titanium Gray" ;
+    prod:reorderThreshold 10 ;
+    prod:lowStockAlert true ;
+    schema:image "galaxys24ultra.jpg" .
+
+:Product006 a schema:Product, prod:Product ;
+    rdfs:label "Dell XPS 15" ;
+    schema:name "Dell XPS 15" ;
+    schema:description "High-performance Windows laptop with InfinityEdge display and Intel Core i7" ;
+    schema:price 1799.00 ;
+    schema:priceCurrency "USD" ;
+    schema:sku "DELL-XPS15-I7-1TB" ;
+    prod:brand :BrandDell ;
+    prod:category :CategoryComputers ;
+    schema:inStock true ;
+    prod:stockQuantity 12 ;
+    prod:rating 4.5 ;
+    prod:reviewCount 743 ;
+    prod:releaseDate "2023-04-15"^^xsd:date ;
+    prod:warranty "1 year" ;
+    prod:color "Platinum Silver" ;
+    prod:reorderThreshold 15 ;
+    prod:lowStockAlert true ;
+    schema:image "dellxps15.jpg" .
+
+:Product007 a schema:Product, prod:Product ;
+    rdfs:label "Logitech MX Master 3S" ;
+    schema:name "Logitech MX Master 3S" ;
+    schema:description "Wireless ergonomic mouse with quiet clicks, MagSpeed scroll, and Flow cross-computer control" ;
+    schema:price 99.00 ;
+    schema:priceCurrency "USD" ;
+    schema:sku "LOGITECH-MXM3S-BLK" ;
+    prod:brand :BrandLogitech ;
+    prod:category :CategoryAccessories ;
+    schema:inStock true ;
+    prod:stockQuantity 234 ;
+    prod:rating 4.7 ;
+    prod:reviewCount 4521 ;
+    prod:releaseDate "2022-05-31"^^xsd:date ;
+    prod:warranty "2 years" ;
+    prod:color "Graphite" ;
+    schema:image "mxmaster3s.jpg" .
+
+:Product008 a schema:Product, prod:Product ;
+    rdfs:label "LG UltraFine 27\" 4K" ;
+    schema:name "LG UltraFine 27\" 4K" ;
+    schema:description "Ultra HD display with Thunderbolt 4, DCI-P3 98%, and USB-C power delivery" ;
+    schema:price 549.00 ;
+    schema:priceCurrency "USD" ;
+    schema:sku "LG-27UP850-W" ;
+    prod:brand :BrandLG ;
+    prod:category :CategoryDisplays ;
+    schema:inStock true ;
+    prod:stockQuantity 34 ;
+    prod:rating 4.5 ;
+    prod:reviewCount 687 ;
+    prod:releaseDate "2023-01-10"^^xsd:date ;
+    prod:warranty "3 years" ;
+    prod:color "White" ;
+    schema:image "lg27up850.jpg" .
+
+:Product009 a schema:Product, prod:Product ;
+    rdfs:label "Apple Watch Ultra 2" ;
+    schema:name "Apple Watch Ultra 2" ;
+    schema:description "Rugged smartwatch with titanium case, S9 chip, and precision dual-frequency GPS" ;
+    schema:price 799.00 ;
+    schema:priceCurrency "USD" ;
+    schema:sku "APPLE-AWU2-49-GPS" ;
+    prod:brand :BrandApple ;
+    prod:category :CategoryElectronics ;
+    schema:inStock true ;
+    prod:stockQuantity 28 ;
+    prod:rating 4.8 ;
+    prod:reviewCount 1523 ;
+    prod:releaseDate "2023-09-22"^^xsd:date ;
+    prod:warranty "1 year" ;
+    prod:color "Natural Titanium" ;
+    schema:image "applewatchultra2.jpg" .
+
+:Product010 a schema:Product, prod:Product ;
+    rdfs:label "Samsung Galaxy Tab S9 Ultra" ;
+    schema:name "Samsung Galaxy Tab S9 Ultra" ;
+    schema:description "14.6\" AMOLED tablet with S Pen, IP68 rating, and Snapdragon 8 Gen 2" ;
+    schema:price 1199.00 ;
+    schema:priceCurrency "USD" ;
+    schema:sku "SAMSUNG-TABS9U-256" ;
+    prod:brand :BrandSamsung ;
+    prod:category :CategoryElectronics ;
+    schema:inStock true ;
+    prod:stockQuantity 19 ;
+    prod:rating 4.6 ;
+    prod:reviewCount 654 ;
+    prod:releaseDate "2023-08-11"^^xsd:date ;
+    prod:warranty "1 year" ;
+    prod:color "Graphite" ;
+    schema:image "galaxytabs9ultra.jpg" .
+
+:Product011 a schema:Product, prod:Product ;
+    rdfs:label "Logitech MX Keys S" ;
+    schema:name "Logitech MX Keys S" ;
+    schema:description "Premium wireless keyboard with smart backlighting and Flow cross-computer control" ;
+    schema:price 109.00 ;
+    schema:priceCurrency "USD" ;
+    schema:sku "LOGITECH-MXKEYS-S" ;
+    prod:brand :BrandLogitech ;
+    prod:category :CategoryAccessories ;
+    schema:inStock true ;
+    prod:stockQuantity 178 ;
+    prod:rating 4.6 ;
+    prod:reviewCount 2341 ;
+    prod:releaseDate "2023-05-24"^^xsd:date ;
+    prod:warranty "2 years" ;
+    prod:color "Graphite" ;
+    schema:image "mxkeyss.jpg" .
+
+:Product012 a schema:Product, prod:Product ;
+    rdfs:label "LG UltraGear 32\" Gaming" ;
+    schema:name "LG UltraGear 32\" Gaming" ;
+    schema:description "QHD gaming monitor with 165Hz, 1ms response, and NVIDIA G-Sync" ;
+    schema:price 449.00 ;
+    schema:priceCurrency "USD" ;
+    schema:sku "LG-32GQ850-B" ;
+    prod:brand :BrandLG ;
+    prod:category :CategoryDisplays ;
+    schema:inStock true ;
+    prod:stockQuantity 45 ;
+    prod:rating 4.7 ;
+    prod:reviewCount 1234 ;
+    prod:releaseDate "2023-03-15"^^xsd:date ;
+    prod:warranty "3 years" ;
+    prod:color "Black" ;
+    schema:image "lgultragear32.jpg" .
+
+# -----------------------------------------------------------------------------
+# INVENTORY ALERTS (3 Alerts)
+# -----------------------------------------------------------------------------
+
+:Alert001 a prod:InventoryAlert ;
+    rdfs:label "Out of Stock Alert" ;
+    prod:alertType "OutOfStock" ;
+    prod:severity "Critical" ;
+    prod:product :Product005 ;
+    prod:detectedDate "2024-11-15"^^xsd:date ;
+    prod:message "Samsung Galaxy S24 Ultra is out of stock - 0 units available" ;
+    prod:recommendedAction "Expedite reorder from supplier" .
+
+:Alert002 a prod:InventoryAlert ;
+    rdfs:label "Low Stock Alert" ;
+    prod:alertType "LowStock" ;
+    prod:severity "Warning" ;
+    prod:product :Product006 ;
+    prod:detectedDate "2024-11-18"^^xsd:date ;
+    prod:message "Dell XPS 15 below reorder threshold - only 12 units remaining" ;
+    prod:recommendedAction "Place standard reorder" .
+
+:Alert003 a prod:InventoryAlert ;
+    rdfs:label "Low Stock Alert" ;
+    prod:alertType "LowStock" ;
+    prod:severity "Warning" ;
+    prod:product :Product010 ;
+    prod:detectedDate "2024-11-19"^^xsd:date ;
+    prod:message "Samsung Galaxy Tab S9 Ultra approaching low stock - 19 units remaining" ;
+    prod:recommendedAction "Monitor sales velocity" .
+
+# -----------------------------------------------------------------------------
+# DASHBOARD STATISTICS
+# -----------------------------------------------------------------------------
+
+:CatalogStats a prod:Statistics ;
+    prod:totalProducts 12 ;
+    prod:inStockProducts 11 ;
+    prod:outOfStockProducts 1 ;
+    prod:lowStockProducts 2 ;
+    prod:totalCategories 5 ;
+    prod:totalBrands 6 ;
+    prod:totalInventoryValue 89425.00 ;
+    prod:averagePrice 829.17 ;
+    prod:averageRating 4.65 ;
+    prod:totalReviews 21253 ;
+    prod:alertsCount 3 ;
+    prod:criticalAlerts 1 ;
+    prod:warningAlerts 2 .

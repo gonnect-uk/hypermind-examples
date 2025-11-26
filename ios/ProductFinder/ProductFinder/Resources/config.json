@@ -1,0 +1,60 @@
+{
+  "app": {
+    "name": "Product Finder",
+    "version": "1.0.0",
+    "bundleId": "com.universalkg.productfinder"
+  },
+  "graphdb": {
+    "ttlDataset": "product-catalog",
+    "prefixMapping": {
+      "prod": "http://zenya.com/domain/products/",
+      "schema": "http://schema.org/",
+      "rdfs": "http://www.w3.org/2000/01/rdf-schema#"
+    }
+  },
+  "queries": {
+    "products": "SELECT ?product ?name ?price ?stock ?rating WHERE { ?product a schema:Product . ?product schema:name ?name . ?product schema:price ?price . ?product prod:stockQuantity ?stock . ?product prod:rating ?rating . } ORDER BY DESC(?rating)",
+    "alerts": "SELECT ?alert ?type ?severity ?message ?action WHERE { ?alert a prod:InventoryAlert . ?alert prod:alertType ?type . ?alert prod:severity ?severity . ?alert prod:message ?message . ?alert prod:recommendedAction ?action . } ORDER BY ?severity"
+  },
+  "theme": {
+    "primaryColor": "#34C759",
+    "accentColor": "#FF9500",
+    "backgroundColor": "#FFFFFF"
+  },
+  "statistics": {
+    "metrics": [
+      {
+        "key": "totalProducts",
+        "label": "Products",
+        "icon": "bag",
+        "color": "#34C759",
+        "predicate": "type",
+        "objectFilter": "Product"
+      },
+      {
+        "key": "totalAlerts",
+        "label": "Alerts",
+        "icon": "bell.badge",
+        "color": "#FF9500",
+        "predicate": "type",
+        "objectFilter": "Alert"
+      },
+      {
+        "key": "totalCategories",
+        "label": "Categories",
+        "icon": "folder",
+        "color": "#007AFF",
+        "predicate": "type",
+        "objectFilter": "Category"
+      },
+      {
+        "key": "totalBrands",
+        "label": "Brands",
+        "icon": "star",
+        "color": "#AF52DE",
+        "predicate": "type",
+        "objectFilter": "Brand"
+      }
+    ]
+  }
+}

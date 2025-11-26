@@ -1,0 +1,479 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0144F80E079B56D9C0EE94CA /* MovieDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A400E91033CD88DE7707C8 /* MovieDetailView.swift */; };
+		0AB89F0A14059383E2BD34ED /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41AA2E472FE11317E76DF03A /* HomeView.swift */; };
+		222E8051A02A154E25900B3A /* financial_compliance.ttl in Resources */ = {isa = PBXBuildFile; fileRef = 839F376A26D16DB12DC80C93 /* financial_compliance.ttl */; };
+		48F330A1C9536507D1C5ED42 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4290385AB492D7CD662A3FD5 /* Person.swift */; };
+		5A6EA05B03ED645E110FC68F /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BB1660FC0553D2E63EE47E0 /* SwiftUI.framework */; };
+		5CF8FA90DE9195CD2911E80C /* RecommendationEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A85D17A286F4780D88737A /* RecommendationEngine.swift */; };
+		62F374F1C0399FB019909FFA /* SmartSearchRecommenderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B2873CA3536B280C3DC56E /* SmartSearchRecommenderApp.swift */; };
+		657815B2F8024E7E53A3CAB3 /* ExplainRecommendationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7326C30B65108DE5E7A6BBD7 /* ExplainRecommendationView.swift */; };
+		73339D23047D02AAA2AB31A2 /* Genre.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0AC927A7A2204552A5B0145 /* Genre.swift */; };
+		A8EAA6A98053CD8137E1CC20 /* MovieService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65AB1B55FE71108E62F47DBF /* MovieService.swift */; };
+		ADFFD457C63003EEB59A02E8 /* movies_catalog.ttl in Resources */ = {isa = PBXBuildFile; fileRef = 50D1A996ECE424B6045668EB /* movies_catalog.ttl */; };
+		B0C64F1892F628272770DD1F /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C59A1BEAF7C666D90E24DE /* Movie.swift */; };
+		B7BCCE8091006935D5B02672 /* Combine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC8358F5B86110C3A2E63DA /* Combine.framework */; };
+		C0BEE172F0CE96AC38AD0284 /* SearchResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A55804B489885072C489078 /* SearchResultsView.swift */; };
+		CBE549D0DF56393A8EE3FFB6 /* gonnect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034EDE8305831EEC7D2CC167 /* gonnect.swift */; };
+		ECA937E37D79BF9869584536 /* PersonDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F60D2FEEC4B1629B3E47FE /* PersonDetailView.swift */; };
+		F4742CDD4BD2DF37B7FF0975 /* GonnectNanoGraphDB.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DBAE59A79BEFF8B7B8E3431 /* GonnectNanoGraphDB.xcframework */; };
+		FA0045973BDE3BFCC60C1C20 /* product_catalog.ttl in Resources */ = {isa = PBXBuildFile; fileRef = 9DAF81575B814ADBC7474494 /* product_catalog.ttl */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		034EDE8305831EEC7D2CC167 /* gonnect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = gonnect.swift; sourceTree = "<group>"; };
+		18C59A1BEAF7C666D90E24DE /* Movie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
+		1BB1660FC0553D2E63EE47E0 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		1DBAE59A79BEFF8B7B8E3431 /* GonnectNanoGraphDB.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GonnectNanoGraphDB.xcframework; path = ../Frameworks/GonnectNanoGraphDB.xcframework; sourceTree = "<group>"; };
+		2867FBF80DFD2B7B6A9A26B5 /* gonnectFFI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gonnectFFI.h; sourceTree = "<group>"; };
+		41AA2E472FE11317E76DF03A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		4290385AB492D7CD662A3FD5 /* Person.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
+		50D1A996ECE424B6045668EB /* movies_catalog.ttl */ = {isa = PBXFileReference; path = movies_catalog.ttl; sourceTree = "<group>"; };
+		65AB1B55FE71108E62F47DBF /* MovieService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieService.swift; sourceTree = "<group>"; };
+		6F164BBC87494BD4AA3009BA /* gonnect-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "gonnect-Bridging-Header.h"; sourceTree = "<group>"; };
+		7326C30B65108DE5E7A6BBD7 /* ExplainRecommendationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplainRecommendationView.swift; sourceTree = "<group>"; };
+		81A85D17A286F4780D88737A /* RecommendationEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationEngine.swift; sourceTree = "<group>"; };
+		839F376A26D16DB12DC80C93 /* financial_compliance.ttl */ = {isa = PBXFileReference; path = financial_compliance.ttl; sourceTree = "<group>"; };
+		9A55804B489885072C489078 /* SearchResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsView.swift; sourceTree = "<group>"; };
+		9DAF81575B814ADBC7474494 /* product_catalog.ttl */ = {isa = PBXFileReference; path = product_catalog.ttl; sourceTree = "<group>"; };
+		A5A400E91033CD88DE7707C8 /* MovieDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailView.swift; sourceTree = "<group>"; };
+		B3482AA418CC4FFE08A33AFF /* SmartSearchRecommender.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SmartSearchRecommender.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B858E6F87E6607E1974C43D8 /* gonnectFFI.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = gonnectFFI.modulemap; sourceTree = "<group>"; };
+		C0AC927A7A2204552A5B0145 /* Genre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Genre.swift; sourceTree = "<group>"; };
+		D8F60D2FEEC4B1629B3E47FE /* PersonDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonDetailView.swift; sourceTree = "<group>"; };
+		F8B2873CA3536B280C3DC56E /* SmartSearchRecommenderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartSearchRecommenderApp.swift; sourceTree = "<group>"; };
+		FBC8358F5B86110C3A2E63DA /* Combine.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Combine.framework; path = System/Library/Frameworks/Combine.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		65A3D159D26B5B81C4E162D6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F4742CDD4BD2DF37B7FF0975 /* GonnectNanoGraphDB.xcframework in Frameworks */,
+				5A6EA05B03ED645E110FC68F /* SwiftUI.framework in Frameworks */,
+				B7BCCE8091006935D5B02672 /* Combine.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		131EB29997EF5FD10C77AA12 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				7326C30B65108DE5E7A6BBD7 /* ExplainRecommendationView.swift */,
+				41AA2E472FE11317E76DF03A /* HomeView.swift */,
+				A5A400E91033CD88DE7707C8 /* MovieDetailView.swift */,
+				D8F60D2FEEC4B1629B3E47FE /* PersonDetailView.swift */,
+				9A55804B489885072C489078 /* SearchResultsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		20D834899D7CD7CF81C88E81 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FBC8358F5B86110C3A2E63DA /* Combine.framework */,
+				1DBAE59A79BEFF8B7B8E3431 /* GonnectNanoGraphDB.xcframework */,
+				1BB1660FC0553D2E63EE47E0 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3D119DA6B309D21A8F1C12B9 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C0AC927A7A2204552A5B0145 /* Genre.swift */,
+				18C59A1BEAF7C666D90E24DE /* Movie.swift */,
+				4290385AB492D7CD662A3FD5 /* Person.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		3D604F721862A44FC38F5A33 /* Datasets */ = {
+			isa = PBXGroup;
+			children = (
+				839F376A26D16DB12DC80C93 /* financial_compliance.ttl */,
+				50D1A996ECE424B6045668EB /* movies_catalog.ttl */,
+				9DAF81575B814ADBC7474494 /* product_catalog.ttl */,
+			);
+			name = Datasets;
+			path = ../datasets;
+			sourceTree = "<group>";
+		};
+		B7AA171CBA333DBAB7BC9282 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				65AB1B55FE71108E62F47DBF /* MovieService.swift */,
+				81A85D17A286F4780D88737A /* RecommendationEngine.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		DF5FD4EC01B8AD15C3F3B01B /* Generated */ = {
+			isa = PBXGroup;
+			children = (
+				6F164BBC87494BD4AA3009BA /* gonnect-Bridging-Header.h */,
+				034EDE8305831EEC7D2CC167 /* gonnect.swift */,
+				2867FBF80DFD2B7B6A9A26B5 /* gonnectFFI.h */,
+				B858E6F87E6607E1974C43D8 /* gonnectFFI.modulemap */,
+			);
+			name = Generated;
+			path = ../Generated;
+			sourceTree = "<group>";
+		};
+		F5BCC0ACDC5C8E4AEF0D556D = {
+			isa = PBXGroup;
+			children = (
+				3D604F721862A44FC38F5A33 /* Datasets */,
+				DF5FD4EC01B8AD15C3F3B01B /* Generated */,
+				FF4A9E32CE8B2B901B464B89 /* SmartSearchRecommender */,
+				20D834899D7CD7CF81C88E81 /* Frameworks */,
+				F70C2A1867A392851E36EBE8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F70C2A1867A392851E36EBE8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B3482AA418CC4FFE08A33AFF /* SmartSearchRecommender.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FF4A9E32CE8B2B901B464B89 /* SmartSearchRecommender */ = {
+			isa = PBXGroup;
+			children = (
+				F8B2873CA3536B280C3DC56E /* SmartSearchRecommenderApp.swift */,
+				3D119DA6B309D21A8F1C12B9 /* Models */,
+				B7AA171CBA333DBAB7BC9282 /* Services */,
+				131EB29997EF5FD10C77AA12 /* Views */,
+			);
+			path = SmartSearchRecommender;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4F2D974B80EAEAE74F3FB0FA /* SmartSearchRecommender */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 72DC0891B59C0A9327057052 /* Build configuration list for PBXNativeTarget "SmartSearchRecommender" */;
+			buildPhases = (
+				367744E9F54C1A188B40BD85 /* Check Generated Bindings */,
+				0DEACCE2FBE3CF3C77A2B15A /* Sources */,
+				A75E08F4898DCD3ED900E647 /* Resources */,
+				65A3D159D26B5B81C4E162D6 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SmartSearchRecommender;
+			packageProductDependencies = (
+			);
+			productName = SmartSearchRecommender;
+			productReference = B3482AA418CC4FFE08A33AFF /* SmartSearchRecommender.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2419C4293171C5E4979B0343 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+			};
+			buildConfigurationList = 3E775283E1E06425A2C83835 /* Build configuration list for PBXProject "SmartSearchRecommender" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = F5BCC0ACDC5C8E4AEF0D556D;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4F2D974B80EAEAE74F3FB0FA /* SmartSearchRecommender */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A75E08F4898DCD3ED900E647 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				222E8051A02A154E25900B3A /* financial_compliance.ttl in Resources */,
+				ADFFD457C63003EEB59A02E8 /* movies_catalog.ttl in Resources */,
+				FA0045973BDE3BFCC60C1C20 /* product_catalog.ttl in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		367744E9F54C1A188B40BD85 /* Check Generated Bindings */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Check Generated Bindings";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ ! -f \"${PROJECT_DIR}/../Generated/gonnect.swift\" ]; then\n  echo \"error: Generated Swift bindings not found. Run 'make generate-bindings' first.\"\n  exit 1\nfi\necho \"✓ Generated bindings found\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0DEACCE2FBE3CF3C77A2B15A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				657815B2F8024E7E53A3CAB3 /* ExplainRecommendationView.swift in Sources */,
+				73339D23047D02AAA2AB31A2 /* Genre.swift in Sources */,
+				0AB89F0A14059383E2BD34ED /* HomeView.swift in Sources */,
+				B0C64F1892F628272770DD1F /* Movie.swift in Sources */,
+				0144F80E079B56D9C0EE94CA /* MovieDetailView.swift in Sources */,
+				A8EAA6A98053CD8137E1CC20 /* MovieService.swift in Sources */,
+				48F330A1C9536507D1C5ED42 /* Person.swift in Sources */,
+				ECA937E37D79BF9869584536 /* PersonDetailView.swift in Sources */,
+				5CF8FA90DE9195CD2911E80C /* RecommendationEngine.swift in Sources */,
+				C0BEE172F0CE96AC38AD0284 /* SearchResultsView.swift in Sources */,
+				62F374F1C0399FB019909FFA /* SmartSearchRecommenderApp.swift in Sources */,
+				CBE549D0DF56393A8EE3FFB6 /* gonnect.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		20AAA9CCBA5DDFDC26C51585 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		57F951B46836E3BD560798F9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited) $(PROJECT_DIR)/../Frameworks",
+					"\"../Frameworks\"",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(inherited) $(PROJECT_DIR)/../Generated";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*]" = "$(inherited) $(SRCROOT)/../Frameworks/GonnectNanoGraphDB.xcframework/ios-arm64";
+				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]" = "$(inherited) $(SRCROOT)/../Frameworks/GonnectNanoGraphDB.xcframework/ios-arm64_x86_64-simulator";
+				OTHER_LDFLAGS = "$(inherited) -lmobile_ffi -lc++ -framework Security -framework Foundation";
+				PRODUCT_BUNDLE_IDENTIFIER = com.gonnect.smartsearchrecommender;
+				PRODUCT_NAME = "Smart Search";
+				SDKROOT = iphoneos;
+				SWIFT_INCLUDE_PATHS = "$(inherited) $(PROJECT_DIR)/../Generated";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/../Generated/gonnect-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BB170EAF7BE50A986738114B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		FC4DE3A30BA634C007FE2479 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited) $(PROJECT_DIR)/../Frameworks",
+					"\"../Frameworks\"",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(inherited) $(PROJECT_DIR)/../Generated";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*]" = "$(inherited) $(SRCROOT)/../Frameworks/GonnectNanoGraphDB.xcframework/ios-arm64";
+				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]" = "$(inherited) $(SRCROOT)/../Frameworks/GonnectNanoGraphDB.xcframework/ios-arm64_x86_64-simulator";
+				OTHER_LDFLAGS = "$(inherited) -lmobile_ffi -lc++ -framework Security -framework Foundation";
+				PRODUCT_BUNDLE_IDENTIFIER = com.gonnect.smartsearchrecommender;
+				PRODUCT_NAME = "Smart Search";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_INCLUDE_PATHS = "$(inherited) $(PROJECT_DIR)/../Generated";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/../Generated/gonnect-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3E775283E1E06425A2C83835 /* Build configuration list for PBXProject "SmartSearchRecommender" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BB170EAF7BE50A986738114B /* Debug */,
+				20AAA9CCBA5DDFDC26C51585 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		72DC0891B59C0A9327057052 /* Build configuration list for PBXNativeTarget "SmartSearchRecommender" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				57F951B46836E3BD560798F9 /* Debug */,
+				FC4DE3A30BA634C007FE2479 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2419C4293171C5E4979B0343 /* Project object */;
+}

@@ -1,0 +1,39 @@
+[package]
+name = "mobile-ffi"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "iOS/Android FFI bindings via uniffi"
+
+[lib]
+crate-type = ["lib", "cdylib", "staticlib"]
+
+[[bin]]
+name = "uniffi-bindgen"
+path = "src/bin/uniffi-bindgen.rs"
+
+[dependencies]
+uniffi_bindgen = { workspace = true }  # For generate-bindings binary
+camino = "1.1"  # UTF-8 paths required by uniffi_bindgen 0.30 API
+rdf-model = { path = "../rdf-model" }
+hypergraph = { path = "../hypergraph" }
+storage = { path = "../storage" }  # InMemory backend only for iOS
+sparql = { path = "../sparql" }
+reasoning = { path = "../reasoning", features = ["all-reasoners"] }
+rdf-io = { path = "../rdf-io", features = ["all-formats"] }
+shacl = { path = "../shacl" }
+prov = { path = "../prov" }
+
+uniffi = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+[build-dependencies]
+uniffi = { workspace = true, features = ["build"] }
+
+[dev-dependencies]
+uniffi = { workspace = true, features = ["bindgen-tests"] }

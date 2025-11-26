@@ -1,0 +1,448 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2510444F13C952235D9BB17E /* compliance-rules.ttl in Resources */ = {isa = PBXBuildFile; fileRef = 9CCECA59C47FF8310972F6E7 /* compliance-rules.ttl */; };
+		2B8DE7339862281223450BDD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1124A6121CBAC195EC4DC258 /* ContentView.swift */; };
+		444DEF8C2E57957CE65D44A5 /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = 0D82F68D4E5981C7367DFE86 /* config.json */; };
+		8A14AFCFDA868A596039528A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0151F4DB79EC308203DEB85E /* SwiftUI.framework */; };
+		A271D1CF22EDC54BAB01503E /* movies_catalog.ttl in Resources */ = {isa = PBXBuildFile; fileRef = 0743223F3A7DCED7A523CF81 /* movies_catalog.ttl */; };
+		A8BDCA7A7B9494B5D66C0328 /* ComplianceCheckerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8F77D861D7E97E8C3D22FFC /* ComplianceCheckerApp.swift */; };
+		ABDABE2B550EF90091F69C4C /* GonnectNanoGraphDB.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE522FE5F54592540334333E /* GonnectNanoGraphDB.xcframework */; };
+		AC467628732F87B4128D112C /* gonnect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E145AE6BECF85ADAC29A4E /* gonnect.swift */; };
+		CA72D3AD288DEAC71618E3A6 /* financial_compliance.ttl in Resources */ = {isa = PBXBuildFile; fileRef = C81D3DD631616A6AA94A5A12 /* financial_compliance.ttl */; };
+		D61D82727B525F1FE1D7136B /* product_catalog.ttl in Resources */ = {isa = PBXBuildFile; fileRef = CA3338EE4CC3A58160E68456 /* product_catalog.ttl */; };
+		EE283E2ABF74795A08E27AD5 /* Combine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC39AEB32D7DE1063F83C773 /* Combine.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0151F4DB79EC308203DEB85E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		0743223F3A7DCED7A523CF81 /* movies_catalog.ttl */ = {isa = PBXFileReference; path = movies_catalog.ttl; sourceTree = "<group>"; };
+		0D82F68D4E5981C7367DFE86 /* config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = config.json; sourceTree = "<group>"; };
+		1124A6121CBAC195EC4DC258 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		1AE2F476E440060D7E46C339 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		31B02C8730A1B225187B5C1E /* ComplianceChecker.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ComplianceChecker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		46FEFAC351FD4D8D55F47A3C /* gonnectFFI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gonnectFFI.h; sourceTree = "<group>"; };
+		80736C293379DA256408ED34 /* gonnectFFI.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = gonnectFFI.modulemap; sourceTree = "<group>"; };
+		83E145AE6BECF85ADAC29A4E /* gonnect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = gonnect.swift; sourceTree = "<group>"; };
+		9CCECA59C47FF8310972F6E7 /* compliance-rules.ttl */ = {isa = PBXFileReference; path = "compliance-rules.ttl"; sourceTree = "<group>"; };
+		C434409114B9B666B0C656ED /* gonnect-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "gonnect-Bridging-Header.h"; sourceTree = "<group>"; };
+		C81D3DD631616A6AA94A5A12 /* financial_compliance.ttl */ = {isa = PBXFileReference; path = financial_compliance.ttl; sourceTree = "<group>"; };
+		CA3338EE4CC3A58160E68456 /* product_catalog.ttl */ = {isa = PBXFileReference; path = product_catalog.ttl; sourceTree = "<group>"; };
+		DC39AEB32D7DE1063F83C773 /* Combine.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Combine.framework; path = System/Library/Frameworks/Combine.framework; sourceTree = SDKROOT; };
+		E8F77D861D7E97E8C3D22FFC /* ComplianceCheckerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplianceCheckerApp.swift; sourceTree = "<group>"; };
+		EE522FE5F54592540334333E /* GonnectNanoGraphDB.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GonnectNanoGraphDB.xcframework; path = ../Frameworks/GonnectNanoGraphDB.xcframework; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D67E5F1502D8B3863658FFF0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ABDABE2B550EF90091F69C4C /* GonnectNanoGraphDB.xcframework in Frameworks */,
+				8A14AFCFDA868A596039528A /* SwiftUI.framework in Frameworks */,
+				EE283E2ABF74795A08E27AD5 /* Combine.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0C139E2AF601C932C1EF6A85 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				0D82F68D4E5981C7367DFE86 /* config.json */,
+				9405EB3D1A108056F8329BA8 /* datasets */,
+			);
+			name = Resources;
+			path = ComplianceChecker/Resources;
+			sourceTree = "<group>";
+		};
+		339F6A7ECAB7953562B71A15 /* Datasets */ = {
+			isa = PBXGroup;
+			children = (
+				C81D3DD631616A6AA94A5A12 /* financial_compliance.ttl */,
+				0743223F3A7DCED7A523CF81 /* movies_catalog.ttl */,
+				CA3338EE4CC3A58160E68456 /* product_catalog.ttl */,
+			);
+			name = Datasets;
+			path = ../datasets;
+			sourceTree = "<group>";
+		};
+		6E4293663C2F572EF166CD8F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				31B02C8730A1B225187B5C1E /* ComplianceChecker.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9405EB3D1A108056F8329BA8 /* datasets */ = {
+			isa = PBXGroup;
+			children = (
+				9CCECA59C47FF8310972F6E7 /* compliance-rules.ttl */,
+			);
+			path = datasets;
+			sourceTree = "<group>";
+		};
+		A982B3607357C1E92179C471 /* ComplianceChecker */ = {
+			isa = PBXGroup;
+			children = (
+				E8F77D861D7E97E8C3D22FFC /* ComplianceCheckerApp.swift */,
+				1124A6121CBAC195EC4DC258 /* ContentView.swift */,
+				1AE2F476E440060D7E46C339 /* Info.plist */,
+			);
+			path = ComplianceChecker;
+			sourceTree = "<group>";
+		};
+		B5813F01447BDDD0B22BD3FD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DC39AEB32D7DE1063F83C773 /* Combine.framework */,
+				EE522FE5F54592540334333E /* GonnectNanoGraphDB.xcframework */,
+				0151F4DB79EC308203DEB85E /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		DC0337016062745A0171FA1D = {
+			isa = PBXGroup;
+			children = (
+				A982B3607357C1E92179C471 /* ComplianceChecker */,
+				339F6A7ECAB7953562B71A15 /* Datasets */,
+				FE59D1A20A63DDFA5CF6A26A /* Generated */,
+				0C139E2AF601C932C1EF6A85 /* Resources */,
+				B5813F01447BDDD0B22BD3FD /* Frameworks */,
+				6E4293663C2F572EF166CD8F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FE59D1A20A63DDFA5CF6A26A /* Generated */ = {
+			isa = PBXGroup;
+			children = (
+				C434409114B9B666B0C656ED /* gonnect-Bridging-Header.h */,
+				83E145AE6BECF85ADAC29A4E /* gonnect.swift */,
+				46FEFAC351FD4D8D55F47A3C /* gonnectFFI.h */,
+				80736C293379DA256408ED34 /* gonnectFFI.modulemap */,
+			);
+			name = Generated;
+			path = ../Generated;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2CA4F08D1B7B91388247D943 /* ComplianceChecker */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2E91F8FC18EA22BA1AC557B8 /* Build configuration list for PBXNativeTarget "ComplianceChecker" */;
+			buildPhases = (
+				742B7640697B1AAB52952725 /* Check Generated Bindings */,
+				B64AE3355B4816DD337ACD87 /* Sources */,
+				56F0521BD4DBB298D693C35C /* Resources */,
+				D67E5F1502D8B3863658FFF0 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ComplianceChecker;
+			packageProductDependencies = (
+			);
+			productName = ComplianceChecker;
+			productReference = 31B02C8730A1B225187B5C1E /* ComplianceChecker.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A65E147B374208CC98F6BF23 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+			};
+			buildConfigurationList = 4F8736CD85AE3354BAA85770 /* Build configuration list for PBXProject "ComplianceChecker" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = DC0337016062745A0171FA1D;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2CA4F08D1B7B91388247D943 /* ComplianceChecker */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		56F0521BD4DBB298D693C35C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2510444F13C952235D9BB17E /* compliance-rules.ttl in Resources */,
+				444DEF8C2E57957CE65D44A5 /* config.json in Resources */,
+				CA72D3AD288DEAC71618E3A6 /* financial_compliance.ttl in Resources */,
+				A271D1CF22EDC54BAB01503E /* movies_catalog.ttl in Resources */,
+				D61D82727B525F1FE1D7136B /* product_catalog.ttl in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		742B7640697B1AAB52952725 /* Check Generated Bindings */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Check Generated Bindings";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ ! -f \"${PROJECT_DIR}/../Generated/gonnect.swift\" ]; then\n  echo \"error: Generated Swift bindings not found.\"\n  exit 1\nfi\necho \"✓ Generated bindings found\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B64AE3355B4816DD337ACD87 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A8BDCA7A7B9494B5D66C0328 /* ComplianceCheckerApp.swift in Sources */,
+				2B8DE7339862281223450BDD /* ContentView.swift in Sources */,
+				AC467628732F87B4128D112C /* gonnect.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		031AF467474E62614BB0027D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_ASSET_PATHS = "\"ComplianceChecker/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"../Frameworks\"",
+				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../Generated";
+				INFOPLIST_FILE = ComplianceChecker/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*]" = "$(inherited) $(SRCROOT)/../Frameworks/GonnectNanoGraphDB.xcframework/ios-arm64";
+				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]" = "$(inherited) $(SRCROOT)/../Frameworks/GonnectNanoGraphDB.xcframework/ios-arm64_x86_64-simulator";
+				OTHER_LDFLAGS = "$(inherited) -lmobile_ffi -lc++ -framework Security -framework Foundation";
+				PRODUCT_BUNDLE_IDENTIFIER = com.zenya.generated.compliancechecker;
+				PRODUCT_NAME = ComplianceChecker;
+				SDKROOT = iphoneos;
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/../Generated";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/../Generated/gonnect-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		73122A809E3772FF375AF041 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_ASSET_PATHS = "\"ComplianceChecker/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"../Frameworks\"",
+				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../Generated";
+				INFOPLIST_FILE = ComplianceChecker/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*]" = "$(inherited) $(SRCROOT)/../Frameworks/GonnectNanoGraphDB.xcframework/ios-arm64";
+				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]" = "$(inherited) $(SRCROOT)/../Frameworks/GonnectNanoGraphDB.xcframework/ios-arm64_x86_64-simulator";
+				OTHER_LDFLAGS = "$(inherited) -lmobile_ffi -lc++ -framework Security -framework Foundation";
+				PRODUCT_BUNDLE_IDENTIFIER = com.zenya.generated.compliancechecker;
+				PRODUCT_NAME = ComplianceChecker;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/../Generated";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/../Generated/gonnect-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		AA917C8982E92F783BAF28EF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		F7A3C57104D41FD29B5B3D33 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2E91F8FC18EA22BA1AC557B8 /* Build configuration list for PBXNativeTarget "ComplianceChecker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				031AF467474E62614BB0027D /* Debug */,
+				73122A809E3772FF375AF041 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		4F8736CD85AE3354BAA85770 /* Build configuration list for PBXProject "ComplianceChecker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA917C8982E92F783BAF28EF /* Debug */,
+				F7A3C57104D41FD29B5B3D33 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A65E147B374208CC98F6BF23 /* Project object */;
+}

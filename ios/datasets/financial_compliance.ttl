@@ -1,0 +1,269 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix fro: <http://finregont.com/ontology#> .
+@prefix fibo: <https://spec.edmcouncil.org/fibo/ontology/> .
+@prefix lkif: <http://www.estrellaproject.org/lkif-core/> .
+@prefix gdpr: <http://example.org/gdpr#> .
+@prefix reg: <http://example.org/regulation#> .
+@prefix comp: <http://example.org/compliance#> .
+
+# Financial & Regulatory Compliance Dataset
+# For ComplianceGuardian App - Based on FinRegOnt, FIBO, GDPR ontologies
+
+# === Financial Regulations ===
+reg:SEC_Rule_10b5
+    rdf:type fro:Regulation, lkif:LegalRule ;
+    rdfs:label "SEC Rule 10b-5: Employment of Manipulative and Deceptive Practices"@en ;
+    fro:jurisdiction "United States" ;
+    fro:regulatoryBody reg:SEC ;
+    fro:enactmentDate "1942-05-21"^^xsd:date ;
+    fro:lastAmended "2010-07-21"^^xsd:date ;
+    fro:riskLevel "Critical"^^xsd:string ;
+    rdfs:comment "Prohibits fraud in connection with the purchase or sale of securities"@en ;
+    fro:requires comp:requirement_insider_trading_monitoring ;
+    fro:penalty [
+        rdf:type fro:Penalty ;
+        fro:maxFine "5000000"^^xsd:integer ;
+        fro:maxPrison "20"^^xsd:integer ;
+        fro:currency "USD"
+    ] .
+
+reg:MiFID_II
+    rdf:type fro:Regulation, lkif:LegalRule ;
+    rdfs:label "MiFID II: Markets in Financial Instruments Directive"@en ;
+    fro:jurisdiction "European Union" ;
+    fro:regulatoryBody reg:ESMA ;
+    fro:enactmentDate "2018-01-03"^^xsd:date ;
+    fro:riskLevel "High"^^xsd:string ;
+    rdfs:comment "EU legislation providing harmonized regulation for investment services"@en ;
+    fro:requires comp:requirement_transaction_reporting, comp:requirement_best_execution ;
+    fro:penalty [
+        rdf:type fro:Penalty ;
+        fro:maxFine "10000000"^^xsd:integer ;
+        fro:currency "EUR"
+    ] .
+
+reg:Dodd_Frank_Act
+    rdf:type fro:Regulation, lkif:LegalRule ;
+    rdfs:label "Dodd-Frank Wall Street Reform Act"@en ;
+    fro:jurisdiction "United States" ;
+    fro:regulatoryBody reg:SEC, reg:CFTC ;
+    fro:enactmentDate "2010-07-21"^^xsd:date ;
+    fro:riskLevel "Critical"^^xsd:string ;
+    rdfs:comment "Comprehensive financial reform legislation following 2008 crisis"@en ;
+    fro:requires comp:requirement_stress_testing, comp:requirement_volcker_rule ;
+    fro:penalty [
+        rdf:type fro:Penalty ;
+        fro:maxFine "1000000"^^xsd:integer ;
+        fro:currency "USD" ;
+        fro:additionalSanctions "Trading ban, license revocation"
+    ] .
+
+reg:Basel_III
+    rdf:type fro:Regulation, lkif:LegalRule ;
+    rdfs:label "Basel III: International Regulatory Framework for Banks"@en ;
+    fro:jurisdiction "International" ;
+    fro:regulatoryBody reg:BCBS ;
+    fro:enactmentDate "2013-01-01"^^xsd:date ;
+    fro:riskLevel "Critical"^^xsd:string ;
+    rdfs:comment "Strengthens bank capital requirements and introduces new regulatory requirements"@en ;
+    fro:requires comp:requirement_capital_ratio, comp:requirement_liquidity_coverage .
+
+# === GDPR Regulations ===
+gdpr:Article_6_Lawful_Basis
+    rdf:type gdpr:Regulation, lkif:LegalRule ;
+    rdfs:label "GDPR Article 6: Lawfulness of Processing"@en ;
+    fro:jurisdiction "European Union" ;
+    fro:regulatoryBody reg:EDPB ;
+    fro:enactmentDate "2018-05-25"^^xsd:date ;
+    fro:riskLevel "Critical"^^xsd:string ;
+    rdfs:comment "Requires lawful basis for personal data processing"@en ;
+    gdpr:requires comp:requirement_consent, comp:requirement_legitimate_interest ;
+    fro:penalty [
+        rdf:type fro:Penalty ;
+        fro:maxFine "20000000"^^xsd:integer ;
+        fro:percentageRevenue "4"^^xsd:integer ;
+        fro:currency "EUR" ;
+        rdfs:comment "Higher of €20M or 4% of annual global turnover"
+    ] .
+
+gdpr:Article_17_Right_To_Erasure
+    rdf:type gdpr:Regulation, lkif:LegalRule ;
+    rdfs:label "GDPR Article 17: Right to Erasure (Right to be Forgotten)"@en ;
+    fro:jurisdiction "European Union" ;
+    fro:regulatoryBody reg:EDPB ;
+    fro:enactmentDate "2018-05-25"^^xsd:date ;
+    fro:riskLevel "High"^^xsd:string ;
+    rdfs:comment "Data subjects have right to request deletion of personal data"@en ;
+    gdpr:requires comp:requirement_data_deletion_process ;
+    fro:responseTime "P30D"^^xsd:duration ;
+    fro:penalty [
+        rdf:type fro:Penalty ;
+        fro:maxFine "20000000"^^xsd:integer ;
+        fro:percentageRevenue "4"^^xsd:integer ;
+        fro:currency "EUR"
+    ] .
+
+gdpr:Article_33_Breach_Notification
+    rdf:type gdpr:Regulation, lkif:LegalRule ;
+    rdfs:label "GDPR Article 33: Notification of Data Breach"@en ;
+    fro:jurisdiction "European Union" ;
+    fro:regulatoryBody reg:EDPB ;
+    fro:enactmentDate "2018-05-25"^^xsd:date ;
+    fro:riskLevel "Critical"^^xsd:string ;
+    rdfs:comment "Requires notification within 72 hours of becoming aware of breach"@en ;
+    fro:responseTime "PT72H"^^xsd:duration ;
+    gdpr:requires comp:requirement_breach_detection, comp:requirement_breach_reporting ;
+    fro:penalty [
+        rdf:type fro:Penalty ;
+        fro:maxFine "10000000"^^xsd:integer ;
+        fro:percentageRevenue "2"^^xsd:integer ;
+        fro:currency "EUR"
+    ] .
+
+# === Compliance Requirements ===
+comp:requirement_insider_trading_monitoring
+    rdf:type comp:ComplianceRequirement ;
+    rdfs:label "Insider Trading Monitoring"@en ;
+    comp:description "Real-time monitoring of employee trading activities"@en ;
+    comp:monitoringFrequency "Real-time" ;
+    comp:automatable "true"^^xsd:boolean ;
+    comp:implementationCost "High"^^xsd:string .
+
+comp:requirement_transaction_reporting
+    rdf:type comp:ComplianceRequirement ;
+    rdfs:label "Transaction Reporting"@en ;
+    comp:description "Report all trades to regulatory authorities within T+1"@en ;
+    comp:deadline "P1D"^^xsd:duration ;
+    comp:automatable "true"^^xsd:boolean .
+
+comp:requirement_stress_testing
+    rdf:type comp:ComplianceRequirement ;
+    rdfs:label "Annual Stress Testing"@en ;
+    comp:description "Conduct comprehensive stress tests on bank capital"@en ;
+    comp:frequency "Annual" ;
+    comp:automatable "false"^^xsd:boolean .
+
+comp:requirement_capital_ratio
+    rdf:type comp:ComplianceRequirement ;
+    rdfs:label "Minimum Capital Ratio"@en ;
+    comp:description "Maintain Common Equity Tier 1 (CET1) ratio ≥ 4.5%"@en ;
+    comp:threshold "4.5"^^xsd:decimal ;
+    comp:monitoringFrequency "Daily" ;
+    comp:automatable "true"^^xsd:boolean .
+
+comp:requirement_consent
+    rdf:type comp:ComplianceRequirement ;
+    rdfs:label "User Consent Management"@en ;
+    comp:description "Obtain explicit consent before processing personal data"@en ;
+    comp:automatable "true"^^xsd:boolean ;
+    gdpr:consentType "Explicit" .
+
+comp:requirement_data_deletion_process
+    rdf:type comp:ComplianceRequirement ;
+    rdfs:label "Data Deletion Process"@en ;
+    comp:description "Process for handling erasure requests within 30 days"@en ;
+    comp:deadline "P30D"^^xsd:duration ;
+    comp:automatable "partial"^^xsd:boolean .
+
+comp:requirement_breach_reporting
+    rdf:type comp:ComplianceRequirement ;
+    rdfs:label "Breach Reporting Process"@en ;
+    comp:description "Report data breaches to authorities within 72 hours"@en ;
+    comp:deadline "PT72H"^^xsd:duration ;
+    comp:critical "true"^^xsd:boolean .
+
+# === Regulatory Bodies ===
+reg:SEC
+    rdf:type fro:RegulatoryBody ;
+    rdfs:label "U.S. Securities and Exchange Commission"@en ;
+    fro:jurisdiction "United States" ;
+    fro:website "https://www.sec.gov" .
+
+reg:ESMA
+    rdf:type fro:RegulatoryBody ;
+    rdfs:label "European Securities and Markets Authority"@en ;
+    fro:jurisdiction "European Union" ;
+    fro:website "https://www.esma.europa.eu" .
+
+reg:CFTC
+    rdf:type fro:RegulatoryBody ;
+    rdfs:label "Commodity Futures Trading Commission"@en ;
+    fro:jurisdiction "United States" ;
+    fro:website "https://www.cftc.gov" .
+
+reg:BCBS
+    rdf:type fro:RegulatoryBody ;
+    rdfs:label "Basel Committee on Banking Supervision"@en ;
+    fro:jurisdiction "International" ;
+    fro:website "https://www.bis.org/bcbs/" .
+
+reg:EDPB
+    rdf:type fro:RegulatoryBody ;
+    rdfs:label "European Data Protection Board"@en ;
+    fro:jurisdiction "European Union" ;
+    fro:website "https://edpb.europa.eu" .
+
+# === Sample Financial Institution ===
+<http://example.org/institution/globalbank>
+    rdf:type fibo:Bank, comp:RegulatedEntity ;
+    rdfs:label "Global Bank Corporation"@en ;
+    fro:jurisdiction "United States", "European Union" ;
+    comp:subjectToRegulation reg:Dodd_Frank_Act, reg:Basel_III, reg:MiFID_II, gdpr:Article_6_Lawful_Basis ;
+    comp:complianceStatus [
+        rdf:type comp:ComplianceStatus ;
+        comp:regulation reg:Dodd_Frank_Act ;
+        comp:status "Compliant" ;
+        comp:lastAudit "2025-10-15"^^xsd:date ;
+        comp:nextAudit "2026-10-15"^^xsd:date
+    ] ;
+    comp:complianceStatus [
+        rdf:type comp:ComplianceStatus ;
+        comp:regulation gdpr:Article_33_Breach_Notification ;
+        comp:status "At Risk" ;
+        comp:issue "Breach detection system upgrade pending" ;
+        comp:remediation "Deployment scheduled for 2025-12-01"
+    ] .
+
+# === Sample Transactions (For Monitoring) ===
+<http://example.org/transaction/txn001>
+    rdf:type fibo:Trade ;
+    fibo:tradeDate "2025-11-18T10:30:00"^^xsd:dateTime ;
+    fibo:security "AAPL" ;
+    fibo:quantity "1000"^^xsd:integer ;
+    fibo:price "195.50"^^xsd:decimal ;
+    fibo:trader <http://example.org/employee/emp123> ;
+    comp:flagged "true"^^xsd:boolean ;
+    comp:flagReason "Employee is on restricted list - pending investigation" ;
+    comp:violatesRule reg:SEC_Rule_10b5 .
+
+<http://example.org/transaction/txn002>
+    rdf:type fibo:Trade ;
+    fibo:tradeDate "2025-11-18T11:15:00"^^xsd:dateTime ;
+    fibo:security "MSFT" ;
+    fibo:quantity "500"^^xsd:integer ;
+    fibo:price "380.25"^^xsd:decimal ;
+    fibo:trader <http://example.org/employee/emp456> ;
+    comp:flagged "false"^^xsd:boolean ;
+    comp:complianceStatus "Clean" .
+
+# === Sample Data Processing Activity (GDPR) ===
+<http://example.org/processing/customer_marketing>
+    rdf:type gdpr:ProcessingActivity ;
+    rdfs:label "Customer Marketing Emails"@en ;
+    gdpr:dataController <http://example.org/institution/globalbank> ;
+    gdpr:purpose "Marketing communications" ;
+    gdpr:legalBasis "Consent" ;
+    gdpr:dataSubjects "Customers" ;
+    gdpr:personalDataCategories "Email, Name, Marketing Preferences" ;
+    gdpr:consentObtained "true"^^xsd:boolean ;
+    gdpr:retentionPeriod "P3Y"^^xsd:duration ;
+    comp:complianceStatus "Compliant" ;
+    comp:lastReviewed "2025-11-01"^^xsd:date .
+
+# === Risk Classifications ===
+comp:Critical rdf:type comp:RiskLevel ; rdfs:label "Critical"@en ; comp:priority "1"^^xsd:integer .
+comp:High rdf:type comp:RiskLevel ; rdfs:label "High"@en ; comp:priority "2"^^xsd:integer .
+comp:Medium rdf:type comp:RiskLevel ; rdfs:label "Medium"@en ; comp:priority "3"^^xsd:integer .
+comp:Low rdf:type comp:RiskLevel ; rdfs:label "Low"@en ; comp:priority "4"^^xsd:integer .

@@ -1,0 +1,32 @@
+# Rust
+target/
+Cargo.lock
+**/*.rs.bk
+*.pdb
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Benchmarks
+target/criterion/
+
+# Build artifacts
+*.so
+*.dylib
+*.dll
+*.a
+
+# Documentation build
+target/doc/
+
+# Tools
+tools/lubm_generator
+

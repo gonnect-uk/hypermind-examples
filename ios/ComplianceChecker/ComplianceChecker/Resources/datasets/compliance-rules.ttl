@@ -1,0 +1,457 @@
+@prefix : <http://zenya.com/compliance/> .
+@prefix fin: <http://zenya.com/domain/finance/> .
+@prefix meta: <http://zenya.com/ontology/mobile-app/> .
+@prefix schema: <http://schema.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# =============================================================================
+# COMPLIANCE CHECKER - Financial Regulatory Dataset
+# Compliant with universal-meta-ontology.ttl
+# Offline SEC/GDPR/MiFID/BSA rule evaluation (2.78 microseconds!)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# REGULATORY FRAMEWORKS (5 Frameworks)
+# -----------------------------------------------------------------------------
+
+:RegulatoryFrameworkSEC a fin:RegulatoryFramework ;
+    rdfs:label "SEC Regulations" ;
+    fin:frameworkId "FRM-SEC" ;
+    fin:jurisdiction "United States" ;
+    fin:authority "Securities and Exchange Commission" ;
+    fin:description "Federal securities laws governing financial markets and investor protection" ;
+    fin:rulesCount 3 .
+
+:RegulatoryFrameworkGDPR a fin:RegulatoryFramework ;
+    rdfs:label "GDPR" ;
+    fin:frameworkId "FRM-GDPR" ;
+    fin:jurisdiction "European Union" ;
+    fin:authority "European Data Protection Board" ;
+    fin:description "General Data Protection Regulation for privacy and data protection" ;
+    fin:rulesCount 2 .
+
+:RegulatoryFrameworkMiFID a fin:RegulatoryFramework ;
+    rdfs:label "MiFID II" ;
+    fin:frameworkId "FRM-MIFID" ;
+    fin:jurisdiction "European Union" ;
+    fin:authority "European Securities and Markets Authority" ;
+    fin:description "Markets in Financial Instruments Directive for investment services" ;
+    fin:rulesCount 2 .
+
+:RegulatoryFrameworkBSA a fin:RegulatoryFramework ;
+    rdfs:label "Bank Secrecy Act" ;
+    fin:frameworkId "FRM-BSA" ;
+    fin:jurisdiction "United States" ;
+    fin:authority "Financial Crimes Enforcement Network" ;
+    fin:description "Anti-money laundering and financial crime prevention" ;
+    fin:rulesCount 2 .
+
+:RegulatoryFrameworkInternal a fin:RegulatoryFramework ;
+    rdfs:label "Internal Policies" ;
+    fin:frameworkId "FRM-INT" ;
+    fin:jurisdiction "Corporate" ;
+    fin:authority "Compliance Department" ;
+    fin:description "Internal risk management and compliance policies" ;
+    fin:rulesCount 3 .
+
+# -----------------------------------------------------------------------------
+# ACCOUNTS (5 Accounts)
+# -----------------------------------------------------------------------------
+
+:Account001 a fin:Account ;
+    rdfs:label "Corporate Treasury" ;
+    fin:accountId "ACC-12345" ;
+    fin:accountType "Corporate" ;
+    fin:accountHolder "Acme Corporation" ;
+    fin:currency "USD" ;
+    fin:balance 2500000.00 ;
+    fin:riskTier "Low" ;
+    fin:kycStatus "Verified" ;
+    fin:lastActivity "2024-11-18"^^xsd:date .
+
+:Account002 a fin:Account ;
+    rdfs:label "Investment Portfolio" ;
+    fin:accountId "ACC-34567" ;
+    fin:accountType "Investment" ;
+    fin:accountHolder "Global Investments Ltd" ;
+    fin:currency "USD" ;
+    fin:balance 8750000.00 ;
+    fin:riskTier "Medium" ;
+    fin:kycStatus "Verified" ;
+    fin:lastActivity "2024-11-16"^^xsd:date .
+
+:Account003 a fin:Account ;
+    rdfs:label "Trading Account" ;
+    fin:accountId "ACC-45678" ;
+    fin:accountType "Trading" ;
+    fin:accountHolder "Alpha Trading LLC" ;
+    fin:currency "EUR" ;
+    fin:balance 1250000.00 ;
+    fin:riskTier "High" ;
+    fin:kycStatus "Under Review" ;
+    fin:lastActivity "2024-11-17"^^xsd:date .
+
+:Account004 a fin:Account ;
+    rdfs:label "Pension Fund" ;
+    fin:accountId "ACC-56789" ;
+    fin:accountType "Institutional" ;
+    fin:accountHolder "State Pension Authority" ;
+    fin:currency "GBP" ;
+    fin:balance 45000000.00 ;
+    fin:riskTier "Low" ;
+    fin:kycStatus "Verified" ;
+    fin:lastActivity "2024-11-18"^^xsd:date .
+
+:Account005 a fin:Account ;
+    rdfs:label "Offshore Holdings" ;
+    fin:accountId "ACC-67890" ;
+    fin:accountType "International" ;
+    fin:accountHolder "Cayman Holdings Inc" ;
+    fin:currency "USD" ;
+    fin:balance 3200000.00 ;
+    fin:riskTier "High" ;
+    fin:kycStatus "Pending" ;
+    fin:lastActivity "2024-11-15"^^xsd:date .
+
+# -----------------------------------------------------------------------------
+# TRANSACTIONS (8 Transactions)
+# -----------------------------------------------------------------------------
+
+:Transaction001 a fin:Transaction ;
+    rdfs:label "Wire Transfer - Acme Corp" ;
+    fin:transactionId "TXN-2024-001" ;
+    fin:amount 15000.00 ;
+    fin:currency "USD" ;
+    fin:transactionType "Wire Transfer" ;
+    fin:timestamp "2024-11-15T10:30:00"^^xsd:dateTime ;
+    fin:sourceAccount :Account001 ;
+    fin:destinationAccount :Account005 ;
+    fin:status "Pending" ;
+    fin:riskScore 0.35 ;
+    fin:purpose "Intercompany transfer" ;
+    fin:approvalRequired false .
+
+:Transaction002 a fin:Transaction ;
+    rdfs:label "International Wire - High Value" ;
+    fin:transactionId "TXN-2024-002" ;
+    fin:amount 125000.00 ;
+    fin:currency "USD" ;
+    fin:transactionType "International Wire" ;
+    fin:timestamp "2024-11-16T14:20:00"^^xsd:dateTime ;
+    fin:sourceAccount :Account002 ;
+    fin:destinationAccount :Account005 ;
+    fin:status "Flagged" ;
+    fin:riskScore 0.82 ;
+    fin:purpose "Investment repatriation" ;
+    fin:approvalRequired true ;
+    fin:hasViolation :Violation001, :Violation002, :Violation003 .
+
+:Transaction003 a fin:Transaction ;
+    rdfs:label "Card Payment - Alpha Trading" ;
+    fin:transactionId "TXN-2024-003" ;
+    fin:amount 3500.00 ;
+    fin:currency "EUR" ;
+    fin:transactionType "Card Payment" ;
+    fin:timestamp "2024-11-17T09:15:00"^^xsd:dateTime ;
+    fin:sourceAccount :Account003 ;
+    fin:destinationAccount :Account001 ;
+    fin:status "Approved" ;
+    fin:riskScore 0.12 ;
+    fin:purpose "Service payment" ;
+    fin:approvalRequired false .
+
+:Transaction004 a fin:Transaction ;
+    rdfs:label "Securities Trade - Pension Fund" ;
+    fin:transactionId "TXN-2024-004" ;
+    fin:amount 250000.00 ;
+    fin:currency "GBP" ;
+    fin:transactionType "Securities Trade" ;
+    fin:timestamp "2024-11-18T11:45:00"^^xsd:dateTime ;
+    fin:sourceAccount :Account004 ;
+    fin:destinationAccount :Account002 ;
+    fin:status "Pending" ;
+    fin:riskScore 0.65 ;
+    fin:purpose "Portfolio rebalancing" ;
+    fin:approvalRequired true ;
+    fin:hasViolation :Violation004 .
+
+:Transaction005 a fin:Transaction ;
+    rdfs:label "Dividend Distribution" ;
+    fin:transactionId "TXN-2024-005" ;
+    fin:amount 45000.00 ;
+    fin:currency "USD" ;
+    fin:transactionType "Dividend" ;
+    fin:timestamp "2024-11-18T15:00:00"^^xsd:dateTime ;
+    fin:sourceAccount :Account001 ;
+    fin:destinationAccount :Account002 ;
+    fin:status "Approved" ;
+    fin:riskScore 0.08 ;
+    fin:purpose "Q3 dividend distribution" ;
+    fin:approvalRequired false .
+
+:Transaction006 a fin:Transaction ;
+    rdfs:label "Cross-Border Transfer" ;
+    fin:transactionId "TXN-2024-006" ;
+    fin:amount 89000.00 ;
+    fin:currency "EUR" ;
+    fin:transactionType "International Wire" ;
+    fin:timestamp "2024-11-19T08:30:00"^^xsd:dateTime ;
+    fin:sourceAccount :Account003 ;
+    fin:destinationAccount :Account005 ;
+    fin:status "Flagged" ;
+    fin:riskScore 0.78 ;
+    fin:purpose "Supplier payment" ;
+    fin:approvalRequired true ;
+    fin:hasViolation :Violation005, :Violation006 .
+
+:Transaction007 a fin:Transaction ;
+    rdfs:label "Bond Purchase" ;
+    fin:transactionId "TXN-2024-007" ;
+    fin:amount 500000.00 ;
+    fin:currency "GBP" ;
+    fin:transactionType "Securities Trade" ;
+    fin:timestamp "2024-11-19T10:15:00"^^xsd:dateTime ;
+    fin:sourceAccount :Account004 ;
+    fin:destinationAccount :Account001 ;
+    fin:status "Pending" ;
+    fin:riskScore 0.42 ;
+    fin:purpose "Government bond acquisition" ;
+    fin:approvalRequired true .
+
+:Transaction008 a fin:Transaction ;
+    rdfs:label "Routine Transfer" ;
+    fin:transactionId "TXN-2024-008" ;
+    fin:amount 5000.00 ;
+    fin:currency "USD" ;
+    fin:transactionType "Wire Transfer" ;
+    fin:timestamp "2024-11-19T14:00:00"^^xsd:dateTime ;
+    fin:sourceAccount :Account002 ;
+    fin:destinationAccount :Account001 ;
+    fin:status "Approved" ;
+    fin:riskScore 0.05 ;
+    fin:purpose "Operating expenses" ;
+    fin:approvalRequired false .
+
+# -----------------------------------------------------------------------------
+# COMPLIANCE RULES (12 Rules)
+# -----------------------------------------------------------------------------
+
+:Rule_SEC_AML a fin:ComplianceRule ;
+    rdfs:label "AML Reporting Threshold" ;
+    fin:ruleId "SEC-AML-001" ;
+    fin:ruleName "Anti-Money Laundering Check" ;
+    fin:ruleDescription "Transactions over $10,000 require CTR filing" ;
+    fin:regulation "SEC Rule 17a-8" ;
+    fin:framework :RegulatoryFrameworkSEC ;
+    fin:threshold 10000.00 ;
+    fin:severity "High" ;
+    fin:sparqlQuery """
+        SELECT ?txn ?amount
+        WHERE {
+            ?txn fin:amount ?amount .
+            FILTER (?amount > 10000)
+        }
+    """ .
+
+:Rule_SEC_SuspiciousActivity a fin:ComplianceRule ;
+    rdfs:label "Suspicious Activity Detection" ;
+    fin:ruleId "SEC-SAR-001" ;
+    fin:ruleName "SAR Filing Requirement" ;
+    fin:ruleDescription "High-risk transactions require SAR evaluation" ;
+    fin:regulation "SEC Rule 17a-8" ;
+    fin:framework :RegulatoryFrameworkSEC ;
+    fin:threshold 0.70 ;
+    fin:severity "Critical" ;
+    fin:sparqlQuery """
+        SELECT ?txn ?riskScore
+        WHERE {
+            ?txn fin:riskScore ?riskScore .
+            FILTER (?riskScore > 0.70)
+        }
+    """ .
+
+:Rule_SEC_LargeTrader a fin:ComplianceRule ;
+    rdfs:label "Large Trader Reporting" ;
+    fin:ruleId "SEC-LT-001" ;
+    fin:ruleName "Large Trader Rule" ;
+    fin:ruleDescription "Securities trades over $100,000 require reporting" ;
+    fin:regulation "SEC Rule 13h-1" ;
+    fin:framework :RegulatoryFrameworkSEC ;
+    fin:threshold 100000.00 ;
+    fin:severity "Medium" .
+
+:Rule_GDPR_Data a fin:ComplianceRule ;
+    rdfs:label "Data Encryption Requirement" ;
+    fin:ruleId "GDPR-001" ;
+    fin:ruleName "Data Privacy Compliance" ;
+    fin:ruleDescription "Personal data in transactions must be encrypted" ;
+    fin:regulation "GDPR Article 32" ;
+    fin:framework :RegulatoryFrameworkGDPR ;
+    fin:severity "Critical" .
+
+:Rule_GDPR_Consent a fin:ComplianceRule ;
+    rdfs:label "Consent Verification" ;
+    fin:ruleId "GDPR-002" ;
+    fin:ruleName "Processing Consent" ;
+    fin:ruleDescription "Cross-border data transfers require explicit consent" ;
+    fin:regulation "GDPR Article 49" ;
+    fin:framework :RegulatoryFrameworkGDPR ;
+    fin:severity "High" .
+
+:Rule_MiFID_Best_Execution a fin:ComplianceRule ;
+    rdfs:label "Best Execution Requirement" ;
+    fin:ruleId "MIFID-001" ;
+    fin:ruleName "Best Execution" ;
+    fin:ruleDescription "Securities trades must achieve best price for client" ;
+    fin:regulation "MiFID II Article 27" ;
+    fin:framework :RegulatoryFrameworkMiFID ;
+    fin:severity "High" .
+
+:Rule_MiFID_Transaction_Reporting a fin:ComplianceRule ;
+    rdfs:label "Transaction Reporting" ;
+    fin:ruleId "MIFID-002" ;
+    fin:ruleName "Trade Reporting" ;
+    fin:ruleDescription "All securities transactions must be reported within T+1" ;
+    fin:regulation "MiFID II Article 26" ;
+    fin:framework :RegulatoryFrameworkMiFID ;
+    fin:severity "High" .
+
+:Rule_BSA_CTR a fin:ComplianceRule ;
+    rdfs:label "Currency Transaction Report" ;
+    fin:ruleId "BSA-CTR-001" ;
+    fin:ruleName "CTR Filing" ;
+    fin:ruleDescription "Cash transactions over $10,000 require CTR" ;
+    fin:regulation "31 CFR 1010.311" ;
+    fin:framework :RegulatoryFrameworkBSA ;
+    fin:threshold 10000.00 ;
+    fin:severity "High" .
+
+:Rule_BSA_International a fin:ComplianceRule ;
+    rdfs:label "International Transfer EDD" ;
+    fin:ruleId "BSA-INT-001" ;
+    fin:ruleName "Enhanced Due Diligence" ;
+    fin:ruleDescription "Cross-border transfers require enhanced due diligence" ;
+    fin:regulation "31 CFR 1010.610" ;
+    fin:framework :RegulatoryFrameworkBSA ;
+    fin:severity "High" .
+
+:Rule_Internal_HighRisk a fin:ComplianceRule ;
+    rdfs:label "High Risk Transaction Flag" ;
+    fin:ruleId "INT-RISK-001" ;
+    fin:ruleName "Risk Threshold Alert" ;
+    fin:ruleDescription "Flag transactions with risk score > 0.7" ;
+    fin:regulation "Internal Policy IP-2024-001" ;
+    fin:framework :RegulatoryFrameworkInternal ;
+    fin:threshold 0.70 ;
+    fin:severity "Medium" .
+
+:Rule_Internal_DualApproval a fin:ComplianceRule ;
+    rdfs:label "Dual Approval Requirement" ;
+    fin:ruleId "INT-APPR-001" ;
+    fin:ruleName "Dual Approval" ;
+    fin:ruleDescription "Transactions over $50,000 require dual approval" ;
+    fin:regulation "Internal Policy IP-2024-002" ;
+    fin:framework :RegulatoryFrameworkInternal ;
+    fin:threshold 50000.00 ;
+    fin:severity "Medium" .
+
+:Rule_Internal_KYC a fin:ComplianceRule ;
+    rdfs:label "KYC Verification" ;
+    fin:ruleId "INT-KYC-001" ;
+    fin:ruleName "KYC Compliance" ;
+    fin:ruleDescription "All parties must have verified KYC status" ;
+    fin:regulation "Internal Policy IP-2024-003" ;
+    fin:framework :RegulatoryFrameworkInternal ;
+    fin:severity "High" .
+
+# -----------------------------------------------------------------------------
+# VIOLATIONS (6 Violations - Detected by SPARQL Reasoning)
+# -----------------------------------------------------------------------------
+
+:Violation001 a fin:ComplianceViolation ;
+    rdfs:label "AML Threshold Exceeded" ;
+    fin:violationId "VIO-001" ;
+    fin:transaction :Transaction002 ;
+    fin:rule :Rule_SEC_AML ;
+    fin:violationDate "2024-11-16T14:25:00"^^xsd:dateTime ;
+    fin:severity "High" ;
+    fin:status "Under Review" ;
+    fin:description "Transaction amount $125,000 exceeds $10,000 threshold" ;
+    fin:recommendedAction "File CTR within 15 days" .
+
+:Violation002 a fin:ComplianceViolation ;
+    rdfs:label "High Risk Score Alert" ;
+    fin:violationId "VIO-002" ;
+    fin:transaction :Transaction002 ;
+    fin:rule :Rule_Internal_HighRisk ;
+    fin:violationDate "2024-11-16T14:25:00"^^xsd:dateTime ;
+    fin:severity "Medium" ;
+    fin:status "Flagged" ;
+    fin:description "Risk score 0.82 exceeds threshold 0.70" ;
+    fin:recommendedAction "Escalate to compliance officer" .
+
+:Violation003 a fin:ComplianceViolation ;
+    rdfs:label "KYC Pending - Destination" ;
+    fin:violationId "VIO-003" ;
+    fin:transaction :Transaction002 ;
+    fin:rule :Rule_Internal_KYC ;
+    fin:violationDate "2024-11-16T14:25:00"^^xsd:dateTime ;
+    fin:severity "High" ;
+    fin:status "Blocked" ;
+    fin:description "Destination account ACC-67890 has pending KYC status" ;
+    fin:recommendedAction "Complete KYC verification before processing" .
+
+:Violation004 a fin:ComplianceViolation ;
+    rdfs:label "MiFID Reporting Required" ;
+    fin:violationId "VIO-004" ;
+    fin:transaction :Transaction004 ;
+    fin:rule :Rule_MiFID_Transaction_Reporting ;
+    fin:violationDate "2024-11-18T11:50:00"^^xsd:dateTime ;
+    fin:severity "High" ;
+    fin:status "Pending" ;
+    fin:description "Securities trade £250,000 requires MiFID II transaction report" ;
+    fin:recommendedAction "Submit trade report to ESMA by T+1" .
+
+:Violation005 a fin:ComplianceViolation ;
+    rdfs:label "High Risk International Transfer" ;
+    fin:violationId "VIO-005" ;
+    fin:transaction :Transaction006 ;
+    fin:rule :Rule_SEC_SuspiciousActivity ;
+    fin:violationDate "2024-11-19T08:35:00"^^xsd:dateTime ;
+    fin:severity "Critical" ;
+    fin:status "Under Review" ;
+    fin:description "Risk score 0.78 with international destination requires SAR evaluation" ;
+    fin:recommendedAction "Complete SAR filing within 30 days" .
+
+:Violation006 a fin:ComplianceViolation ;
+    rdfs:label "Enhanced Due Diligence Required" ;
+    fin:violationId "VIO-006" ;
+    fin:transaction :Transaction006 ;
+    fin:rule :Rule_BSA_International ;
+    fin:violationDate "2024-11-19T08:35:00"^^xsd:dateTime ;
+    fin:severity "High" ;
+    fin:status "Pending" ;
+    fin:description "Cross-border transfer to high-risk jurisdiction" ;
+    fin:recommendedAction "Perform enhanced due diligence review" .
+
+# -----------------------------------------------------------------------------
+# DASHBOARD STATISTICS
+# -----------------------------------------------------------------------------
+
+:ComplianceStats a fin:Statistics ;
+    fin:totalTransactions 8 ;
+    fin:approvedTransactions 3 ;
+    fin:pendingTransactions 3 ;
+    fin:flaggedTransactions 2 ;
+    fin:totalViolations 6 ;
+    fin:criticalViolations 1 ;
+    fin:highViolations 4 ;
+    fin:mediumViolations 1 ;
+    fin:complianceRate 0.625 ;
+    fin:totalVolume 1032500.00 ;
+    fin:averageRiskScore 0.41 ;
+    fin:highRiskTransactions 2 ;
+    fin:rulesActive 12 ;
+    fin:frameworksMonitored 5 .

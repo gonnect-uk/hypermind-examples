@@ -1,0 +1,61 @@
+{
+  "app": {
+    "name": "Compliance Checker",
+    "version": "1.0.0",
+    "bundleId": "com.universalkg.compliancechecker"
+  },
+  "graphdb": {
+    "ttlDataset": "compliance-rules",
+    "prefixMapping": {
+      "fin": "http://zenya.com/domain/finance/",
+      "schema": "http://schema.org/",
+      "rdfs": "http://www.w3.org/2000/01/rdf-schema#"
+    }
+  },
+  "queries": {
+    "transactions": "SELECT ?transaction ?amount ?type ?status ?risk WHERE { ?transaction a fin:Transaction . ?transaction fin:amount ?amount . ?transaction fin:transactionType ?type . ?transaction fin:status ?status . ?transaction fin:riskScore ?risk . } ORDER BY DESC(?risk)",
+    "violations": "SELECT ?violation ?severity ?description ?action WHERE { ?violation a fin:ComplianceViolation . ?violation fin:severity ?severity . ?violation fin:description ?description . ?violation fin:recommendedAction ?action . } ORDER BY ?severity",
+    "rules": "SELECT ?rule ?name ?regulation ?severity WHERE { ?rule a fin:ComplianceRule . ?rule fin:ruleName ?name . ?rule fin:regulation ?regulation . ?rule fin:severity ?severity . }"
+  },
+  "theme": {
+    "primaryColor": "#5856D6",
+    "accentColor": "#FF3B30",
+    "backgroundColor": "#FFFFFF"
+  },
+  "statistics": {
+    "metrics": [
+      {
+        "key": "totalTransactions",
+        "label": "Transactions",
+        "icon": "arrow.left.arrow.right",
+        "color": "#5856D6",
+        "predicate": "type",
+        "objectFilter": "Transaction"
+      },
+      {
+        "key": "totalViolations",
+        "label": "Violations",
+        "icon": "exclamationmark.triangle",
+        "color": "#FF3B30",
+        "predicate": "type",
+        "objectFilter": "Violation"
+      },
+      {
+        "key": "totalRules",
+        "label": "Rules",
+        "icon": "list.bullet.rectangle",
+        "color": "#007AFF",
+        "predicate": "type",
+        "objectFilter": "ComplianceRule"
+      },
+      {
+        "key": "totalFrameworks",
+        "label": "Frameworks",
+        "icon": "building.columns",
+        "color": "#34C759",
+        "predicate": "type",
+        "objectFilter": "Framework"
+      }
+    ]
+  }
+}

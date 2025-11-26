@@ -1,0 +1,67 @@
+import SwiftUI
+
+struct {{ form.title | replace(from=" ", to="") }}FormView: View {
+    @StateObject private var viewModel = FormViewModel()
+    @State private var showSuccessAlert = false
+
+    var body: some View {
+        NavigationView {
+            Form {
+                {% if form.description %}
+                Section {
+                    Text("{{ form.description }}")
+                        .foregroundColor(.secondary)
+                }
+                {% endif %}
+
+                Section {
+                    {% for field in fields %}
+                    // Field: {{ field.id }}
+                    // Type: {{ field.type }}
+                    {% endfor %}
+                }
+
+                Section {
+                    Button("{{ form.submit_label }}") {
+                        Task {
+                            await viewModel.submitForm()
+                            showSuccessAlert = true
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .disabled(!viewModel.isValid)
+                }
+            }
+            .navigationTitle("{{ form.title }}")
+            .alert("Success", isPresented: $showSuccessAlert) {
+                Button("OK") { }
+            } message: {
+                Text("{{ form.success_message }}")
+            }
+        }
+    }
+}
+
+@MainActor
+class FormViewModel: ObservableObject {
+    {% for field in fields %}
+    @Published var {{ field.id }}: String = ""
+    {% endfor %}
+
+    var isValid: Bool {
+        // TODO: Implement validation
+        true
+    }
+
+    func submitForm() async {
+        let query = """
+        {{ form.sparql_query }}
+        """
+
+        do {
+            try await SPARQLClient.shared.executeUpdate(query)
+        } catch {
+            print("Error submitting form: \\(error)")
+        }
+    }
+}

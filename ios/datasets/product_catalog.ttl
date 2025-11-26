@@ -1,0 +1,277 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix prod: <http://example.org/product#> .
+@prefix gr: <http://purl.org/goodrelations/v1#> .
+@prefix schema: <http://schema.org/> .
+@prefix compat: <http://example.org/compatibility#> .
+
+# Product Configuration Dataset - Based on GoodRelations/ProductOntology
+# For ProductConfigurator App - PC Building Use Case
+
+# === CPUs ===
+prod:cpu_intel_i9_14900k
+    rdf:type gr:ProductOrService, schema:Product ;
+    rdfs:label "Intel Core i9-14900K"@en ;
+    schema:name "Intel Core i9-14900K" ;
+    schema:description "24-core (8P+16E) processor, 36MB cache, up to 6.0 GHz"@en ;
+    gr:hasBrand prod:brand_intel ;
+    prod:category prod:cat_cpu ;
+    prod:socket "LGA1700" ;
+    prod:tdp "253W"^^xsd:integer ;
+    prod:cores "24"^^xsd:integer ;
+    prod:threads "32"^^xsd:integer ;
+    prod:baseFrequency "3.2GHz" ;
+    prod:boostFrequency "6.0GHz" ;
+    gr:hasManufacturer prod:manufacturer_intel ;
+    schema:image "https://example.com/images/i9-14900k.jpg" ;
+    schema:price [
+        rdf:type gr:UnitPriceSpecification ;
+        gr:hasCurrency "USD" ;
+        gr:hasCurrencyValue "589.99"^^xsd:decimal
+    ] ;
+    compat:requiresSocket "LGA1700" ;
+    compat:requiresChipset prod:chipset_z790, prod:chipset_b760 ;
+    compat:minPowerSupply "750W"^^xsd:integer .
+
+prod:cpu_amd_ryzen9_7950x
+    rdf:type gr:ProductOrService, schema:Product ;
+    rdfs:label "AMD Ryzen 9 7950X"@en ;
+    schema:name "AMD Ryzen 9 7950X" ;
+    schema:description "16-core, 32-thread processor, 80MB cache, up to 5.7 GHz"@en ;
+    gr:hasBrand prod:brand_amd ;
+    prod:category prod:cat_cpu ;
+    prod:socket "AM5" ;
+    prod:tdp "170W"^^xsd:integer ;
+    prod:cores "16"^^xsd:integer ;
+    prod:threads "32"^^xsd:integer ;
+    prod:baseFrequency "4.5GHz" ;
+    prod:boostFrequency "5.7GHz" ;
+    gr:hasManufacturer prod:manufacturer_amd ;
+    schema:image "https://example.com/images/ryzen9-7950x.jpg" ;
+    schema:price [
+        rdf:type gr:UnitPriceSpecification ;
+        gr:hasCurrency "USD" ;
+        gr:hasCurrencyValue "549.99"^^xsd:decimal
+    ] ;
+    compat:requiresSocket "AM5" ;
+    compat:requiresChipset prod:chipset_x670e, prod:chipset_b650 ;
+    compat:minPowerSupply "650W"^^xsd:integer .
+
+# === Motherboards ===
+prod:mobo_asus_rog_z790
+    rdf:type gr:ProductOrService, schema:Product ;
+    rdfs:label "ASUS ROG Maximus Z790 Hero"@en ;
+    schema:name "ASUS ROG Maximus Z790 Hero" ;
+    schema:description "Intel Z790 chipset, ATX, DDR5, PCIe 5.0"@en ;
+    gr:hasBrand prod:brand_asus ;
+    prod:category prod:cat_motherboard ;
+    prod:socket "LGA1700" ;
+    prod:chipset prod:chipset_z790 ;
+    prod:formFactor "ATX" ;
+    prod:memoryType "DDR5" ;
+    prod:maxMemory "192GB"^^xsd:integer ;
+    prod:memorySlots "4"^^xsd:integer ;
+    prod:pcie5Slots "2"^^xsd:integer ;
+    prod:m2Slots "5"^^xsd:integer ;
+    gr:hasManufacturer prod:manufacturer_asus ;
+    schema:image "https://example.com/images/asus-z790.jpg" ;
+    schema:price [
+        rdf:type gr:UnitPriceSpecification ;
+        gr:hasCurrency "USD" ;
+        gr:hasCurrencyValue "629.99"^^xsd:decimal
+    ] ;
+    compat:compatibleWithCPU prod:cpu_intel_i9_14900k ;
+    compat:compatibleWithRAM prod:ram_corsair_ddr5 ;
+    compat:compatibleWithGPU prod:gpu_rtx_4090, prod:gpu_rtx_4080 ;
+    compat:requiresCase prod:case_atx .
+
+prod:mobo_gigabyte_x670e
+    rdf:type gr:ProductOrService, schema:Product ;
+    rdfs:label "GIGABYTE X670E AORUS Master"@en ;
+    schema:name "GIGABYTE X670E AORUS Master" ;
+    schema:description "AMD X670E chipset, ATX, DDR5, PCIe 5.0"@en ;
+    gr:hasBrand prod:brand_gigabyte ;
+    prod:category prod:cat_motherboard ;
+    prod:socket "AM5" ;
+    prod:chipset prod:chipset_x670e ;
+    prod:formFactor "ATX" ;
+    prod:memoryType "DDR5" ;
+    prod:maxMemory "128GB"^^xsd:integer ;
+    prod:memorySlots "4"^^xsd:integer ;
+    prod:pcie5Slots "2"^^xsd:integer ;
+    prod:m2Slots "4"^^xsd:integer ;
+    gr:hasManufacturer prod:manufacturer_gigabyte ;
+    schema:image "https://example.com/images/gigabyte-x670e.jpg" ;
+    schema:price [
+        rdf:type gr:UnitPriceSpecification ;
+        gr:hasCurrency "USD" ;
+        gr:hasCurrencyValue "499.99"^^xsd:decimal
+    ] ;
+    compat:compatibleWithCPU prod:cpu_amd_ryzen9_7950x ;
+    compat:compatibleWithRAM prod:ram_gskill_ddr5 ;
+    compat:compatibleWithGPU prod:gpu_rtx_4090, prod:gpu_rx_7900xtx ;
+    compat:requiresCase prod:case_atx .
+
+# === RAM Modules ===
+prod:ram_corsair_ddr5
+    rdf:type gr:ProductOrService, schema:Product ;
+    rdfs:label "Corsair Dominator Platinum RGB 32GB DDR5-6000"@en ;
+    schema:name "Corsair Dominator Platinum RGB DDR5-6000" ;
+    schema:description "32GB (2x16GB) DDR5 RAM, 6000MHz, CL36"@en ;
+    gr:hasBrand prod:brand_corsair ;
+    prod:category prod:cat_ram ;
+    prod:memoryType "DDR5" ;
+    prod:capacity "32GB"^^xsd:integer ;
+    prod:speed "6000MHz" ;
+    prod:modules "2"^^xsd:integer ;
+    prod:latency "CL36" ;
+    gr:hasManufacturer prod:manufacturer_corsair ;
+    schema:image "https://example.com/images/corsair-ddr5.jpg" ;
+    schema:price [
+        rdf:type gr:UnitPriceSpecification ;
+        gr:hasCurrency "USD" ;
+        gr:hasCurrencyValue "199.99"^^xsd:decimal
+    ] ;
+    compat:compatibleWithMotherboard prod:mobo_asus_rog_z790, prod:mobo_gigabyte_x670e .
+
+prod:ram_gskill_ddr5
+    rdf:type gr:ProductOrService, schema:Product ;
+    rdfs:label "G.SKILL Trident Z5 64GB DDR5-5600"@en ;
+    schema:name "G.SKILL Trident Z5 DDR5-5600" ;
+    schema:description "64GB (2x32GB) DDR5 RAM, 5600MHz, CL36"@en ;
+    gr:hasBrand prod:brand_gskill ;
+    prod:category prod:cat_ram ;
+    prod:memoryType "DDR5" ;
+    prod:capacity "64GB"^^xsd:integer ;
+    prod:speed "5600MHz" ;
+    prod:modules "2"^^xsd:integer ;
+    prod:latency "CL36" ;
+    gr:hasManufacturer prod:manufacturer_gskill ;
+    schema:image "https://example.com/images/gskill-ddr5.jpg" ;
+    schema:price [
+        rdf:type gr:UnitPriceSpecification ;
+        gr:hasCurrency "USD" ;
+        gr:hasCurrencyValue "279.99"^^xsd:decimal
+    ] ;
+    compat:compatibleWithMotherboard prod:mobo_gigabyte_x670e .
+
+# === Graphics Cards ===
+prod:gpu_rtx_4090
+    rdf:type gr:ProductOrService, schema:Product ;
+    rdfs:label "NVIDIA GeForce RTX 4090"@en ;
+    schema:name "NVIDIA GeForce RTX 4090" ;
+    schema:description "24GB GDDR6X, 16384 CUDA cores, Ray Tracing, DLSS 3"@en ;
+    gr:hasBrand prod:brand_nvidia ;
+    prod:category prod:cat_gpu ;
+    prod:vram "24GB"^^xsd:integer ;
+    prod:vramType "GDDR6X" ;
+    prod:tdp "450W"^^xsd:integer ;
+    prod:length "304mm"^^xsd:integer ;
+    prod:slots "3.5"^^xsd:decimal ;
+    gr:hasManufacturer prod:manufacturer_nvidia ;
+    schema:image "https://example.com/images/rtx4090.jpg" ;
+    schema:price [
+        rdf:type gr:UnitPriceSpecification ;
+        gr:hasCurrency "USD" ;
+        gr:hasCurrencyValue "1599.99"^^xsd:decimal
+    ] ;
+    compat:requiresPCIeSlots "3.5"^^xsd:decimal ;
+    compat:requiresPowerConnector "16-pin PCIe 5.0" ;
+    compat:minPowerSupply "850W"^^xsd:integer .
+
+prod:gpu_rtx_4080
+    rdf:type gr:ProductOrService, schema:Product ;
+    rdfs:label "NVIDIA GeForce RTX 4080"@en ;
+    schema:name "NVIDIA GeForce RTX 4080" ;
+    schema:description "16GB GDDR6X, 9728 CUDA cores, Ray Tracing, DLSS 3"@en ;
+    gr:hasBrand prod:brand_nvidia ;
+    prod:category prod:cat_gpu ;
+    prod:vram "16GB"^^xsd:integer ;
+    prod:vramType "GDDR6X" ;
+    prod:tdp "320W"^^xsd:integer ;
+    prod:length "304mm"^^xsd:integer ;
+    prod:slots "3"^^xsd:integer ;
+    gr:hasManufacturer prod:manufacturer_nvidia ;
+    schema:image "https://example.com/images/rtx4080.jpg" ;
+    schema:price [
+        rdf:type gr:UnitPriceSpecification ;
+        gr:hasCurrency "USD" ;
+        gr:hasCurrencyValue "1199.99"^^xsd:decimal
+    ] ;
+    compat:requiresPCIeSlots "3"^^xsd:integer ;
+    compat:requiresPowerConnector "16-pin PCIe 5.0" ;
+    compat:minPowerSupply "750W"^^xsd:integer .
+
+# === Power Supplies ===
+prod:psu_corsair_1000w
+    rdf:type gr:ProductOrService, schema:Product ;
+    rdfs:label "Corsair HX1000i 1000W 80+ Platinum"@en ;
+    schema:name "Corsair HX1000i" ;
+    schema:description "1000W modular PSU, 80+ Platinum certified"@en ;
+    gr:hasBrand prod:brand_corsair ;
+    prod:category prod:cat_psu ;
+    prod:wattage "1000W"^^xsd:integer ;
+    prod:efficiency "80+ Platinum" ;
+    prod:modular "true"^^xsd:boolean ;
+    gr:hasManufacturer prod:manufacturer_corsair ;
+    schema:image "https://example.com/images/corsair-1000w.jpg" ;
+    schema:price [
+        rdf:type gr:UnitPriceSpecification ;
+        gr:hasCurrency "USD" ;
+        gr:hasCurrencyValue "249.99"^^xsd:decimal
+    ] ;
+    compat:supportsCPU prod:cpu_intel_i9_14900k, prod:cpu_amd_ryzen9_7950x ;
+    compat:supportsGPU prod:gpu_rtx_4090, prod:gpu_rtx_4080 .
+
+# === Categories ===
+prod:cat_cpu rdf:type schema:ProductCategory ; rdfs:label "CPU"@en .
+prod:cat_motherboard rdf:type schema:ProductCategory ; rdfs:label "Motherboard"@en .
+prod:cat_ram rdf:type schema:ProductCategory ; rdfs:label "RAM"@en .
+prod:cat_gpu rdf:type schema:ProductCategory ; rdfs:label "Graphics Card"@en .
+prod:cat_psu rdf:type schema:ProductCategory ; rdfs:label "Power Supply"@en .
+prod:case_atx rdf:type schema:ProductCategory ; rdfs:label "ATX Case"@en .
+
+# === Brands ===
+prod:brand_intel rdf:type gr:Brand ; rdfs:label "Intel"@en .
+prod:brand_amd rdf:type gr:Brand ; rdfs:label "AMD"@en .
+prod:brand_nvidia rdf:type gr:Brand ; rdfs:label "NVIDIA"@en .
+prod:brand_asus rdf:type gr:Brand ; rdfs:label "ASUS"@en .
+prod:brand_gigabyte rdf:type gr:Brand ; rdfs:label "GIGABYTE"@en .
+prod:brand_corsair rdf:type gr:Brand ; rdfs:label "Corsair"@en .
+prod:brand_gskill rdf:type gr:Brand ; rdfs:label "G.SKILL"@en .
+
+# === Manufacturers ===
+prod:manufacturer_intel rdf:type gr:BusinessEntity ; rdfs:label "Intel Corporation"@en .
+prod:manufacturer_amd rdf:type gr:BusinessEntity ; rdfs:label "AMD Inc."@en .
+prod:manufacturer_nvidia rdf:type gr:BusinessEntity ; rdfs:label "NVIDIA Corporation"@en .
+prod:manufacturer_asus rdf:type gr:BusinessEntity ; rdfs:label "ASUSTeK Computer Inc."@en .
+prod:manufacturer_gigabyte rdf:type gr:BusinessEntity ; rdfs:label "GIGABYTE Technology Co., Ltd."@en .
+prod:manufacturer_corsair rdf:type gr:BusinessEntity ; rdfs:label "Corsair Gaming, Inc."@en .
+prod:manufacturer_gskill rdf:type gr:BusinessEntity ; rdfs:label "G.SKILL International Enterprise Co., Ltd."@en .
+
+# === Chipsets ===
+prod:chipset_z790 rdf:type prod:Chipset ; rdfs:label "Intel Z790"@en .
+prod:chipset_b760 rdf:type prod:Chipset ; rdfs:label "Intel B760"@en .
+prod:chipset_x670e rdf:type prod:Chipset ; rdfs:label "AMD X670E"@en .
+prod:chipset_b650 rdf:type prod:Chipset ; rdfs:label "AMD B650"@en .
+
+# === Compatibility Rules (Ontology) ===
+compat:CompatibilityRule rdf:type rdfs:Class ;
+    rdfs:label "Compatibility Rule"@en ;
+    rdfs:comment "Defines product compatibility constraints"@en .
+
+compat:requiresSocket rdf:type rdf:Property ;
+    rdfs:domain gr:ProductOrService ;
+    rdfs:range xsd:string ;
+    rdfs:comment "CPU socket requirement"@en .
+
+compat:compatibleWithCPU rdf:type rdf:Property ;
+    rdfs:domain gr:ProductOrService ;
+    rdfs:range gr:ProductOrService ;
+    rdfs:comment "Compatible CPU products"@en .
+
+compat:minPowerSupply rdf:type rdf:Property ;
+    rdfs:domain gr:ProductOrService ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Minimum power supply wattage required"@en .

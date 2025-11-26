@@ -1,0 +1,88 @@
+// W3C N-Triples Grammar (RDF 1.1)
+// Based on: https://www.w3.org/TR/n-triples/
+//
+// N-Triples is a line-based, plain text format for encoding RDF graphs.
+// Each triple is on a separate line. Only absolute IRIs are allowed.
+// This is the simplest RDF format (14 grammar rules vs Turtle's 172).
+
+WHITESPACE = _{ " " | "\t" }
+COMMENT = _{ "#" ~ (!NEWLINE ~ ANY)* }
+
+// End of line (CR, LF, or CRLF)
+EOL = _{ "\r\n" | "\r" | "\n" }
+
+// Entry point - allow optional leading/trailing EOL and spaces
+NTriplesDoc = { SOI ~ EOL* ~ (Triple ~ EOL+)* ~ Triple? ~ EOL* ~ EOI }
+
+// Main productions
+Triple = { Subject ~ Predicate ~ Object ~ "." }
+
+Subject = { IRIREF | BLANK_NODE_LABEL }
+
+Predicate = { IRIREF }
+
+Object = { IRIREF | BLANK_NODE_LABEL | Literal }
+
+// Literals
+Literal = {
+    STRING_LITERAL_QUOTE ~ ("^^" ~ IRIREF | LANGTAG)?
+}
+
+// Terminals
+IRIREF = @{
+    "<" ~ IRI_CONTENT ~ ">"
+}
+
+IRI_CONTENT = @{
+    (
+        !("<" | ">" | "\"" | "{" | "}" | "|" | "^" | "`" | "\\" | " " | "\t" | "\n" | "\r") ~ ANY
+      | UCHAR
+    )*
+}
+
+STRING_LITERAL_QUOTE = @{
+    "\"" ~ STRING_CONTENT ~ "\""
+}
+
+STRING_CONTENT = @{
+    (
+        !("\"" | "\\" | "\n" | "\r") ~ ANY
+      | ECHAR
+      | UCHAR
+    )*
+}
+
+BLANK_NODE_LABEL = @{
+    "_:" ~ (ASCII_ALPHA | "_" | ASCII_DIGIT) ~ (ASCII_ALPHA | "_" | ASCII_DIGIT | "-" | ".")*
+}
+
+LANGTAG = @{
+    "@" ~ ASCII_ALPHA+ ~ ("-" ~ (ASCII_ALPHA | ASCII_DIGIT)+)*
+}
+
+// Escape sequences
+ECHAR = @{
+    "\\" ~ ("t" | "b" | "n" | "r" | "f" | "\"" | "'" | "\\")
+}
+
+UCHAR = @{
+    "\\u" ~ HEX{4}
+  | "\\U" ~ HEX{8}
+}
+
+HEX = @{
+    ASCII_DIGIT | 'A'..'F' | 'a'..'f'
+}
+
+// Character classes (simplified for pest compatibility)
+PN_CHARS_BASE = @{
+    ASCII_ALPHA
+}
+
+PN_CHARS_U = @{
+    PN_CHARS_BASE | "_" | ":"
+}
+
+PN_CHARS = @{
+    PN_CHARS_U | "-" | ASCII_DIGIT
+}

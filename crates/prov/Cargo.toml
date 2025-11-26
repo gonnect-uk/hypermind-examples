@@ -1,0 +1,17 @@
+[package]
+name = "prov"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "W3C PROV provenance support"
+
+[dependencies]
+rdf-model = { path = "../rdf-model" }
+storage = { path = "../storage" }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+proptest = { workspace = true }

@@ -1,0 +1,368 @@
+@prefix : <http://zenya.com/insurance/> .
+@prefix ins: <http://zenya.com/domain/insurance/> .
+@prefix meta: <http://zenya.com/ontology/mobile-app/> .
+@prefix schema: <http://schema.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+# =============================================================================
+# INSURANCE RISK ANALYZER - Professional Dataset
+# Compliant with universal-meta-ontology.ttl
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# INSURANCE PRODUCTS (3 Products)
+# -----------------------------------------------------------------------------
+
+:StandardLifeProduct a ins:InsuranceProduct ;
+    rdfs:label "Standard Life Insurance" ;
+    ins:productCode "SL-100" ;
+    ins:productType "LifeInsurance" ;
+    ins:minCoverage 100000.00 ;
+    ins:maxCoverage 500000.00 ;
+    ins:basePremiumRate 0.008 ;
+    ins:minAge 18 ;
+    ins:maxAge 65 ;
+    ins:description "Basic life insurance coverage for individuals aged 18-65" .
+
+:PremiumLifeProduct a ins:InsuranceProduct ;
+    rdfs:label "Premium Life Insurance" ;
+    ins:productCode "PL-200" ;
+    ins:productType "LifeInsurance" ;
+    ins:minCoverage 500000.00 ;
+    ins:maxCoverage 2000000.00 ;
+    ins:basePremiumRate 0.006 ;
+    ins:minAge 25 ;
+    ins:maxAge 55 ;
+    ins:description "Premium life coverage with lower rates for qualified individuals" .
+
+:SeniorHealthProduct a ins:InsuranceProduct ;
+    rdfs:label "Senior Health Plan" ;
+    ins:productCode "SH-300" ;
+    ins:productType "HealthInsurance" ;
+    ins:minCoverage 50000.00 ;
+    ins:maxCoverage 250000.00 ;
+    ins:basePremiumRate 0.015 ;
+    ins:minAge 55 ;
+    ins:maxAge 80 ;
+    ins:description "Comprehensive health coverage for seniors aged 55-80" .
+
+# -----------------------------------------------------------------------------
+# CUSTOMERS (5 Customers)
+# -----------------------------------------------------------------------------
+
+:Customer001 a ins:Customer, schema:Person ;
+    rdfs:label "John Smith" ;
+    ins:customerId "CUST-001" ;
+    schema:givenName "John" ;
+    schema:familyName "Smith" ;
+    schema:email "john.smith@email.com" ;
+    schema:telephone "+1-555-0101" ;
+    schema:birthDate "1985-03-15"^^xsd:date ;
+    ins:age 39 ;
+    ins:riskCategory "Standard" ;
+    ins:creditScore 720 ;
+    schema:address [
+        schema:streetAddress "123 Oak Street" ;
+        schema:addressLocality "San Francisco" ;
+        schema:addressRegion "CA" ;
+        schema:postalCode "94102"
+    ] .
+
+:Customer002 a ins:Customer, schema:Person ;
+    rdfs:label "Sarah Johnson" ;
+    ins:customerId "CUST-002" ;
+    schema:givenName "Sarah" ;
+    schema:familyName "Johnson" ;
+    schema:email "sarah.j@email.com" ;
+    schema:telephone "+1-555-0102" ;
+    schema:birthDate "1978-07-22"^^xsd:date ;
+    ins:age 46 ;
+    ins:riskCategory "Preferred" ;
+    ins:creditScore 780 ;
+    schema:address [
+        schema:streetAddress "456 Pine Avenue" ;
+        schema:addressLocality "Los Angeles" ;
+        schema:addressRegion "CA" ;
+        schema:postalCode "90001"
+    ] .
+
+:Customer003 a ins:Customer, schema:Person ;
+    rdfs:label "Michael Chen" ;
+    ins:customerId "CUST-003" ;
+    schema:givenName "Michael" ;
+    schema:familyName "Chen" ;
+    schema:email "m.chen@email.com" ;
+    schema:telephone "+1-555-0103" ;
+    schema:birthDate "1952-11-08"^^xsd:date ;
+    ins:age 72 ;
+    ins:riskCategory "High" ;
+    ins:creditScore 650 ;
+    schema:address [
+        schema:streetAddress "789 Elm Drive" ;
+        schema:addressLocality "Seattle" ;
+        schema:addressRegion "WA" ;
+        schema:postalCode "98101"
+    ] .
+
+:Customer004 a ins:Customer, schema:Person ;
+    rdfs:label "Emily Davis" ;
+    ins:customerId "CUST-004" ;
+    schema:givenName "Emily" ;
+    schema:familyName "Davis" ;
+    schema:email "emily.d@email.com" ;
+    schema:telephone "+1-555-0104" ;
+    schema:birthDate "1990-04-30"^^xsd:date ;
+    ins:age 34 ;
+    ins:riskCategory "Preferred" ;
+    ins:creditScore 800 ;
+    schema:address [
+        schema:streetAddress "321 Maple Lane" ;
+        schema:addressLocality "Austin" ;
+        schema:addressRegion "TX" ;
+        schema:postalCode "73301"
+    ] .
+
+:Customer005 a ins:Customer, schema:Person ;
+    rdfs:label "Robert Wilson" ;
+    ins:customerId "CUST-005" ;
+    schema:givenName "Robert" ;
+    schema:familyName "Wilson" ;
+    schema:email "r.wilson@email.com" ;
+    schema:telephone "+1-555-0105" ;
+    schema:birthDate "1960-09-12"^^xsd:date ;
+    ins:age 64 ;
+    ins:riskCategory "Standard" ;
+    ins:creditScore 700 ;
+    schema:address [
+        schema:streetAddress "654 Cedar Court" ;
+        schema:addressLocality "Denver" ;
+        schema:addressRegion "CO" ;
+        schema:postalCode "80201"
+    ] .
+
+# -----------------------------------------------------------------------------
+# POLICIES (5 Policies with Violations)
+# -----------------------------------------------------------------------------
+
+:Policy001 a ins:Policy ;
+    rdfs:label "Life Policy - John Smith" ;
+    ins:policyNumber "POL-2024-001" ;
+    ins:policyHolder :Customer001 ;
+    ins:product :StandardLifeProduct ;
+    ins:policyType "LifeInsurance" ;
+    ins:premiumAmount 1200.00 ;
+    ins:coverageAmount 150000.00 ;
+    ins:riskLevel "Low" ;
+    ins:riskScore 0.15 ;
+    ins:status "Active" ;
+    ins:startDate "2024-01-01"^^xsd:date ;
+    ins:endDate "2025-01-01"^^xsd:date ;
+    ins:underwritingStatus "Approved" .
+
+:Policy002 a ins:Policy ;
+    rdfs:label "Premium Life - Sarah Johnson" ;
+    ins:policyNumber "POL-2024-002" ;
+    ins:policyHolder :Customer002 ;
+    ins:product :PremiumLifeProduct ;
+    ins:policyType "LifeInsurance" ;
+    ins:premiumAmount 3600.00 ;
+    ins:coverageAmount 600000.00 ;
+    ins:riskLevel "Low" ;
+    ins:riskScore 0.22 ;
+    ins:status "Active" ;
+    ins:startDate "2024-02-15"^^xsd:date ;
+    ins:endDate "2025-02-15"^^xsd:date ;
+    ins:underwritingStatus "Approved" .
+
+:Policy003 a ins:Policy ;
+    rdfs:label "Standard Life - Michael Chen" ;
+    ins:policyNumber "POL-2024-003" ;
+    ins:policyHolder :Customer003 ;
+    ins:product :StandardLifeProduct ;
+    ins:policyType "LifeInsurance" ;
+    ins:premiumAmount 4800.00 ;
+    ins:coverageAmount 400000.00 ;
+    ins:riskLevel "High" ;
+    ins:riskScore 0.85 ;
+    ins:status "Under Review" ;
+    ins:startDate "2024-03-10"^^xsd:date ;
+    ins:endDate "2025-03-10"^^xsd:date ;
+    ins:underwritingStatus "Pending" ;
+    ins:hasViolation :Violation001, :Violation002 .
+
+:Policy004 a ins:Policy ;
+    rdfs:label "Senior Health - Emily Davis" ;
+    ins:policyNumber "POL-2024-004" ;
+    ins:policyHolder :Customer004 ;
+    ins:product :SeniorHealthProduct ;
+    ins:policyType "HealthInsurance" ;
+    ins:premiumAmount 750.00 ;
+    ins:coverageAmount 100000.00 ;
+    ins:riskLevel "Medium" ;
+    ins:riskScore 0.45 ;
+    ins:status "Under Review" ;
+    ins:startDate "2024-04-01"^^xsd:date ;
+    ins:endDate "2025-04-01"^^xsd:date ;
+    ins:underwritingStatus "Pending" ;
+    ins:hasViolation :Violation003 .
+
+:Policy005 a ins:Policy ;
+    rdfs:label "Premium Life - Robert Wilson" ;
+    ins:policyNumber "POL-2024-005" ;
+    ins:policyHolder :Customer005 ;
+    ins:product :PremiumLifeProduct ;
+    ins:policyType "LifeInsurance" ;
+    ins:premiumAmount 7200.00 ;
+    ins:coverageAmount 1200000.00 ;
+    ins:riskLevel "High" ;
+    ins:riskScore 0.72 ;
+    ins:status "Under Review" ;
+    ins:startDate "2024-05-20"^^xsd:date ;
+    ins:endDate "2025-05-20"^^xsd:date ;
+    ins:underwritingStatus "Pending" ;
+    ins:hasViolation :Violation004, :Violation005, :Violation006 .
+
+# -----------------------------------------------------------------------------
+# VIOLATIONS (6 Violations - Detected by SPARQL Reasoning)
+# -----------------------------------------------------------------------------
+
+:Violation001 a ins:PolicyViolation ;
+    rdfs:label "Age Exceeds Product Limit" ;
+    ins:violationType "AgeViolation" ;
+    ins:severity "Critical" ;
+    ins:policy :Policy003 ;
+    ins:customer :Customer003 ;
+    ins:rule :UnderwritingRule001 ;
+    ins:description "Customer age (72) exceeds maximum age (65) for Standard Life product" ;
+    ins:detectedDate "2024-03-10"^^xsd:date ;
+    ins:recommendedAction "Decline or transfer to Senior Health product" .
+
+:Violation002 a ins:PolicyViolation ;
+    rdfs:label "High Risk Score" ;
+    ins:violationType "RiskViolation" ;
+    ins:severity "Warning" ;
+    ins:policy :Policy003 ;
+    ins:customer :Customer003 ;
+    ins:rule :UnderwritingRule002 ;
+    ins:description "Risk score (0.85) exceeds high-risk threshold (0.70)" ;
+    ins:detectedDate "2024-03-10"^^xsd:date ;
+    ins:recommendedAction "Require additional medical documentation" .
+
+:Violation003 a ins:PolicyViolation ;
+    rdfs:label "Age Below Product Minimum" ;
+    ins:violationType "AgeViolation" ;
+    ins:severity "Critical" ;
+    ins:policy :Policy004 ;
+    ins:customer :Customer004 ;
+    ins:rule :UnderwritingRule001 ;
+    ins:description "Customer age (34) below minimum age (55) for Senior Health product" ;
+    ins:detectedDate "2024-04-01"^^xsd:date ;
+    ins:recommendedAction "Transfer to Standard Health product" .
+
+:Violation004 a ins:PolicyViolation ;
+    rdfs:label "Age Exceeds Product Limit" ;
+    ins:violationType "AgeViolation" ;
+    ins:severity "Critical" ;
+    ins:policy :Policy005 ;
+    ins:customer :Customer005 ;
+    ins:rule :UnderwritingRule001 ;
+    ins:description "Customer age (64) exceeds maximum age (55) for Premium Life product" ;
+    ins:detectedDate "2024-05-20"^^xsd:date ;
+    ins:recommendedAction "Transfer to Standard Life or Senior Health" .
+
+:Violation005 a ins:PolicyViolation ;
+    rdfs:label "High Risk Score" ;
+    ins:violationType "RiskViolation" ;
+    ins:severity "Warning" ;
+    ins:policy :Policy005 ;
+    ins:customer :Customer005 ;
+    ins:rule :UnderwritingRule002 ;
+    ins:description "Risk score (0.72) exceeds high-risk threshold (0.70)" ;
+    ins:detectedDate "2024-05-20"^^xsd:date ;
+    ins:recommendedAction "Increase premium or reduce coverage" .
+
+:Violation006 a ins:PolicyViolation ;
+    rdfs:label "Premium to Coverage Ratio High" ;
+    ins:violationType "PremiumViolation" ;
+    ins:severity "Info" ;
+    ins:policy :Policy005 ;
+    ins:customer :Customer005 ;
+    ins:rule :UnderwritingRule003 ;
+    ins:description "Premium rate (0.6%) is above typical range for this product" ;
+    ins:detectedDate "2024-05-20"^^xsd:date ;
+    ins:recommendedAction "Review pricing or offer loyalty discount" .
+
+# -----------------------------------------------------------------------------
+# UNDERWRITING RULES (3 Rules)
+# -----------------------------------------------------------------------------
+
+:UnderwritingRule001 a ins:UnderwritingRule ;
+    rdfs:label "Age Eligibility Rule" ;
+    ins:ruleId "UW-001" ;
+    ins:ruleName "AgeEligibility" ;
+    ins:ruleDescription "Customer age must be within product age range" ;
+    ins:severity "Critical" ;
+    ins:sparqlQuery """
+        SELECT ?policy ?customer ?product ?customerAge ?minAge ?maxAge
+        WHERE {
+            ?policy ins:policyHolder ?customer ;
+                    ins:product ?product .
+            ?customer ins:age ?customerAge .
+            ?product ins:minAge ?minAge ;
+                     ins:maxAge ?maxAge .
+            FILTER (?customerAge < ?minAge || ?customerAge > ?maxAge)
+        }
+    """ .
+
+:UnderwritingRule002 a ins:UnderwritingRule ;
+    rdfs:label "High Risk Threshold Rule" ;
+    ins:ruleId "UW-002" ;
+    ins:ruleName "HighRiskThreshold" ;
+    ins:ruleDescription "Flag policies with risk score above threshold" ;
+    ins:threshold 0.70 ;
+    ins:severity "Warning" ;
+    ins:sparqlQuery """
+        SELECT ?policy ?riskScore
+        WHERE {
+            ?policy ins:riskScore ?riskScore .
+            FILTER (?riskScore > 0.70)
+        }
+    """ .
+
+:UnderwritingRule003 a ins:UnderwritingRule ;
+    rdfs:label "Premium Ratio Rule" ;
+    ins:ruleId "UW-003" ;
+    ins:ruleName "PremiumCoverageRatio" ;
+    ins:ruleDescription "Premium should be reasonable relative to coverage" ;
+    ins:maxRatio 0.01 ;
+    ins:severity "Info" ;
+    ins:sparqlQuery """
+        SELECT ?policy ?premium ?coverage ((?premium / ?coverage) AS ?ratio)
+        WHERE {
+            ?policy ins:premiumAmount ?premium ;
+                    ins:coverageAmount ?coverage .
+            FILTER ((?premium / ?coverage) > 0.01)
+        }
+    """ .
+
+# -----------------------------------------------------------------------------
+# DASHBOARD STATISTICS
+# -----------------------------------------------------------------------------
+
+:DashboardStats a ins:Statistics ;
+    ins:totalPolicies 5 ;
+    ins:activePolicies 2 ;
+    ins:underReviewPolicies 3 ;
+    ins:totalViolations 6 ;
+    ins:criticalViolations 3 ;
+    ins:warningViolations 2 ;
+    ins:infoViolations 1 ;
+    ins:totalCoverage 2450000.00 ;
+    ins:totalPremiums 17550.00 ;
+    ins:averageRiskScore 0.478 ;
+    ins:highRiskPolicies 2 ;
+    ins:lowRiskPolicies 2 ;
+    ins:mediumRiskPolicies 1 .

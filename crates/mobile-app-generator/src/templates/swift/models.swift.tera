@@ -1,0 +1,29 @@
+import Foundation
+
+// Generated models for {{ app.name }}
+
+struct AppTheme {
+    let primaryColor: String = "{{ app.theme.primary_color }}"
+    let secondaryColor: String = "{{ app.theme.secondary_color }}"
+    let accentColor: String = "{{ app.theme.accent_color }}"
+    let backgroundColor: String = "{{ app.theme.background_color }}"
+    let textColor: String = "{{ app.theme.text_color }}"
+}
+
+struct AppSettings {
+    static let sparqlEndpoint = "{{ app.settings.sparql_endpoint }}"
+    static let authenticationRequired = {{ app.settings.authentication_required }}
+    static let offlineModeEnabled = {{ app.settings.offline_mode_enabled }}
+    static let cacheTtlSeconds = {{ app.settings.cache_ttl_seconds }}
+    static let maxResultsPerPage = {{ app.settings.max_results_per_page }}
+}
+
+// Query result models
+struct QueryResult: Codable {
+    let bindings: [[String: Binding]]
+
+    struct Binding: Codable {
+        let type: String
+        let value: String
+    }
+}

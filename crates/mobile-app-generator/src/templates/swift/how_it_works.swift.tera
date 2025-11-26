@@ -1,0 +1,67 @@
+import SwiftUI
+
+struct {{ panel.title | replace(from=" ", to="") }}HowItWorksView: View {
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                Text("{{ panel.title }}")
+                    .font(.largeTitle)
+                    .bold()
+
+                Text("{{ panel.description }}")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+
+                Divider()
+
+                ForEach(Array(panel.steps.enumerated()), id: \.offset) { index, step in
+                    HStack(alignment: .top, spacing: 15) {
+                        ZStack {
+                            Circle()
+                                .fill(Color.blue)
+                                .frame(width: 40, height: 40)
+                            Text("\\(step.step_number)")
+                                .foregroundColor(.white)
+                                .bold()
+                        }
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(step.title)
+                                .font(.headline)
+                            Text(step.description)
+                                .font(.body)
+                                .foregroundColor(.secondary)
+
+                            {% if step.example %}
+                            Text("Example: {{ step.example }}")
+                                .font(.caption)
+                                .padding(8)
+                                .background(Color(.systemGray6))
+                                .cornerRadius(8)
+                            {% endif %}
+                        }
+                    }
+                }
+
+                {% if panel.tips %}
+                Divider()
+
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Tips")
+                        .font(.headline)
+
+                    ForEach(Array(panel.tips.enumerated()), id: \.offset) { index, tip in
+                        HStack(alignment: .top) {
+                            Image(systemName: "lightbulb.fill")
+                                .foregroundColor(.yellow)
+                            Text(tip)
+                                .font(.body)
+                        }
+                    }
+                }
+                {% endif %}
+            }
+            .padding()
+        }
+    }
+}

@@ -1,0 +1,8 @@
+// Placeholder template for generic view
+import SwiftUI
+
+struct GenericView: View {
+    var body: some View {
+        Text("View")
+    }
+}

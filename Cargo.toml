@@ -1,0 +1,93 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/rdf-model",
+    "crates/hypergraph",
+    "crates/storage",
+    "crates/rdf-io",
+    "crates/sparql",
+    "crates/reasoning",
+    "crates/datalog",
+    "crates/wcoj",
+    "crates/shacl",
+    "crates/prov",
+    "crates/mobile-ffi",
+    "crates/mobile-app-generator",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["Gonnect Team"]
+license = "Apache-2.0"
+repository = "https://github.com/zenya/rust-kgdb"
+rust-version = "1.83"
+
+[workspace.dependencies]
+# Core dependencies
+parking_lot = "0.12"
+smallvec = { version = "1.11", features = ["union", "const_generics"] }
+ahash = "0.8"
+rustc-hash = "2.0"
+bumpalo = "3.14"  # Arena allocation
+lru = "0.12"  # LRU cache for query results
+dashmap = "5.5"  # Lock-free concurrent hash map
+crossbeam = "0.8"  # Lock-free data structures
+
+# Async runtime
+tokio = { version = "1.35", features = ["full"] }
+futures = "0.3"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Storage backends
+rocksdb = { version = "0.22", default-features = false, features = ["snappy"] }
+heed = "0.20"  # LMDB wrapper
+
+# Parsing
+pest = "2.7"
+pest_derive = "2.7"
+logos = "0.13"  # Fast lexer
+
+# FFI (0.30.0 - LATEST version, using custom Rust CLI binary)
+# uniffi_bindgen 0.30+ has NO official CLI, so we build our own in mobile-ffi/src/bin/
+uniffi = { version = "0.30.0" }
+uniffi_bindgen = "0.30.0"  # Library only - we create CLI in mobile-ffi crate
+
+# Testing
+proptest = "1.4"
+criterion = "0.5"
+
+# Utilities
+thiserror = "1.0"
+anyhow = "1.0"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+# Templating (for mobile-app-generator)
+tera = "1.19"
+indexmap = "2.0"
+
+# Compression
+lz4 = "1.24"
+zstd = "0.13"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+strip = true
+panic = "abort"
+
+[profile.release-with-debug]
+inherits = "release"
+strip = false
+debug = true
+
+[profile.bench]
+inherits = "release"
+
+[profile.dev]
+opt-level = 1  # Faster dev builds

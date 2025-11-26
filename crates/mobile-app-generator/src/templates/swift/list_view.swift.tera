@@ -1,0 +1,62 @@
+import SwiftUI
+
+struct {{ list.title | replace(from=" ", to="") }}ListView: View {
+    @StateObject private var viewModel = ListViewModel()
+
+    var body: some View {
+        NavigationView {
+            List(viewModel.items) { item in
+                NavigationLink(destination: Text("Detail")) {
+                    VStack(alignment: .leading) {
+                        Text(item.title)
+                            .font(.headline)
+                        {% if list.item_template.subtitle_binding %}
+                        if let subtitle = item.subtitle {
+                            Text(subtitle)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                        {% endif %}
+                    }
+                }
+            }
+            .navigationTitle("{{ list.title }}")
+            .refreshable {
+                await viewModel.loadData()
+            }
+            .task {
+                await viewModel.loadData()
+            }
+        }
+    }
+}
+
+@MainActor
+class ListViewModel: ObservableObject {
+    @Published var items: [ListItem] = []
+
+    func loadData() async {
+        let query = """
+        {{ list.sparql_query }}
+        """
+
+        do {
+            let results = try await SPARQLClient.shared.executeQuery(query)
+            items = results.map { result in
+                ListItem(
+                    id: result["{{ list.item_template.title_binding }}"] ?? "",
+                    title: result["{{ list.item_template.title_binding }}"] ?? "",
+                    subtitle: result["{{ list.item_template.subtitle_binding }}"]
+                )
+            }
+        } catch {
+            print("Error loading data: \\(error)")
+        }
+    }
+}
+
+struct ListItem: Identifiable {
+    let id: String
+    let title: String
+    let subtitle: String?
+}

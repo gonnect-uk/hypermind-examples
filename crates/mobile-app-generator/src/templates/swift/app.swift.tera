@@ -1,0 +1,29 @@
+import SwiftUI
+
+@main
+struct {{ app.name | replace(from=" ", to="") }}App: App {
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+    }
+}
+
+struct ContentView: View {
+    var body: some View {
+        {% if app.navigation.navigation_style == "TabBar" %}
+        TabView {
+            {% for tab in app.navigation.tab_items %}
+            {{ tab.view_id }}View()
+                .tabItem {
+                    Label("{{ tab.label }}", systemImage: "{{ tab.icon }}")
+                }
+            {% endfor %}
+        }
+        {% else %}
+        NavigationView {
+            {{ app.navigation.home_view_id }}View()
+        }
+        {% endif %}
+    }
+}

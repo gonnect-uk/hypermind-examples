@@ -1,0 +1,111 @@
+// Gonnect NanoGraphDB - UniFFI Interface Definition
+// iOS/Android FFI for rust-kgdb
+
+namespace gonnect {
+    // Initialize the library
+    void initialize_logging();
+
+    // Get version info
+    string get_version();
+
+    // Get performance stats
+    PerformanceStats get_performance_stats();
+};
+
+// Graph database instance with app-level graph isolation
+interface GraphDB {
+    // Constructor with app-specific graph URI
+    // Each app gets its own default named graph
+    constructor(string app_graph_uri);
+
+    // Dataset operations - can target specific graphs or use default
+    [Throws=GonnectError]
+    void load_ttl(string ttl_content, string? graph_name);
+
+    [Throws=GonnectError]
+    void load_ttl_file(string file_path, string? graph_name);
+
+    void clear();
+
+    // Query operations - automatically scoped to app's graph
+    // GRAPH clause is auto-injected/validated to app_graph_uri
+    [Throws=GonnectError]
+    sequence<TripleResult> query(string sparql);
+
+    [Throws=GonnectError]
+    sequence<QueryResult> query_select(string sparql);
+
+    // Statistics for app's graph only
+    u64 count_triples();
+    u64 count_entities();
+
+    // Get app's default graph URI
+    string get_graph_uri();
+
+    // List all named graphs in the database (not scoped to app's graph)
+    sequence<string> list_graphs();
+
+    // List ALL known application graphs in the system (for GraphDBAdmin)
+    // Returns all known app graphs PLUS any additional graphs in the database
+    sequence<string> list_all_app_graphs();
+
+    // Triple operations - scoped to app's graph
+    sequence<TripleResult> get_all_triples(u32 limit);
+    sequence<TripleResult> find_by_subject(string subject);
+    sequence<TripleResult> find_by_predicate(string predicate);
+    sequence<TripleResult> find_by_object(string object);
+
+    // Dictionary operations - app's graph only
+    u64 dictionary_size();
+    sequence<string> get_all_subjects(u32 limit);
+    sequence<string> get_all_predicates(u32 limit);
+
+    // Statistics - app's graph only
+    DatabaseStats get_stats();
+
+    // Filtered counting operations - app's graph only
+    u64 count_by_type(string type_filter);
+    u64 count_triples_filtered(string? predicate_filter, string? object_filter);
+};
+
+// Triple result from queries
+dictionary TripleResult {
+    string subject;
+    string predicate;
+    string object;
+    string? graph;
+};
+
+// Query result with variable bindings (for SPARQL SELECT)
+dictionary QueryResult {
+    record<DOMString, string> bindings;
+};
+
+// Database statistics for app's graph
+dictionary DatabaseStats {
+    string graph_uri;
+    u64 total_triples;
+    u64 total_entities;
+    u64 dictionary_size;
+    u64 memory_bytes;
+    string storage_backend;
+};
+
+// Performance statistics
+dictionary PerformanceStats {
+    string lookup_speed;
+    string bulk_insert_speed;
+    string memory_per_triple;
+    string dictionary_intern_speed;
+    string vs_rdfox_lookup;
+    string vs_rdfox_memory;
+};
+
+// Error types
+[Error]
+interface GonnectError {
+    ParseError(string message);
+    QueryError(string message);
+    IOError(string message);
+    InvalidInput(string message);
+};

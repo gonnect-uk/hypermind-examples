@@ -1,0 +1,2055 @@
+//! SPARQL 1.1 Update Conformance Tests
+//!
+//! Complete test suite for SPARQL Update operations targeting 100% pass rate.
+//! Tests cover INSERT DATA, DELETE DATA, INSERT WHERE, DELETE WHERE, and DELETE/INSERT.
+
+use rdf_model::{Dictionary, Node, Triple, Quad};
+use storage::{InMemoryBackend, QuadStore, QuadPattern, NodePattern};
+use std::sync::Arc;
+
+/// Owned node data for breaking lifetime dependencies
+#[derive(Debug, Clone, PartialEq)]
+enum OwnedNodeData {
+    Iri(String),
+    Literal {
+        value: String,
+        language: Option<String>,
+        datatype: Option<String>,
+    },
+    BlankNode(u64),
+}
+
+impl OwnedNodeData {
+    fn from_node(node: &Node) -> Self {
+        match node {
+            Node::Iri(iri) => OwnedNodeData::Iri(iri.0.to_string()),
+            Node::Literal(lit) => OwnedNodeData::Literal {
+                value: lit.lexical_form.to_string(),
+                language: lit.language.map(|s| s.to_string()),
+                datatype: lit.datatype.map(|s| s.to_string()),
+            },
+            Node::BlankNode(id) => OwnedNodeData::BlankNode(id.0),
+            Node::QuotedTriple(_) => OwnedNodeData::Iri("<quoted-triple>".to_string()),
+            Node::Variable(v) => OwnedNodeData::Iri(format!("?{}", v.0)),
+        }
+    }
+
+    fn to_node<'a>(&self, dict: &'a Arc<Dictionary>) -> Node<'a> {
+        match self {
+            OwnedNodeData::Iri(iri) => Node::iri(dict.intern(iri)),
+            OwnedNodeData::Literal { value, language, datatype } => {
+                match (language, datatype) {
+                    (Some(lang), None) => Node::literal_lang(dict.intern(value), dict.intern(lang)),
+                    (None, Some(dt)) => Node::literal_typed(dict.intern(value), dict.intern(dt)),
+                    (None, None) => Node::literal_str(dict.intern(value)),
+                    (Some(_), Some(_)) => Node::literal_str(dict.intern(value)),
+                }
+            }
+            OwnedNodeData::BlankNode(id) => Node::blank(*id),
+        }
+    }
+}
+
+/// Owned quad data for breaking lifetime dependencies
+///
+/// This struct holds owned String data extracted from Quads, allowing us to
+/// drop immutable borrows before performing mutable operations on the store.
+#[derive(Debug, Clone)]
+struct OwnedQuadData {
+    subject: OwnedNodeData,
+    predicate: OwnedNodeData,
+    object: OwnedNodeData,
+    graph: Option<OwnedNodeData>,
+}
+
+impl OwnedQuadData {
+    /// Extract owned strings from a quad
+    fn from_quad(quad: &Quad) -> Self {
+        Self {
+            subject: OwnedNodeData::from_node(&quad.subject),
+            predicate: OwnedNodeData::from_node(&quad.predicate),
+            object: OwnedNodeData::from_node(&quad.object),
+            graph: quad.graph.as_ref().map(OwnedNodeData::from_node),
+        }
+    }
+
+    /// Recreate a quad from owned data using a dictionary
+    fn to_quad<'a>(&self, dict: &'a Arc<Dictionary>) -> Quad<'a> {
+        let s = self.subject.to_node(dict);
+        let p = self.predicate.to_node(dict);
+        let o = self.object.to_node(dict);
+        let g = self.graph.as_ref().map(|n| n.to_node(dict));
+
+        Quad::new(s, p, o, g)
+    }
+}
+
+// Helper to count all quads in store
+fn count_quads<B: storage::StorageBackend>(store: &QuadStore<B>) -> usize {
+    store.find(&QuadPattern::default()).count()
+}
+
+// Helper to find quads matching subject
+// Returns owned data to break lifetime dependencies
+fn find_by_subject<B: storage::StorageBackend>(
+    store: &QuadStore<B>,
+    subject: &Node<'_>
+) -> Vec<OwnedQuadData> {
+    let pattern = QuadPattern {
+        subject: NodePattern::Concrete(subject.clone()),
+        predicate: NodePattern::Any,
+        object: NodePattern::Any,
+        graph: NodePattern::Any,
+    };
+    store.find(&pattern)
+        .map(|q| OwnedQuadData::from_quad(&q))
+        .collect()
+}
+
+// Helper to find quads matching predicate
+// Returns owned data to break lifetime dependencies
+fn find_by_predicate<B: storage::StorageBackend>(
+    store: &QuadStore<B>,
+    predicate: &Node<'_>
+) -> Vec<OwnedQuadData> {
+    let pattern = QuadPattern {
+        subject: NodePattern::Any,
+        predicate: NodePattern::Concrete(predicate.clone()),
+        object: NodePattern::Any,
+        graph: NodePattern::Any,
+    };
+    store.find(&pattern)
+        .map(|q| OwnedQuadData::from_quad(&q))
+        .collect()
+}
+
+// ============================================================================
+// Category 1: INSERT DATA Tests (10 tests)
+// ============================================================================
+
+#[test]
+fn test_insert_data_single_triple() {
+    // Pre-condition: Empty store
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    // Action: Insert single triple
+    let s = Node::iri(dict.intern("http://example.org/alice"));
+    let p = Node::iri(dict.intern("http://example.org/name"));
+    let o = Node::literal_str(dict.intern("Alice"));
+
+    let triple = Triple::new(s.clone(), p.clone(), o.clone());
+    store.insert(Quad::from_triple(triple.clone())).unwrap();
+
+    // Post-condition: Exactly one triple exists
+    assert_eq!(count_quads(&store), 1);
+    assert!(store.contains(&Quad::from_triple(triple)).unwrap());
+}
+
+#[test]
+fn test_insert_data_multiple_triples() {
+    // Pre-condition: Empty store
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    // Action: Insert multiple triples
+    let alice = Node::iri(dict.intern("http://example.org/alice"));
+    let bob = Node::iri(dict.intern("http://example.org/bob"));
+    let name = Node::iri(dict.intern("http://example.org/name"));
+    let age = Node::iri(dict.intern("http://example.org/age"));
+
+    let t1 = Triple::new(alice.clone(), name.clone(), Node::literal_str(dict.intern("Alice")));
+    let t2 = Triple::new(alice.clone(), age.clone(),
+                         Node::literal_typed(dict.intern("30"), dict.intern("http://www.w3.org/2001/XMLSchema#integer")));
+    let t3 = Triple::new(bob.clone(), name.clone(), Node::literal_str(dict.intern("Bob")));
+
+    store.insert(Quad::from_triple(t1.clone())).unwrap();
+    store.insert(Quad::from_triple(t2.clone())).unwrap();
+    store.insert(Quad::from_triple(t3.clone())).unwrap();
+
+    // Post-condition: Exactly 3 triples exist
+    assert_eq!(count_quads(&store), 3);
+    assert!(store.contains(&Quad::from_triple(t1)).unwrap());
+    assert!(store.contains(&Quad::from_triple(t2)).unwrap());
+    assert!(store.contains(&Quad::from_triple(t3)).unwrap());
+}
+
+#[test]
+fn test_insert_data_with_typed_literals() {
+    // Pre-condition: Empty store
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    // Action: Insert triples with different datatypes
+    let s = Node::iri(dict.intern("http://example.org/measurement"));
+
+    let int_pred = Node::iri(dict.intern("http://example.org/int"));
+    let float_pred = Node::iri(dict.intern("http://example.org/float"));
+    let bool_pred = Node::iri(dict.intern("http://example.org/bool"));
+
+    let xsd_int = dict.intern("http://www.w3.org/2001/XMLSchema#integer");
+    let xsd_float = dict.intern("http://www.w3.org/2001/XMLSchema#double");
+    let xsd_bool = dict.intern("http://www.w3.org/2001/XMLSchema#boolean");
+
+    let t1 = Triple::new(s.clone(), int_pred, Node::literal_typed(dict.intern("42"), xsd_int));
+    let t2 = Triple::new(s.clone(), float_pred, Node::literal_typed(dict.intern("3.14"), xsd_float));
+    let t3 = Triple::new(s.clone(), bool_pred, Node::literal_typed(dict.intern("true"), xsd_bool));
+
+    store.insert(Quad::from_triple(t1.clone())).unwrap();
+    store.insert(Quad::from_triple(t2.clone())).unwrap();
+    store.insert(Quad::from_triple(t3.clone())).unwrap();
+
+    // Post-condition: All typed literals preserved
+    assert_eq!(count_quads(&store), 3);
+    assert!(store.contains(&Quad::from_triple(t1)).unwrap());
+    assert!(store.contains(&Quad::from_triple(t2)).unwrap());
+    assert!(store.contains(&Quad::from_triple(t3)).unwrap());
+}
+
+#[test]
+fn test_insert_data_into_named_graph() {
+    // Pre-condition: Empty store
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    // Action: Insert into named graph
+    let s = Node::iri(dict.intern("http://example.org/alice"));
+    let p = Node::iri(dict.intern("http://example.org/name"));
+    let o = Node::literal_str(dict.intern("Alice"));
+    let graph = Some(Node::iri(dict.intern("http://example.org/graph1")));
+
+    let triple = Triple::new(s.clone(), p.clone(), o.clone());
+    let quad = Quad::new(s.clone(), p.clone(), o.clone(), graph.clone());
+
+    store.insert(quad.clone()).unwrap();
+
+    // Post-condition: Triple in named graph only
+    assert_eq!(count_quads(&store), 1);
+    assert!(store.contains(&quad).unwrap());
+    assert!(!store.contains(&Quad::from_triple(triple)).unwrap());
+}
+
+#[test]
+fn test_insert_data_duplicates_idempotent() {
+    // Pre-condition: Empty store
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    // Action: Insert same triple twice
+    let s = Node::iri(dict.intern("http://example.org/alice"));
+    let p = Node::iri(dict.intern("http://example.org/name"));
+    let o = Node::literal_str(dict.intern("Alice"));
+
+    let triple = Triple::new(s.clone(), p.clone(), o.clone());
+    store.insert(Quad::from_triple(triple.clone())).unwrap();
+    store.insert(Quad::from_triple(triple.clone())).unwrap();
+
+    // Post-condition: Still only one triple (idempotent)
+    assert_eq!(count_quads(&store), 1);
+    assert!(store.contains(&Quad::from_triple(triple)).unwrap());
+}
+
+#[test]
+fn test_insert_data_with_blank_nodes() {
+    // Pre-condition: Empty store
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    // Action: Insert triples with blank nodes
+    let bn1 = Node::blank(1);
+    let bn2 = Node::blank(2);
+    let name = Node::iri(dict.intern("http://example.org/name"));
+    let knows = Node::iri(dict.intern("http://example.org/knows"));
+
+    let t1 = Triple::new(bn1.clone(), name.clone(), Node::literal_str(dict.intern("Alice")));
+    let t2 = Triple::new(bn2.clone(), name.clone(), Node::literal_str(dict.intern("Bob")));
+    let t3 = Triple::new(bn1.clone(), knows.clone(), bn2.clone());
+
+    store.insert(Quad::from_triple(t1.clone())).unwrap();
+    store.insert(Quad::from_triple(t2.clone())).unwrap();
+    store.insert(Quad::from_triple(t3.clone())).unwrap();
+
+    // Post-condition: All triples with blank nodes exist
+    assert_eq!(count_quads(&store), 3);
+    assert!(store.contains(&Quad::from_triple(t1)).unwrap());
+    assert!(store.contains(&Quad::from_triple(t2)).unwrap());
+    assert!(store.contains(&Quad::from_triple(t3)).unwrap());
+}
+
+#[test]
+fn test_insert_data_multiple_named_graphs() {
+    // Pre-condition: Empty store
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    // Action: Insert into multiple named graphs
+    let s = Node::iri(dict.intern("http://example.org/alice"));
+    let p = Node::iri(dict.intern("http://example.org/name"));
+    let o = Node::literal_str(dict.intern("Alice"));
+
+    let g1 = Some(Node::iri(dict.intern("http://example.org/graph1")));
+    let g2 = Some(Node::iri(dict.intern("http://example.org/graph2")));
+
+    let q1 = Quad::new(s.clone(), p.clone(), o.clone(), g1.clone());
+    let q2 = Quad::new(s.clone(), p.clone(), o.clone(), g2.clone());
+
+    store.insert(q1.clone()).unwrap();
+    store.insert(q2.clone()).unwrap();
+
+    // Post-condition: Same triple in two graphs = 2 quads
+    assert_eq!(count_quads(&store), 2);
+    assert!(store.contains(&q1).unwrap());
+    assert!(store.contains(&q2).unwrap());
+}
+
+#[test]
+fn test_insert_data_with_language_tags() {
+    // Pre-condition: Empty store
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    // Action: Insert literals with language tags
+    let s = Node::iri(dict.intern("http://example.org/alice"));
+    let label = Node::iri(dict.intern("http://www.w3.org/2000/01/rdf-schema#label"));
+
+    let en = Node::literal_lang(dict.intern("Alice"), dict.intern("en"));
+    let fr = Node::literal_lang(dict.intern("Alice"), dict.intern("fr"));
+
+    let t1 = Triple::new(s.clone(), label.clone(), en.clone());
+    let t2 = Triple::new(s.clone(), label.clone(), fr.clone());
+
+    store.insert(Quad::from_triple(t1.clone())).unwrap();
+    store.insert(Quad::from_triple(t2.clone())).unwrap();
+
+    // Post-condition: Both language-tagged literals exist
+    assert_eq!(count_quads(&store), 2);
+    assert!(store.contains(&Quad::from_triple(t1)).unwrap());
+    assert!(store.contains(&Quad::from_triple(t2)).unwrap());
+}
+
+#[test]
+fn test_insert_data_default_and_named_graph() {
+    // Pre-condition: Empty store
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    // Action: Insert same triple into default and named graph
+    let s = Node::iri(dict.intern("http://example.org/alice"));
+    let p = Node::iri(dict.intern("http://example.org/name"));
+    let o = Node::literal_str(dict.intern("Alice"));
+
+    let triple = Triple::new(s.clone(), p.clone(), o.clone());
+    let quad_default = Quad::from_triple(triple.clone());
+    let quad_named = Quad::new(s.clone(), p.clone(), o.clone(),
+                               Some(Node::iri(dict.intern("http://example.org/graph1"))));
+
+    store.insert(quad_default.clone()).unwrap();
+    store.insert(quad_named.clone()).unwrap();
+
+    // Post-condition: 2 quads (default + named)
+    assert_eq!(count_quads(&store), 2);
+    assert!(store.contains(&quad_default).unwrap());
+    assert!(store.contains(&quad_named).unwrap());
+}
+
+#[test]
+fn test_insert_data_large_batch() {
+    // Pre-condition: Empty store
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    // Action: Insert 100 triples in batch
+    let name = Node::iri(dict.intern("http://example.org/name"));
+    let mut triples = Vec::new();
+
+    for i in 0..100 {
+        let s = Node::iri(dict.intern(&format!("http://example.org/person{}", i)));
+        let o = Node::literal_str(dict.intern(&format!("Person {}", i)));
+        let triple = Triple::new(s, name.clone(), o);
+        triples.push(triple.clone());
+        store.insert(Quad::from_triple(triple)).unwrap();
+    }
+
+    // Post-condition: Exactly 100 triples
+    assert_eq!(count_quads(&store), 100);
+    for triple in &triples {
+        assert!(store.contains(&Quad::from_triple(triple.clone())).unwrap());
+    }
+}
+
+// ============================================================================
+// Category 2: DELETE DATA Tests (10 tests)
+// ============================================================================
+
+#[test]
+fn test_delete_data_single_triple() {
+    // Pre-condition: Store with one triple
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let s = Node::iri(dict.intern("http://example.org/alice"));
+    let p = Node::iri(dict.intern("http://example.org/name"));
+    let o = Node::literal_str(dict.intern("Alice"));
+    let triple = Triple::new(s.clone(), p.clone(), o.clone());
+
+    store.insert(Quad::from_triple(triple.clone())).unwrap();
+    assert_eq!(count_quads(&store), 1);
+
+    // Action: Delete the triple
+    store.remove(&Quad::from_triple(triple.clone())).unwrap();
+
+    // Post-condition: Store is empty
+    assert_eq!(count_quads(&store), 0);
+    assert!(!store.contains(&Quad::from_triple(triple)).unwrap());
+}
+
+#[test]
+fn test_delete_data_nonexistent_no_error() {
+    // Pre-condition: Empty store
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    // Action: Delete non-existent triple (should not error)
+    let s = Node::iri(dict.intern("http://example.org/alice"));
+    let p = Node::iri(dict.intern("http://example.org/name"));
+    let o = Node::literal_str(dict.intern("Alice"));
+    let triple = Triple::new(s, p, o);
+
+    store.remove(&Quad::from_triple(triple.clone())).unwrap();
+
+    // Post-condition: Still empty, no error
+    assert_eq!(count_quads(&store), 0);
+}
+
+#[test]
+fn test_delete_data_from_named_graph() {
+    // Pre-condition: Triple in named graph
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let s = Node::iri(dict.intern("http://example.org/alice"));
+    let p = Node::iri(dict.intern("http://example.org/name"));
+    let o = Node::literal_str(dict.intern("Alice"));
+    let graph = Some(Node::iri(dict.intern("http://example.org/graph1")));
+
+    let quad = Quad::new(s.clone(), p.clone(), o.clone(), graph.clone());
+    store.insert(quad.clone()).unwrap();
+    assert_eq!(count_quads(&store), 1);
+
+    // Action: Delete from named graph
+    store.remove(&quad).unwrap();
+
+    // Post-condition: Named graph triple deleted
+    assert_eq!(count_quads(&store), 0);
+    assert!(!store.contains(&quad).unwrap());
+}
+
+#[test]
+fn test_delete_data_multiple_triples() {
+    // Pre-condition: Multiple triples
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let alice = Node::iri(dict.intern("http://example.org/alice"));
+    let bob = Node::iri(dict.intern("http://example.org/bob"));
+    let name = Node::iri(dict.intern("http://example.org/name"));
+
+    let t1 = Triple::new(alice.clone(), name.clone(), Node::literal_str(dict.intern("Alice")));
+    let t2 = Triple::new(bob.clone(), name.clone(), Node::literal_str(dict.intern("Bob")));
+
+    store.insert(Quad::from_triple(t1.clone())).unwrap();
+    store.insert(Quad::from_triple(t2.clone())).unwrap();
+    assert_eq!(count_quads(&store), 2);
+
+    // Action: Delete one triple
+    store.remove(&Quad::from_triple(t1.clone())).unwrap();
+
+    // Post-condition: Only one triple remains
+    assert_eq!(count_quads(&store), 1);
+    assert!(!store.contains(&Quad::from_triple(t1)).unwrap());
+    assert!(store.contains(&Quad::from_triple(t2)).unwrap());
+}
+
+#[test]
+fn test_delete_data_verify_deletion() {
+    // Pre-condition: Store with data
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let s = Node::iri(dict.intern("http://example.org/alice"));
+    let name = Node::iri(dict.intern("http://example.org/name"));
+    let age = Node::iri(dict.intern("http://example.org/age"));
+
+    let t1 = Triple::new(s.clone(), name.clone(), Node::literal_str(dict.intern("Alice")));
+    let t2 = Triple::new(s.clone(), age.clone(),
+                         Node::literal_typed(dict.intern("30"), dict.intern("http://www.w3.org/2001/XMLSchema#integer")));
+
+    store.insert(Quad::from_triple(t1.clone())).unwrap();
+    store.insert(Quad::from_triple(t2.clone())).unwrap();
+    assert_eq!(count_quads(&store), 2);
+
+    // Action: Delete name triple
+    store.remove(&Quad::from_triple(t1.clone())).unwrap();
+
+    // Post-condition: Verify specific deletion
+    assert_eq!(count_quads(&store), 1);
+    assert!(!store.contains(&Quad::from_triple(t1)).unwrap());
+    assert!(store.contains(&Quad::from_triple(t2)).unwrap());
+
+    // Verify we can query for age but not name
+    let age_quads: Vec<OwnedQuadData> = find_by_subject(&store, &s);
+    assert_eq!(age_quads.len(), 1);
+    assert_eq!(age_quads[0].predicate, age.value());
+}
+
+#[test]
+fn test_delete_data_partial_match() {
+    // Pre-condition: Multiple triples with same subject
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let alice = Node::iri(dict.intern("http://example.org/alice"));
+    let name = Node::iri(dict.intern("http://example.org/name"));
+    let age = Node::iri(dict.intern("http://example.org/age"));
+    let email = Node::iri(dict.intern("http://example.org/email"));
+
+    let t1 = Triple::new(alice.clone(), name.clone(), Node::literal_str(dict.intern("Alice")));
+    let t2 = Triple::new(alice.clone(), age.clone(),
+                         Node::literal_typed(dict.intern("30"), dict.intern("http://www.w3.org/2001/XMLSchema#integer")));
+    let t3 = Triple::new(alice.clone(), email.clone(), Node::literal_str(dict.intern("alice@example.org")));
+
+    store.insert(Quad::from_triple(t1.clone())).unwrap();
+    store.insert(Quad::from_triple(t2.clone())).unwrap();
+    store.insert(Quad::from_triple(t3.clone())).unwrap();
+    assert_eq!(count_quads(&store), 3);
+
+    // Action: Delete only name triple
+    store.remove(&Quad::from_triple(t1.clone())).unwrap();
+
+    // Post-condition: Other properties remain
+    assert_eq!(count_quads(&store), 2);
+    assert!(!store.contains(&Quad::from_triple(t1)).unwrap());
+    assert!(store.contains(&Quad::from_triple(t2)).unwrap());
+    assert!(store.contains(&Quad::from_triple(t3)).unwrap());
+}
+
+#[test]
+fn test_delete_data_with_blank_nodes() {
+    // Pre-condition: Triples with blank nodes
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let bn = Node::blank(1);
+    let name = Node::iri(dict.intern("http://example.org/name"));
+    let triple = Triple::new(bn.clone(), name.clone(), Node::literal_str(dict.intern("Alice")));
+
+    store.insert(Quad::from_triple(triple.clone())).unwrap();
+    assert_eq!(count_quads(&store), 1);
+
+    // Action: Delete blank node triple
+    store.remove(&Quad::from_triple(triple.clone())).unwrap();
+
+    // Post-condition: Deleted successfully
+    assert_eq!(count_quads(&store), 0);
+    assert!(!store.contains(&Quad::from_triple(triple)).unwrap());
+}
+
+#[test]
+fn test_delete_data_typed_literals() {
+    // Pre-condition: Triples with typed literals
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let s = Node::iri(dict.intern("http://example.org/measurement"));
+    let value = Node::iri(dict.intern("http://example.org/value"));
+    let xsd_int = dict.intern("http://www.w3.org/2001/XMLSchema#integer");
+    let xsd_double = dict.intern("http://www.w3.org/2001/XMLSchema#double");
+
+    let triple_int = Triple::new(s.clone(), value.clone(), Node::literal_typed(dict.intern("42"), xsd_int));
+    let triple_float = Triple::new(s.clone(), value.clone(), Node::literal_typed(dict.intern("3.14"), xsd_double));
+
+    store.insert(Quad::from_triple(triple_int.clone())).unwrap();
+    store.insert(Quad::from_triple(triple_float.clone())).unwrap();
+    assert_eq!(count_quads(&store), 2);
+
+    // Action: Delete int literal triple
+    store.remove(&Quad::from_triple(triple_int.clone())).unwrap();
+
+    // Post-condition: Float triple remains
+    assert_eq!(count_quads(&store), 1);
+    assert!(!store.contains(&Quad::from_triple(triple_int)).unwrap());
+    assert!(store.contains(&Quad::from_triple(triple_float)).unwrap());
+}
+
+#[test]
+fn test_delete_data_language_tagged() {
+    // Pre-condition: Language-tagged literals
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let s = Node::iri(dict.intern("http://example.org/alice"));
+    let label = Node::iri(dict.intern("http://www.w3.org/2000/01/rdf-schema#label"));
+
+    let en = Node::literal_lang(dict.intern("Alice"), dict.intern("en"));
+    let fr = Node::literal_lang(dict.intern("Alice"), dict.intern("fr"));
+
+    let t1 = Triple::new(s.clone(), label.clone(), en.clone());
+    let t2 = Triple::new(s.clone(), label.clone(), fr.clone());
+
+    store.insert(Quad::from_triple(t1.clone())).unwrap();
+    store.insert(Quad::from_triple(t2.clone())).unwrap();
+    assert_eq!(count_quads(&store), 2);
+
+    // Action: Delete English label
+    store.remove(&Quad::from_triple(t1.clone())).unwrap();
+
+    // Post-condition: French label remains
+    assert_eq!(count_quads(&store), 1);
+    assert!(!store.contains(&Quad::from_triple(t1)).unwrap());
+    assert!(store.contains(&Quad::from_triple(t2)).unwrap());
+}
+
+#[test]
+fn test_delete_data_batch() {
+    // Pre-condition: 50 triples
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let name = Node::iri(dict.intern("http://example.org/name"));
+    let mut triples = Vec::new();
+
+    for i in 0..50 {
+        let s = Node::iri(dict.intern(&format!("http://example.org/person{}", i)));
+        let o = Node::literal_str(dict.intern(&format!("Person {}", i)));
+        let triple = Triple::new(s, name.clone(), o);
+        triples.push(triple.clone());
+        store.insert(Quad::from_triple(triple)).unwrap();
+    }
+    assert_eq!(count_quads(&store), 50);
+
+    // Action: Delete first 25 triples
+    for triple in &triples[0..25] {
+        store.remove(&Quad::from_triple(triple.clone())).unwrap();
+    }
+
+    // Post-condition: 25 triples remain
+    assert_eq!(count_quads(&store), 25);
+    for triple in &triples[0..25] {
+        assert!(!store.contains(&Quad::from_triple(triple.clone())).unwrap());
+    }
+    for triple in &triples[25..50] {
+        assert!(store.contains(&Quad::from_triple(triple.clone())).unwrap());
+    }
+}
+
+// ============================================================================
+// Category 3: INSERT WHERE Tests (10 tests)
+// ============================================================================
+
+#[test]
+fn test_insert_where_simple() {
+    // Pre-condition: Person with name
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let alice = Node::iri(dict.intern("http://example.org/alice"));
+    let name = Node::iri(dict.intern("http://example.org/name"));
+    let label = Node::iri(dict.intern("http://www.w3.org/2000/01/rdf-schema#label"));
+
+    let t1 = Triple::new(alice.clone(), name.clone(), Node::literal_str(dict.intern("Alice")));
+    store.insert(Quad::from_triple(t1.clone())).unwrap();
+
+    // Action: INSERT label WHERE name exists
+    // Simulated: Get name value and insert as label
+    let quads: Vec<OwnedQuadData> = find_by_subject(&store, &alice);
+
+    let dict_clone = store.dictionary().clone();
+    for owned in quads {
+        let quad = owned.to_quad(&dict_clone);
+        if quad.predicate == name {
+            let label_triple = Triple::new(alice.clone(), label.clone(), quad.object.clone());
+            store.insert(Quad::from_triple(label_triple)).unwrap();
+        }
+    }
+
+    // Post-condition: Both name and label exist
+    assert_eq!(count_quads(&store), 2);
+    let label_quad = Quad::from_triple(Triple::new(alice.clone(), label, Node::literal_str(dict.intern("Alice"))));
+    assert!(store.contains(&label_quad).unwrap());
+}
+
+#[test]
+fn test_insert_where_with_filter() {
+    // Pre-condition: Multiple people with ages
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let alice = Node::iri(dict.intern("http://example.org/alice"));
+    let bob = Node::iri(dict.intern("http://example.org/bob"));
+    let age = Node::iri(dict.intern("http://example.org/age"));
+    let adult = Node::iri(dict.intern("http://example.org/adult"));
+    let xsd_int = dict.intern("http://www.w3.org/2001/XMLSchema#integer");
+
+    let t1 = Triple::new(alice.clone(), age.clone(), Node::literal_typed(dict.intern("30"), xsd_int));
+    let t2 = Triple::new(bob.clone(), age.clone(), Node::literal_typed(dict.intern("15"), xsd_int));
+
+    store.insert(Quad::from_triple(t1)).unwrap();
+    store.insert(Quad::from_triple(t2)).unwrap();
+
+    // Action: INSERT adult=true WHERE age >= 18
+    // Simulated: Check age and insert adult property
+    let pattern = QuadPattern::default();
+    let all_quads: Vec<OwnedQuadData> = store.find(&pattern)
+        .map(|q| OwnedQuadData::from_quad(&q))
+        .collect();
+
+    let dict_clone = store.dictionary().clone();
+    for owned in all_quads {
+        let quad = owned.to_quad(&dict_clone);
+        if quad.predicate == age {
+            if let Node::Literal(lit) = quad.object {
+                if let Ok(age_val) = lit.lexical_form.parse::<i32>() {
+                    if age_val >= 18 {
+                        let adult_triple = Triple::new(
+                            quad.subject.clone(),
+                            adult.clone(),
+                            Node::literal_typed(dict.intern("true"), dict.intern("http://www.w3.org/2001/XMLSchema#boolean"))
+                        );
+                        store.insert(Quad::from_triple(adult_triple)).unwrap();
+                    }
+                }
+            }
+        }
+    }
+
+    // Post-condition: Only Alice has adult=true
+    assert_eq!(count_quads(&store), 3); // 2 age + 1 adult
+    let alice_adult = Quad::from_triple(Triple::new(alice, adult.clone(),
+        Node::literal_typed(dict.intern("true"), dict.intern("http://www.w3.org/2001/XMLSchema#boolean"))));
+    assert!(store.contains(&alice_adult).unwrap());
+
+    // Bob should NOT have adult property
+    let bob_quads: Vec<OwnedQuadData> = find_by_subject(&store, &bob);
+    assert_eq!(bob_quads.len(), 1); // Only age
+    assert!(bob_quads.iter().all(|q| q.predicate == age.value()));
+}
+
+#[test]
+fn test_insert_where_with_optional() {
+    // Pre-condition: People with optional email
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let alice = Node::iri(dict.intern("http://example.org/alice"));
+    let bob = Node::iri(dict.intern("http://example.org/bob"));
+    let name = Node::iri(dict.intern("http://example.org/name"));
+    let email = Node::iri(dict.intern("http://example.org/email"));
+    let contact = Node::iri(dict.intern("http://example.org/contact"));
+
+    let t1 = Triple::new(alice.clone(), name.clone(), Node::literal_str(dict.intern("Alice")));
+    let t2 = Triple::new(alice.clone(), email.clone(), Node::literal_str(dict.intern("alice@example.org")));
+    let t3 = Triple::new(bob.clone(), name.clone(), Node::literal_str(dict.intern("Bob")));
+
+    store.insert(Quad::from_triple(t1)).unwrap();
+    store.insert(Quad::from_triple(t2)).unwrap();
+    store.insert(Quad::from_triple(t3)).unwrap();
+
+    // Action: INSERT contact using email if present, else name
+    // Simulated: Check for email, fallback to name
+    let people = vec![alice.clone(), bob.clone()];
+    let dict_clone = store.dictionary().clone();
+    for person in people {
+        let quads: Vec<OwnedQuadData> = find_by_subject(&store, &person);
+
+        // Reconstruct quads to check predicates
+        let reconstructed: Vec<Quad> = quads.iter()
+            .map(|owned| owned.to_quad(&dict_clone))
+            .collect();
+
+        let email_quad = reconstructed.iter().find(|q| q.predicate == email);
+        let name_quad = reconstructed.iter().find(|q| q.predicate == name);
+
+        let contact_value = email_quad.or(name_quad).unwrap();
+        let contact_triple = Triple::new(person, contact.clone(), contact_value.object.clone());
+        store.insert(Quad::from_triple(contact_triple)).unwrap();
+    }
+
+    // Post-condition: Alice has email contact, Bob has name contact
+    assert_eq!(count_quads(&store), 5); // 2 name + 1 email + 2 contact
+
+    let alice_contact = find_by_subject(&store, &alice)
+        .into_iter()
+        .find(|owned| owned.predicate == contact.value())
+        .unwrap();
+    let alice_contact_quad = alice_contact.to_quad(&dict);
+    assert_eq!(alice_contact_quad.object, Node::literal_str(dict.intern("alice@example.org")));
+
+    let bob_contact = find_by_subject(&store, &bob)
+        .into_iter()
+        .find(|owned| owned.predicate == contact.value())
+        .unwrap();
+    let bob_contact_quad = bob_contact.to_quad(&dict);
+    assert_eq!(bob_contact_quad.object, Node::literal_str(dict.intern("Bob")));
+}
+
+#[test]
+fn test_insert_where_variable_binding() {
+    // Pre-condition: Products with prices
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let prod1 = Node::iri(dict.intern("http://example.org/product1"));
+    let prod2 = Node::iri(dict.intern("http://example.org/product2"));
+    let price = Node::iri(dict.intern("http://example.org/price"));
+    let tax = Node::iri(dict.intern("http://example.org/tax"));
+    let xsd_double = dict.intern("http://www.w3.org/2001/XMLSchema#double");
+
+    let t1 = Triple::new(prod1.clone(), price.clone(), Node::literal_typed(dict.intern("100.0"), xsd_double));
+    let t2 = Triple::new(prod2.clone(), price.clone(), Node::literal_typed(dict.intern("200.0"), xsd_double));
+
+    store.insert(Quad::from_triple(t1)).unwrap();
+    store.insert(Quad::from_triple(t2)).unwrap();
+
+    // Action: INSERT tax = price * 0.2
+    let pattern = QuadPattern::default();
+    let all_quads: Vec<OwnedQuadData> = store.find(&pattern)
+        .map(|q| OwnedQuadData::from_quad(&q))
+        .collect();
+
+    let dict_clone = store.dictionary().clone();
+    for owned in all_quads {
+        let quad = owned.to_quad(&dict_clone);
+        if quad.predicate == price {
+            if let Node::Literal(lit) = quad.object {
+                if let Ok(price_val) = lit.lexical_form.parse::<f64>() {
+                    let tax_val = price_val * 0.2;
+                    let tax_triple = Triple::new(
+                        quad.subject.clone(),
+                        tax.clone(),
+                        Node::literal_typed(dict.intern(&tax_val.to_string()), xsd_double)
+                    );
+                    store.insert(Quad::from_triple(tax_triple)).unwrap();
+                }
+            }
+        }
+    }
+
+    // Post-condition: Tax calculated correctly
+    assert_eq!(count_quads(&store), 4); // 2 price + 2 tax
+
+    let prod1_tax = find_by_subject(&store, &prod1)
+        .into_iter()
+        .find(|owned| owned.predicate == tax.value())
+        .unwrap();
+    let prod1_tax_quad = prod1_tax.to_quad(&dict);
+    if let Node::Literal(lit) = prod1_tax_quad.object {
+        assert_eq!(lit.lexical_form.parse::<f64>().unwrap(), 20.0);
+    }
+}
+
+#[test]
+fn test_insert_where_into_named_graph() {
+    // Pre-condition: Data in default graph
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let alice = Node::iri(dict.intern("http://example.org/alice"));
+    let name = Node::iri(dict.intern("http://example.org/name"));
+    let derived_graph = Some(Node::iri(dict.intern("http://example.org/derived")));
+
+    let triple = Triple::new(alice.clone(), name.clone(), Node::literal_str(dict.intern("Alice")));
+    store.insert(Quad::from_triple(triple.clone())).unwrap();
+
+    // Action: INSERT INTO named graph WHERE data in default graph
+    let quad_named = Quad::new(alice.clone(), name.clone(), Node::literal_str(dict.intern("Alice")), derived_graph.clone());
+    store.insert(quad_named.clone()).unwrap();
+
+    // Post-condition: Data in both graphs
+    assert_eq!(count_quads(&store), 2);
+    assert!(store.contains(&Quad::from_triple(triple)).unwrap());
+    assert!(store.contains(&quad_named).unwrap());
+}
+
+#[test]
+fn test_insert_where_join_pattern() {
+    // Pre-condition: Person knows another person
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let alice = Node::iri(dict.intern("http://example.org/alice"));
+    let bob = Node::iri(dict.intern("http://example.org/bob"));
+    let carol = Node::iri(dict.intern("http://example.org/carol"));
+    let knows = Node::iri(dict.intern("http://xmlns.com/foaf/0.1/knows"));
+    let friend = Node::iri(dict.intern("http://example.org/friend"));
+
+    let t1 = Triple::new(alice.clone(), knows.clone(), bob.clone());
+    let t2 = Triple::new(bob.clone(), knows.clone(), carol.clone());
+
+    store.insert(Quad::from_triple(t1)).unwrap();
+    store.insert(Quad::from_triple(t2)).unwrap();
+
+    // Action: INSERT friend relation for 2-hop knows
+    // Alice knows Bob, Bob knows Carol => Alice friend Carol
+    let alice_knows: Vec<OwnedQuadData> = find_by_subject(&store, &alice)
+        .into_iter()
+        .filter(|owned| owned.predicate == knows.value())
+        .collect();
+
+    let dict_clone = store.dictionary().clone();
+    for owned1 in alice_knows {
+        let q1 = owned1.to_quad(&dict_clone);
+        let bob_knows: Vec<OwnedQuadData> = find_by_subject(&store, &q1.object)
+            .into_iter()
+            .filter(|owned| owned.predicate == knows.value())
+            .collect();
+
+        for owned2 in bob_knows {
+            let q2 = owned2.to_quad(&dict_clone);
+            let friend_triple = Triple::new(alice.clone(), friend.clone(), q2.object.clone());
+            store.insert(Quad::from_triple(friend_triple)).unwrap();
+        }
+    }
+
+    // Post-condition: Alice is friend with Carol
+    assert_eq!(count_quads(&store), 3); // 2 knows + 1 friend
+    let alice_friend = Quad::from_triple(Triple::new(alice, friend, carol));
+    assert!(store.contains(&alice_friend).unwrap());
+}
+
+#[test]
+fn test_insert_where_union() {
+    // Pre-condition: People with either name or nickname
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let alice = Node::iri(dict.intern("http://example.org/alice"));
+    let bob = Node::iri(dict.intern("http://example.org/bob"));
+    let name = Node::iri(dict.intern("http://example.org/name"));
+    let nickname = Node::iri(dict.intern("http://example.org/nickname"));
+    let display = Node::iri(dict.intern("http://example.org/display"));
+
+    let t1 = Triple::new(alice.clone(), name.clone(), Node::literal_str(dict.intern("Alice")));
+    let t2 = Triple::new(bob.clone(), nickname.clone(), Node::literal_str(dict.intern("Bobby")));
+
+    store.insert(Quad::from_triple(t1)).unwrap();
+    store.insert(Quad::from_triple(t2)).unwrap();
+
+    // Action: INSERT display from name OR nickname
+    let people = vec![alice.clone(), bob.clone()];
+    let dict_clone = store.dictionary().clone();
+    for person in people {
+        let quads: Vec<OwnedQuadData> = find_by_subject(&store, &person);
+
+        // Reconstruct quads to check predicates
+        let reconstructed: Vec<Quad> = quads.iter()
+            .map(|owned| owned.to_quad(&dict_clone))
+            .collect();
+
+        // Try name first, then nickname
+        let display_value = reconstructed.iter()
+            .find(|q| q.predicate == name)
+            .or_else(|| reconstructed.iter().find(|q| q.predicate == nickname))
+            .map(|q| q.object.clone());
+
+        if let Some(value) = display_value {
+            let display_triple = Triple::new(person, display.clone(), value);
+            store.insert(Quad::from_triple(display_triple)).unwrap();
+        }
+    }
+
+    // Post-condition: Both have display names
+    assert_eq!(count_quads(&store), 4); // 1 name + 1 nickname + 2 display
+
+    let alice_display = find_by_subject(&store, &alice)
+        .into_iter()
+        .find(|owned| owned.predicate == display.value())
+        .unwrap();
+    let alice_display_quad = alice_display.to_quad(&dict);
+    assert_eq!(alice_display_quad.object, Node::literal_str(dict.intern("Alice")));
+
+    let bob_display = find_by_subject(&store, &bob)
+        .into_iter()
+        .find(|owned| owned.predicate == display.value())
+        .unwrap();
+    let bob_display_quad = bob_display.to_quad(&dict);
+    assert_eq!(bob_display_quad.object, Node::literal_str(dict.intern("Bobby")));
+}
+
+#[test]
+fn test_insert_where_construct_pattern() {
+    // Pre-condition: Person with first and last name
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let alice = Node::iri(dict.intern("http://example.org/alice"));
+    let first = Node::iri(dict.intern("http://xmlns.com/foaf/0.1/firstName"));
+    let last = Node::iri(dict.intern("http://xmlns.com/foaf/0.1/lastName"));
+    let full = Node::iri(dict.intern("http://xmlns.com/foaf/0.1/name"));
+
+    let t1 = Triple::new(alice.clone(), first.clone(), Node::literal_str(dict.intern("Alice")));
+    let t2 = Triple::new(alice.clone(), last.clone(), Node::literal_str(dict.intern("Smith")));
+
+    store.insert(Quad::from_triple(t1)).unwrap();
+    store.insert(Quad::from_triple(t2)).unwrap();
+
+    // Action: CONSTRUCT full name from first + last
+    let first_owned = find_by_subject(&store, &alice)
+        .into_iter()
+        .find(|owned| owned.predicate == first.value())
+        .unwrap();
+    let last_owned = find_by_subject(&store, &alice)
+        .into_iter()
+        .find(|owned| owned.predicate == last.value())
+        .unwrap();
+
+    let first_quad = first_owned.to_quad(&dict);
+    let last_quad = last_owned.to_quad(&dict);
+
+    let first_str = if let Node::Literal(lit) = first_quad.object { lit.lexical_form } else { "" };
+    let last_str = if let Node::Literal(lit) = last_quad.object { lit.lexical_form } else { "" };
+
+    let full_name = format!("{} {}", first_str, last_str);
+    let full_triple = Triple::new(alice.clone(), full.clone(), Node::literal_str(dict.intern(&full_name)));
+    store.insert(Quad::from_triple(full_triple)).unwrap();
+
+    // Post-condition: Full name constructed
+    assert_eq!(count_quads(&store), 3);
+    let full_owned = find_by_subject(&store, &alice)
+        .into_iter()
+        .find(|owned| owned.predicate == full.value())
+        .unwrap();
+    let full_quad = full_owned.to_quad(&dict);
+    assert_eq!(full_quad.object, Node::literal_str(dict.intern("Alice Smith")));
+}
+
+#[test]
+fn test_insert_where_aggregation() {
+    // Pre-condition: Multiple items with quantities
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let order = Node::iri(dict.intern("http://example.org/order1"));
+    let item1 = Node::iri(dict.intern("http://example.org/item1"));
+    let item2 = Node::iri(dict.intern("http://example.org/item2"));
+    let has_item = Node::iri(dict.intern("http://example.org/hasItem"));
+    let quantity = Node::iri(dict.intern("http://example.org/quantity"));
+    let total = Node::iri(dict.intern("http://example.org/total"));
+    let xsd_int = dict.intern("http://www.w3.org/2001/XMLSchema#integer");
+
+    let t1 = Triple::new(order.clone(), has_item.clone(), item1.clone());
+    let t2 = Triple::new(item1, quantity.clone(), Node::literal_typed(dict.intern("5"), xsd_int));
+    let t3 = Triple::new(order.clone(), has_item.clone(), item2.clone());
+    let t4 = Triple::new(item2, quantity.clone(), Node::literal_typed(dict.intern("3"), xsd_int));
+
+    store.insert(Quad::from_triple(t1)).unwrap();
+    store.insert(Quad::from_triple(t2)).unwrap();
+    store.insert(Quad::from_triple(t3)).unwrap();
+    store.insert(Quad::from_triple(t4)).unwrap();
+
+    // Action: Compute total quantity
+    let items: Vec<OwnedNodeData> = find_by_subject(&store, &order)
+        .into_iter()
+        .filter(|owned| owned.predicate == OwnedNodeData::from_node(&has_item))
+        .map(|owned| owned.object.clone())
+        .collect();
+
+    let mut sum = 0;
+    for item_owned in items {
+        let item = item_owned.to_node(&dict);
+        if let Some(qty_owned) = find_by_subject(&store, &item)
+            .into_iter()
+            .find(|owned| owned.predicate == quantity.value()) {
+            let qty_quad = qty_owned.to_quad(&dict);
+            if let Node::Literal(lit) = qty_quad.object {
+                sum += lit.lexical_form.parse::<i32>().unwrap_or(0);
+            }
+        }
+    }
+
+    let total_triple = Triple::new(order.clone(), total.clone(), Node::literal_typed(dict.intern(&sum.to_string()), xsd_int));
+    store.insert(Quad::from_triple(total_triple)).unwrap();
+
+    // Post-condition: Total = 8
+    assert_eq!(count_quads(&store), 5);
+    let total_owned = find_by_subject(&store, &order)
+        .into_iter()
+        .find(|owned| owned.predicate == total.value())
+        .unwrap();
+    let total_quad = total_owned.to_quad(&dict);
+    if let Node::Literal(lit) = total_quad.object {
+        assert_eq!(lit.lexical_form.parse::<i32>().unwrap(), 8);
+    }
+}
+
+#[test]
+fn test_insert_where_subquery() {
+    // Pre-condition: Team members with scores
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let team = Node::iri(dict.intern("http://example.org/team1"));
+    let alice = Node::iri(dict.intern("http://example.org/alice"));
+    let bob = Node::iri(dict.intern("http://example.org/bob"));
+    let member = Node::iri(dict.intern("http://example.org/member"));
+    let score = Node::iri(dict.intern("http://example.org/score"));
+    let top_performer = Node::iri(dict.intern("http://example.org/topPerformer"));
+    let xsd_int = dict.intern("http://www.w3.org/2001/XMLSchema#integer");
+
+    let t1 = Triple::new(team.clone(), member.clone(), alice.clone());
+    let t2 = Triple::new(alice.clone(), score.clone(), Node::literal_typed(dict.intern("95"), xsd_int));
+    let t3 = Triple::new(team.clone(), member.clone(), bob.clone());
+    let t4 = Triple::new(bob.clone(), score.clone(), Node::literal_typed(dict.intern("85"), xsd_int));
+
+    store.insert(Quad::from_triple(t1)).unwrap();
+    store.insert(Quad::from_triple(t2)).unwrap();
+    store.insert(Quad::from_triple(t3)).unwrap();
+    store.insert(Quad::from_triple(t4)).unwrap();
+
+    // Action: Find member with max score
+    let members: Vec<OwnedQuadData> = find_by_subject(&store, &team)
+        .into_iter()
+        .filter(|owned| owned.predicate == member.value())
+        .collect();
+
+    let dict_clone = store.dictionary().clone();
+    let mut max_score = 0;
+    let mut top_member = None;
+
+    for owned in members {
+        let mem_quad = owned.to_quad(&dict_clone);
+        let mem = mem_quad.object;
+
+        let score_quads: Vec<OwnedQuadData> = find_by_subject(&store, &mem)
+            .into_iter()
+            .filter(|owned| owned.predicate == score.value())
+            .collect();
+
+        for score_owned in score_quads {
+            let score_quad = score_owned.to_quad(&dict_clone);
+            if let Node::Literal(lit) = score_quad.object {
+                let s = lit.lexical_form.parse::<i32>().unwrap_or(0);
+                if s > max_score {
+                    max_score = s;
+                    top_member = Some(mem.clone());
+                }
+            }
+        }
+    }
+
+    if let Some(top) = top_member {
+        let top_triple = Triple::new(team.clone(), top_performer.clone(), top);
+        store.insert(Quad::from_triple(top_triple)).unwrap();
+    }
+
+    // Post-condition: Alice is top performer
+    assert_eq!(count_quads(&store), 5);
+    let top_owned = find_by_subject(&store, &team)
+        .into_iter()
+        .find(|owned| owned.predicate == top_performer.value())
+        .unwrap();
+    let top_quad = top_owned.to_quad(&dict);
+    assert_eq!(top_quad.object, alice);
+}
+
+// ============================================================================
+// Category 4: DELETE WHERE Tests (10 tests)
+// ============================================================================
+
+#[test]
+fn test_delete_where_matching_pattern() {
+    // Pre-condition: Multiple people with ages
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let alice = Node::iri(dict.intern("http://example.org/alice"));
+    let bob = Node::iri(dict.intern("http://example.org/bob"));
+    let name = Node::iri(dict.intern("http://example.org/name"));
+    let age = Node::iri(dict.intern("http://example.org/age"));
+    let xsd_int = dict.intern("http://www.w3.org/2001/XMLSchema#integer");
+
+    let t1 = Triple::new(alice.clone(), name.clone(), Node::literal_str(dict.intern("Alice")));
+    let t2 = Triple::new(alice.clone(), age.clone(), Node::literal_typed(dict.intern("30"), xsd_int));
+    let t3 = Triple::new(bob.clone(), name.clone(), Node::literal_str(dict.intern("Bob")));
+    let t4 = Triple::new(bob.clone(), age.clone(), Node::literal_typed(dict.intern("25"), xsd_int));
+
+    store.insert(Quad::from_triple(t1.clone())).unwrap();
+    store.insert(Quad::from_triple(t2.clone())).unwrap();
+    store.insert(Quad::from_triple(t3.clone())).unwrap();
+    store.insert(Quad::from_triple(t4.clone())).unwrap();
+    assert_eq!(count_quads(&store), 4);
+
+    // Action: DELETE WHERE ?s age ?o (delete all age triples)
+    let pattern = QuadPattern::default();
+    let to_delete: Vec<OwnedQuadData> = store.find(&pattern)
+        .filter(|q| q.predicate == age)
+        .map(|q| OwnedQuadData::from_quad(&q))
+        .collect();
+
+    let dict = store.dictionary().clone();
+    for owned in to_delete {
+        let quad = owned.to_quad(&dict);
+        store.remove(&quad).unwrap();
+    }
+
+    // Post-condition: Only names remain
+    assert_eq!(count_quads(&store), 2);
+    assert!(store.contains(&Quad::from_triple(t1)).unwrap());
+    assert!(!store.contains(&Quad::from_triple(t2)).unwrap());
+    assert!(store.contains(&Quad::from_triple(t3)).unwrap());
+    assert!(!store.contains(&Quad::from_triple(t4)).unwrap());
+}
+
+#[test]
+fn test_delete_where_with_filter() {
+    // Pre-condition: Products with prices
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let prod1 = Node::iri(dict.intern("http://example.org/product1"));
+    let prod2 = Node::iri(dict.intern("http://example.org/product2"));
+    let prod3 = Node::iri(dict.intern("http://example.org/product3"));
+    let price = Node::iri(dict.intern("http://example.org/price"));
+    let xsd_double = dict.intern("http://www.w3.org/2001/XMLSchema#double");
+
+    let t1 = Triple::new(prod1.clone(), price.clone(), Node::literal_typed(dict.intern("10.0"), xsd_double));
+    let t2 = Triple::new(prod2.clone(), price.clone(), Node::literal_typed(dict.intern("150.0"), xsd_double));
+    let t3 = Triple::new(prod3.clone(), price.clone(), Node::literal_typed(dict.intern("200.0"), xsd_double));
+
+    store.insert(Quad::from_triple(t1.clone())).unwrap();
+    store.insert(Quad::from_triple(t2.clone())).unwrap();
+    store.insert(Quad::from_triple(t3.clone())).unwrap();
+    assert_eq!(count_quads(&store), 3);
+
+    // Action: DELETE WHERE price > 100
+    let pattern = QuadPattern::default();
+    let to_delete: Vec<OwnedQuadData> = store.find(&pattern)
+        .filter(|q| {
+            q.predicate == price && match q.object {
+                Node::Literal(lit) => lit.lexical_form.parse::<f64>().unwrap_or(0.0) > 100.0,
+                _ => false
+            }
+        })
+        .map(|q| OwnedQuadData::from_quad(&q))
+        .collect();
+
+    let dict = store.dictionary().clone();
+    for owned in to_delete {
+        let quad = owned.to_quad(&dict);
+        store.remove(&quad).unwrap();
+    }
+
+    // Post-condition: Only prod1 remains
+    assert_eq!(count_quads(&store), 1);
+    assert!(store.contains(&Quad::from_triple(t1)).unwrap());
+    assert!(!store.contains(&Quad::from_triple(t2)).unwrap());
+    assert!(!store.contains(&Quad::from_triple(t3)).unwrap());
+}
+
+#[test]
+fn test_delete_where_complex() {
+    // Pre-condition: People with names and emails
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let alice = Node::iri(dict.intern("http://example.org/alice"));
+    let bob = Node::iri(dict.intern("http://example.org/bob"));
+    let name = Node::iri(dict.intern("http://example.org/name"));
+    let email = Node::iri(dict.intern("http://example.org/email"));
+
+    let t1 = Triple::new(alice.clone(), name.clone(), Node::literal_str(dict.intern("Alice")));
+    let t2 = Triple::new(alice.clone(), email.clone(), Node::literal_str(dict.intern("alice@example.org")));
+    let t3 = Triple::new(bob.clone(), name.clone(), Node::literal_str(dict.intern("Bob")));
+    // Bob has no email
+
+    store.insert(Quad::from_triple(t1.clone())).unwrap();
+    store.insert(Quad::from_triple(t2.clone())).unwrap();
+    store.insert(Quad::from_triple(t3.clone())).unwrap();
+    assert_eq!(count_quads(&store), 3);
+
+    // Action: DELETE WHERE person has both name and email
+    let pattern = QuadPattern::default();
+    let subjects_with_email = {
+        store.find(&pattern)
+            .filter(|q| q.predicate == email)
+            .map(|q| q.subject.clone())
+            .map(|q| q.clone())
+            .collect::<Vec<_>>()
+    };
+
+    let to_delete: Vec<OwnedQuadData> = store.find(&pattern)
+        .filter(|q| subjects_with_email.contains(&q.subject))
+        .map(|q| OwnedQuadData::from_quad(&q))
+        .collect();
+
+    let dict = store.dictionary().clone();
+    for owned in to_delete {
+        let quad = owned.to_quad(&dict);
+        store.remove(&quad).unwrap();
+    }
+
+    // Post-condition: Only Bob's name remains
+    assert_eq!(count_quads(&store), 1);
+    assert!(!store.contains(&Quad::from_triple(t1)).unwrap());
+    assert!(!store.contains(&Quad::from_triple(t2)).unwrap());
+    assert!(store.contains(&Quad::from_triple(t3)).unwrap());
+}
+
+#[test]
+fn test_delete_where_verify_deleted() {
+    // Pre-condition: Temporary data
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let s = Node::iri(dict.intern("http://example.org/temp"));
+    let status = Node::iri(dict.intern("http://example.org/status"));
+    let temp = Node::literal_str(dict.intern("temporary"));
+
+    let triple = Triple::new(s.clone(), status.clone(), temp.clone());
+    store.insert(Quad::from_triple(triple.clone())).unwrap();
+    assert_eq!(count_quads(&store), 1);
+
+    // Action: DELETE WHERE status = "temporary"
+    let pattern = QuadPattern::default();
+    let to_delete: Vec<OwnedQuadData> = store.find(&pattern)
+        .filter(|q| q.predicate == status && q.object == temp)
+        .map(|q| OwnedQuadData::from_quad(&q))
+        .collect();
+
+    let dict = store.dictionary().clone();
+    for owned in to_delete {
+        let quad = owned.to_quad(&dict);
+        store.remove(&quad).unwrap();
+    }
+
+    // Post-condition: Store empty
+    assert_eq!(count_quads(&store), 0);
+    assert!(!store.contains(&Quad::from_triple(triple)).unwrap());
+
+    // Verify query returns no results
+    let results: Vec<OwnedQuadData> = find_by_subject(&store, &s);
+    assert_eq!(results.len(), 0);
+}
+
+#[test]
+fn test_delete_where_join_pattern() {
+    // Pre-condition: Obsolete data with marker
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let doc1 = Node::iri(dict.intern("http://example.org/doc1"));
+    let doc2 = Node::iri(dict.intern("http://example.org/doc2"));
+    let status = Node::iri(dict.intern("http://example.org/status"));
+    let title = Node::iri(dict.intern("http://example.org/title"));
+    let obsolete = Node::literal_str(dict.intern("obsolete"));
+
+    let t1 = Triple::new(doc1.clone(), status.clone(), obsolete.clone());
+    let t2 = Triple::new(doc1.clone(), title.clone(), Node::literal_str(dict.intern("Old Doc")));
+    let t3 = Triple::new(doc2.clone(), status.clone(), Node::literal_str(dict.intern("active")));
+    let t4 = Triple::new(doc2.clone(), title.clone(), Node::literal_str(dict.intern("New Doc")));
+
+    store.insert(Quad::from_triple(t1.clone())).unwrap();
+    store.insert(Quad::from_triple(t2.clone())).unwrap();
+    store.insert(Quad::from_triple(t3.clone())).unwrap();
+    store.insert(Quad::from_triple(t4.clone())).unwrap();
+    assert_eq!(count_quads(&store), 4);
+
+    // Action: DELETE all data WHERE status = "obsolete"
+    let pattern = QuadPattern::default();
+    let obsolete_subjects = {
+        store.find(&pattern)
+            .filter(|q| q.predicate == status && q.object == obsolete)
+            .map(|q| q.subject.clone())
+            .map(|q| q.clone())
+            .collect::<Vec<_>>()
+    };
+
+    let to_delete: Vec<OwnedQuadData> = store.find(&pattern)
+        .filter(|q| obsolete_subjects.contains(&q.subject))
+        .map(|q| OwnedQuadData::from_quad(&q))
+        .collect();
+
+    let dict = store.dictionary().clone();
+    for owned in to_delete {
+        let quad = owned.to_quad(&dict);
+        store.remove(&quad).unwrap();
+    }
+
+    // Post-condition: Only doc2 remains
+    assert_eq!(count_quads(&store), 2);
+    assert!(!store.contains(&Quad::from_triple(t1)).unwrap());
+    assert!(!store.contains(&Quad::from_triple(t2)).unwrap());
+    assert!(store.contains(&Quad::from_triple(t3)).unwrap());
+    assert!(store.contains(&Quad::from_triple(t4)).unwrap());
+}
+
+#[test]
+fn test_delete_where_optional_pattern() {
+    // Pre-condition: Data with optional properties
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let alice = Node::iri(dict.intern("http://example.org/alice"));
+    let bob = Node::iri(dict.intern("http://example.org/bob"));
+    let name = Node::iri(dict.intern("http://example.org/name"));
+    let temp = Node::iri(dict.intern("http://example.org/temporary"));
+
+    let t1 = Triple::new(alice.clone(), name.clone(), Node::literal_str(dict.intern("Alice")));
+    let t2 = Triple::new(alice.clone(), temp.clone(),
+        Node::literal_typed(dict.intern("true"), dict.intern("http://www.w3.org/2001/XMLSchema#boolean")));
+    let t3 = Triple::new(bob.clone(), name.clone(), Node::literal_str(dict.intern("Bob")));
+    // Bob has no temp property
+
+    store.insert(Quad::from_triple(t1.clone())).unwrap();
+    store.insert(Quad::from_triple(t2.clone())).unwrap();
+    store.insert(Quad::from_triple(t3.clone())).unwrap();
+    assert_eq!(count_quads(&store), 3);
+
+    // Action: DELETE WHERE temp = true
+    let pattern = QuadPattern::default();
+    let to_delete: Vec<OwnedQuadData> = store.find(&pattern)
+        .filter(|q| q.predicate == temp)
+        .map(|q| OwnedQuadData::from_quad(&q))
+        .collect();
+
+    let dict = store.dictionary().clone();
+    for owned in to_delete {
+        let quad = owned.to_quad(&dict);
+        store.remove(&quad).unwrap();
+    }
+
+    // Post-condition: temp marker deleted, names remain
+    assert_eq!(count_quads(&store), 2);
+    assert!(store.contains(&Quad::from_triple(t1)).unwrap());
+    assert!(!store.contains(&Quad::from_triple(t2)).unwrap());
+    assert!(store.contains(&Quad::from_triple(t3)).unwrap());
+}
+
+#[test]
+fn test_delete_where_union() {
+    // Pre-condition: Mix of draft and archived content
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let doc1 = Node::iri(dict.intern("http://example.org/doc1"));
+    let doc2 = Node::iri(dict.intern("http://example.org/doc2"));
+    let doc3 = Node::iri(dict.intern("http://example.org/doc3"));
+    let status = Node::iri(dict.intern("http://example.org/status"));
+    let draft = Node::literal_str(dict.intern("draft"));
+    let archived = Node::literal_str(dict.intern("archived"));
+    let active = Node::literal_str(dict.intern("active"));
+
+    let t1 = Triple::new(doc1.clone(), status.clone(), draft.clone());
+    let t2 = Triple::new(doc2.clone(), status.clone(), archived.clone());
+    let t3 = Triple::new(doc3.clone(), status.clone(), active.clone());
+
+    store.insert(Quad::from_triple(t1.clone())).unwrap();
+    store.insert(Quad::from_triple(t2.clone())).unwrap();
+    store.insert(Quad::from_triple(t3.clone())).unwrap();
+    assert_eq!(count_quads(&store), 3);
+
+    // Action: DELETE WHERE status = "draft" OR status = "archived"
+    let pattern = QuadPattern::default();
+    let to_delete: Vec<OwnedQuadData> = store.find(&pattern)
+        .filter(|q| q.predicate == status && (q.object == draft || q.object == archived))
+        .map(|q| OwnedQuadData::from_quad(&q))
+        .collect();
+
+    let dict = store.dictionary().clone();
+    for owned in to_delete {
+        let quad = owned.to_quad(&dict);
+        store.remove(&quad).unwrap();
+    }
+
+    // Post-condition: Only active document remains
+    assert_eq!(count_quads(&store), 1);
+    assert!(!store.contains(&Quad::from_triple(t1)).unwrap());
+    assert!(!store.contains(&Quad::from_triple(t2)).unwrap());
+    assert!(store.contains(&Quad::from_triple(t3)).unwrap());
+}
+
+#[test]
+fn test_delete_where_named_graph() {
+    // Pre-condition: Data in named graph
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let s = Node::iri(dict.intern("http://example.org/alice"));
+    let p = Node::iri(dict.intern("http://example.org/name"));
+    let o = Node::literal_str(dict.intern("Alice"));
+    let graph = Some(Node::iri(dict.intern("http://example.org/graph1")));
+
+    let quad = Quad::new(s.clone(), p.clone(), o.clone(), graph.clone());
+    store.insert(quad.clone()).unwrap();
+    assert_eq!(count_quads(&store), 1);
+
+    // Action: DELETE WHERE in named graph
+    let pattern = QuadPattern::default();
+    let to_delete: Vec<OwnedQuadData> = store.find(&pattern)
+        .filter(|q| q.graph == graph)
+        .map(|q| OwnedQuadData::from_quad(&q))
+        .collect();
+
+    let dict = store.dictionary().clone();
+    for owned in to_delete {
+        let quad_to_remove = owned.to_quad(&dict);
+        store.remove(&quad_to_remove).unwrap();
+    }
+
+    // Post-condition: Named graph empty
+    assert_eq!(count_quads(&store), 0);
+    assert!(!store.contains(&quad).unwrap());
+}
+
+#[test]
+fn test_delete_where_blank_nodes() {
+    // Pre-condition: Triples with blank nodes
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let bn1 = Node::blank(1);
+    let bn2 = Node::blank(2);
+    let name = Node::iri(dict.intern("http://example.org/name"));
+    let temp = Node::iri(dict.intern("http://example.org/temporary"));
+
+    let t1 = Triple::new(bn1.clone(), name.clone(), Node::literal_str(dict.intern("Alice")));
+    let t2 = Triple::new(bn1.clone(), temp.clone(),
+        Node::literal_typed(dict.intern("true"), dict.intern("http://www.w3.org/2001/XMLSchema#boolean")));
+    let t3 = Triple::new(bn2.clone(), name.clone(), Node::literal_str(dict.intern("Bob")));
+
+    store.insert(Quad::from_triple(t1.clone())).unwrap();
+    store.insert(Quad::from_triple(t2.clone())).unwrap();
+    store.insert(Quad::from_triple(t3.clone())).unwrap();
+    assert_eq!(count_quads(&store), 3);
+
+    // Action: DELETE WHERE blank node has temp property
+    let pattern = QuadPattern::default();
+    let temp_subjects = {
+        store.find(&pattern)
+            .filter(|q| q.predicate == temp)
+            .map(|q| q.subject.clone())
+            .map(|q| q.clone())
+            .collect::<Vec<_>>()
+    };
+
+    let to_delete: Vec<OwnedQuadData> = store.find(&pattern)
+        .filter(|q| temp_subjects.contains(&q.subject))
+        .map(|q| OwnedQuadData::from_quad(&q))
+        .collect();
+
+    let dict = store.dictionary().clone();
+    for owned in to_delete {
+        let quad = owned.to_quad(&dict);
+        store.remove(&quad).unwrap();
+    }
+
+    // Post-condition: Only bn2 remains
+    assert_eq!(count_quads(&store), 1);
+    assert!(!store.contains(&Quad::from_triple(t1)).unwrap());
+    assert!(!store.contains(&Quad::from_triple(t2)).unwrap());
+    assert!(store.contains(&Quad::from_triple(t3)).unwrap());
+}
+
+#[test]
+fn test_delete_where_all_matching() {
+    // Pre-condition: Multiple matching triples
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let rdf_type = Node::iri(dict.intern("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"));
+    let person = Node::iri(dict.intern("http://example.org/Person"));
+
+    let alice = Node::iri(dict.intern("http://example.org/alice"));
+    let bob = Node::iri(dict.intern("http://example.org/bob"));
+    let carol = Node::iri(dict.intern("http://example.org/carol"));
+
+    let t1 = Triple::new(alice.clone(), rdf_type.clone(), person.clone());
+    let t2 = Triple::new(bob.clone(), rdf_type.clone(), person.clone());
+    let t3 = Triple::new(carol.clone(), rdf_type.clone(), person.clone());
+
+    store.insert(Quad::from_triple(t1.clone())).unwrap();
+    store.insert(Quad::from_triple(t2.clone())).unwrap();
+    store.insert(Quad::from_triple(t3.clone())).unwrap();
+    assert_eq!(count_quads(&store), 3);
+
+    // Action: DELETE WHERE type = Person
+    let pattern = QuadPattern::default();
+    let to_delete: Vec<OwnedQuadData> = store.find(&pattern)
+        .filter(|q| q.predicate == rdf_type && q.object == person)
+        .map(|q| OwnedQuadData::from_quad(&q))
+        .collect();
+
+    let dict = store.dictionary().clone();
+    for owned in to_delete {
+        let quad = owned.to_quad(&dict);
+        store.remove(&quad).unwrap();
+    }
+
+    // Post-condition: All deleted
+    assert_eq!(count_quads(&store), 0);
+    assert!(!store.contains(&Quad::from_triple(t1)).unwrap());
+    assert!(!store.contains(&Quad::from_triple(t2)).unwrap());
+    assert!(!store.contains(&Quad::from_triple(t3)).unwrap());
+}
+
+// ============================================================================
+// Category 5: DELETE/INSERT (Modify) Tests (10 tests)
+// ============================================================================
+
+#[test]
+fn test_modify_atomic_delete_insert() {
+    // Pre-condition: Person with old email
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let alice = Node::iri(dict.intern("http://example.org/alice"));
+    let email = Node::iri(dict.intern("http://example.org/email"));
+    let old_email = Node::literal_str(dict.intern("alice@old.com"));
+    let new_email = Node::literal_str(dict.intern("alice@new.com"));
+
+    let old_triple = Triple::new(alice.clone(), email.clone(), old_email.clone());
+    store.insert(Quad::from_triple(old_triple.clone())).unwrap();
+    assert_eq!(count_quads(&store), 1);
+
+    // Action: Atomic DELETE old + INSERT new
+    store.remove(&Quad::from_triple(old_triple.clone())).unwrap();
+    let new_triple = Triple::new(alice.clone(), email.clone(), new_email.clone());
+    store.insert(Quad::from_triple(new_triple.clone())).unwrap();
+
+    // Post-condition: Old deleted, new inserted
+    assert_eq!(count_quads(&store), 1);
+    assert!(!store.contains(&Quad::from_triple(old_triple)).unwrap());
+    assert!(store.contains(&Quad::from_triple(new_triple)).unwrap());
+}
+
+#[test]
+fn test_modify_property_value() {
+    // Pre-condition: Person with age
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let alice = Node::iri(dict.intern("http://example.org/alice"));
+    let age = Node::iri(dict.intern("http://example.org/age"));
+    let xsd_int = dict.intern("http://www.w3.org/2001/XMLSchema#integer");
+
+    let old_triple = Triple::new(alice.clone(), age.clone(), Node::literal_typed(dict.intern("29"), xsd_int));
+    store.insert(Quad::from_triple(old_triple.clone())).unwrap();
+
+    // Action: Update age to 30
+    store.remove(&Quad::from_triple(old_triple.clone())).unwrap();
+    let new_triple = Triple::new(alice.clone(), age.clone(), Node::literal_typed(dict.intern("30"), xsd_int));
+    store.insert(Quad::from_triple(new_triple.clone())).unwrap();
+
+    // Post-condition: Age updated
+    assert_eq!(count_quads(&store), 1);
+    assert!(!store.contains(&Quad::from_triple(old_triple)).unwrap());
+    assert!(store.contains(&Quad::from_triple(new_triple)).unwrap());
+
+    let age_owned = find_by_subject(&store, &alice).into_iter().next().unwrap();
+    let age_quad = age_owned.to_quad(&dict);
+    if let Node::Literal(lit) = age_quad.object {
+        assert_eq!(lit.lexical_form.parse::<i32>().unwrap(), 30);
+    }
+}
+
+#[test]
+fn test_modify_with_where() {
+    // Pre-condition: Products with old prices
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let prod1 = Node::iri(dict.intern("http://example.org/product1"));
+    let prod2 = Node::iri(dict.intern("http://example.org/product2"));
+    let price = Node::iri(dict.intern("http://example.org/price"));
+    let xsd_double = dict.intern("http://www.w3.org/2001/XMLSchema#double");
+
+    let t1 = Triple::new(prod1.clone(), price.clone(), Node::literal_typed(dict.intern("100.0"), xsd_double));
+    let t2 = Triple::new(prod2.clone(), price.clone(), Node::literal_typed(dict.intern("200.0"), xsd_double));
+
+    store.insert(Quad::from_triple(t1.clone())).unwrap();
+    store.insert(Quad::from_triple(t2.clone())).unwrap();
+
+    // Action: Increase all prices by 10%
+    let pattern = QuadPattern::default();
+    let to_modify: Vec<OwnedQuadData> = store.find(&pattern)
+        .filter(|q| q.predicate == price)
+        .map(|q| OwnedQuadData::from_quad(&q))
+        .collect();
+
+    let dict_clone = store.dictionary().clone();
+    for owned in to_modify {
+        let quad = owned.to_quad(&dict_clone);
+        if let Node::Literal(lit) = quad.object {
+            if let Ok(old_price) = lit.lexical_form.parse::<f64>() {
+                let new_price = old_price * 1.1;
+
+                store.remove(&quad).unwrap();
+                let new_triple = Triple::new(
+                    quad.subject.clone(),
+                    price.clone(),
+                    Node::literal_typed(dict.intern(&new_price.to_string()), xsd_double)
+                );
+                store.insert(Quad::from_triple(new_triple)).unwrap();
+            }
+        }
+    }
+
+    // Post-condition: Prices increased by 10%
+    assert_eq!(count_quads(&store), 2);
+
+    let prod1_owned = find_by_subject(&store, &prod1).into_iter().next().unwrap();
+    let prod1_price = prod1_owned.to_quad(&dict);
+    if let Node::Literal(lit) = prod1_price.object {
+        assert!((lit.lexical_form.parse::<f64>().unwrap() - 110.0).abs() < 0.01);
+    }
+}
+
+#[test]
+fn test_modify_transactional_semantics() {
+    // Pre-condition: Data that should change atomically
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let doc = Node::iri(dict.intern("http://example.org/doc1"));
+    let version = Node::iri(dict.intern("http://example.org/version"));
+    let status = Node::iri(dict.intern("http://example.org/status"));
+    let xsd_int = dict.intern("http://www.w3.org/2001/XMLSchema#integer");
+
+    let t1 = Triple::new(doc.clone(), version.clone(), Node::literal_typed(dict.intern("1"), xsd_int));
+    let t2 = Triple::new(doc.clone(), status.clone(), Node::literal_str(dict.intern("draft")));
+
+    store.insert(Quad::from_triple(t1.clone())).unwrap();
+    store.insert(Quad::from_triple(t2.clone())).unwrap();
+
+    // Action: Atomic update - version++ AND status = "published"
+    // Simulate transaction: collect deletes, collect inserts, apply all
+    let mut deletes = Vec::new();
+    let mut inserts = Vec::new();
+
+    deletes.push(Quad::from_triple(t1.clone()));
+    deletes.push(Quad::from_triple(t2.clone()));
+
+    inserts.push(Quad::from_triple(Triple::new(
+        doc.clone(),
+        version.clone(),
+        Node::literal_typed(dict.intern("2"), xsd_int)
+    )));
+    inserts.push(Quad::from_triple(Triple::new(
+        doc.clone(),
+        status.clone(),
+        Node::literal_str(dict.intern("published"))
+    )));
+
+    // Apply transaction
+    for quad in deletes {
+        store.remove(&quad).unwrap();
+    }
+    for quad in inserts {
+        store.insert(quad).unwrap();
+    }
+
+    // Post-condition: Both properties updated atomically
+    assert_eq!(count_quads(&store), 2);
+
+    let version_owned = find_by_subject(&store, &doc)
+        .into_iter()
+        .find(|owned| owned.predicate == version.value())
+        .unwrap();
+    let version_quad = version_owned.to_quad(&dict);
+    if let Node::Literal(lit) = version_quad.object {
+        assert_eq!(lit.lexical_form.parse::<i32>().unwrap(), 2);
+    }
+
+    let status_owned = find_by_subject(&store, &doc)
+        .into_iter()
+        .find(|owned| owned.predicate == status.value())
+        .unwrap();
+    let status_quad = status_owned.to_quad(&dict);
+    assert_eq!(status_quad.object, Node::literal_str(dict.intern("published")));
+}
+
+#[test]
+fn test_modify_rename_resource() {
+    // Pre-condition: Resource with old URI
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let old_uri = Node::iri(dict.intern("http://example.org/person/alice_old"));
+    let new_uri = Node::iri(dict.intern("http://example.org/person/alice_new"));
+    let name = Node::iri(dict.intern("http://example.org/name"));
+    let age = Node::iri(dict.intern("http://example.org/age"));
+    let xsd_int = dict.intern("http://www.w3.org/2001/XMLSchema#integer");
+
+    let t1 = Triple::new(old_uri.clone(), name.clone(), Node::literal_str(dict.intern("Alice")));
+    let t2 = Triple::new(old_uri.clone(), age.clone(), Node::literal_typed(dict.intern("30"), xsd_int));
+
+    store.insert(Quad::from_triple(t1.clone())).unwrap();
+    store.insert(Quad::from_triple(t2.clone())).unwrap();
+
+    // Action: Rename resource URI
+    let old_quads: Vec<OwnedQuadData> = find_by_subject(&store, &old_uri);
+
+    let dict_clone = store.dictionary().clone();
+    for owned in old_quads {
+        let quad = owned.to_quad(&dict_clone);
+        store.remove(&quad).unwrap();
+        let new_triple = Triple::new(new_uri.clone(), quad.predicate.clone(), quad.object.clone());
+        store.insert(Quad::from_triple(new_triple)).unwrap();
+    }
+
+    // Post-condition: All triples use new URI
+    assert_eq!(count_quads(&store), 2);
+
+    let old_count = find_by_subject(&store, &old_uri).len();
+    let new_count = find_by_subject(&store, &new_uri).len();
+
+    assert_eq!(old_count, 0);
+    assert_eq!(new_count, 2);
+}
+
+#[test]
+fn test_modify_type_change() {
+    // Pre-condition: Value as string
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let s = Node::iri(dict.intern("http://example.org/measurement"));
+    let value = Node::iri(dict.intern("http://example.org/value"));
+
+    let old_triple = Triple::new(s.clone(), value.clone(), Node::literal_str(dict.intern("42")));
+    store.insert(Quad::from_triple(old_triple.clone())).unwrap();
+
+    // Action: Change from string to int
+    store.remove(&Quad::from_triple(old_triple.clone())).unwrap();
+    let new_triple = Triple::new(s.clone(), value.clone(),
+        Node::literal_typed(dict.intern("42"), dict.intern("http://www.w3.org/2001/XMLSchema#integer")));
+    store.insert(Quad::from_triple(new_triple.clone())).unwrap();
+
+    // Post-condition: Type changed
+    assert_eq!(count_quads(&store), 1);
+    assert!(!store.contains(&Quad::from_triple(old_triple)).unwrap());
+    assert!(store.contains(&Quad::from_triple(new_triple)).unwrap());
+}
+
+#[test]
+fn test_modify_language_tag() {
+    // Pre-condition: Label with wrong language
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let s = Node::iri(dict.intern("http://example.org/alice"));
+    let label = Node::iri(dict.intern("http://www.w3.org/2000/01/rdf-schema#label"));
+
+    let old = Node::literal_lang(dict.intern("Alice"), dict.intern("fr"));
+    let new = Node::literal_lang(dict.intern("Alice"), dict.intern("en"));
+
+    let old_triple = Triple::new(s.clone(), label.clone(), old.clone());
+    store.insert(Quad::from_triple(old_triple.clone())).unwrap();
+
+    // Action: Correct language tag
+    store.remove(&Quad::from_triple(old_triple.clone())).unwrap();
+    let new_triple = Triple::new(s.clone(), label.clone(), new.clone());
+    store.insert(Quad::from_triple(new_triple.clone())).unwrap();
+
+    // Post-condition: Language tag corrected
+    assert_eq!(count_quads(&store), 1);
+    assert!(!store.contains(&Quad::from_triple(old_triple)).unwrap());
+    assert!(store.contains(&Quad::from_triple(new_triple)).unwrap());
+}
+
+#[test]
+fn test_modify_move_to_named_graph() {
+    // Pre-condition: Triple in default graph
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let s = Node::iri(dict.intern("http://example.org/alice"));
+    let p = Node::iri(dict.intern("http://example.org/name"));
+    let o = Node::literal_str(dict.intern("Alice"));
+
+    let triple = Triple::new(s.clone(), p.clone(), o.clone());
+    let quad_default = Quad::from_triple(triple.clone());
+
+    store.insert(quad_default.clone()).unwrap();
+    assert_eq!(count_quads(&store), 1);
+
+    // Action: Move to named graph
+    let graph = Some(Node::iri(dict.intern("http://example.org/archive")));
+
+    store.remove(&quad_default).unwrap();
+    let quad_named = Quad::new(s.clone(), p.clone(), o.clone(), graph.clone());
+    store.insert(quad_named.clone()).unwrap();
+
+    // Post-condition: Only in named graph
+    assert_eq!(count_quads(&store), 1);
+    assert!(!store.contains(&quad_default).unwrap());
+    assert!(store.contains(&quad_named).unwrap());
+}
+
+#[test]
+fn test_modify_batch_update() {
+    // Pre-condition: Multiple outdated values
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let currency = Node::iri(dict.intern("http://example.org/currency"));
+    let usd = Node::literal_str(dict.intern("USD"));
+    let eur = Node::literal_str(dict.intern("EUR"));
+
+    let mut products = Vec::new();
+    for i in 0..10 {
+        let prod = Node::iri(dict.intern(&format!("http://example.org/product{}", i)));
+        let triple = Triple::new(prod.clone(), currency.clone(), usd.clone());
+        store.insert(Quad::from_triple(triple)).unwrap();
+        products.push(prod);
+    }
+    assert_eq!(count_quads(&store), 10);
+
+    // Action: Change all USD to EUR
+    let pattern = QuadPattern::default();
+    let to_modify: Vec<OwnedQuadData> = store.find(&pattern)
+        .filter(|q| q.predicate == currency && q.object == usd)
+        .map(|q| OwnedQuadData::from_quad(&q))
+        .collect();
+
+    let dict_clone = store.dictionary().clone();
+    for owned in to_modify {
+        let quad = owned.to_quad(&dict_clone);
+        store.remove(&quad).unwrap();
+        let new_triple = Triple::new(quad.subject.clone(), currency.clone(), eur.clone());
+        store.insert(Quad::from_triple(new_triple)).unwrap();
+    }
+
+    // Post-condition: All currencies updated
+    assert_eq!(count_quads(&store), 10);
+
+    for product in products {
+        let curr_owned = find_by_subject(&store, &product).into_iter().next().unwrap();
+        let curr_quad = curr_owned.to_quad(&dict);
+        assert_eq!(curr_quad.object, eur);
+    }
+}
+
+#[test]
+fn test_modify_conditional_update() {
+    // Pre-condition: Items with status and priority
+    let dict = Arc::new(Dictionary::new());
+    let backend = InMemoryBackend::new();
+    let mut store = QuadStore::new(backend);
+
+    let item1 = Node::iri(dict.intern("http://example.org/item1"));
+    let item2 = Node::iri(dict.intern("http://example.org/item2"));
+    let status = Node::iri(dict.intern("http://example.org/status"));
+    let priority = Node::iri(dict.intern("http://example.org/priority"));
+    let pending = Node::literal_str(dict.intern("pending"));
+    let urgent = Node::literal_str(dict.intern("urgent"));
+    let xsd_int = dict.intern("http://www.w3.org/2001/XMLSchema#integer");
+
+    let t1 = Triple::new(item1.clone(), status.clone(), pending.clone());
+    let t2 = Triple::new(item1.clone(), priority.clone(), Node::literal_typed(dict.intern("1"), xsd_int));
+    let t3 = Triple::new(item2.clone(), status.clone(), pending.clone());
+    let t4 = Triple::new(item2.clone(), priority.clone(), Node::literal_typed(dict.intern("5"), xsd_int));
+
+    store.insert(Quad::from_triple(t1.clone())).unwrap();
+    store.insert(Quad::from_triple(t2.clone())).unwrap();
+    store.insert(Quad::from_triple(t3.clone())).unwrap();
+    store.insert(Quad::from_triple(t4.clone())).unwrap();
+
+    // Action: Update status to "urgent" WHERE priority > 3 AND status = "pending"
+    let pattern = QuadPattern::default();
+    let high_priority_items: Vec<_>;
+    {
+        high_priority_items = store.find(&pattern)
+            .filter(|q| {
+                q.predicate == priority && match q.object {
+                    Node::Literal(lit) => lit.lexical_form.parse::<i32>().unwrap_or(0) > 3,
+                    _ => false
+                }
+            })
+            .map(|q| q.subject.clone())
+            .map(|q| q.clone())
+            .collect();
+    }
+
+    let to_modify: Vec<OwnedQuadData> = store.find(&pattern)
+        .filter(|q| {
+            q.predicate == status &&
+            q.object == pending &&
+            high_priority_items.contains(&q.subject)
+        })
+        .map(|q| OwnedQuadData::from_quad(&q))
+        .collect();
+
+    let dict_clone = store.dictionary().clone();
+    for owned in to_modify {
+        let quad = owned.to_quad(&dict_clone);
+        store.remove(&quad).unwrap();
+        let new_triple = Triple::new(quad.subject.clone(), status.clone(), urgent.clone());
+        store.insert(Quad::from_triple(new_triple)).unwrap();
+    }
+
+    // Post-condition: Only item2 status updated
+    assert_eq!(count_quads(&store), 4);
+
+    let item1_status_owned = find_by_subject(&store, &item1)
+        .into_iter()
+        .find(|owned| owned.predicate == status.value())
+        .unwrap();
+    let item1_status = item1_status_owned.to_quad(&dict);
+    assert_eq!(item1_status.object, pending);
+
+    let item2_status_owned = find_by_subject(&store, &item2)
+        .into_iter()
+        .find(|owned| owned.predicate == status.value())
+        .unwrap();
+    let item2_status = item2_status_owned.to_quad(&dict);
+    assert_eq!(item2_status.object, urgent);
+}

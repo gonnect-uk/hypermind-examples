@@ -1,0 +1,23 @@
+[package]
+name = "datalog"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Datalog engine with stratified negation and magic sets optimization"
+
+[dependencies]
+rdf-model = { path = "../rdf-model" }
+storage = { path = "../storage" }
+parking_lot = { workspace = true }
+smallvec = { workspace = true }
+ahash = { workspace = true }
+rustc-hash = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+
+[dev-dependencies]
+proptest = { workspace = true }
+criterion = { workspace = true }

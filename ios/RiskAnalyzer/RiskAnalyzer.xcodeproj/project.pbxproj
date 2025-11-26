@@ -1,0 +1,427 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0865D4ACC88EE4298DB06C5D /* RiskAnalyzerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A912F2BE2A0741B3B937040 /* RiskAnalyzerApp.swift */; };
+		14E19C54559EEAB3AED30F4B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED4E48BAAE1DA0B1AC74054 /* ContentView.swift */; };
+		3D9405BF5F63AFD7063861BC /* insurance-policies.ttl in Resources */ = {isa = PBXBuildFile; fileRef = 5A12C49A2DF5F0C594F116A3 /* insurance-policies.ttl */; };
+		631F8647B68A19D6A8108B11 /* GonnectNanoGraphDB.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D03F4F6CA8E367B002444FA /* GonnectNanoGraphDB.xcframework */; };
+		7541E456934EBAED06A13573 /* Combine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B3892594487F0F4B32B6459 /* Combine.framework */; };
+		98951BAB63B9CA36F1C1CFB3 /* gonnect.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA6DEBDE7D6B24483C0DDD1 /* gonnect.swift */; };
+		AC3BF8F6F85DCC529D8AB6DD /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F8A4B35995F2FB50B6DBBF /* SwiftUI.framework */; };
+		D21DA5BF2851B0DD0F2DABC0 /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = 5749C99B63F4E253A9A8C6BA /* config.json */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		3ED4E48BAAE1DA0B1AC74054 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		4D03F4F6CA8E367B002444FA /* GonnectNanoGraphDB.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GonnectNanoGraphDB.xcframework; path = ../Frameworks/GonnectNanoGraphDB.xcframework; sourceTree = "<group>"; };
+		51F8A4B35995F2FB50B6DBBF /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		5749C99B63F4E253A9A8C6BA /* config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = config.json; sourceTree = "<group>"; };
+		5A12C49A2DF5F0C594F116A3 /* insurance-policies.ttl */ = {isa = PBXFileReference; path = "insurance-policies.ttl"; sourceTree = "<group>"; };
+		5B3892594487F0F4B32B6459 /* Combine.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Combine.framework; path = System/Library/Frameworks/Combine.framework; sourceTree = SDKROOT; };
+		5D82116203316CAC4F68B351 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		6A912F2BE2A0741B3B937040 /* RiskAnalyzerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RiskAnalyzerApp.swift; sourceTree = "<group>"; };
+		A00B9DE263766E4C8F9912D8 /* gonnectFFI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gonnectFFI.h; sourceTree = "<group>"; };
+		BCA6DEBDE7D6B24483C0DDD1 /* gonnect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = gonnect.swift; sourceTree = "<group>"; };
+		C94B6227180DF629B7956740 /* gonnectFFI.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = gonnectFFI.modulemap; sourceTree = "<group>"; };
+		D3D2FAD0DEEA5290EC00809D /* RiskAnalyzer.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RiskAnalyzer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E020B617794E9D450AAAD100 /* gonnect-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "gonnect-Bridging-Header.h"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		41C4B4A3297DBC3140429505 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				631F8647B68A19D6A8108B11 /* GonnectNanoGraphDB.xcframework in Frameworks */,
+				AC3BF8F6F85DCC529D8AB6DD /* SwiftUI.framework in Frameworks */,
+				7541E456934EBAED06A13573 /* Combine.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		15E6E437F3D40ADF8063EBCB /* RiskAnalyzer */ = {
+			isa = PBXGroup;
+			children = (
+				3ED4E48BAAE1DA0B1AC74054 /* ContentView.swift */,
+				5D82116203316CAC4F68B351 /* Info.plist */,
+				6A912F2BE2A0741B3B937040 /* RiskAnalyzerApp.swift */,
+			);
+			path = RiskAnalyzer;
+			sourceTree = "<group>";
+		};
+		17F2CE0C665BB81F1E7C70DE /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				5749C99B63F4E253A9A8C6BA /* config.json */,
+				4C3E31E02C892C803CE0E503 /* datasets */,
+			);
+			name = Resources;
+			path = RiskAnalyzer/Resources;
+			sourceTree = "<group>";
+		};
+		4C3E31E02C892C803CE0E503 /* datasets */ = {
+			isa = PBXGroup;
+			children = (
+				5A12C49A2DF5F0C594F116A3 /* insurance-policies.ttl */,
+			);
+			path = datasets;
+			sourceTree = "<group>";
+		};
+		97A755C6AA3309FE6F6A0C47 = {
+			isa = PBXGroup;
+			children = (
+				EFC52D96F49754CA3674D0C5 /* Generated */,
+				17F2CE0C665BB81F1E7C70DE /* Resources */,
+				15E6E437F3D40ADF8063EBCB /* RiskAnalyzer */,
+				DCF241EDDEA135384EBD1E8C /* Frameworks */,
+				97ED9D68D61A1100C9AE1A98 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		97ED9D68D61A1100C9AE1A98 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D3D2FAD0DEEA5290EC00809D /* RiskAnalyzer.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DCF241EDDEA135384EBD1E8C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5B3892594487F0F4B32B6459 /* Combine.framework */,
+				4D03F4F6CA8E367B002444FA /* GonnectNanoGraphDB.xcframework */,
+				51F8A4B35995F2FB50B6DBBF /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		EFC52D96F49754CA3674D0C5 /* Generated */ = {
+			isa = PBXGroup;
+			children = (
+				E020B617794E9D450AAAD100 /* gonnect-Bridging-Header.h */,
+				BCA6DEBDE7D6B24483C0DDD1 /* gonnect.swift */,
+				A00B9DE263766E4C8F9912D8 /* gonnectFFI.h */,
+				C94B6227180DF629B7956740 /* gonnectFFI.modulemap */,
+			);
+			name = Generated;
+			path = ../Generated;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		844F7B81BFE16C645ECA301E /* RiskAnalyzer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8529CB472D766F09493C75D8 /* Build configuration list for PBXNativeTarget "RiskAnalyzer" */;
+			buildPhases = (
+				B6766B356A189EFFA467B9AC /* Check Generated Bindings */,
+				9F295CB93299F7D62D5977C6 /* Sources */,
+				4DEB9204715A287EF4FCECC2 /* Resources */,
+				41C4B4A3297DBC3140429505 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RiskAnalyzer;
+			packageProductDependencies = (
+			);
+			productName = RiskAnalyzer;
+			productReference = D3D2FAD0DEEA5290EC00809D /* RiskAnalyzer.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		58BCB3EAAD9859D8048EEDFD /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+			};
+			buildConfigurationList = E01287DEBF4C3BD90F0EF1DE /* Build configuration list for PBXProject "RiskAnalyzer" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 97A755C6AA3309FE6F6A0C47;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				844F7B81BFE16C645ECA301E /* RiskAnalyzer */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4DEB9204715A287EF4FCECC2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D21DA5BF2851B0DD0F2DABC0 /* config.json in Resources */,
+				3D9405BF5F63AFD7063861BC /* insurance-policies.ttl in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		B6766B356A189EFFA467B9AC /* Check Generated Bindings */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Check Generated Bindings";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ ! -f \"${PROJECT_DIR}/../Generated/gonnect.swift\" ]; then\n  echo \"error: Generated Swift bindings not found.\"\n  exit 1\nfi\necho \"✓ Generated bindings found\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9F295CB93299F7D62D5977C6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				14E19C54559EEAB3AED30F4B /* ContentView.swift in Sources */,
+				0865D4ACC88EE4298DB06C5D /* RiskAnalyzerApp.swift in Sources */,
+				98951BAB63B9CA36F1C1CFB3 /* gonnect.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		01ADE25FF2B00A11472791CF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		7C9CE1A4E4713EC8528CF3E6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_ASSET_PATHS = "\"RiskAnalyzer/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"../Frameworks\"",
+				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../Generated";
+				INFOPLIST_FILE = RiskAnalyzer/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*]" = "$(inherited) $(SRCROOT)/../Frameworks/GonnectNanoGraphDB.xcframework/ios-arm64";
+				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]" = "$(inherited) $(SRCROOT)/../Frameworks/GonnectNanoGraphDB.xcframework/ios-arm64_x86_64-simulator";
+				OTHER_LDFLAGS = "$(inherited) -lmobile_ffi -lc++ -framework Security -framework Foundation";
+				PRODUCT_BUNDLE_IDENTIFIER = com.zenya.generated.riskanalyzer;
+				PRODUCT_NAME = RiskAnalyzer;
+				SDKROOT = iphoneos;
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/../Generated";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/../Generated/gonnect-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A9DE5209F6AA12FBDDC7C183 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_ASSET_PATHS = "\"RiskAnalyzer/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"../Frameworks\"",
+				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../Generated";
+				INFOPLIST_FILE = RiskAnalyzer/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*]" = "$(inherited) $(SRCROOT)/../Frameworks/GonnectNanoGraphDB.xcframework/ios-arm64";
+				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]" = "$(inherited) $(SRCROOT)/../Frameworks/GonnectNanoGraphDB.xcframework/ios-arm64_x86_64-simulator";
+				OTHER_LDFLAGS = "$(inherited) -lmobile_ffi -lc++ -framework Security -framework Foundation";
+				PRODUCT_BUNDLE_IDENTIFIER = com.zenya.generated.riskanalyzer;
+				PRODUCT_NAME = RiskAnalyzer;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/../Generated";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/../Generated/gonnect-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		DC3A8309C2EA30123AE98F60 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8529CB472D766F09493C75D8 /* Build configuration list for PBXNativeTarget "RiskAnalyzer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7C9CE1A4E4713EC8528CF3E6 /* Debug */,
+				A9DE5209F6AA12FBDDC7C183 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E01287DEBF4C3BD90F0EF1DE /* Build configuration list for PBXProject "RiskAnalyzer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				01ADE25FF2B00A11472791CF /* Debug */,
+				DC3A8309C2EA30123AE98F60 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 58BCB3EAAD9859D8048EEDFD /* Project object */;
+}

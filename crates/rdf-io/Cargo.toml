@@ -1,0 +1,40 @@
+[package]
+name = "rdf-io"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "RDF format parsers and serializers (Turtle, N-Triples, JSON-LD, RDF/XML)"
+
+[dependencies]
+rdf-model = { path = "../rdf-model" }
+hypergraph = { path = "../hypergraph" }
+parking_lot = { workspace = true }
+smallvec = { workspace = true }
+thiserror = { workspace = true }
+
+# Parsing
+pest = { workspace = true }
+pest_derive = { workspace = true }
+
+# JSON-LD
+serde_json = { workspace = true }
+
+# XML
+quick-xml = "0.31"
+
+[dev-dependencies]
+proptest = { workspace = true }
+criterion = { workspace = true }
+
+[features]
+default = ["turtle", "ntriples"]
+turtle = []
+ntriples = []
+nquads = []
+trig = []
+jsonld = []
+rdfxml = []
+all-formats = ["turtle", "ntriples", "nquads", "trig", "jsonld", "rdfxml"]
