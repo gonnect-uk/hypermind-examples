@@ -184,7 +184,7 @@ impl IndexType {
 /// Format: [type:u8][length:varint][data]
 ///
 /// The encoding preserves lexicographic ordering for efficient range queries.
-pub(crate) fn encode_node(buf: &mut SmallVec<[u8; 256]>, node: &rdf_model::Node) {
+pub fn encode_node(buf: &mut SmallVec<[u8; 256]>, node: &rdf_model::Node<'_>) {
     // Type byte: 0=IRI, 1=Literal, 2=Blank, 3=QuotedTriple, 4=Variable
     let type_byte = match node {
         rdf_model::Node::Iri(_) => 0u8,
@@ -244,7 +244,7 @@ pub(crate) fn encode_node(buf: &mut SmallVec<[u8; 256]>, node: &rdf_model::Node)
 ///
 /// Encodes the graph component of a quad, which may be None for the default graph.
 /// Uses a flag byte to distinguish between Some and None cases.
-pub(crate) fn encode_node_opt(buf: &mut SmallVec<[u8; 256]>, node: &Option<rdf_model::Node>) {
+pub(crate) fn encode_node_opt(buf: &mut SmallVec<[u8; 256]>, node: &Option<rdf_model::Node<'_>>) {
     match node {
         Some(n) => {
             buf.push(1); // Present marker

@@ -39,8 +39,14 @@ in-memory = []
 rocksdb-backend = ["dep:rocksdb", "dep:lz4"]
 lmdb-backend = ["dep:heed"]
 compression = ["dep:zstd"]
+simd = []  # Enable SIMD optimizations (requires nightly)
 all-backends = ["rocksdb-backend", "lmdb-backend", "compression"]
 
 [[bench]]
 name = "triple_store_benchmark"
 harness = false
+
+[[bench]]
+name = "simd_benchmark"
+harness = false
+required-features = ["simd"]

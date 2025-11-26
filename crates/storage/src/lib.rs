@@ -35,6 +35,7 @@
 //! let results: Vec<_> = store.find(&QuadPattern::default()).collect();
 //! ```
 
+#![cfg_attr(feature = "simd", feature(portable_simd))]
 #![deny(unsafe_code)]
 #![warn(missing_docs, rust_2018_idioms)]
 
@@ -44,6 +45,10 @@ mod inmemory;
 mod pattern;
 mod quad_store;
 mod transaction;
+
+// SIMD optimizations (optional, requires nightly)
+#[cfg(feature = "simd")]
+pub mod simd_encode;
 
 // Optional persistent storage backends
 #[cfg(feature = "rocksdb-backend")]

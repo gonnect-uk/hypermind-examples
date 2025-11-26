@@ -327,6 +327,11 @@ fn test_rdf12_w3c_turtle_syntax_full() {
     for test_file in test_files {
         let test_name = test_file.file_name().unwrap().to_string_lossy().to_string();
 
+        // Skip test metadata files
+        if test_name == "manifest.ttl" || test_name.starts_with("manifest-") {
+            continue;
+        }
+
         // Skip bad tests (intentionally malformed)
         let is_negative_test = test_name.contains("bad");
 
