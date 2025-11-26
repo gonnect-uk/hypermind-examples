@@ -15,7 +15,8 @@ parking_lot = { workspace = true }
 smallvec = { workspace = true }
 thiserror = { workspace = true }
 
-# Parsing
+# Parsing - nom for Turtle (100% W3C conformance), pest for N-Triples
+nom = "7"
 pest = { workspace = true }
 pest_derive = { workspace = true }
 
