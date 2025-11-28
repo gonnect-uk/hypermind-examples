@@ -59,14 +59,46 @@ impl InMemoryBackend {
     }
 
     /// Batch insert multiple key-value pairs (lock-free parallel inserts)
+    ///
+    /// Uses rayon to parallelize insertions across CPU cores for maximum throughput.
+    /// Optimal for large batches (1000+ pairs).
+    ///
+    /// # Performance
+    /// - **Sequential**: ~146K pairs/sec
+    /// - **Parallel (this)**: 250-350K pairs/sec (target)
     #[inline]
     pub fn batch_put(&mut self, pairs: Vec<(Vec<u8>, Vec<u8>)>) -> StorageResult<()> {
+        use rayon::prelude::*;
+
         let initial_len = self.data.len();
 
-        // DashMap allows concurrent inserts without locks
-        for (k, v) in pairs {
+        // Parallel batch insert using rayon + DashMap lock-free writes
+        // Each thread can insert concurrently without locks
+        pairs.par_iter().for_each(|(k, v)| {
+            self.data.insert(k.clone(), v.clone());
+        });
+
+        // Update stats
+        let mut stats = self.stats.write();
+        stats.writes += (self.data.len() - initial_len) as u64;
+        stats.key_count = self.data.len() as u64;
+
+        Ok(())
+    }
+
+    /// Batch insert with move semantics (avoids cloning)
+    ///
+    /// Consumes the pairs vector for zero-copy insertion.
+    /// Prefer this over batch_put() when pairs won't be reused.
+    pub fn batch_put_owned(&mut self, pairs: Vec<(Vec<u8>, Vec<u8>)>) -> StorageResult<()> {
+        use rayon::prelude::*;
+
+        let initial_len = self.data.len();
+
+        // Parallel insert with move semantics - no cloning!
+        pairs.into_par_iter().for_each(|(k, v)| {
             self.data.insert(k, v);
-        }
+        });
 
         // Update stats
         let mut stats = self.stats.write();
@@ -131,18 +163,25 @@ impl StorageBackend for InMemoryBackend {
         start: &[u8],
         end: &[u8],
     ) -> StorageResult<Box<dyn Iterator<Item = (Vec<u8>, Vec<u8>)> + 'a>> {
-        // DashMap doesn't support range() - filter, collect, and sort
-        let mut results: Vec<_> = self.data
+        use rayon::prelude::*;
+
+        // Collect DashMap entries into Vec for parallel processing
+        let entries: Vec<_> = self.data
             .iter()
-            .filter(|entry| {
-                let k = entry.key().as_slice();
-                k >= start && k < end
-            })
             .map(|entry| (entry.key().clone(), entry.value().clone()))
             .collect();
 
-        // Sort by key to maintain ordering
-        results.sort_by(|a, b| a.0.cmp(&b.0));
+        // Parallel filter and collect using rayon
+        let mut results: Vec<_> = entries
+            .into_par_iter()
+            .filter(|(k, _)| {
+                let key_slice = k.as_slice();
+                key_slice >= start && key_slice < end
+            })
+            .collect();
+
+        // Parallel sort for large result sets
+        results.par_sort_by(|a, b| a.0.cmp(&b.0));
 
         Ok(Box::new(results.into_iter()))
     }
@@ -151,15 +190,22 @@ impl StorageBackend for InMemoryBackend {
         &'a self,
         prefix: &[u8],
     ) -> StorageResult<Box<dyn Iterator<Item = (Vec<u8>, Vec<u8>)> + 'a>> {
-        // DashMap doesn't support range() - filter by prefix
-        let mut results: Vec<_> = self.data
+        use rayon::prelude::*;
+
+        // Collect DashMap entries into Vec for parallel processing
+        let entries: Vec<_> = self.data
             .iter()
-            .filter(|entry| entry.key().starts_with(prefix))
             .map(|entry| (entry.key().clone(), entry.value().clone()))
             .collect();
 
-        // Sort by key to maintain ordering
-        results.sort_by(|a, b| a.0.cmp(&b.0));
+        // Parallel prefix filter using rayon
+        let mut results: Vec<_> = entries
+            .into_par_iter()
+            .filter(|(k, _)| k.starts_with(prefix))
+            .collect();
+
+        // Parallel sort for large result sets
+        results.par_sort_by(|a, b| a.0.cmp(&b.0));
 
         Ok(Box::new(results.into_iter()))
     }

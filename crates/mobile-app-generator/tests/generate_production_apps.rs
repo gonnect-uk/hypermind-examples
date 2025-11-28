@@ -1,6 +1,6 @@
 //! Production app generation - generates 3 real iOS apps
 
-use mobile_app_generator::{SwiftGenerator, MobileApplication, BusinessPersona, BusinessValue, ViewDefinition, FormView, FieldDefinition, TextField, QueryTemplate, QueryType};
+use mobile_app_generator::{SwiftGenerator, MobileApplication, BusinessPersona, BusinessValue, ViewDefinition, FormView, FieldDefinition, TextField, QueryTemplate, QueryType, NavigationStructure, NavigationStyle, AppTheme, ExtensionConfig};
 use std::path::PathBuf;
 
 #[test]
@@ -59,8 +59,29 @@ fn generate_insurance_app(output_dir: &PathBuf) {
                 expected_query_time: Some("2.78 microseconds".into()),
             },
             result_view: None,
+            how_it_works_panel: None,
         }),
         offline_capable: true,
+        additional_views: vec![],
+        datasets: vec![],
+        navigation: NavigationStructure {
+            style: NavigationStyle::TabBar,
+            tabs: vec![],
+        },
+        theme: AppTheme {
+            primary_color: "#FF6B35".into(),
+            accent_color: "#C44536".into(),
+            background_color: "#FFFFFF".into(),
+            text_color: "#000000".into(),
+            card_background: "#F2F2F7".into(),
+            success_color: "#34C759".into(),
+            warning_color: "#FF9500".into(),
+            error_color: "#FF3B30".into(),
+            font_family: "SF Pro".into(),
+        },
+        extensions: ExtensionConfig::default(),
+        hooks: vec![],
+        business_rules: vec![],
     };
 
     let generator = SwiftGenerator::new();
@@ -110,8 +131,29 @@ fn generate_retail_app(output_dir: &PathBuf) {
                 expected_query_time: Some("2.78 microseconds".into()),
             },
             result_view: None,
+            how_it_works_panel: None,
         }),
         offline_capable: true,
+        additional_views: vec![],
+        datasets: vec![],
+        navigation: NavigationStructure {
+            style: NavigationStyle::TabBar,
+            tabs: vec![],
+        },
+        theme: AppTheme {
+            primary_color: "#007AFF".into(),
+            accent_color: "#5856D6".into(),
+            background_color: "#FFFFFF".into(),
+            text_color: "#000000".into(),
+            card_background: "#F2F2F7".into(),
+            success_color: "#34C759".into(),
+            warning_color: "#FF9500".into(),
+            error_color: "#FF3B30".into(),
+            font_family: "SF Pro".into(),
+        },
+        extensions: ExtensionConfig::default(),
+        hooks: vec![],
+        business_rules: vec![],
     };
 
     let generator = SwiftGenerator::new();
@@ -161,8 +203,29 @@ fn generate_finance_app(output_dir: &PathBuf) {
                 expected_query_time: Some("2.78 microseconds".into()),
             },
             result_view: None,
+            how_it_works_panel: None,
         }),
         offline_capable: true,
+        additional_views: vec![],
+        datasets: vec![],
+        navigation: NavigationStructure {
+            style: NavigationStyle::TabBar,
+            tabs: vec![],
+        },
+        theme: AppTheme {
+            primary_color: "#34C759".into(),
+            accent_color: "#32ADE6".into(),
+            background_color: "#FFFFFF".into(),
+            text_color: "#000000".into(),
+            card_background: "#F2F2F7".into(),
+            success_color: "#34C759".into(),
+            warning_color: "#FF9500".into(),
+            error_color: "#FF3B30".into(),
+            font_family: "SF Pro".into(),
+        },
+        extensions: ExtensionConfig::default(),
+        hooks: vec![],
+        business_rules: vec![],
     };
 
     let generator = SwiftGenerator::new();

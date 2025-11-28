@@ -10,17 +10,23 @@
 //! 4. Output complete Xcode/Android Studio project
 //! 
 //! # Example
-//! 
-//! ```rust
-//! use mobile_app_generator::{generate_app, GeneratorConfig};
-//! 
+//!
+//! ```rust,no_run
+//! use mobile_app_generator::{generate_app, GeneratorConfig, Platform};
+//! use std::path::PathBuf;
+//!
+//! # fn main() -> mobile_app_generator::Result<()> {
 //! let config = GeneratorConfig {
-//!     ontology_path: "insurance-risk-analyzer.ttl".into(),
-//!     output_dir: "build/InsuranceApp".into(),
+//!     ontology_path: PathBuf::from("insurance-risk-analyzer.ttl"),
+//!     output_dir: PathBuf::from("build/InsuranceApp"),
 //!     platform: Platform::iOS,
+//!     validate: true,
+//!     verbose: false,
 //! };
-//! 
+//!
 //! generate_app(config)?;
+//! # Ok(())
+//! # }
 //! ```
 
 pub mod model;
@@ -214,10 +220,31 @@ mod tests {
                     expected_query_time: Some("2.78 microseconds".into()),
                 },
                 result_view: None,
+                how_it_works_panel: None,
             }),
             offline_capable: true,
+            additional_views: vec![],
+            datasets: vec![],
+            navigation: NavigationStructure {
+                style: NavigationStyle::TabBar,
+                tabs: vec![],
+            },
+            theme: AppTheme {
+                primary_color: "#007AFF".into(),
+                accent_color: "#5AC8FA".into(),
+                background_color: "#FFFFFF".into(),
+                text_color: "#000000".into(),
+                card_background: "#F2F2F7".into(),
+                success_color: "#34C759".into(),
+                warning_color: "#FF9500".into(),
+                error_color: "#FF3B30".into(),
+                font_family: "SF Pro".into(),
+            },
+            extensions: ExtensionConfig::default(),
+            hooks: vec![],
+            business_rules: vec![],
         };
-        
+
         assert!(validate_app(&app).is_ok());
     }
 }

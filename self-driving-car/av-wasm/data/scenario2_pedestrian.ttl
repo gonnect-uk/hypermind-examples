@@ -1,0 +1,69 @@
+@prefix av: <http://zenya.com/ontology/av#> .
+@prefix sensor: <http://zenya.com/ontology/sensor#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# Scenario 2: Pedestrian in Crosswalk
+# Vehicle traveling at 36 km/h (10 m/s) approaching crosswalk with pedestrian
+
+# Ego Vehicle
+<http://zenya.com/vehicle/ego>
+    a av:Vehicle ;
+    rdfs:label "Ego Vehicle" ;
+    av:hasVelocity "10.0"^^xsd:float ;  # m/s (36 km/h)
+    av:positionX "-60.0"^^xsd:float ;   # meters
+    av:carLength "5.0"^^xsd:float .     # meters
+
+# Crosswalk
+<http://zenya.com/crosswalk/cw_001>
+    a av:Crosswalk ;
+    rdfs:label "Crosswalk 001" ;
+    av:positionX "0.0"^^xsd:float ;     # meters
+    av:width "4.0"^^xsd:float ;         # meters
+    av:hasMarking "zebra"^^xsd:string ;
+    av:distanceFrom <http://zenya.com/vehicle/ego> ;
+    av:distanceMeters "60.0"^^xsd:float .
+
+# Pedestrian
+<http://zenya.com/pedestrian/ped_001>
+    a av:Pedestrian ;
+    rdfs:label "Pedestrian 001" ;
+    av:positionX "0.0"^^xsd:float ;     # meters (in crosswalk)
+    av:positionY "2.0"^^xsd:float ;     # meters
+    av:velocity "1.4"^^xsd:float ;      # m/s (walking speed)
+    av:direction "crossing"^^xsd:string ;
+    av:inCrosswalk <http://zenya.com/crosswalk/cw_001> ;
+    av:isVulnerableRoadUser "true"^^xsd:boolean .
+
+# LiDAR Sensor
+<http://zenya.com/sensor/lidar_front>
+    a sensor:LidarSensor ;
+    rdfs:label "Front LiDAR" ;
+    sensor:detects <http://zenya.com/pedestrian/ped_001> ;
+    sensor:confidence "0.95"^^xsd:float ;
+    sensor:timestamp "2025-11-27T12:05:00Z"^^xsd:dateTime ;
+    sensor:rangeMeters "60.0"^^xsd:float .
+
+# Physics Parameters
+<http://zenya.com/physics/stopping>
+    a av:PhysicsCalculation ;
+    av:deceleration "6.0"^^xsd:float ;  # m/s² (emergency braking)
+    av:frictionCoefficient "1.0"^^xsd:float ;
+    av:safetyMargin "15.0"^^xsd:float . # meters
+
+# Safety Standard
+<http://zenya.com/standard/iso26262>
+    a av:SafetyStandard ;
+    rdfs:label "ISO 26262" ;
+    av:requiresEmergencyBrake "true"^^xsd:boolean ;
+    av:minConfidence "0.90"^^xsd:float ;
+    av:vulnerableRoadUserPriority "highest"^^xsd:string .
+
+# Collision Risk Assessment
+<http://zenya.com/risk/collision_001>
+    a av:CollisionRisk ;
+    av:subject <http://zenya.com/vehicle/ego> ;
+    av:object <http://zenya.com/pedestrian/ped_001> ;
+    av:timeToCollision "6.0"^^xsd:float ;  # seconds
+    av:riskLevel "high"^^xsd:string ;
+    av:requiresAction "immediate_braking"^^xsd:string .

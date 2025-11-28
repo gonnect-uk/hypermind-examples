@@ -19,6 +19,11 @@ thiserror = { workspace = true }
 serde = { workspace = true }
 rayon = "1.8"  # Parallel iteration for bulk operations
 dashmap = { workspace = true }  # Lock-free concurrent hash map
+num_cpus = "1.16"  # CPU count for parallel operations
+
+# Production observability
+tracing = "0.1"  # Structured logging
+metrics = "0.23"  # Metrics collection
 
 # Storage backends (optional features)
 rocksdb = { workspace = true, optional = true }

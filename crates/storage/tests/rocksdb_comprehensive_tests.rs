@@ -12,6 +12,8 @@
 //!
 //! TARGET: 85 tests at 100% pass rate
 
+#![cfg(feature = "rocksdb-backend")]
+
 use storage::{RocksDbBackend, StorageBackend};
 use tempfile::TempDir;
 

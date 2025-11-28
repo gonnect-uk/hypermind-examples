@@ -196,7 +196,13 @@ impl GraphDB {
 
         // Execute SELECT query
         match query {
-            Query::Select { pattern, .. } => {
+            Query::Select { pattern, dataset, .. } => {
+                // CRITICAL: Pass FROM/FROM NAMED dataset to executor if specified
+                // This was the root cause of "FROM clause not implemented" bug
+                if !dataset.default.is_empty() || !dataset.named.is_empty() {
+                    executor = executor.with_dataset(dataset);
+                }
+
                 // Wrap pattern with GRAPH clause for app isolation
                 let graph_scoped_pattern = Algebra::Graph {
                     graph: VarOrNode::Node(self.app_graph_node.clone()),
@@ -239,7 +245,12 @@ impl GraphDB {
 
         // Execute based on query type
         match query {
-            Query::Select { pattern, .. } => {
+            Query::Select { pattern, dataset, .. } => {
+                // CRITICAL: Pass FROM/FROM NAMED dataset to executor if specified
+                if !dataset.default.is_empty() || !dataset.named.is_empty() {
+                    executor = executor.with_dataset(dataset);
+                }
+
                 // Wrap pattern with GRAPH clause for app isolation
                 let graph_scoped_pattern = Algebra::Graph {
                     graph: VarOrNode::Node(self.app_graph_node.clone()),

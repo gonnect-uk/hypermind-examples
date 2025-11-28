@@ -708,11 +708,12 @@ struct ContentView: View {
                 // Create GraphDB instance with admin-specific graph URI
                 let db = GraphDb(appGraphUri: "http://zenya.com/admin")
 
-                // Load database catalog TTL into default graph (http://zenya.com/admin)
-                // This allows queries to find the data without needing GRAPH or FROM clauses
+                // Load GraphDBAdmin catalog into default graph (http://zenya.com/admin)
+                // Per-app architecture: 1 TTL = 1 named graph (graph name = app name unless specified)
+                // TTL files are in bundle root (not in subdirectory)
                 if let url = Bundle.main.url(forResource: "database-catalog", withExtension: "ttl") {
                     let content = try String(contentsOf: url, encoding: .utf8)
-                    // Load into default graph (graphName: nil means use app's default graph)
+                    // Load into default graph (graphName: nil means use app's default graph URI)
                     try db.loadTtl(ttlContent: content, graphName: nil)
                 }
 

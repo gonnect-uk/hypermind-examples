@@ -244,7 +244,9 @@ impl TripleMapper {
         let required = self.get_property_as_bool(entity, &["isRequired", "http://universal-kg.com/meta/isRequired"])?;
         let data_type = self.get_required_property(entity, &["dataType", "http://universal-kg.com/meta/dataType"])?;
         let binds_to_property = self.get_required_property(entity, &["bindsToProperty", "http://universal-kg.com/meta/bindsToProperty"])?;
-        let validation = None; // TODO: Map validation rules
+
+        // Production-ready validation rule mapping (scalable for complex rules)
+        let validation = self.map_validation_rule(entity)?;
 
         if field_type.contains("TextField") {
             let min_length = self.get_property_as_int(entity, &["minLength", "http://universal-kg.com/meta/minLength"]).unwrap_or(1);
@@ -423,6 +425,31 @@ impl TripleMapper {
     fn get_property_as_bool(&self, entity: &OntologyEntity, keys: &[&str]) -> Result<bool> {
         let value = self.get_required_property(entity, keys)?;
         Ok(value.contains("true"))
+    }
+
+    /// Map validation rule - pure data-driven (NO hardcoding, enterprise-grade)
+    ///
+    /// Scalable approach:
+    /// - Lazy evaluation: Early return if no validation properties exist
+    /// - Data-driven: ALL messages come from RDF ontology
+    /// - Mobile-optimized: Minimal allocations
+    /// - No hardcoding: Validation rules defined in ontology, not code
+    fn map_validation_rule(&self, entity: &OntologyEntity) -> Result<Option<ValidationRule>> {
+        // Lazy evaluation: Check if ANY validation properties exist before allocating
+        let rule_type = match self.get_optional_property(entity, &["validationRuleType", "http://universal-kg.com/meta/validationRuleType"]) {
+            Some(rt) => rt,
+            None => return Ok(None), // Fast path: No validation needed (most common case)
+        };
+
+        // Pure data-driven: All properties come from RDF ontology
+        let pattern = self.get_optional_property(entity, &["validationPattern", "http://universal-kg.com/meta/validationPattern"]);
+        let message = self.get_required_property(entity, &["validationMessage", "http://universal-kg.com/meta/validationMessage"])?;
+
+        Ok(Some(ValidationRule {
+            rule_type,
+            pattern,
+            message,
+        }))
     }
 }
 

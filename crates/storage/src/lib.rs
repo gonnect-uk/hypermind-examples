@@ -42,6 +42,7 @@
 mod backend;
 mod indexes;
 mod inmemory;
+mod observability;
 mod pattern;
 mod quad_store;
 mod transaction;
@@ -49,6 +50,9 @@ mod transaction;
 // SIMD optimizations (optional, requires nightly)
 #[cfg(feature = "simd")]
 pub mod simd_encode;
+
+#[cfg(feature = "simd")]
+pub mod simd;
 
 // Optional persistent storage backends
 #[cfg(feature = "rocksdb-backend")]
@@ -60,6 +64,10 @@ mod lmdb_backend;
 pub use backend::{StorageBackend, StorageError, StorageResult, StorageStats};
 pub use indexes::{Index, IndexType, QuadIndex};
 pub use inmemory::InMemoryBackend;
+pub use observability::{
+    track_operation, record_error, track_batch, record_throughput,
+    OperationType, HealthStatus, PerformanceMetrics,
+};
 pub use pattern::{NodePattern, QuadPattern};
 pub use quad_store::QuadStore;
 pub use transaction::Transaction;

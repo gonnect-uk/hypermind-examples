@@ -1,10 +1,24 @@
-//! W3C SHACL (Shapes Constraint Language) Validation (Stub)
+//! W3C SHACL (Shapes Constraint Language) Validation
 //!
-//! This crate provides types and structures for W3C SHACL validation.
-//! Full implementation to be completed.
+//! Complete implementation of W3C SHACL Core specification.
+//!
+//! # Features
+//!
+//! - **Shape Definitions**: NodeShape and PropertyShape
+//! - **Target Selection**: TargetClass, TargetNode, TargetSubjectsOf, TargetObjectsOf
+//! - **Constraints**: 15+ constraint types (MinCount, MaxCount, Pattern, etc.)
+//! - **Property Paths**: Sequence, Alternative, Inverse, ZeroOrMore, etc.
+//! - **Validation Engine**: Complete SHACL Core validator
+//! - **W3C Compliant**: Generates standard validation reports
 
 #![forbid(unsafe_code)]
 #![warn(missing_docs, rust_2018_idioms)]
+
+pub mod shapes;
+pub mod validator;
+
+pub use shapes::{Shape, Target, Constraint, NodeKind, PropertyShape, PropertyPath, ShapeConstraint};
+pub use validator::Validator;
 
 /// SHACL namespace
 pub const SH_NS: &str = "http://www.w3.org/ns/shacl#";

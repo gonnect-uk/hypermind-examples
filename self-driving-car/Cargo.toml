@@ -5,6 +5,7 @@ members = [
     "crates/simulator-bridge",
     "crates/av-simulation",
     "crates/web-dashboard",
+    "av-wasm", "av-cli-standalone", "av-hypergraph-demo",
 ]
 resolver = "2"
 

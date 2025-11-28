@@ -10,7 +10,7 @@
 //! - WCOJ (Worst-Case Optimal Join) algorithms from ARQ research
 
 use crate::{
-    Aggregate, Algebra, Binding, BindingSet, BuiltinFunction, Expression,
+    Aggregate, Algebra, Binding, BindingSet, BuiltinFunction, Dataset, Expression,
     GraphTarget, PropertyPath, QuadPattern as SparqlQuadPattern,
     TriplePattern, Update, VarOrNode, Variable,
 };
@@ -111,6 +111,9 @@ pub struct Executor<'a, B: StorageBackend> {
 
     /// Custom function registry
     function_registry: Option<Arc<FunctionRegistry<'a>>>,
+
+    /// Dataset specification (FROM/FROM NAMED clauses)
+    dataset: Option<Dataset<'a>>,
 }
 
 impl<'a, B: StorageBackend> Executor<'a, B> {
@@ -121,12 +124,19 @@ impl<'a, B: StorageBackend> Executor<'a, B> {
             dictionary: Arc::clone(store.dictionary()),
             current_graph: None,
             function_registry: None,
+            dataset: None,
         }
     }
 
     /// Set the custom function registry
     pub fn with_function_registry(mut self, registry: Arc<FunctionRegistry<'a>>) -> Self {
         self.function_registry = Some(registry);
+        self
+    }
+
+    /// Set the dataset specification (FROM/FROM NAMED clauses)
+    pub fn with_dataset(mut self, dataset: Dataset<'a>) -> Self {
+        self.dataset = Some(dataset);
         self
     }
 
@@ -304,6 +314,23 @@ impl<'a, B: StorageBackend> Executor<'a, B> {
 
             Algebra::Graph { graph, input } => {
                 // Execute pattern in specified named graph
+                // If FROM NAMED is specified, only those graphs are accessible
+
+                // Check if graph is allowed by FROM NAMED constraint
+                if let Some(dataset) = &self.dataset {
+                    if !dataset.named.is_empty() {
+                        if let VarOrNode::Node(node) = graph {
+                            // Check if this graph is in FROM NAMED list
+                            if let Some(iri_ref) = node.as_iri() {
+                                if !dataset.named.contains(&iri_ref.as_str()) {
+                                    // Graph not in FROM NAMED - return empty results
+                                    return Ok(BindingSet::new());
+                                }
+                            }
+                        }
+                    }
+                }
+
                 // Save current graph context and restore after
                 let saved_graph = self.current_graph.clone();
 
@@ -317,7 +344,7 @@ impl<'a, B: StorageBackend> Executor<'a, B> {
                         // Variable graph - need to iterate over all graphs
                         // This requires extending bindings with graph variable
                         // For now, execute in all named graphs and bind results
-                        // Full implementation would enumerate graphs in dataset
+                        // If FROM NAMED specified, only use those graphs
                     }
                 }
 
@@ -484,6 +511,15 @@ impl<'a, B: StorageBackend> Executor<'a, B> {
         // Alternative solutions (arena allocator, refactoring store API) add complexity without
         // measurable benefit. Memory reclaimed when transaction/query context is dropped.
 
+        // Determine graph pattern based on context and dataset specification
+        // Priority: current_graph (GRAPH clause) > dataset (FROM/FROM NAMED) > any graph
+        let use_dataset = self.current_graph.is_none() && self.dataset.is_some();
+
+        if use_dataset {
+            // FROM/FROM NAMED dataset specified - match only against default graphs
+            return self.evaluate_with_dataset(pattern);
+        }
+
         // Use current_graph if set (from GRAPH pattern), otherwise match any graph
         let graph_pattern = match &self.current_graph {
             Some(g) => NodePattern::Concrete(g.clone()),
@@ -520,6 +556,71 @@ impl<'a, B: StorageBackend> Executor<'a, B> {
         }
 
         Ok(bindings)
+    }
+
+    /// Evaluate pattern with FROM/FROM NAMED dataset specification
+    fn evaluate_with_dataset(&self, pattern: &TriplePattern<'a>) -> ExecutionResult<BindingSet<'a>> {
+        let dataset = self.dataset.as_ref().unwrap();
+        let mut all_bindings = BindingSet::new();
+
+        // If FROM clauses specified, match against those graphs
+        if !dataset.default.is_empty() {
+            for graph_iri in &dataset.default {
+                let graph_node = Node::iri(self.dictionary.intern(graph_iri));
+                let quad_pattern = Box::leak(Box::new(StorageQuadPattern::new(
+                    self.var_or_node_to_pattern(&pattern.subject),
+                    self.var_or_node_to_pattern(&pattern.predicate),
+                    self.var_or_node_to_pattern(&pattern.object),
+                    NodePattern::Concrete(graph_node),
+                )));
+
+                let quads: Vec<Quad<'a>> = self.store.find(quad_pattern).map(|q| q.clone()).collect();
+
+                for quad in quads {
+                    let mut binding = Binding::new();
+
+                    if let VarOrNode::Var(ref var) = pattern.subject {
+                        binding.bind(var.clone(), quad.subject.clone());
+                    }
+                    if let VarOrNode::Var(ref var) = pattern.predicate {
+                        binding.bind(var.clone(), quad.predicate.clone());
+                    }
+                    if let VarOrNode::Var(ref var) = pattern.object {
+                        binding.bind(var.clone(), quad.object.clone());
+                    }
+
+                    all_bindings.add(binding);
+                }
+            }
+        } else {
+            // No FROM clause - use default graph (graph = None in storage)
+            let quad_pattern = Box::leak(Box::new(StorageQuadPattern::new(
+                self.var_or_node_to_pattern(&pattern.subject),
+                self.var_or_node_to_pattern(&pattern.predicate),
+                self.var_or_node_to_pattern(&pattern.object),
+                NodePattern::Any, // Default graph
+            )));
+
+            let quads: Vec<Quad<'a>> = self.store.find(quad_pattern).map(|q| q.clone()).collect();
+
+            for quad in quads {
+                let mut binding = Binding::new();
+
+                if let VarOrNode::Var(ref var) = pattern.subject {
+                    binding.bind(var.clone(), quad.subject.clone());
+                }
+                if let VarOrNode::Var(ref var) = pattern.predicate {
+                    binding.bind(var.clone(), quad.predicate.clone());
+                }
+                if let VarOrNode::Var(ref var) = pattern.object {
+                    binding.bind(var.clone(), quad.object.clone());
+                }
+
+                all_bindings.add(binding);
+            }
+        }
+
+        Ok(all_bindings)
     }
 
     /// Convert VarOrNode to NodePattern
@@ -1060,9 +1161,41 @@ impl<'a, B: StorageBackend> Executor<'a, B> {
                         self.as_string(&pattern_val),
                         self.as_string(&replacement_val),
                     ) {
-                        // TODO: Support regex flags if provided
-                        let result = s.replace(pattern, replacement);
-                        Ok(Some(Node::literal_str(self.dictionary.intern(&result))))
+                        // Support SPARQL 1.1 regex flags: i (case-insensitive), m (multiline), s (dot-all), x (extended)
+                        let flags = if let Some(flags_box) = flags_expr {
+                            if let Some(flags_val) = self.evaluate_expression(flags_box, binding)? {
+                                self.as_string(&flags_val).unwrap_or("")
+                            } else {
+                                ""
+                            }
+                        } else {
+                            ""
+                        };
+
+                        if flags.is_empty() {
+                            // Simple string replacement (no regex)
+                            let result = s.replace(pattern, replacement);
+                            Ok(Some(Node::literal_str(self.dictionary.intern(&result))))
+                        } else {
+                            // Regex replacement with flags
+                            let mut builder = regex::RegexBuilder::new(pattern);
+                            for flag in flags.chars() {
+                                match flag {
+                                    'i' => { builder.case_insensitive(true); }
+                                    'm' => { builder.multi_line(true); }
+                                    's' => { builder.dot_matches_new_line(true); }
+                                    'x' => { builder.ignore_whitespace(true); }
+                                    _ => return Err(ExecutionError::EvaluationError(format!("Invalid regex flag: {}", flag))),
+                                }
+                            }
+                            match builder.build() {
+                                Ok(re) => {
+                                    let result = re.replace_all(s, replacement).to_string();
+                                    Ok(Some(Node::literal_str(self.dictionary.intern(&result))))
+                                }
+                                Err(_) => Err(ExecutionError::EvaluationError("Invalid regex pattern".to_string())),
+                            }
+                        }
                     } else {
                         Err(ExecutionError::TypeError("REPLACE requires strings".to_string()))
                     }
@@ -1071,15 +1204,36 @@ impl<'a, B: StorageBackend> Executor<'a, B> {
                 }
             }
 
-            BuiltinFunction::Regex(str_expr, pattern_expr, _flags_expr) => {
+            BuiltinFunction::Regex(str_expr, pattern_expr, flags_expr) => {
                 // REGEX(str, pattern [, flags]) - test if string matches regex
                 if let (Some(str_val), Some(pattern_val)) = (
                     self.evaluate_expression(str_expr, binding)?,
                     self.evaluate_expression(pattern_expr, binding)?,
                 ) {
                     if let (Some(s), Some(pattern)) = (self.as_string(&str_val), self.as_string(&pattern_val)) {
-                        // TODO: Support regex flags
-                        match regex::Regex::new(pattern) {
+                        // Support SPARQL 1.1 regex flags: i (case-insensitive), m (multiline), s (dot-all), x (extended)
+                        let flags = if let Some(flags_box) = flags_expr {
+                            if let Some(flags_val) = self.evaluate_expression(flags_box, binding)? {
+                                self.as_string(&flags_val).unwrap_or("")
+                            } else {
+                                ""
+                            }
+                        } else {
+                            ""
+                        };
+
+                        let mut builder = regex::RegexBuilder::new(pattern);
+                        for flag in flags.chars() {
+                            match flag {
+                                'i' => { builder.case_insensitive(true); }
+                                'm' => { builder.multi_line(true); }
+                                's' => { builder.dot_matches_new_line(true); }
+                                'x' => { builder.ignore_whitespace(true); }
+                                _ => return Err(ExecutionError::EvaluationError(format!("Invalid regex flag: {}", flag))),
+                            }
+                        }
+
+                        match builder.build() {
                             Ok(re) => Ok(Some(self.bool_node(re.is_match(s)))),
                             Err(_) => Err(ExecutionError::EvaluationError("Invalid regex pattern".to_string())),
                         }
@@ -2794,5 +2948,189 @@ mod tests {
 
         let results = executor.execute(&algebra).unwrap();
         assert_eq!(results.len(), 2);
+    }
+
+    #[test]
+    fn test_from_clause() {
+        // Test FROM clause - should only match specified graph
+        let mut store = QuadStore::new_in_memory();
+        let dict = Arc::clone(store.dictionary());
+
+        // Add data to different graphs
+        let s = dict.intern("http://example.org/alice");
+        let p = dict.intern("http://example.org/name");
+        let g1 = dict.intern("http://example.org/graph1");
+        let g2 = dict.intern("http://example.org/graph2");
+
+        // Triple in graph1
+        store.insert(Quad::new(
+            Node::iri(s),
+            Node::iri(p),
+            Node::literal_str(dict.intern("Alice")),
+            Some(Node::iri(g1)),
+        )).unwrap();
+
+        // Triple in graph2
+        store.insert(Quad::new(
+            Node::iri(s),
+            Node::iri(p),
+            Node::literal_str(dict.intern("Alice2")),
+            Some(Node::iri(g2)),
+        )).unwrap();
+
+        // Create dataset with FROM graph1
+        let dataset = Dataset {
+            default: vec!["http://example.org/graph1"],
+            named: vec![],
+        };
+
+        let mut executor = Executor::new(&store).with_dataset(dataset);
+
+        let pattern = TriplePattern {
+            subject: VarOrNode::Var(Variable::new("s")),
+            predicate: VarOrNode::Var(Variable::new("p")),
+            object: VarOrNode::Var(Variable::new("o")),
+        };
+
+        let algebra = Algebra::BGP(vec![pattern]);
+        let results = executor.execute(&algebra).unwrap();
+
+        // Should only find triple from graph1
+        assert_eq!(results.len(), 1);
+        let binding = &results.bindings()[0];
+        let val = binding.get(&Variable::new("o")).unwrap();
+        assert_eq!(val.as_literal().unwrap().lexical_form, "Alice");
+    }
+
+    #[test]
+    fn test_from_named_with_graph() {
+        // Test FROM NAMED - GRAPH clause should only access named graphs
+        let mut store = QuadStore::new_in_memory();
+        let dict = Arc::clone(store.dictionary());
+
+        let s = dict.intern("http://example.org/alice");
+        let p = dict.intern("http://example.org/name");
+        let g1 = dict.intern("http://example.org/graph1");
+        let g2 = dict.intern("http://example.org/graph2");
+
+        // Add data to both graphs
+        store.insert(Quad::new(
+            Node::iri(s),
+            Node::iri(p),
+            Node::literal_str(dict.intern("Alice1")),
+            Some(Node::iri(g1)),
+        )).unwrap();
+
+        store.insert(Quad::new(
+            Node::iri(s),
+            Node::iri(p),
+            Node::literal_str(dict.intern("Alice2")),
+            Some(Node::iri(g2)),
+        )).unwrap();
+
+        // Create dataset with FROM NAMED graph1 only
+        let dataset = Dataset {
+            default: vec![],
+            named: vec!["http://example.org/graph1"],
+        };
+
+        let mut executor = Executor::new(&store).with_dataset(dataset);
+
+        // Query graph1 (should succeed - it's in FROM NAMED)
+        let pattern1 = TriplePattern {
+            subject: VarOrNode::Var(Variable::new("s")),
+            predicate: VarOrNode::Var(Variable::new("p")),
+            object: VarOrNode::Var(Variable::new("o")),
+        };
+
+        let algebra1 = Algebra::Graph {
+            graph: VarOrNode::Node(Node::iri(g1)),
+            input: Box::new(Algebra::BGP(vec![pattern1])),
+        };
+
+        let results1 = executor.execute(&algebra1).unwrap();
+        assert_eq!(results1.len(), 1);
+
+        // Query graph2 (should return empty - not in FROM NAMED)
+        let pattern2 = TriplePattern {
+            subject: VarOrNode::Var(Variable::new("s")),
+            predicate: VarOrNode::Var(Variable::new("p")),
+            object: VarOrNode::Var(Variable::new("o")),
+        };
+
+        let algebra2 = Algebra::Graph {
+            graph: VarOrNode::Node(Node::iri(g2)),
+            input: Box::new(Algebra::BGP(vec![pattern2])),
+        };
+
+        let results2 = executor.execute(&algebra2).unwrap();
+        assert_eq!(results2.len(), 0); // Graph not allowed
+    }
+
+    #[test]
+    fn test_from_multiple_graphs() {
+        // Test FROM with multiple graphs - should merge results
+        let mut store = QuadStore::new_in_memory();
+        let dict = Arc::clone(store.dictionary());
+
+        let s1 = dict.intern("http://example.org/alice");
+        let s2 = dict.intern("http://example.org/bob");
+        let p = dict.intern("http://example.org/name");
+        let g1 = dict.intern("http://example.org/graph1");
+        let g2 = dict.intern("http://example.org/graph2");
+        let g3 = dict.intern("http://example.org/graph3");
+
+        // Alice in graph1
+        store.insert(Quad::new(
+            Node::iri(s1),
+            Node::iri(p),
+            Node::literal_str(dict.intern("Alice")),
+            Some(Node::iri(g1)),
+        )).unwrap();
+
+        // Bob in graph2
+        store.insert(Quad::new(
+            Node::iri(s2),
+            Node::iri(p),
+            Node::literal_str(dict.intern("Bob")),
+            Some(Node::iri(g2)),
+        )).unwrap();
+
+        // Charlie in graph3 (not in FROM)
+        let s3 = dict.intern("http://example.org/charlie");
+        store.insert(Quad::new(
+            Node::iri(s3),
+            Node::iri(p),
+            Node::literal_str(dict.intern("Charlie")),
+            Some(Node::iri(g3)),
+        )).unwrap();
+
+        // Create dataset with FROM graph1 and graph2
+        let dataset = Dataset {
+            default: vec!["http://example.org/graph1", "http://example.org/graph2"],
+            named: vec![],
+        };
+
+        let mut executor = Executor::new(&store).with_dataset(dataset);
+
+        let pattern = TriplePattern {
+            subject: VarOrNode::Var(Variable::new("s")),
+            predicate: VarOrNode::Node(Node::iri(p)),
+            object: VarOrNode::Var(Variable::new("o")),
+        };
+
+        let algebra = Algebra::BGP(vec![pattern]);
+        let results = executor.execute(&algebra).unwrap();
+
+        // Should find Alice and Bob (from graph1 and graph2), but NOT Charlie
+        assert_eq!(results.len(), 2);
+
+        let names: Vec<&str> = results.iter()
+            .map(|b| b.get(&Variable::new("o")).unwrap().as_literal().unwrap().lexical_form)
+            .collect();
+
+        assert!(names.contains(&"Alice"));
+        assert!(names.contains(&"Bob"));
+        assert!(!names.iter().any(|&n| n == "Charlie"));
     }
 }

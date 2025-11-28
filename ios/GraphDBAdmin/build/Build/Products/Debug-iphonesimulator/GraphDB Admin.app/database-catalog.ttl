@@ -1,0 +1,208 @@
+@prefix : <http://zenya.com/admin/> .
+@prefix db: <http://zenya.com/domain/database/> .
+@prefix meta: <http://zenya.com/ontology/mobile-app/> .
+@prefix schema: <http://schema.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# =============================================================================
+# GRAPHDB ADMIN - Database Catalog & Performance Metrics
+# Compliant with universal-meta-ontology.ttl
+# Sub-microsecond knowledge graph operations (2.78 µs lookup!)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# GRAPHS (3 Named Graphs)
+# -----------------------------------------------------------------------------
+
+:Graph_Insurance a db:NamedGraph ;
+    rdfs:label "Insurance Knowledge Graph" ;
+    db:graphUri "http://zenya.com/graph/insurance" ;
+    db:tripleCount 485 ;
+    db:entityCount 23 ;
+    db:predicateCount 28 ;
+    db:domain "Insurance" ;
+    db:description "Insurance policies, customers, products, violations, and underwriting rules" ;
+    db:createdDate "2024-11-01"^^xsd:date ;
+    db:lastModified "2024-11-21"^^xsd:date ;
+    db:storageSize "48 KB" .
+
+:Graph_Retail a db:NamedGraph ;
+    rdfs:label "Retail Product Catalog" ;
+    db:graphUri "http://zenya.com/graph/retail" ;
+    db:tripleCount 412 ;
+    db:entityCount 35 ;
+    db:predicateCount 24 ;
+    db:domain "Retail" ;
+    db:description "Products, categories, brands, inventory alerts, and pricing" ;
+    db:createdDate "2024-10-15"^^xsd:date ;
+    db:lastModified "2024-11-20"^^xsd:date ;
+    db:storageSize "42 KB" .
+
+:Graph_Compliance a db:NamedGraph ;
+    rdfs:label "Financial Compliance" ;
+    db:graphUri "http://zenya.com/graph/compliance" ;
+    db:tripleCount 523 ;
+    db:entityCount 41 ;
+    db:predicateCount 32 ;
+    db:domain "Finance" ;
+    db:description "Transactions, compliance rules, regulatory frameworks, and violations" ;
+    db:createdDate "2024-09-20"^^xsd:date ;
+    db:lastModified "2024-11-19"^^xsd:date ;
+    db:storageSize "54 KB" .
+
+# -----------------------------------------------------------------------------
+# ENTITIES (Sample Entities from Each Graph)
+# -----------------------------------------------------------------------------
+
+:Entity_Policy001 a db:Entity ;
+    rdfs:label "Policy001" ;
+    db:entityUri "http://zenya.com/insurance/Policy001" ;
+    db:entityType "ins:Policy" ;
+    db:graph :Graph_Insurance ;
+    db:tripleCount 12 ;
+    db:outgoingEdges 8 ;
+    db:incomingEdges 4 .
+
+:Entity_Customer001 a db:Entity ;
+    rdfs:label "Customer001" ;
+    db:entityUri "http://zenya.com/insurance/Customer001" ;
+    db:entityType "ins:Customer" ;
+    db:graph :Graph_Insurance ;
+    db:tripleCount 15 ;
+    db:outgoingEdges 12 ;
+    db:incomingEdges 3 .
+
+:Entity_Product001 a db:Entity ;
+    rdfs:label "iPhone 15 Pro" ;
+    db:entityUri "http://zenya.com/retail/Product001" ;
+    db:entityType "schema:Product" ;
+    db:graph :Graph_Retail ;
+    db:tripleCount 14 ;
+    db:outgoingEdges 10 ;
+    db:incomingEdges 4 .
+
+:Entity_Transaction001 a db:Entity ;
+    rdfs:label "Transaction001" ;
+    db:entityUri "http://zenya.com/compliance/Transaction001" ;
+    db:entityType "fin:Transaction" ;
+    db:graph :Graph_Compliance ;
+    db:tripleCount 11 ;
+    db:outgoingEdges 8 ;
+    db:incomingEdges 3 .
+
+# -----------------------------------------------------------------------------
+# PREDICATES (Common Predicates)
+# -----------------------------------------------------------------------------
+
+:Predicate_type a db:Predicate ;
+    rdfs:label "rdf:type" ;
+    db:predicateUri "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" ;
+    db:usageCount 99 ;
+    db:description "Class membership assertion" .
+
+:Predicate_label a db:Predicate ;
+    rdfs:label "rdfs:label" ;
+    db:predicateUri "http://www.w3.org/2000/01/rdf-schema#label" ;
+    db:usageCount 87 ;
+    db:description "Human-readable name" .
+
+:Predicate_policyHolder a db:Predicate ;
+    rdfs:label "ins:policyHolder" ;
+    db:predicateUri "http://zenya.com/domain/insurance/policyHolder" ;
+    db:usageCount 5 ;
+    db:description "Links policy to customer" .
+
+:Predicate_amount a db:Predicate ;
+    rdfs:label "fin:amount" ;
+    db:predicateUri "http://zenya.com/domain/finance/amount" ;
+    db:usageCount 8 ;
+    db:description "Transaction amount" .
+
+:Predicate_price a db:Predicate ;
+    rdfs:label "schema:price" ;
+    db:predicateUri "https://schema.org/price" ;
+    db:usageCount 12 ;
+    db:description "Product price" .
+
+# -----------------------------------------------------------------------------
+# PERFORMANCE METRICS
+# -----------------------------------------------------------------------------
+
+:PerformanceMetrics a db:PerformanceData ;
+    rdfs:label "Current Performance Metrics" ;
+    db:lookupTime "2.78"^^xsd:float ;
+    db:lookupTimeUnit "µs" ;
+    db:lookupRate 359000 ;
+    db:lookupRateUnit "ops/sec" ;
+    db:insertRate 146000 ;
+    db:insertRateUnit "triples/sec" ;
+    db:memoryPerTriple 24 ;
+    db:memoryUnit "bytes" ;
+    db:benchmarkDate "2024-11-18"^^xsd:date ;
+    db:comparedTo "RDFox" ;
+    db:speedupFactor "35-180x" ;
+    db:memoryEfficiency "25% better" .
+
+# -----------------------------------------------------------------------------
+# SAMPLE QUERIES (Example SPARQL Queries)
+# -----------------------------------------------------------------------------
+
+:Query_AllPolicies a db:SPARQLQuery ;
+    rdfs:label "Get All Policies" ;
+    db:queryId "Q001" ;
+    db:sparql """SELECT ?policy ?holder ?risk WHERE {
+    ?policy a ins:Policy .
+    ?policy ins:policyHolder ?holderRef .
+    ?holderRef rdfs:label ?holder .
+    ?policy ins:riskLevel ?risk .
+}""" ;
+    db:avgExecutionTime "15.2"^^xsd:float ;
+    db:executionTimeUnit "µs" ;
+    db:expectedResults 5 .
+
+:Query_HighRiskTransactions a db:SPARQLQuery ;
+    rdfs:label "High Risk Transactions" ;
+    db:queryId "Q002" ;
+    db:sparql """SELECT ?txn ?amount ?risk WHERE {
+    ?txn a fin:Transaction .
+    ?txn fin:amount ?amount .
+    ?txn fin:riskScore ?risk .
+    FILTER (?risk > 0.7)
+}""" ;
+    db:avgExecutionTime "8.5"^^xsd:float ;
+    db:executionTimeUnit "µs" ;
+    db:expectedResults 2 .
+
+:Query_ProductInventory a db:SPARQLQuery ;
+    rdfs:label "Product Inventory Status" ;
+    db:queryId "Q003" ;
+    db:sparql """SELECT ?product ?name ?stock WHERE {
+    ?product a schema:Product .
+    ?product schema:name ?name .
+    ?product prod:stockQuantity ?stock .
+    FILTER (?stock < 20)
+}""" ;
+    db:avgExecutionTime "12.3"^^xsd:float ;
+    db:executionTimeUnit "µs" ;
+    db:expectedResults 3 .
+
+# -----------------------------------------------------------------------------
+# DATABASE STATISTICS
+# -----------------------------------------------------------------------------
+
+:DatabaseStats a db:Statistics ;
+    db:totalTriples 1420 ;
+    db:totalEntities 99 ;
+    db:totalPredicates 84 ;
+    db:totalGraphs 3 ;
+    db:totalStorageSize "144 KB" ;
+    db:indexCount 4 ;
+    db:indexTypes "SPOC, POCS, OCSP, CSPO" ;
+    db:databaseVersion "1.0.0" ;
+    db:engineVersion "rust-kgdb 0.1.0" ;
+    db:lastCompaction "2024-11-21T08:00:00"^^xsd:dateTime ;
+    db:queriesExecuted 1247 ;
+    db:avgQueryTime 10.5 ;
+    db:cacheHitRate 0.92 .

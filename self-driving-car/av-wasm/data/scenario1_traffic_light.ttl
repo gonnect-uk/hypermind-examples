@@ -1,0 +1,47 @@
+@prefix av: <http://zenya.com/ontology/av#> .
+@prefix sensor: <http://zenya.com/ontology/sensor#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# Scenario 1: Red Traffic Light Emergency Stop
+# Vehicle traveling at 48 km/h (13.3 m/s) approaching red light at 30m
+
+# Ego Vehicle
+<http://zenya.com/vehicle/ego>
+    a av:Vehicle ;
+    rdfs:label "Ego Vehicle" ;
+    av:hasVelocity "13.3"^^xsd:float ;  # m/s (48 km/h)
+    av:positionX "-80.0"^^xsd:float ;   # meters
+    av:carLength "5.0"^^xsd:float .     # meters
+
+# Traffic Light
+<http://zenya.com/traffic_light/tl_001>
+    a av:TrafficLight ;
+    rdfs:label "Traffic Light 001" ;
+    av:state "red"^^xsd:string ;
+    av:positionX "-30.0"^^xsd:float ;   # meters
+    sensor:confidence "0.98"^^xsd:float ;
+    av:distanceFrom <http://zenya.com/vehicle/ego> ;
+    av:distanceMeters "30.0"^^xsd:float .
+
+# Camera Sensor
+<http://zenya.com/sensor/camera_front>
+    a sensor:CameraSensor ;
+    rdfs:label "Front Camera" ;
+    sensor:detects <http://zenya.com/traffic_light/tl_001> ;
+    sensor:confidence "0.98"^^xsd:float ;
+    sensor:timestamp "2025-11-27T12:00:00Z"^^xsd:dateTime .
+
+# Physics Parameters
+<http://zenya.com/physics/stopping>
+    a av:PhysicsCalculation ;
+    av:deceleration "5.0"^^xsd:float ;  # m/s²
+    av:frictionCoefficient "1.0"^^xsd:float ;
+    av:safetyMargin "10.0"^^xsd:float . # meters
+
+# Safety Standard
+<http://zenya.com/standard/iso26262>
+    a av:SafetyStandard ;
+    rdfs:label "ISO 26262" ;
+    av:requiresEmergencyBrake "true"^^xsd:boolean ;
+    av:minConfidence "0.85"^^xsd:float .

@@ -1,0 +1,202 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix dbr: <http://dbpedia.org/resource/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix schema: <http://schema.org/> .
+
+# Movie Recommendation Dataset - Based on DBpedia/LinkedMDB patterns
+# For SmartSearchRecommender App
+
+# Movies
+dbr:The_Shawshank_Redemption
+    rdf:type dbo:Film ;
+    rdfs:label "The Shawshank Redemption"@en ;
+    dbo:director dbr:Frank_Darabont ;
+    dbo:starring dbr:Tim_Robbins, dbr:Morgan_Freeman ;
+    dbo:genre dbr:Drama ;
+    dbo:releaseDate "1994-09-23"^^xsd:date ;
+    dbo:runtime "142"^^xsd:integer ;
+    schema:aggregateRating "9.3"^^xsd:decimal ;
+    dbo:budget "25000000"^^xsd:integer ;
+    dbo:gross "58300000"^^xsd:integer ;
+    dc:description "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency."@en ;
+    schema:keywords "prison", "friendship", "hope", "redemption" .
+
+dbr:The_Godfather
+    rdf:type dbo:Film ;
+    rdfs:label "The Godfather"@en ;
+    dbo:director dbr:Francis_Ford_Coppola ;
+    dbo:starring dbr:Marlon_Brando, dbr:Al_Pacino, dbr:James_Caan ;
+    dbo:genre dbr:Crime, dbr:Drama ;
+    dbo:releaseDate "1972-03-24"^^xsd:date ;
+    dbo:runtime "175"^^xsd:integer ;
+    schema:aggregateRating "9.2"^^xsd:decimal ;
+    dbo:budget "6000000"^^xsd:integer ;
+    dbo:gross "245066411"^^xsd:integer ;
+    dc:description "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son."@en ;
+    schema:keywords "mafia", "family", "crime", "power" .
+
+dbr:The_Dark_Knight
+    rdf:type dbo:Film ;
+    rdfs:label "The Dark Knight"@en ;
+    dbo:director dbr:Christopher_Nolan ;
+    dbo:starring dbr:Christian_Bale, dbr:Heath_Ledger, dbr:Aaron_Eckhart ;
+    dbo:genre dbr:Action, dbr:Crime, dbr:Drama ;
+    dbo:releaseDate "2008-07-18"^^xsd:date ;
+    dbo:runtime "152"^^xsd:integer ;
+    schema:aggregateRating "9.0"^^xsd:decimal ;
+    dbo:budget "185000000"^^xsd:integer ;
+    dbo:gross "1004558444"^^xsd:integer ;
+    dc:description "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests."@en ;
+    schema:keywords "superhero", "villain", "chaos", "morality" .
+
+dbr:Pulp_Fiction
+    rdf:type dbo:Film ;
+    rdfs:label "Pulp Fiction"@en ;
+    dbo:director dbr:Quentin_Tarantino ;
+    dbo:starring dbr:John_Travolta, dbr:Uma_Thurman, dbr:Samuel_L_Jackson ;
+    dbo:genre dbr:Crime, dbr:Drama ;
+    dbo:releaseDate "1994-10-14"^^xsd:date ;
+    dbo:runtime "154"^^xsd:integer ;
+    schema:aggregateRating "8.9"^^xsd:decimal ;
+    dbo:budget "8000000"^^xsd:integer ;
+    dbo:gross "213900000"^^xsd:integer ;
+    dc:description "The lives of two mob hitmen, a boxer, a gangster and his wife intertwine in four tales of violence and redemption."@en ;
+    schema:keywords "crime", "nonlinear", "dialogue", "violence" .
+
+dbr:Inception
+    rdf:type dbo:Film ;
+    rdfs:label "Inception"@en ;
+    dbo:director dbr:Christopher_Nolan ;
+    dbo:starring dbr:Leonardo_DiCaprio, dbr:Joseph_Gordon-Levitt, dbr:Ellen_Page ;
+    dbo:genre dbr:Science_Fiction, dbr:Action, dbr:Thriller ;
+    dbo:releaseDate "2010-07-16"^^xsd:date ;
+    dbo:runtime "148"^^xsd:integer ;
+    schema:aggregateRating "8.8"^^xsd:decimal ;
+    dbo:budget "160000000"^^xsd:integer ;
+    dbo:gross "836800000"^^xsd:integer ;
+    dc:description "A thief who steals corporate secrets through dream-sharing technology is given the inverse task of planting an idea."@en ;
+    schema:keywords "dreams", "reality", "heist", "mind-bending" .
+
+# Directors
+dbr:Frank_Darabont
+    rdf:type dbo:Person, schema:Person ;
+    rdfs:label "Frank Darabont"@en ;
+    foaf:name "Frank Darabont" ;
+    dbo:birthDate "1959-01-28"^^xsd:date ;
+    dbo:birthPlace dbr:Montbéliard, dbr:France ;
+    schema:nationality "American" .
+
+dbr:Francis_Ford_Coppola
+    rdf:type dbo:Person, schema:Person ;
+    rdfs:label "Francis Ford Coppola"@en ;
+    foaf:name "Francis Ford Coppola" ;
+    dbo:birthDate "1939-04-07"^^xsd:date ;
+    dbo:birthPlace dbr:Detroit, dbr:Michigan ;
+    schema:nationality "American" .
+
+dbr:Christopher_Nolan
+    rdf:type dbo:Person, schema:Person ;
+    rdfs:label "Christopher Nolan"@en ;
+    foaf:name "Christopher Nolan" ;
+    dbo:birthDate "1970-07-30"^^xsd:date ;
+    dbo:birthPlace dbr:London, dbr:United_Kingdom ;
+    schema:nationality "British-American" .
+
+dbr:Quentin_Tarantino
+    rdf:type dbo:Person, schema:Person ;
+    rdfs:label "Quentin Tarantino"@en ;
+    foaf:name "Quentin Tarantino" ;
+    dbo:birthDate "1963-03-27"^^xsd:date ;
+    dbo:birthPlace dbr:Knoxville, dbr:Tennessee ;
+    schema:nationality "American" .
+
+# Actors
+dbr:Tim_Robbins
+    rdf:type dbo:Person, schema:Person ;
+    rdfs:label "Tim Robbins"@en ;
+    foaf:name "Tim Robbins" ;
+    dbo:birthDate "1958-10-16"^^xsd:date ;
+    schema:nationality "American" .
+
+dbr:Morgan_Freeman
+    rdf:type dbo:Person, schema:Person ;
+    rdfs:label "Morgan Freeman"@en ;
+    foaf:name "Morgan Freeman" ;
+    dbo:birthDate "1937-06-01"^^xsd:date ;
+    schema:nationality "American" .
+
+dbr:Marlon_Brando
+    rdf:type dbo:Person, schema:Person ;
+    rdfs:label "Marlon Brando"@en ;
+    foaf:name "Marlon Brando" ;
+    dbo:birthDate "1924-04-03"^^xsd:date ;
+    dbo:deathDate "2004-07-01"^^xsd:date ;
+    schema:nationality "American" .
+
+dbr:Al_Pacino
+    rdf:type dbo:Person, schema:Person ;
+    rdfs:label "Al Pacino"@en ;
+    foaf:name "Al Pacino" ;
+    dbo:birthDate "1940-04-25"^^xsd:date ;
+    schema:nationality "American" .
+
+dbr:Heath_Ledger
+    rdf:type dbo:Person, schema:Person ;
+    rdfs:label "Heath Ledger"@en ;
+    foaf:name "Heath Ledger" ;
+    dbo:birthDate "1979-04-04"^^xsd:date ;
+    dbo:deathDate "2008-01-22"^^xsd:date ;
+    schema:nationality "Australian" .
+
+dbr:Leonardo_DiCaprio
+    rdf:type dbo:Person, schema:Person ;
+    rdfs:label "Leonardo DiCaprio"@en ;
+    foaf:name "Leonardo DiCaprio" ;
+    dbo:birthDate "1974-11-11"^^xsd:date ;
+    schema:nationality "American" .
+
+# Genres
+dbr:Drama
+    rdf:type schema:Genre ;
+    rdfs:label "Drama"@en ;
+    dc:description "A genre focusing on character development and emotional themes" .
+
+dbr:Crime
+    rdf:type schema:Genre ;
+    rdfs:label "Crime"@en ;
+    dc:description "A genre involving criminal activities and investigations" .
+
+dbr:Action
+    rdf:type schema:Genre ;
+    rdfs:label "Action"@en ;
+    dc:description "A genre featuring physical stunts and spectacular sequences" .
+
+dbr:Science_Fiction
+    rdf:type schema:Genre ;
+    rdfs:label "Science Fiction"@en ;
+    dc:description "A genre exploring futuristic and scientific concepts" .
+
+# User Preferences for Recommendation Engine
+<http://example.org/user/user1>
+    rdf:type schema:Person ;
+    rdfs:label "John Doe"@en ;
+    schema:watchedMovie dbr:The_Shawshank_Redemption, dbr:The_Godfather ;
+    schema:favoriteGenre dbr:Drama, dbr:Crime ;
+    schema:ratedMovie [
+        schema:about dbr:The_Shawshank_Redemption ;
+        schema:ratingValue "5.0"^^xsd:decimal
+    ] .
+
+<http://example.org/user/user2>
+    rdf:type schema:Person ;
+    rdfs:label "Jane Smith"@en ;
+    schema:watchedMovie dbr:The_Dark_Knight, dbr:Inception ;
+    schema:favoriteGenre dbr:Action, dbr:Science_Fiction ;
+    schema:ratedMovie [
+        schema:about dbr:The_Dark_Knight ;
+        schema:ratingValue "5.0"^^xsd:decimal
+    ] .

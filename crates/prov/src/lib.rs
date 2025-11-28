@@ -1,10 +1,46 @@
-//! W3C PROV-O Provenance Ontology Support (Stub)
+//! W3C PROV-O Provenance Ontology Support
 //!
-//! This crate provides types and structures for W3C PROV-O provenance tracking.
-//! Full implementation to be completed.
+//! Complete implementation of W3C PROV-O (Provenance Ontology) for tracking data lineage
+//! and provenance information.
+//!
+//! # Features
+//!
+//! - **Entity**: Physical, digital, or conceptual things
+//! - **Activity**: Actions/processes that occur over time
+//! - **Agent**: Actors responsible for activities or entities
+//! - **Relationships**: wasGeneratedBy, used, wasAttributedTo, etc.
+//! - **Provenance Bundles**: Collections of provenance statements
+//!
+//! # Example
+//!
+//! ```rust,ignore
+//! use prov::{Entity, Activity, Agent, AgentType, ProvenanceBundle};
+//! use rdf_model::{Node, Dictionary};
+//!
+//! let dict = Dictionary::new();
+//! let doc = dict.intern("http://example.org/doc1");
+//! let edit = dict.intern("http://example.org/edit1");
+//! let alice = dict.intern("http://example.org/alice");
+//!
+//! // Create provenance record
+//! let entity = Entity::new(Node::iri(doc))
+//!     .generated_by(Node::iri(edit))
+//!     .attributed_to(Node::iri(alice));
+//!
+//! let activity = Activity::new(Node::iri(edit))
+//!     .started_at("2025-11-27T10:00:00Z".to_string())
+//!     .associated_with(Node::iri(alice));
+//!
+//! let agent = Agent::new(Node::iri(alice), AgentType::Person)
+//!     .with_name("Alice".to_string());
+//! ```
 
 #![forbid(unsafe_code)]
 #![warn(missing_docs, rust_2018_idioms)]
+
+pub mod types;
+
+pub use types::{Entity, Activity, Agent, AgentType, ProvenanceBundle};
 
 /// PROV namespace
 pub const PROV_NS: &str = "http://www.w3.org/ns/prov#";
@@ -27,18 +63,14 @@ pub const USED: &str = "http://www.w3.org/ns/prov#used";
 /// wasAttributedTo property
 pub const WAS_ATTRIBUTED_TO: &str = "http://www.w3.org/ns/prov#wasAttributedTo";
 
-/// Type of provenance agent
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum AgentType {
-    /// Generic agent
-    Agent,
-    /// Person (human)
-    Person,
-    /// Organization
-    Organization,
-    /// Software agent
-    SoftwareAgent,
-}
+/// wasAssociatedWith property
+pub const WAS_ASSOCIATED_WITH: &str = "http://www.w3.org/ns/prov#wasAssociatedWith";
+
+/// wasDerivedFrom property
+pub const WAS_DERIVED_FROM: &str = "http://www.w3.org/ns/prov#wasDerivedFrom";
+
+/// actedOnBehalfOf property
+pub const ACTED_ON_BEHALF_OF: &str = "http://www.w3.org/ns/prov#actedOnBehalfOf";
 
 /// Provenance record
 #[derive(Debug, Clone)]

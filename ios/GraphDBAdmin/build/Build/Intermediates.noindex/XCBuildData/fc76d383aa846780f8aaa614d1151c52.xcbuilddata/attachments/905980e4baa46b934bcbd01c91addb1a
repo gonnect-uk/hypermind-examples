@@ -1,0 +1,49 @@
+{
+  "" : {
+    "diagnostics" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/GraphDBAdmin-primary.dia",
+    "emit-module-dependencies" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/GraphDBAdmin-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/GraphDBAdmin-primary-emit-module.dia",
+    "pch" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/GraphDBAdmin-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/GraphDBAdmin-primary.swiftdeps"
+  },
+  "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/Generated/gonnect.swift" : {
+    "const-values" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/gonnect.swiftconstvalues",
+    "dependencies" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/gonnect.d",
+    "diagnostics" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/gonnect.dia",
+    "index-unit-output-path" : "/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/gonnect.o",
+    "llvm-bc" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/gonnect.bc",
+    "object" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/gonnect.o",
+    "swift-dependencies" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/gonnect.swiftdeps",
+    "swiftmodule" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/gonnect~partial.swiftmodule"
+  },
+  "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/GraphDBAdmin/ContentView.swift" : {
+    "const-values" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/ContentView.swiftconstvalues",
+    "dependencies" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/ContentView.d",
+    "diagnostics" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/ContentView.dia",
+    "index-unit-output-path" : "/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/ContentView.o",
+    "llvm-bc" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/ContentView.bc",
+    "object" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/ContentView.o",
+    "swift-dependencies" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/ContentView.swiftdeps",
+    "swiftmodule" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/ContentView~partial.swiftmodule"
+  },
+  "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/GraphDBAdmin/GraphDBAdminApp.swift" : {
+    "const-values" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/GraphDBAdminApp.swiftconstvalues",
+    "dependencies" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/GraphDBAdminApp.d",
+    "diagnostics" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/GraphDBAdminApp.dia",
+    "index-unit-output-path" : "/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/GraphDBAdminApp.o",
+    "llvm-bc" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/GraphDBAdminApp.bc",
+    "object" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/GraphDBAdminApp.o",
+    "swift-dependencies" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/GraphDBAdminApp.swiftdeps",
+    "swiftmodule" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/GraphDBAdminApp~partial.swiftmodule"
+  },
+  "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/gauravmalhotra/Documents/MyGithub/zenya-graphdb/rust-kgdb/ios/GraphDBAdmin/build/Build/Intermediates.noindex/GraphDBAdmin.build/Debug-iphonesimulator/GraphDBAdmin.build/Objects-normal/x86_64/GeneratedAssetSymbols~partial.swiftmodule"
+  }
+}

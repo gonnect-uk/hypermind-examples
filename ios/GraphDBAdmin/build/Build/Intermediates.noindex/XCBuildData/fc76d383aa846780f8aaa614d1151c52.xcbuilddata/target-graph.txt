@@ -1,0 +1,2 @@
+Target dependency graph (1 target)
+Target 'GraphDBAdmin' in project 'GraphDBAdmin' (no dependencies)
