@@ -33,8 +33,9 @@
 
         #container {
             display: grid;
-            grid-template-rows: 80px 1fr 180px;
+            grid-template-rows: 70px calc(100vh - 370px) 180px 120px;
             height: 100vh;
+            overflow: hidden;
         }
 
         /* TOP BAR */
@@ -94,10 +95,11 @@
         /* MIDDLE - Main Content */
         #middle-section {
             display: grid;
-            grid-template-columns: 300px 1fr 520px;
-            gap: 0;
-            overflow-x: auto;
-            overflow-y: hidden;
+            grid-template-columns: 320px 1fr 480px;
+            gap: 10px;
+            padding: 10px;
+            overflow: hidden;
+            height: 100%;
         }
 
         /* LEFT - Reasoning Steps */
@@ -338,7 +340,7 @@
 
         .sparql-query {
             font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
-            font-size: 11px;
+            font-size: 12px;
             line-height: 1.5;
             background: rgba(0, 0, 0, 0.6);
             padding: 12px;
@@ -388,7 +390,7 @@
 
         .datalog-rule {
             font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
-            font-size: 11px;
+            font-size: 12px;
             padding: 8px 12px;
             margin: 6px 0;
             background: rgba(0, 0, 0, 0.4);
@@ -450,7 +452,7 @@
 
         .hypergraph-svg {
             width: 100%;
-            height: 140px;
+            height: 260px;
             background: rgba(0, 0, 0, 0.4);
             border-radius: 10px;
             border: 1px solid rgba(255, 87, 34, 0.3);
@@ -461,7 +463,7 @@
             padding: 8px;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 8px;
-            font-size: 11px;
+            font-size: 12px;
             line-height: 1.4;
             width: 100%;
             box-sizing: border-box;
@@ -481,7 +483,7 @@
             flex: 1;
             overflow-wrap: break-word;
             word-break: break-word;
-            font-size: 11px;
+            font-size: 12px;
             line-height: 1.4;
             white-space: normal;
             overflow: visible;
@@ -506,7 +508,7 @@
 
         .physics-formula {
             font-family: 'Courier New', monospace;
-            font-size: 11px;
+            font-size: 12px;
             line-height: 1.5;
             color: #fff;
             background: rgba(255, 255, 255, 0.05);
@@ -559,6 +561,168 @@
         .arrow {
             font-size: 20px;
             color: #4fc3f7;
+        }
+
+        /* LOGGING PANEL */
+        #logging-panel {
+            background: rgba(0, 0, 0, 0.9);
+            border-top: 2px solid rgba(79, 195, 247, 0.3);
+            padding: 8px 18px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #logging-panel h2 {
+            font-size: 13px;
+            color: #4fc3f7;
+            margin-bottom: 6px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        #query-log {
+            overflow-y: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column-reverse;
+        }
+
+        .log-entry {
+            background: linear-gradient(135deg, rgba(33, 150, 243, 0.08) 0%, rgba(33, 150, 243, 0.05) 100%);
+            padding: 6px 10px;
+            margin: 2px 0;
+            border-left: 3px solid #2196F3;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            animation: logFadeIn 0.3s;
+        }
+
+        @keyframes logFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .log-entry.load {
+            border-left-color: #4caf50;
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.08) 0%, rgba(76, 175, 80, 0.05) 100%);
+        }
+
+        .log-entry.query {
+            border-left-color: #2196F3;
+        }
+
+        .log-entry.error {
+            border-left-color: #f44336;
+            background: linear-gradient(135deg, rgba(244, 67, 54, 0.12) 0%, rgba(244, 67, 54, 0.08) 100%);
+        }
+
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .log-timestamp {
+            color: #81c784;
+            font-size: 10px;
+        }
+
+        .log-type {
+            color: #4fc3f7;
+            font-weight: bold;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        .log-timing {
+            color: #ffd54f;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .log-content {
+            color: #e0e0e0;
+            margin-top: 4px;
+            line-height: 1.4;
+            max-height: 60px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .log-result {
+            color: #81c784;
+            font-size: 10px;
+            margin-top: 4px;
+        }
+
+        /* TAB NAVIGATION */
+        .tab-nav {
+            display: flex;
+            gap: 6px;
+            margin: 12px 0 8px 0;
+            border-bottom: 2px solid rgba(79, 195, 247, 0.3);
+            padding-bottom: 8px;
+        }
+
+        .tab-btn {
+            padding: 10px 14px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(79, 195, 247, 0.3);
+            border-radius: 8px 8px 0 0;
+            border-bottom: none;
+            color: #90caf9;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            background: rgba(79, 195, 247, 0.15);
+            border-color: rgba(79, 195, 247, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(33, 150, 243, 0.35) 0%, rgba(21, 101, 192, 0.35) 100%);
+            border-color: #2196f3;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(33, 150, 243, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeInTab 0.4s ease;
+            overflow-y: auto;
+            max-height: calc(100% - 180px);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeInTab {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Decision Panel Improvements */
+        #decision-panel {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #decision-container {
+            flex-shrink: 0;
         }
     </style>
 </head>
@@ -615,9 +779,9 @@
                 <canvas id="scene"></canvas>
             </div>
 
-            <!-- RIGHT: Decision & SPARQL/Datalog -->
+            <!-- RIGHT: Decision & Tabbed Details -->
             <div id="decision-panel">
-                <h2 style="font-size: 20px; margin-bottom: 15px; color: #4fc3f7;">⚡ Decision Output</h2>
+                <h2 style="font-size: 18px; margin-bottom: 12px; color: #4fc3f7;">⚡ Decision Output</h2>
                 <div id="decision-container">
                     <div class="decision-box" style="border-color: #666; background: rgba(100, 100, 100, 0.2);">
                         <div class="action-label">⏸️ IDLE</div>
@@ -625,10 +789,44 @@
                     </div>
                 </div>
 
-                <div id="sparql-container"></div>
-                <div id="datalog-container"></div>
-                <div id="hypergraph-container"></div>
-                <div id="physics-container"></div>
+                <!-- Tab Navigation -->
+                <div class="tab-nav">
+                    <button class="tab-btn active" onclick="switchTab('sparql')">🔍 SPARQL</button>
+                    <button class="tab-btn" onclick="switchTab('datalog')">🧮 Datalog</button>
+                    <button class="tab-btn" onclick="switchTab('hypergraph')">🕸️ Hypergraph</button>
+                    <button class="tab-btn" onclick="switchTab('physics')">⚙️ Physics</button>
+                </div>
+
+                <!-- Tab Content Panels -->
+                <div id="tab-sparql" class="tab-content active">
+                    <div id="sparql-container"></div>
+                </div>
+
+                <div id="tab-datalog" class="tab-content">
+                    <div id="datalog-container"></div>
+                </div>
+
+                <div id="tab-hypergraph" class="tab-content">
+                    <div id="hypergraph-container"></div>
+                </div>
+
+                <div id="tab-physics" class="tab-content">
+                    <div id="physics-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LOGGING PANEL: Real-time SPARQL Monitoring -->
+        <div id="logging-panel">
+            <h2>🔍 Real-time SPARQL Log</h2>
+            <div id="query-log">
+                <div class="log-entry" style="opacity: 0.5; border-left-color: #666;">
+                    <div class="log-header">
+                        <span class="log-timestamp">--:--:--</span>
+                        <span class="log-type">Waiting</span>
+                    </div>
+                    <div class="log-content">Press "Start Scenario" to see SPARQL operations...</div>
+                </div>
             </div>
         </div>
 
@@ -981,8 +1179,12 @@ WHERE {
 
                 // Clear store first
                 await fetch(`${API_BASE}/clear`, { method: 'POST' });
+                logSPARQL('load', 'CLEAR', 'Clearing triple store', null, null);
 
                 // Load RDF data
+                const turtlePreview = scenario.turtleData.substring(0, 150) + (scenario.turtleData.length > 150 ? '...' : '');
+                logSPARQL('load', 'LOAD RDF', turtlePreview, null, null);
+
                 const loadResponse = await fetch(`${API_BASE}/load`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -992,12 +1194,16 @@ WHERE {
                 const loadResult = await loadResponse.json();
 
                 if (!loadResult.success) {
+                    logSPARQL('error', 'LOAD FAILED', loadResult.error || 'Failed to load RDF data', null, null);
                     throw new Error(loadResult.error || 'Failed to load RDF data');
                 }
 
-                addEvent("RDF Loaded", `✅ ${loadResult.triples_loaded} triples in ${loadResult.execution_time_ms.toFixed(2)}ms`);
+                const timingStr = `${loadResult.execution_time_ms.toFixed(2)}ms`;
+                logSPARQL('load', 'LOAD SUCCESS', `Loaded ${loadResult.triples_loaded} triples`, loadResult.triples_loaded, timingStr);
+                addEvent("RDF Loaded", `✅ ${loadResult.triples_loaded} triples in ${timingStr}`);
                 return loadResult;
             } catch (error) {
+                logSPARQL('error', 'LOAD ERROR', error.message, null, null);
                 addEvent("Error", `❌ Load failed: ${error.message}`);
                 throw error;
             }
@@ -1007,8 +1213,11 @@ WHERE {
             try {
                 addEvent("SPARQL Query", "🔍 Executing query...");
 
-                const queryType = scenario.queryType;
-                const queryResponse = await fetch(`${API_BASE}/${queryType}`, {
+                const queryType = scenario.queryType.toUpperCase();
+                const queryPreview = scenario.sparqlQuery.substring(0, 200) + (scenario.sparqlQuery.length > 200 ? '...' : '');
+                logSPARQL('query', `SPARQL ${queryType}`, queryPreview, null, null);
+
+                const queryResponse = await fetch(`${API_BASE}/${scenario.queryType}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ sparql_query: scenario.sparqlQuery })
@@ -1017,14 +1226,18 @@ WHERE {
                 const queryResult = await queryResponse.json();
 
                 if (!queryResult.success) {
+                    logSPARQL('error', `${queryType} FAILED`, queryResult.error || 'Query execution failed', null, null);
                     throw new Error(queryResult.error || 'Query execution failed');
                 }
 
+                const execTimeUs = `${queryResult.execution_time_us.toFixed(0)}µs`;
                 const execTimeMs = (queryResult.execution_time_us / 1000).toFixed(2);
+                logSPARQL('query', `${queryType} SUCCESS`, `Result: ${queryResult.result}`, queryResult.result, execTimeUs);
                 addEvent("Query Result", `✅ Executed in ${execTimeMs}ms`);
 
                 return queryResult;
             } catch (error) {
+                logSPARQL('error', 'QUERY ERROR', error.message, null, null);
                 addEvent("Error", `❌ Query failed: ${error.message}`);
                 throw error;
             }
@@ -1336,6 +1549,17 @@ WHERE {
             renderer.render(scene, camera);
         }
 
+        // ===== TAB SWITCHING =====
+        window.switchTab = function(tabName) {
+            // Hide all tab contents and deactivate all buttons
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab content and activate button
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            event.currentTarget.classList.add('active');
+        };
+
         function addEvent(time, desc) {
             const timeline = document.getElementById('event-timeline');
             const event = document.createElement('div');
@@ -1352,6 +1576,48 @@ WHERE {
             timeline.appendChild(arrow);
 
             timeline.parentElement.scrollLeft = timeline.scrollWidth;
+        }
+
+        // ===== SPARQL LOGGING FUNCTION =====
+        function logSPARQL(type, operation, content, result, timing) {
+            const logContainer = document.getElementById('query-log');
+
+            // Clear placeholder if present
+            if (logContainer.children.length === 1 && logContainer.children[0].style.opacity === '0.5') {
+                logContainer.innerHTML = '';
+            }
+
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+
+            const timestamp = new Date().toLocaleTimeString();
+            const timingStr = timing ? `⚡ ${timing}` : '';
+
+            let resultStr = '';
+            if (result !== undefined) {
+                if (typeof result === 'object') {
+                    resultStr = `<div class="log-result">✅ ${JSON.stringify(result).substring(0, 100)}${JSON.stringify(result).length > 100 ? '...' : ''}</div>`;
+                } else {
+                    resultStr = `<div class="log-result">✅ ${result}</div>`;
+                }
+            }
+
+            entry.innerHTML = `
+                <div class="log-header">
+                    <span class="log-timestamp">${timestamp}</span>
+                    <span class="log-type">${operation}</span>
+                    ${timingStr ? `<span class="log-timing">${timingStr}</span>` : ''}
+                </div>
+                <div class="log-content">${content}</div>
+                ${resultStr}
+            `;
+
+            logContainer.insertBefore(entry, logContainer.firstChild);
+
+            // Keep max 50 log entries
+            while (logContainer.children.length > 50) {
+                logContainer.removeChild(logContainer.lastChild);
+            }
         }
 
         // ===== MAIN SCENARIO EXECUTION =====

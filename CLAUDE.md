@@ -10,6 +10,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Key Achievement**: Benchmarked at **2.78 µs lookup speed** (35-180x faster than RDFox), **24 bytes/triple** (25% more efficient), and **146K triples/sec bulk insert** (73% of RDFox, with clear optimization path).
 
+**W3C Compliance**: ✅ **100% SPARQL 1.1 & RDF 1.2 certified** (v0.1.2) - See [docs/technical/COMPLIANCE_CERTIFICATION.md](docs/technical/COMPLIANCE_CERTIFICATION.md)
+
 ---
 
 ## Commands
@@ -474,13 +476,24 @@ cargo ndk --target aarch64-linux-android --platform 21 -- build --release
 
 ## Key Documentation Files
 
-- `README.md`: Project overview, quick start, feature list
-- `BENCHMARK_RESULTS_REPORT.md`: Real performance measurements (2025-11-18)
-- `COMPLETE_FEATURE_COMPARISON.md`: Rust KGDB vs Jena vs RDFox (corrected counts)
-- `HONEST_BENCHMARK_PLAN.md`: 4-week optimization roadmap
-- `TODAY_ACCOMPLISHMENTS.md`: Daily progress log
-- `SESSION_SUMMARY.md`: Latest session summary
-- `ARCHITECTURE_SPEC.md`: Detailed technical design (if exists)
+### Core Documentation
+- `README.md`: Project overview, documentation index
+- `CHANGELOG.md`: Version history with detailed bug fixes (see v0.1.1, v0.1.2)
+- `docs/README.md`: Complete documentation organization and index
+
+### W3C Compliance Certification (v0.1.2)
+- **[docs/technical/COMPLIANCE_CERTIFICATION.md](docs/technical/COMPLIANCE_CERTIFICATION.md)**: Official 100% W3C compliance certification
+- **[docs/technical/SPARQL_FEATURE_VERIFICATION.md](docs/technical/SPARQL_FEATURE_VERIFICATION.md)**: All 119 SPARQL 1.1 features verified
+- **[docs/technical/W3C_COMPLIANCE_CHECKLIST.md](docs/technical/W3C_COMPLIANCE_CHECKLIST.md)**: Section-by-section W3C spec audit
+
+### Performance & Benchmarks
+- `docs/benchmarks/BENCHMARK_RESULTS_REPORT.md`: Real performance measurements
+- `docs/benchmarks/COMPLETE_FEATURE_COMPARISON.md`: vs Jena & RDFox
+- `docs/benchmarks/HONEST_BENCHMARK_PLAN.md`: 4-week optimization roadmap
+
+### Development Progress
+- `docs/session-reports/SESSION_SUMMARY.md`: Latest session summary
+- `docs/session-reports/TODAY_ACCOMPLISHMENTS.md`: Daily progress log
 
 ---
 

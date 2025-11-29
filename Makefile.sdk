@@ -1,0 +1,219 @@
+# rust-kgdb SDK - Professional Automation Makefile
+# =================================================
+
+.PHONY: help all clean build test docs bench regression sdk-test fmt lint check install-tools open-docs
+
+# Default target
+help:
+	@echo "🚀 rust-kgdb SDK - Professional Build System"
+	@echo "=============================================="
+	@echo ""
+	@echo "📦 Build Commands:"
+	@echo "  make build          - Build all workspace crates (debug)"
+	@echo "  make build-release  - Build with full optimizations"
+	@echo "  make sdk            - Build SDK only"
+	@echo "  make clean          - Clean all build artifacts"
+	@echo ""
+	@echo "🧪 Testing Commands:"
+	@echo "  make test           - Run all tests"
+	@echo "  make sdk-test       - Run SDK tests only"
+	@echo "  make regression     - Run comprehensive regression tests"
+	@echo "  make test-watch     - Run tests in watch mode"
+	@echo ""
+	@echo "⚡ Performance Commands:"
+	@echo "  make bench          - Run all benchmarks"
+	@echo "  make bench-sdk      - Run SDK benchmarks only"
+	@echo "  make perf-report    - Generate performance report"
+	@echo ""
+	@echo "📚 Documentation Commands:"
+	@echo "  make docs           - Build complete documentation website"
+	@echo "  make docs-api       - Build API docs only"
+	@echo "  make docs-book      - Build user guide only"
+	@echo "  make open-docs      - Build and open documentation in browser"
+	@echo ""
+	@echo "🔍 Quality Commands:"
+	@echo "  make fmt            - Format code"
+	@echo "  make lint           - Run clippy lints"
+	@echo "  make check          - Quick compilation check"
+	@echo "  make audit          - Security audit"
+	@echo ""
+	@echo "🎯 All-in-One Commands:"
+	@echo "  make all            - Build + Test + Docs + Bench"
+	@echo "  make ci             - Full CI pipeline"
+	@echo "  make quality        - Format + Lint + Audit"
+	@echo ""
+	@echo "🛠️  Setup Commands:"
+	@echo "  make install-tools  - Install required development tools"
+	@echo ""
+
+#
+# Build Targets
+#
+
+build:
+	@echo "🔨 Building workspace..."
+	cargo build --workspace
+
+build-release:
+	@echo "🔨 Building with release optimizations..."
+	cargo build --workspace --release
+
+sdk:
+	@echo "📦 Building SDK..."
+	cargo build -p rust-kgdb-sdk
+
+clean:
+	@echo "🧹 Cleaning build artifacts..."
+	cargo clean
+	rm -rf target/doc-site
+	rm -rf target/doc
+	rm -rf target/*.txt
+
+#
+# Testing Targets
+#
+
+test:
+	@echo "🧪 Running all tests..."
+	cargo test --workspace
+
+sdk-test:
+	@echo "🧪 Running SDK tests..."
+	cargo test -p rust-kgdb-sdk
+
+regression:
+	@echo "🔬 Running regression test suite..."
+	@echo "This may take several minutes..."
+	cargo test --workspace --no-fail-fast 2>&1 | tee target/regression-report.txt
+	@echo ""
+	@echo "✅ Regression tests complete!"
+	@echo "📄 Report saved to: target/regression-report.txt"
+
+test-watch:
+	@echo "👀 Running tests in watch mode..."
+	@echo "Install cargo-watch if needed: cargo install cargo-watch"
+	cargo watch -x "test --workspace"
+
+#
+# Benchmarking Targets
+#
+
+bench:
+	@echo "⚡ Running all benchmarks..."
+	cargo bench --workspace
+
+bench-sdk:
+	@echo "⚡ Running SDK benchmarks..."
+	cargo bench -p rust-kgdb-sdk
+
+perf-report:
+	@echo "📊 Generating performance report..."
+	cargo bench --package storage --bench triple_store_benchmark 2>&1 | tee target/perf-report.txt
+	@echo "✅ Performance report saved to: target/perf-report.txt"
+
+#
+# Documentation Targets
+#
+
+docs:
+	@echo "📚 Building complete documentation..."
+	./scripts/build-docs.sh
+
+docs-api:
+	@echo "📖 Building API documentation..."
+	cargo doc --workspace --no-deps --document-private-items --all-features
+
+docs-book:
+	@echo "📕 Building user guide..."
+	@if command -v mdbook >/dev/null 2>&1; then \
+		mdbook build; \
+	else \
+		echo "⚠️  mdbook not found. Install with: cargo install mdbook"; \
+		exit 1; \
+	fi
+
+open-docs: docs
+	@echo "🌐 Opening documentation in browser..."
+	@if [ -f target/doc-site/index.html ]; then \
+		open target/doc-site/index.html || xdg-open target/doc-site/index.html || echo "Please open file://$(PWD)/target/doc-site/index.html"; \
+	else \
+		echo "❌ Documentation not found. Run 'make docs' first."; \
+	fi
+
+#
+# Code Quality Targets
+#
+
+fmt:
+	@echo "✨ Formatting code..."
+	cargo fmt --all
+
+lint:
+	@echo "🔍 Running clippy lints..."
+	cargo clippy --workspace --all-targets --all-features -- -D warnings
+
+check:
+	@echo "🔎 Quick compilation check..."
+	cargo check --workspace
+
+audit:
+	@echo "🔒 Running security audit..."
+	@if command -v cargo-audit >/dev/null 2>&1; then \
+		cargo audit; \
+	else \
+		echo "⚠️  cargo-audit not found. Install with: cargo install cargo-audit"; \
+		exit 1; \
+	fi
+
+#
+# Combined Targets
+#
+
+all: build test docs bench
+	@echo ""
+	@echo "✅ All tasks complete!"
+	@echo "📍 Documentation: file://$(PWD)/target/doc-site/index.html"
+
+ci: clean quality build test regression docs
+	@echo ""
+	@echo "✅ CI pipeline complete!"
+
+quality: fmt lint audit
+	@echo "✅ Code quality checks complete!"
+
+#
+# Development Tools
+#
+
+install-tools:
+	@echo "🛠️  Installing development tools..."
+	@echo "📦 Installing mdbook..."
+	cargo install mdbook mdbook-linkcheck mdbook-toc mdbook-mermaid || true
+	@echo "📦 Installing cargo-watch..."
+	cargo install cargo-watch || true
+	@echo "📦 Installing cargo-audit..."
+	cargo install cargo-audit || true
+	@echo "📦 Installing cargo-outdated..."
+	cargo install cargo-outdated || true
+	@echo ""
+	@echo "✅ Development tools installed!"
+
+#
+# Utility Targets
+#
+
+lines:
+	@echo "📏 Counting lines of code..."
+	@find crates -name '*.rs' | xargs wc -l | tail -1
+
+tree:
+	@echo "🌳 Project structure:"
+	@tree -L 3 -I 'target|.git' crates/
+
+deps:
+	@echo "📦 Checking dependencies..."
+	@if command -v cargo-outdated >/dev/null 2>&1; then \
+		cargo outdated; \
+	else \
+		echo "⚠️  cargo-outdated not found. Install with: cargo install cargo-outdated"; \
+	fi

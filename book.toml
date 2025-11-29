@@ -1,0 +1,47 @@
+[book]
+title = "rust-kgdb SDK - Complete Documentation"
+authors = ["rust-kgdb Team"]
+language = "en"
+multilingual = false
+src = "docs/book"
+
+[build]
+build-dir = "target/doc-site"
+create-missing = true
+
+[output.html]
+default-theme = "rust"
+preferred-dark-theme = "navy"
+git-repository-url = "https://github.com/zenya-graphdb/rust-kgdb"
+edit-url-template = "https://github.com/zenya-graphdb/rust-kgdb/edit/main/{path}"
+site-url = "/rust-kgdb/"
+cname = "docs.rust-kgdb.dev"
+curly-quotes = true
+mathjax-support = true
+copy-fonts = true
+no-section-label = false
+
+[output.html.search]
+enable = true
+limit-results = 30
+teaser-word-count = 30
+use-boolean-and = true
+boost-title = 2
+boost-hierarchy = 1
+boost-paragraph = 1
+expand = true
+heading-split-level = 3
+
+[output.html.playground]
+editable = true
+copyable = true
+copy-js = true
+line-numbers = false
+runnable = true
+
+[output.html.fold]
+enable = true
+level = 0
+
+[output.html.print]
+enable = true

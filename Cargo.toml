@@ -13,10 +13,11 @@ members = [
     "crates/prov",
     "crates/mobile-ffi",
     "crates/mobile-app-generator",
+    "crates/sdk",
 ]
 
 [workspace.package]
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 authors = ["Gonnect Team"]
 license = "Apache-2.0"

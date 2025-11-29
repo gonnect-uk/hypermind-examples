@@ -1,0 +1,48 @@
+[package]
+name = "rust-kgdb-sdk"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "High-level ergonomic SDK for rust-kgdb RDF/SPARQL database"
+keywords = ["rdf", "sparql", "semantic-web", "knowledge-graph", "database"]
+categories = ["database", "api-bindings"]
+
+[dependencies]
+# Internal dependencies
+rdf-model = { path = "../rdf-model" }
+storage = { path = "../storage" }
+sparql = { path = "../sparql" }
+reasoning = { path = "../reasoning" }
+rdf-io = { path = "../rdf-io" }
+
+# Core dependencies from workspace
+parking_lot.workspace = true
+thiserror.workspace = true
+anyhow.workspace = true
+
+# Optional dependencies for advanced features
+serde = { workspace = true, optional = true }
+serde_json = { workspace = true, optional = true }
+
+[dev-dependencies]
+# Testing
+criterion.workspace = true
+proptest.workspace = true
+
+[features]
+default = []
+serialization = ["serde", "serde_json"]
+all-backends = ["storage/all-backends"]
+rocksdb-backend = ["storage/rocksdb-backend"]
+lmdb-backend = ["storage/lmdb-backend"]
+
+[[test]]
+name = "hypergraph_tests"
+path = "tests/hypergraph_tests.rs"
+
+[[bench]]
+name = "sdk_benchmarks"
+harness = false

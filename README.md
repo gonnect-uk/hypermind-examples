@@ -2,7 +2,7 @@
 
 **Professional documentation organized for customers, developers, and SMEs.**
 
-**Status**: ✅ Production-Ready | 521/521 Tests Passing | 100% W3C Compliance
+**Status**: ✅ Production-Ready | 1058/1058 Tests Passing | 100% W3C Compliance (Certified v0.1.2)
 
 ---
 
@@ -133,6 +133,11 @@ docs/
 - **[SPARQL.md](technical/grammars/SPARQL_11_GRAMMAR.md)** - SPARQL 1.1 PEG grammar
 - **[NTRIPLES.md](technical/grammars/NTRIPLES_W3C_GRAMMAR.md)** - N-Triples grammar
 
+#### W3C Compliance Reports (v0.1.2)
+- **[COMPLIANCE_CERTIFICATION.md](technical/COMPLIANCE_CERTIFICATION.md)** - Official 100% compliance certification
+- **[SPARQL_FEATURE_VERIFICATION.md](technical/SPARQL_FEATURE_VERIFICATION.md)** - 119 features verified
+- **[W3C_COMPLIANCE_CHECKLIST.md](technical/W3C_COMPLIANCE_CHECKLIST.md)** - Section-by-section W3C spec audit
+
 ---
 
 ### 4. Performance & Benchmarks
@@ -187,9 +192,9 @@ docs/
 
 | Metric | Value | Details |
 |--------|-------|---------|
-| **Status** | Production-Ready | 521/521 tests passing |
+| **Status** | Production-Ready | 1058/1058 tests passing |
 | **W3C Compliance** | 100% | SPARQL 1.1 + RDF 1.2 |
-| **SPARQL Functions** | 64 builtin | More than Jena (60+) |
+| **SPARQL Functions** | 52 builtin | Complete W3C spec |
 | **Lookup Speed** | 2.78 µs | 35-180x faster than RDFox |
 | **Memory** | 24 bytes/triple | 25% better than RDFox |
 | **Mobile Support** | iOS + Android | ONLY triple store |
@@ -199,13 +204,13 @@ docs/
 
 ## 🚀 Production Features
 
-✅ **Complete SPARQL 1.1** - Query + Update + 64 builtins
+✅ **Complete SPARQL 1.1** - Query + Update + 52 builtins + 7 aggregates
 ✅ **Zero-Copy Architecture** - No GC, predictable perf
 ✅ **Pluggable Storage** - InMemory, RocksDB, LMDB
 ✅ **Native Hypergraphs** - N-ary relationships
 ✅ **Mobile-First** - <100ms start, <20MB memory
 ✅ **Memory Safe** - Rust guarantees
-✅ **Fully Tested** - 521 passing tests
+✅ **Fully Tested** - 1058 passing tests (315 Jena compatibility)
 
 ---
 
@@ -230,8 +235,8 @@ docs/
 
 ## 📬 Support
 
-- **GitHub Issues**: [github.com/zenya/rust-kgdb/issues](https://github.com/zenya/rust-kgdb/issues)
-- **Discussions**: [github.com/zenya/rust-kgdb/discussions](https://github.com/zenya/rust-kgdb/discussions)
+- **GitHub Issues**: [github.com/gonnect/rust-kgdb/issues](https://github.com/gonnect/rust-kgdb/issues)
+- **Discussions**: [github.com/gonnect/rust-kgdb/discussions](https://github.com/gonnect/rust-kgdb/discussions)
 - **Contributing**: See [developer/contributing/](developer/contributing/)
 
 ---
@@ -254,5 +259,5 @@ When a document becomes outdated:
 
 ---
 
-**Last Updated**: 2025-11-27
+**Last Updated**: 2025-11-28 (v0.1.2 compliance certification)
 **Maintainer**: rust-kgdb core team
