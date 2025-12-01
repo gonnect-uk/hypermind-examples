@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**rust-kgdb** is a production-ready mobile-first RDF/hypergraph database with complete SPARQL 1.1 support. It achieves Apache Jena feature parity while targeting iOS/Android platforms with zero-copy semantics and sub-millisecond performance.
+**rust-kgdb** is a production-ready mobile-first RDF/hypergraph database with complete SPARQL 1.1 support, RDF 1.2 compliance, and worst-case optimal join (WCOJ) execution. It achieves Apache Jena feature parity while targeting iOS/Android platforms with zero-copy semantics and sub-millisecond performance.
 
 **Key Achievement**: Benchmarked at **2.78 µs lookup speed** (35-180x faster than RDFox), **24 bytes/triple** (25% more efficient), and **146K triples/sec bulk insert** (73% of RDFox, with clear optimization path).
 

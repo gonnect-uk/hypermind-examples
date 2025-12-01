@@ -8,7 +8,7 @@
 
 ```bash
 # Clone repository
-git clone https://github.com/zenya/rust-kgdb
+git clone https://github.com/gonnect-uk/rust-kgdb
 cd rust-kgdb
 
 # Build workspace (release mode)

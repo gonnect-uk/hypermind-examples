@@ -276,7 +276,7 @@ sdks/typescript/
 
 **Example** (from guide):
 ```typescript
-import { GraphDB, Node } from '@zenya/rust-kgdb';
+import { GraphDB, Node } from '@gonnect/rust-kgdb';
 
 const db = GraphDB.inMemory();
 

@@ -156,6 +156,45 @@ impl<'a> Trie<'a> {
         trie
     }
 
+    /// Build trie from pre-computed paths (for variable-ordered WCOJ)
+    ///
+    /// This is used when paths have already been extracted in canonical variable order.
+    /// All paths must have the same length (depth).
+    ///
+    /// # Arguments
+    ///
+    /// * `paths` - Iterator of pre-computed node paths
+    /// * `depth` - Depth of the trie (must match path lengths)
+    ///
+    /// # Example
+    ///
+    /// ```ignore
+    /// // For star query with canonical variable ordering [?person, ?name]
+    /// // Path: [alice_node, "Alice"_node]
+    /// let paths = vec![
+    ///     vec![alice, alice_name],
+    ///     vec![bob, bob_name],
+    /// ];
+    /// let trie = Trie::from_paths(paths, 2);
+    /// ```
+    pub fn from_paths<I>(paths: I, depth: usize) -> Self
+    where
+        I: IntoIterator<Item = Vec<Node<'a>>>,
+    {
+        let mut trie = Self::new(depth);
+
+        for path in paths {
+            debug_assert_eq!(
+                path.len(),
+                depth,
+                "All paths must have same length as trie depth"
+            );
+            trie.root.insert(&path);
+        }
+
+        trie
+    }
+
     /// Extract path from quad based on ordering
     fn extract_path(quad: &Quad<'a>, ordering: &[TriplePosition]) -> Vec<Node<'a>> {
         ordering

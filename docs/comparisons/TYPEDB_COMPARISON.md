@@ -365,7 +365,7 @@ SELECT ?p1 ?p2 ?p3 WHERE {
 
 ## 📞 Contact & Resources
 
-- **GitHub**: https://github.com/zenya/rust-kgdb
+- **GitHub**: https://github.com/gonnect-uk/rust-kgdb
 - **Docs**: See `docs/` directory
 - **Examples**: `examples/` directory
 - **Benchmarks**: `docs/benchmarks/BENCHMARK_RESULTS_REPORT.md`

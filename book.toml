@@ -12,8 +12,8 @@ create-missing = true
 [output.html]
 default-theme = "rust"
 preferred-dark-theme = "navy"
-git-repository-url = "https://github.com/zenya-graphdb/rust-kgdb"
-edit-url-template = "https://github.com/zenya-graphdb/rust-kgdb/edit/main/{path}"
+git-repository-url = "https://github.com/gonnect-uk/rust-kgdb"
+edit-url-template = "https://github.com/gonnect-uk/rust-kgdb/edit/main/{path}"
 site-url = "/rust-kgdb/"
 cname = "docs.rust-kgdb.dev"
 curly-quotes = true

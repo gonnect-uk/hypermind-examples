@@ -458,7 +458,7 @@ setup(
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     author="Zenya GraphDB Team",
-    url="https://github.com/zenya-graphdb/rust-kgdb",
+    url="https://github.com/gonnect-uk/rust-kgdb",
     packages=find_packages(),
     python_requires=">=3.8",
     install_requires=[

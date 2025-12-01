@@ -127,7 +127,7 @@ WHERE {
 Update your `Cargo.toml`:
 ```toml
 [dependencies.rdf-io]
-git = "https://github.com/zenya/rust-kgdb.git"
+git = "https://github.com/gonnect-uk/rust-kgdb.git"
 tag = "v0.1.1"
 ```
 
@@ -238,9 +238,9 @@ WHERE {
 
 ## Links
 
-- **GitHub Repository**: https://github.com/zenya/rust-kgdb
+- **GitHub Repository**: https://github.com/gonnect-uk/rust-kgdb
 - **Full Changelog**: [CHANGELOG.md](CHANGELOG.md)
-- **Previous Release**: [v0.1.0](https://github.com/zenya/rust-kgdb/releases/tag/v0.1.0)
+- **Previous Release**: [v0.1.0](https://github.com/gonnect-uk/rust-kgdb/releases/tag/v0.1.0)
 - **Documentation**: [docs/README.md](docs/README.md)
 
 ---
@@ -255,4 +255,4 @@ Planned features for next release:
 
 ---
 
-**For questions or issues, please file a GitHub issue at https://github.com/zenya/rust-kgdb/issues**
+**For questions or issues, please file a GitHub issue at https://github.com/gonnect-uk/rust-kgdb/issues**

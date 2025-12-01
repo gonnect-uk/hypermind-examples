@@ -91,7 +91,7 @@ Until the Python SDK is released, you can:
 
 We welcome contributions to the Python SDK development. If you're interested in helping:
 
-1. Check the [GitHub repository](https://github.com/zenya-graphdb/rust-kgdb)
+1. Check the [GitHub repository](https://github.com/gonnect-uk/rust-kgdb)
 2. Look for `python-bindings` issues
 3. Submit PRs with implementations
 
@@ -115,14 +115,14 @@ A: Yes, async operations are planned.
 ## Resources
 
 - [Rust SDK Documentation](../rust/index.md)
-- [Main Repository](https://github.com/zenya-graphdb/rust-kgdb)
-- [Issue Tracker](https://github.com/zenya-graphdb/rust-kgdb/issues)
+- [Main Repository](https://github.com/gonnect-uk/rust-kgdb)
+- [Issue Tracker](https://github.com/gonnect-uk/rust-kgdb/issues)
 
 ## Get Notified
 
 To be notified when the Python SDK is ready:
 
-1. Star the [GitHub repository](https://github.com/zenya-graphdb/rust-kgdb)
+1. Star the [GitHub repository](https://github.com/gonnect-uk/rust-kgdb)
 2. Watch for releases in the "Releases" tab
 3. Subscribe to project announcements
 

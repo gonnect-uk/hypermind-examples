@@ -105,9 +105,9 @@ class KnowledgeGraphRepository(private val store: RDFStore) {
 
 ## Stay Updated
 
-- Star the [GitHub repository](https://github.com/zenya-graphdb/rust-kgdb)
+- Star the [GitHub repository](https://github.com/gonnect-uk/rust-kgdb)
 - Watch for release announcements
-- Check the [issue tracker](https://github.com/zenya-graphdb/rust-kgdb/issues) for progress
+- Check the [issue tracker](https://github.com/gonnect-uk/rust-kgdb/issues) for progress
 
 ## Questions?
 

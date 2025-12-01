@@ -51,7 +51,7 @@ rust-kgdb = { version = "0.1", features = ["lmdb-backend"] }
 Clone the repository and build locally:
 
 ```bash
-git clone https://github.com/zenya-graphdb/rust-kgdb.git
+git clone https://github.com/gonnect-uk/rust-kgdb.git
 cd rust-kgdb
 cargo build --release
 ```

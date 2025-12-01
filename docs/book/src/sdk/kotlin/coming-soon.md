@@ -221,15 +221,15 @@ A: Yes, Compose integration is planned.
 
 Help shape the Kotlin SDK:
 
-1. Star the [GitHub repository](https://github.com/zenya-graphdb/rust-kgdb)
-2. Comment on Kotlin SDK [issues](https://github.com/zenya-graphdb/rust-kgdb/issues)
+1. Star the [GitHub repository](https://github.com/gonnect-uk/rust-kgdb)
+2. Comment on Kotlin SDK [issues](https://github.com/gonnect-uk/rust-kgdb/issues)
 3. Join the community discussions
 
 ## Resources
 
 - [Rust SDK Documentation](../rust/index.md) - Available now
-- [Main Repository](https://github.com/zenya-graphdb/rust-kgdb)
-- [Issue Tracker](https://github.com/zenya-graphdb/rust-kgdb/issues)
+- [Main Repository](https://github.com/gonnect-uk/rust-kgdb)
+- [Issue Tracker](https://github.com/gonnect-uk/rust-kgdb/issues)
 - [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html)
 
 ## Get Notified

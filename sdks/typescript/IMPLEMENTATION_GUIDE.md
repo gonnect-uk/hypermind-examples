@@ -437,7 +437,7 @@ export class GraphDB {
 
 ```json
 {
-  "name": "@zenya/rust-kgdb",
+  "name": "@gonnect/rust-kgdb",
   "version": "0.1.2",
   "description": "Production-ready TypeScript bindings for rust-kgdb RDF/SPARQL database",
   "main": "index.js",

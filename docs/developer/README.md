@@ -33,7 +33,7 @@
 ### 1. Setup
 ```bash
 # Clone and build
-git clone https://github.com/zenya/rust-kgdb
+git clone https://github.com/gonnect-uk/rust-kgdb
 cd rust-kgdb
 cargo build --workspace
 

@@ -8,7 +8,7 @@ Production-ready Kotlin and Java bindings for rust-kgdb RDF/SPARQL database.
 
 ```kotlin
 dependencies {
-    implementation("com.zenya:rust-kgdb-kotlin:0.1.2")
+    implementation("com.gonnect:rust-kgdb-kotlin:0.1.2")
 }
 ```
 
@@ -16,7 +16,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'com.zenya:rust-kgdb-kotlin:0.1.2'
+    implementation 'com.gonnect:rust-kgdb-kotlin:0.1.2'
 }
 ```
 
@@ -24,7 +24,7 @@ dependencies {
 
 ```xml
 <dependency>
-    <groupId>com.zenya</groupId>
+    <groupId>com.gonnect</groupId>
     <artifactId>rust-kgdb-kotlin</artifactId>
     <version>0.1.2</version>
 </dependency>
@@ -33,7 +33,7 @@ dependencies {
 ## Quick Start (Kotlin)
 
 ```kotlin
-import com.zenya.rustkgdb.*
+import com.gonnect.rustkgdb.*
 
 fun main() {
     // Create database
@@ -67,7 +67,7 @@ fun main() {
 ## Quick Start (Java)
 
 ```java
-import com.zenya.rustkgdb.*;
+import com.gonnect.rustkgdb.*;
 
 public class Example {
     public static void main(String[] args) {
@@ -195,7 +195,7 @@ The SDK provides convenient constants for common RDF vocabularies:
 ### RDF
 
 ```kotlin
-import com.zenya.rustkgdb.RDF
+import com.gonnect.rustkgdb.RDF
 
 Node.iri(RDF.TYPE)           // rdf:type
 Node.iri(RDF.PROPERTY)       // rdf:Property
@@ -208,7 +208,7 @@ Node.iri(RDF.NIL)            // rdf:nil
 ### RDFS
 
 ```kotlin
-import com.zenya.rustkgdb.RDFS
+import com.gonnect.rustkgdb.RDFS
 
 Node.iri(RDFS.CLASS)          // rdfs:Class
 Node.iri(RDFS.SUB_CLASS_OF)   // rdfs:subClassOf
@@ -221,7 +221,7 @@ Node.iri(RDFS.RANGE)          // rdfs:range
 ### FOAF
 
 ```kotlin
-import com.zenya.rustkgdb.FOAF
+import com.gonnect.rustkgdb.FOAF
 
 Node.iri(FOAF.PERSON)        // foaf:Person
 Node.iri(FOAF.NAME)          // foaf:name
@@ -234,7 +234,7 @@ Node.iri(FOAF.HOMEPAGE)      // foaf:homepage
 ### XSD Datatypes
 
 ```kotlin
-import com.zenya.rustkgdb.XSD
+import com.gonnect.rustkgdb.XSD
 
 Node.typedLiteral("value", XSD.STRING)
 Node.typedLiteral("42", XSD.INTEGER)
@@ -420,10 +420,10 @@ MIT/Apache-2.0
 ## Links
 
 - [Documentation](https://docs.rs/rust-kgdb-sdk)
-- [GitHub](https://github.com/zenya-graphdb/rust-kgdb)
-- [Maven Central](https://search.maven.org/artifact/com.zenya/rust-kgdb-kotlin)
+- [GitHub](https://github.com/gonnect-uk/rust-kgdb)
+- [Maven Central](https://search.maven.org/artifact/com.gonnect/rust-kgdb-kotlin)
 
 ## Support
 
-- GitHub Issues: https://github.com/zenya-graphdb/rust-kgdb/issues
-- Discussions: https://github.com/zenya-graphdb/rust-kgdb/discussions
+- GitHub Issues: https://github.com/gonnect-uk/rust-kgdb/issues
+- Discussions: https://github.com/gonnect-uk/rust-kgdb/discussions

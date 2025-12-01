@@ -231,7 +231,7 @@ Kotlin/Java SDKs use UniFFI bindings to the Rust core, so backend selection happ
 #### Default (InMemory)
 
 ```kotlin
-import com.zenya.rustkgdb.GraphDB
+import com.gonnect.rustkgdb.GraphDB
 
 // InMemory is default
 val db = GraphDB.inMemory()
@@ -255,7 +255,7 @@ cargo build --release --features rocksdb-backend
 **Step 3**: Use in Kotlin:
 
 ```kotlin
-import com.zenya.rustkgdb.GraphDB
+import com.gonnect.rustkgdb.GraphDB
 
 // If RocksDB feature was enabled in native library
 val db = GraphDB.withRocksDB("./data/graph.db")
@@ -319,7 +319,7 @@ TypeScript SDK uses NAPI-RS bindings.
 #### Default (InMemory)
 
 ```typescript
-import { GraphDB } from '@zenya/rust-kgdb';
+import { GraphDB } from '@gonnect/rust-kgdb';
 
 // InMemory is default
 const db = GraphDB.inMemory();
@@ -338,7 +338,7 @@ npm run build
 **Step 2**: Use in TypeScript:
 
 ```typescript
-import { GraphDB } from '@zenya/rust-kgdb';
+import { GraphDB } from '@gonnect/rust-kgdb';
 
 // Create persistent database
 const db = GraphDB.withRocksDB('./data/graph.db');

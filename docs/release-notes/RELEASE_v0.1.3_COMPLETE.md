@@ -315,7 +315,7 @@ cd sdks/kotlin && ./gradlew test
 ## 📞 Support
 
 For issues, questions, or contributions:
-- GitHub: https://github.com/zenya/rust-kgdb
+- GitHub: https://github.com/gonnect-uk/rust-kgdb
 - Documentation: See `docs/` directory
 - SDK Guides: See `sdks/*/README.md`
 

@@ -13,17 +13,17 @@ long_description = readme_file.read_text(encoding="utf-8") if readme_file.exists
 
 setup(
     name="rust-kgdb",
-    version="0.1.3",
-    description="High-performance RDF/SPARQL database with 100% W3C compliance",
+    version="0.1.8",
+    description="High-performance RDF/SPARQL database with 100% W3C compliance and WCOJ execution",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="Gonnect Team",
     author_email="noreply@gonnect.ai",
-    url="https://github.com/zenya/rust-kgdb",
+    url="https://github.com/gonnect-uk/rust-kgdb",
     project_urls={
-        "Documentation": "https://github.com/zenya/rust-kgdb/tree/main/docs",
-        "Source": "https://github.com/zenya/rust-kgdb",
-        "Issues": "https://github.com/zenya/rust-kgdb/issues",
+        "Documentation": "https://github.com/gonnect-uk/rust-kgdb/tree/main/docs",
+        "Source": "https://github.com/gonnect-uk/rust-kgdb",
+        "Issues": "https://github.com/gonnect-uk/rust-kgdb/issues",
     },
     packages=["rust_kgdb_py"],
     package_data={

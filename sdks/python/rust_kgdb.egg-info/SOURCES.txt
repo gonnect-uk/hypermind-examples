@@ -6,8 +6,8 @@ rust_kgdb.egg-info/PKG-INFO
 rust_kgdb.egg-info/SOURCES.txt
 rust_kgdb.egg-info/dependency_links.txt
 rust_kgdb.egg-info/not-zip-safe
-rust_kgdb.egg-info/requires.txt
 rust_kgdb.egg-info/top_level.txt
 rust_kgdb_py/__init__.py
 rust_kgdb_py/gonnect.py
 rust_kgdb_py/libuniffi.dylib
+tests/test_regression.py

@@ -142,9 +142,9 @@ Planned support:
 
 ## Stay Updated
 
-- Star the [GitHub repository](https://github.com/zenya-graphdb/rust-kgdb)
+- Star the [GitHub repository](https://github.com/gonnect-uk/rust-kgdb)
 - Watch for announcements
-- Follow the [issue tracker](https://github.com/zenya-graphdb/rust-kgdb/issues)
+- Follow the [issue tracker](https://github.com/gonnect-uk/rust-kgdb/issues)
 
 ## Questions?
 

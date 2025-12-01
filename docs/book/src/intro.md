@@ -102,8 +102,8 @@ Measured on Apple Silicon with LUBM(1) data (3,272 triples):
 
 ## Getting Help
 
-- **GitHub Issues**: [Report bugs](https://github.com/zenya-graphdb/rust-kgdb/issues)
-- **Discussions**: [Ask questions](https://github.com/zenya-graphdb/rust-kgdb/discussions)
+- **GitHub Issues**: [Report bugs](https://github.com/gonnect-uk/rust-kgdb/issues)
+- **Discussions**: [Ask questions](https://github.com/gonnect-uk/rust-kgdb/discussions)
 - **API Docs**: [Browse API reference](../api/index.html)
 
 ## Next Steps

@@ -4,7 +4,7 @@
 
 [![Rust Version](https://img.shields.io/badge/rust-1.91%2B-blue.svg)](https://www.rust-lang.org)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/zenya/rust-kgdb)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/gonnect-uk/rust-kgdb)
 [![W3C SPARQL 1.1](https://img.shields.io/badge/W3C-SPARQL%201.1-orange.svg)](https://www.w3.org/TR/sparql11-overview/)
 [![Status](https://img.shields.io/badge/status-production--ready-brightgreen.svg)]()
 
@@ -630,8 +630,8 @@ Licensed under the Apache License, Version 2.0 ([LICENSE](LICENSE) or http://www
 
 ## Contact
 
-- **Issues**: [GitHub Issues](https://github.com/zenya/rust-kgdb/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/zenya/rust-kgdb/discussions)
+- **Issues**: [GitHub Issues](https://github.com/gonnect-uk/rust-kgdb/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/gonnect-uk/rust-kgdb/discussions)
 
 ---
 

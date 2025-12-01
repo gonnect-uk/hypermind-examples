@@ -321,15 +321,15 @@ Until TypeScript SDK is released:
 ## Resources
 
 - [Rust SDK Documentation](../rust/index.md) - Available now
-- [Main Repository](https://github.com/zenya-graphdb/rust-kgdb)
-- [Issue Tracker](https://github.com/zenya-graphdb/rust-kgdb/issues)
+- [Main Repository](https://github.com/gonnect-uk/rust-kgdb)
+- [Issue Tracker](https://github.com/gonnect-uk/rust-kgdb/issues)
 
 ## Contributing
 
 Shape the TypeScript SDK:
 
-1. Star the [GitHub repository](https://github.com/zenya-graphdb/rust-kgdb)
-2. Comment on TypeScript SDK [issues](https://github.com/zenya-graphdb/rust-kgdb/issues)
+1. Star the [GitHub repository](https://github.com/gonnect-uk/rust-kgdb)
+2. Comment on TypeScript SDK [issues](https://github.com/gonnect-uk/rust-kgdb/issues)
 3. Submit design proposals
 
 ## Get Notified

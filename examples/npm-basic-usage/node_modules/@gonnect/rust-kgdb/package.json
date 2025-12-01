@@ -1,0 +1,61 @@
+{
+  "name": "@gonnect/rust-kgdb",
+  "version": "0.1.6",
+  "description": "High-performance RDF/SPARQL database with 100% W3C compliance - Node.js bindings",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "napi": {
+    "name": "rust-kgdb-napi",
+    "triples": {
+      "defaults": true,
+      "additional": [
+        "aarch64-apple-darwin",
+        "x86_64-apple-darwin",
+        "x86_64-unknown-linux-gnu",
+        "aarch64-unknown-linux-gnu",
+        "x86_64-pc-windows-msvc"
+      ]
+    }
+  },
+  "engines": {
+    "node": ">= 16"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "scripts": {
+    "build": "echo 'Binary build not yet configured'",
+    "test": "echo 'Tests not yet configured'"
+  },
+  "devDependencies": {
+    "@napi-rs/cli": "^2.16.0"
+  },
+  "keywords": [
+    "rdf",
+    "sparql",
+    "semantic-web",
+    "graph-database",
+    "w3c",
+    "knowledge-graph",
+    "turtle",
+    "ntriples",
+    "reasoning",
+    "napi",
+    "native"
+  ],
+  "author": "Gonnect Team",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gonnect-uk/rust-kgdb.git",
+    "directory": "sdks/typescript/native/rust-kgdb-napi"
+  },
+  "bugs": {
+    "url": "https://github.com/gonnect-uk/rust-kgdb/issues"
+  },
+  "homepage": "https://github.com/gonnect-uk/rust-kgdb#readme",
+  "files": [
+    "README.md"
+  ]
+}

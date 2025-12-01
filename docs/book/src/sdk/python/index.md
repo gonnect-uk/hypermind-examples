@@ -49,7 +49,7 @@ results = store.sparql_query("""
 
 ## Stay Updated
 
-- Check the [main repository](https://github.com/zenya-graphdb/rust-kgdb)
+- Check the [main repository](https://github.com/gonnect-uk/rust-kgdb)
 - Star the project to get notifications
 - Subscribe to releases on GitHub
 

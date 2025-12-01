@@ -509,10 +509,8 @@ impl<'a, B: StorageBackend> Executor<'a, B> {
         // Step 2: Execute using the recommended strategy
         match plan.strategy {
             JoinStrategy::WCOJ => {
-                // TODO(v0.1.8): Implement proper WCOJ with consistent variable ordering
-                // For now, use nested loop (requires variable ordering analysis)
-                // See docs/implementation/WCOJ_VARIABLE_ORDERING.md for design
-                self.evaluate_bgp_nested_loop(patterns, &plan)
+                // v0.1.8: WCOJ execution path is now ACTIVE with variable ordering
+                self.evaluate_bgp_wcoj(patterns, &plan)
             }
             JoinStrategy::NestedLoop => {
                 // Execute with traditional nested loop join
@@ -527,12 +525,26 @@ impl<'a, B: StorageBackend> Executor<'a, B> {
     }
 
     /// Execute BGP using WCOJ (Worst-Case Optimal Join) algorithm
+    ///
+    /// Uses LeapFrog TrieJoin with consistent variable ordering across all tries.
+    /// This is the ROOT CAUSE FIX from v0.1.7: ALL tries must use SAME ordering.
     fn evaluate_bgp_wcoj(
         &self,
         patterns: &[TriplePattern<'a>],
-        plan: &QueryPlan,
+        _plan: &QueryPlan,
     ) -> ExecutionResult<BindingSet<'a>> {
-        // Step 1: Collect all quads for each pattern from the store
+        use crate::variable_ordering::VariableOrdering;
+
+        // Step 1: Analyze patterns to determine canonical variable ordering
+        // This is CRITICAL: all tries MUST use the SAME ordering for correct intersection
+        let var_ordering = VariableOrdering::analyze(patterns);
+
+        if var_ordering.is_empty() {
+            // No variables - all constants (rare edge case)
+            return Ok(BindingSet::new());
+        }
+
+        // Step 2: Collect quads for each pattern from the store
         let mut pattern_quads: Vec<Vec<Quad<'a>>> = Vec::new();
 
         for pattern in patterns {
@@ -555,57 +567,95 @@ impl<'a, B: StorageBackend> Executor<'a, B> {
             pattern_quads.push(quads);
         }
 
-        // Step 2: Build tries for each pattern using selected index ordering
+        // Step 3: For star queries with different variables per pattern,
+        // fall back to nested loop (WCOJ requires same variable set across patterns)
+        // This is a known limitation of LeapFrog TrieJoin
+
+        // Check if all patterns have the same set of variables
+        let mut first_pattern_vars = HashSet::new();
+        if let VarOrNode::Var(v) = &patterns[0].subject {
+            first_pattern_vars.insert(v.clone());
+        }
+        if let VarOrNode::Var(v) = &patterns[0].predicate {
+            first_pattern_vars.insert(v.clone());
+        }
+        if let VarOrNode::Var(v) = &patterns[0].object {
+            first_pattern_vars.insert(v.clone());
+        }
+
+        let all_same_vars = patterns.iter().skip(1).all(|p| {
+            let mut pattern_vars = HashSet::new();
+            if let VarOrNode::Var(v) = &p.subject {
+                pattern_vars.insert(v.clone());
+            }
+            if let VarOrNode::Var(v) = &p.predicate {
+                pattern_vars.insert(v.clone());
+            }
+            if let VarOrNode::Var(v) = &p.object {
+                pattern_vars.insert(v.clone());
+            }
+            pattern_vars == first_pattern_vars
+        });
+
+        if !all_same_vars {
+            // Fallback: Patterns have different variables - use nested loop for correctness
+            return self.evaluate_bgp_nested_loop(patterns, _plan);
+        }
+
+        // Build tries with CONSISTENT ordering (only when patterns have same variables)
         let mut tries: Vec<Trie<'a>> = Vec::new();
 
-        for (i, quads) in pattern_quads.iter().enumerate() {
-            // Get the recommended index type for this pattern
-            let index_type = plan.index_selection.get(i)
-                .map(|(_, idx)| idx)
-                .unwrap_or(&IndexType::SPOC);
+        for (pattern_idx, quads) in pattern_quads.iter().enumerate() {
+            if quads.is_empty() {
+                // Empty pattern → entire join is empty
+                return Ok(BindingSet::new());
+            }
 
-            // Convert IndexType to TriplePosition ordering
-            let ordering = match index_type {
-                IndexType::SPOC => vec![TriplePosition::Subject, TriplePosition::Predicate, TriplePosition::Object],
-                IndexType::POCS => vec![TriplePosition::Predicate, TriplePosition::Object, TriplePosition::Subject],
-                IndexType::OCSP => vec![TriplePosition::Object, TriplePosition::Subject, TriplePosition::Predicate],
-                IndexType::CSPO => vec![TriplePosition::Subject, TriplePosition::Predicate, TriplePosition::Object],
-            };
+            let pattern = &patterns[pattern_idx];
 
-            let trie = Trie::from_quads(quads.iter().cloned(), &ordering);
+            // Extract variables from this pattern in canonical order
+            let pattern_vars = var_ordering.extract_pattern_variables(pattern);
+
+            // Convert pattern's quads to paths following canonical variable ordering
+            let mut quad_paths: Vec<Vec<Node<'a>>> = Vec::new();
+
+            for quad in quads {
+                let mut path = Vec::new();
+
+                // Extract nodes in canonical variable order
+                for (_var, triple_pos) in &pattern_vars {
+                    let node = match triple_pos {
+                        0 => &quad.subject,    // Subject
+                        1 => &quad.predicate,  // Predicate
+                        2 => &quad.object,     // Object
+                        _ => unreachable!(),
+                    };
+                    path.push(node.clone());
+                }
+
+                quad_paths.push(path);
+            }
+
+            // Build trie from paths
+            let trie = Trie::from_paths(quad_paths, pattern_vars.len());
             tries.push(trie);
         }
 
-        // Step 3: Execute LeapfrogJoin to enumerate results
+        // Step 4: Execute LeapfrogJoin with consistent tries
         let mut join = LeapfrogJoin::new(tries);
         let results = join.execute();
 
-        // Step 4: Convert WCOJ results to BindingSet
+        // Step 5: Convert WCOJ results to BindingSet
+        // Results are paths through trie in canonical variable order
         let mut bindings = BindingSet::new();
 
         for result in results {
             let mut binding = Binding::new();
 
-            // Map result nodes back to variables from patterns
-            // For each pattern, bind its variables to the corresponding result values
-            for (pattern_idx, pattern) in patterns.iter().enumerate() {
-                // Each result is a vector of nodes, one per variable in join
-                // We need to extract the right nodes for this pattern's variables
-
-                if let VarOrNode::Var(ref var) = pattern.subject {
-                    if let Some(node) = result.get(pattern_idx * 3) {
-                        binding.bind(var.clone(), node.clone());
-                    }
-                }
-                if let VarOrNode::Var(ref var) = pattern.predicate {
-                    if let Some(node) = result.get(pattern_idx * 3 + 1) {
-                        binding.bind(var.clone(), node.clone());
-                    }
-                }
-                if let VarOrNode::Var(ref var) = pattern.object {
-                    if let Some(node) = result.get(pattern_idx * 3 + 2) {
-                        binding.bind(var.clone(), node.clone());
-                    }
+            // Map each position in result to its variable
+            for (idx, var) in var_ordering.variables.iter().enumerate() {
+                if let Some(node) = result.get(idx) {
+                    binding.bind(var.clone(), node.clone());
                 }
             }
 

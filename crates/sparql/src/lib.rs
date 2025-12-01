@@ -23,9 +23,11 @@ pub mod bindings;
 pub mod executor;
 pub mod optimizer;
 pub mod parser;
+pub mod variable_ordering;
 
 pub use algebra::*;
 pub use bindings::*;
 pub use executor::*;
 pub use optimizer::*;
 pub use parser::*;
+pub use variable_ordering::*;
