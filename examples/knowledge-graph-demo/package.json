@@ -1,0 +1,27 @@
+{
+  "name": "knowledge-graph-demo",
+  "version": "1.0.0",
+  "description": "Enterprise knowledge graph demo showcasing rust-kgdb TypeScript SDK",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "dev": "ts-node-dev --respawn src/index.ts"
+  },
+  "keywords": [
+    "rdf",
+    "knowledge-graph",
+    "sparql",
+    "semantic-web"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "rust-kgdb": "^0.1.10"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.3.3"
+  }
+}

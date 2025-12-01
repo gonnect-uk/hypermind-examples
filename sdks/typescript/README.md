@@ -380,6 +380,60 @@ db.updateDelete(`
 
 ---
 
+## Sample Application
+
+### Knowledge Graph Demo
+
+A complete, production-ready sample application demonstrating enterprise knowledge graph capabilities is available in the repository.
+
+**Location**: [`examples/knowledge-graph-demo/`](../../examples/knowledge-graph-demo/)
+
+**Features Demonstrated**:
+- Complete organizational knowledge graph (employees, departments, projects, skills)
+- SPARQL SELECT queries with star and chain patterns (WCOJ-optimized)
+- Aggregations (COUNT, AVG, GROUP BY, HAVING)
+- Property paths for transitive closure (organizational hierarchy)
+- SPARQL ASK and CONSTRUCT queries
+- Named graphs for multi-tenant data isolation
+- Data export to Turtle format
+
+**Run the Demo**:
+
+```bash
+cd examples/knowledge-graph-demo
+npm install
+npm start
+```
+
+**Sample Output**:
+
+The demo creates a realistic knowledge graph with:
+- 5 employees across 4 departments
+- 13 technical and soft skills
+- 2 software projects
+- Reporting hierarchies and salary data
+- Named graph for sensitive compensation data
+
+**Example Query from Demo** (finds all direct and indirect reports):
+
+```typescript
+const pathQuery = `
+  PREFIX ex: <http://example.org/>
+  PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+  SELECT ?employee ?name WHERE {
+    ?employee ex:reportsTo+ ex:alice .  # Transitive closure
+    ?employee foaf:name ?name .
+  }
+  ORDER BY ?name
+`
+const results = db.querySelect(pathQuery)
+```
+
+**Learn More**: See the [demo README](../../examples/knowledge-graph-demo/README.md) for full documentation, query examples, and how to customize the knowledge graph.
+
+---
+
 ## API Reference
 
 ### GraphDB Class
