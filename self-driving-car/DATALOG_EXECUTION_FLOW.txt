@@ -1,0 +1,178 @@
+════════════════════════════════════════════════════════════════
+HOW DATALOG RULES MAP TO RDF TRIPLES AND EXECUTE
+════════════════════════════════════════════════════════════════
+
+STEP-BY-STEP EXECUTION: Pedestrian Scenario Example
+
+────────────────────────────────────────────────────────────────
+STEP 1: SENSOR DATA → RDF TRIPLES
+────────────────────────────────────────────────────────────────
+
+Camera/LIDAR detect pedestrian → Generate RDF triples:
+
+@prefix av: <http://gonnect.com/ontology/av#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<http://gonnect.com/pedestrian/ped_001> rdf:type av:Pedestrian .
+<http://gonnect.com/pedestrian/ped_001> av:inCrosswalk <http://gonnect.com/crosswalk/cw_001> .
+<http://gonnect.com/pedestrian/ped_001> av:detectionConfidence "0.95"^^xsd:float .
+<http://gonnect.com/vehicle/ego> rdf:type av:Vehicle .
+<http://gonnect.com/vehicle/ego> av:hasVelocity "13.3"^^xsd:float .
+
+These 5 triples are loaded into rust-kgdb QuadStore (InMemoryBackend)
+
+────────────────────────────────────────────────────────────────
+STEP 2: RDF TRIPLES → DATALOG FACTS (Conversion)
+────────────────────────────────────────────────────────────────
+
+The Datalog engine extracts predicates from RDF triples:
+
+RDF Triple:
+  <ped_001> rdf:type av:Pedestrian
+
+Becomes Datalog Fact:
+  pedestrian(ped_001)
+
+RDF Triple:
+  <ped_001> av:inCrosswalk <cw_001>
+
+Becomes Datalog Fact:
+  inCrosswalk(ped_001, cw_001)   ← Note: 2 arguments!
+
+RDF Triple:
+  <ped_001> av:detectionConfidence "0.95"
+
+Becomes Datalog Fact:
+  confidence(ped_001, 0.95)
+
+Full Fact Base After Conversion:
+┌─────────────────────────────────────┐
+│ pedestrian(ped_001)                 │
+│ inCrosswalk(ped_001, cw_001)        │
+│ confidence(ped_001, 0.95)           │
+│ vehicle(ego)                        │
+│ hasVelocity(ego, 13.3)              │
+└─────────────────────────────────────┘
+
+────────────────────────────────────────────────────────────────
+STEP 3: RULE MATCHING (Unification)
+────────────────────────────────────────────────────────────────
+
+Datalog Rule:
+  critical(V) :- pedestrian(P), inCrosswalk(P), confidence(P, C), C > 0.9.
+
+Break down into conditions:
+  1. pedestrian(P)         ← Variable P must match something
+  2. inCrosswalk(P)        ← SAME variable P (unification!)
+  3. confidence(P, C)      ← Variables P and C
+  4. C > 0.9               ← Arithmetic constraint
+
+Matching Algorithm (Unification):
+
+Try to bind variables:
+  ┌─────────────────────────────────────┐
+  │ Condition 1: pedestrian(P)          │
+  │   Check facts: pedestrian(ped_001)  │
+  │   ✅ MATCH! Bind P = ped_001        │
+  └─────────────────────────────────────┘
+
+  ┌─────────────────────────────────────┐
+  │ Condition 2: inCrosswalk(P)         │
+  │   P is already bound to ped_001     │
+  │   Check: inCrosswalk(ped_001, ?)    │
+  │   Facts: inCrosswalk(ped_001, cw_001) │
+  │   ✅ MATCH!                         │
+  └─────────────────────────────────────┘
+
+  ┌─────────────────────────────────────┐
+  │ Condition 3: confidence(P, C)       │
+  │   P = ped_001 (already bound)       │
+  │   C = unbound variable              │
+  │   Check: confidence(ped_001, ?)     │
+  │   Facts: confidence(ped_001, 0.95)  │
+  │   ✅ MATCH! Bind C = 0.95           │
+  └─────────────────────────────────────┘
+
+  ┌─────────────────────────────────────┐
+  │ Condition 4: C > 0.9                │
+  │   C = 0.95 (already bound)          │
+  │   Evaluate: 0.95 > 0.9              │
+  │   ✅ TRUE!                          │
+  └─────────────────────────────────────┘
+
+All conditions satisfied with bindings:
+  P = ped_001
+  C = 0.95
+  V = ego (from context)
+
+────────────────────────────────────────────────────────────────
+STEP 4: INFERENCE (Add New Fact)
+────────────────────────────────────────────────────────────────
+
+Rule head: critical(V)
+Variable bindings: V = ego
+
+Infer new fact:
+  critical(ego) ← Added to fact base!
+
+Updated Fact Base:
+┌─────────────────────────────────────┐
+│ pedestrian(ped_001)                 │
+│ inCrosswalk(ped_001, cw_001)        │
+│ confidence(ped_001, 0.95)           │
+│ vehicle(ego)                        │
+│ hasVelocity(ego, 13.3)              │
+│ critical(ego)         ← NEW!        │
+└─────────────────────────────────────┘
+
+────────────────────────────────────────────────────────────────
+STEP 5: CASCADE - Match More Rules
+────────────────────────────────────────────────────────────────
+
+Rule 2:
+  rightOfWay(P) :- pedestrian(P), inCrosswalk(P).
+
+Conditions:
+  pedestrian(ped_001) ✓
+  inCrosswalk(ped_001, cw_001) ✓
+
+Infer:
+  rightOfWay(ped_001) ← Added!
+
+Rule 3:
+  action(V, emergencyBrake) :- critical(V), rightOfWay(P).
+
+Conditions:
+  critical(ego) ✓         ← From our previous inference!
+  rightOfWay(ped_001) ✓   ← Just inferred!
+
+Infer:
+  action(ego, emergencyBrake) ← DECISION MADE!
+
+Final Fact Base:
+┌─────────────────────────────────────┐
+│ pedestrian(ped_001)                 │
+│ inCrosswalk(ped_001, cw_001)        │
+│ confidence(ped_001, 0.95)           │
+│ vehicle(ego)                        │
+│ hasVelocity(ego, 13.3)              │
+│ critical(ego)                       │
+│ rightOfWay(ped_001)                 │
+│ action(ego, emergencyBrake) ← FINAL!│
+└─────────────────────────────────────┘
+
+────────────────────────────────────────────────────────────────
+STEP 6: CONVERT BACK TO RDF (For Audit Trail)
+────────────────────────────────────────────────────────────────
+
+Datalog Fact:
+  action(ego, emergencyBrake)
+
+Becomes RDF Triple:
+  <http://gonnect.com/vehicle/ego> av:requiresAction av:EmergencyBrake .
+
+This is added to the QuadStore with provenance metadata:
+  <decision_001> prov:wasDerivedFrom <rule_critical_pedestrian> .
+  <decision_001> prov:generatedAtTime "2025-11-30T15:27:00Z" .
+
+════════════════════════════════════════════════════════════════

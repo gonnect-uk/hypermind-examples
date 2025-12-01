@@ -13,9 +13,11 @@ use crate::{
     Aggregate, Algebra, Binding, BindingSet, BuiltinFunction, Dataset, Expression,
     GraphTarget, PropertyPath, QuadPattern as SparqlQuadPattern,
     TriplePattern, Update, VarOrNode, Variable,
+    optimizer::{QueryOptimizer, QueryPlan, JoinStrategy, IndexType},
 };
 use rdf_model::{Dictionary, Node, Quad, Triple};
 use storage::{NodePattern, QuadPattern as StorageQuadPattern, QuadStore, StorageBackend};
+use wcoj::{LeapfrogJoin, Trie, TriplePosition};
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 
@@ -114,6 +116,12 @@ pub struct Executor<'a, B: StorageBackend> {
 
     /// Dataset specification (FROM/FROM NAMED clauses)
     dataset: Option<Dataset<'a>>,
+
+    /// Query optimizer for automatic WCOJ selection
+    optimizer: QueryOptimizer,
+
+    /// Last query plan (for visualization/debugging)
+    last_plan: Option<QueryPlan>,
 }
 
 impl<'a, B: StorageBackend> Executor<'a, B> {
@@ -125,6 +133,8 @@ impl<'a, B: StorageBackend> Executor<'a, B> {
             current_graph: None,
             function_registry: None,
             dataset: None,
+            optimizer: QueryOptimizer::new(),
+            last_plan: None,
         }
     }
 
@@ -138,6 +148,23 @@ impl<'a, B: StorageBackend> Executor<'a, B> {
     pub fn with_dataset(mut self, dataset: Dataset<'a>) -> Self {
         self.dataset = Some(dataset);
         self
+    }
+
+    /// Get the query plan from the last executed query
+    ///
+    /// Returns None if no query has been executed yet.
+    /// This allows users to inspect how the optimizer chose to execute their query.
+    pub fn get_query_plan(&self) -> Option<&QueryPlan> {
+        self.last_plan.as_ref()
+    }
+
+    /// Explain the query plan for given patterns (without executing)
+    ///
+    /// This is useful for understanding how a query would be executed
+    /// before actually running it.
+    pub fn explain(&self, patterns: &[TriplePattern<'a>]) -> String {
+        let plan = self.optimizer.optimize(patterns);
+        plan.explanation.clone()
     }
 
     /// Execute CONSTRUCT query and return constructed triples
@@ -464,11 +491,136 @@ impl<'a, B: StorageBackend> Executor<'a, B> {
     }
 
     /// Evaluate a BGP (Basic Graph Pattern)
-    fn evaluate_bgp(&self, patterns: &[TriplePattern<'a>]) -> ExecutionResult<BindingSet<'a>> {
+    ///
+    /// Uses automatic query optimization to choose between:
+    /// - WCOJ (Worst-Case Optimal Join) for star queries and cyclic queries
+    /// - Traditional nested loop joins for simple patterns
+    fn evaluate_bgp(&mut self, patterns: &[TriplePattern<'a>]) -> ExecutionResult<BindingSet<'a>> {
         if patterns.is_empty() {
             return Ok(BindingSet::unit());
         }
 
+        // Step 1: Call optimizer to analyze patterns and select strategy
+        let plan = self.optimizer.optimize(patterns);
+
+        // Store plan for query plan visualization
+        self.last_plan = Some(plan.clone());
+
+        // Step 2: Execute using the recommended strategy
+        match plan.strategy {
+            JoinStrategy::WCOJ => {
+                // TODO(v0.1.8): Implement proper WCOJ with consistent variable ordering
+                // For now, use nested loop (requires variable ordering analysis)
+                // See docs/implementation/WCOJ_VARIABLE_ORDERING.md for design
+                self.evaluate_bgp_nested_loop(patterns, &plan)
+            }
+            JoinStrategy::NestedLoop => {
+                // Execute with traditional nested loop join
+                self.evaluate_bgp_nested_loop(patterns, &plan)
+            }
+            JoinStrategy::HashJoin => {
+                // Future: hash join implementation
+                // For now, fall back to nested loop
+                self.evaluate_bgp_nested_loop(patterns, &plan)
+            }
+        }
+    }
+
+    /// Execute BGP using WCOJ (Worst-Case Optimal Join) algorithm
+    fn evaluate_bgp_wcoj(
+        &self,
+        patterns: &[TriplePattern<'a>],
+        plan: &QueryPlan,
+    ) -> ExecutionResult<BindingSet<'a>> {
+        // Step 1: Collect all quads for each pattern from the store
+        let mut pattern_quads: Vec<Vec<Quad<'a>>> = Vec::new();
+
+        for pattern in patterns {
+            let graph_pattern = match &self.current_graph {
+                Some(g) => NodePattern::Concrete(g.clone()),
+                None => NodePattern::Any,
+            };
+
+            let quad_pattern = Box::leak(Box::new(StorageQuadPattern::new(
+                self.var_or_node_to_pattern(&pattern.subject),
+                self.var_or_node_to_pattern(&pattern.predicate),
+                self.var_or_node_to_pattern(&pattern.object),
+                graph_pattern,
+            )));
+
+            let quads: Vec<Quad<'a>> = self.store.find(quad_pattern)
+                .map(|q| q.clone())
+                .collect();
+
+            pattern_quads.push(quads);
+        }
+
+        // Step 2: Build tries for each pattern using selected index ordering
+        let mut tries: Vec<Trie<'a>> = Vec::new();
+
+        for (i, quads) in pattern_quads.iter().enumerate() {
+            // Get the recommended index type for this pattern
+            let index_type = plan.index_selection.get(i)
+                .map(|(_, idx)| idx)
+                .unwrap_or(&IndexType::SPOC);
+
+            // Convert IndexType to TriplePosition ordering
+            let ordering = match index_type {
+                IndexType::SPOC => vec![TriplePosition::Subject, TriplePosition::Predicate, TriplePosition::Object],
+                IndexType::POCS => vec![TriplePosition::Predicate, TriplePosition::Object, TriplePosition::Subject],
+                IndexType::OCSP => vec![TriplePosition::Object, TriplePosition::Subject, TriplePosition::Predicate],
+                IndexType::CSPO => vec![TriplePosition::Subject, TriplePosition::Predicate, TriplePosition::Object],
+            };
+
+            let trie = Trie::from_quads(quads.iter().cloned(), &ordering);
+            tries.push(trie);
+        }
+
+        // Step 3: Execute LeapfrogJoin to enumerate results
+        let mut join = LeapfrogJoin::new(tries);
+        let results = join.execute();
+
+        // Step 4: Convert WCOJ results to BindingSet
+        let mut bindings = BindingSet::new();
+
+        for result in results {
+            let mut binding = Binding::new();
+
+            // Map result nodes back to variables from patterns
+            // For each pattern, bind its variables to the corresponding result values
+            for (pattern_idx, pattern) in patterns.iter().enumerate() {
+                // Each result is a vector of nodes, one per variable in join
+                // We need to extract the right nodes for this pattern's variables
+
+                if let VarOrNode::Var(ref var) = pattern.subject {
+                    if let Some(node) = result.get(pattern_idx * 3) {
+                        binding.bind(var.clone(), node.clone());
+                    }
+                }
+                if let VarOrNode::Var(ref var) = pattern.predicate {
+                    if let Some(node) = result.get(pattern_idx * 3 + 1) {
+                        binding.bind(var.clone(), node.clone());
+                    }
+                }
+                if let VarOrNode::Var(ref var) = pattern.object {
+                    if let Some(node) = result.get(pattern_idx * 3 + 2) {
+                        binding.bind(var.clone(), node.clone());
+                    }
+                }
+            }
+
+            bindings.add(binding);
+        }
+
+        Ok(bindings)
+    }
+
+    /// Execute BGP using traditional nested loop join
+    fn evaluate_bgp_nested_loop(
+        &self,
+        patterns: &[TriplePattern<'a>],
+        _plan: &QueryPlan,
+    ) -> ExecutionResult<BindingSet<'a>> {
         // Optimize: reorder patterns for efficient evaluation
         let ordered = self.optimize_bgp(patterns);
 

@@ -9,16 +9,18 @@
 //!
 //! # Usage
 //!
-//! ```rust,ignore
-//! use storage::observability::{track_operation, record_error, OperationType};
+//! ```rust
+//! use storage::{track_operation, record_error, OperationType};
 //!
 //! // Track operation with automatic timing
-//! track_operation(OperationType::Put, || {
+//! let result = track_operation(OperationType::Put, || -> Result<String, String> {
 //!     // Your operation here
-//!     backend.put(key, value)
+//!     Ok("success".to_string())
 //! });
+//! assert!(result.is_ok());
 //!
 //! // Record error
+//! let error = "test error";
 //! record_error(OperationType::Get, &error);
 //! ```
 

@@ -1,0 +1,14 @@
+{
+  "name": "gonnect-rust-kgdb-example",
+  "version": "1.0.0",
+  "description": "Example usage of @gonnect/rust-kgdb",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "dependencies": {
+    "@gonnect/rust-kgdb": "^0.1.4"
+  },
+  "author": "Gonnect Team",
+  "license": "Apache-2.0"
+}

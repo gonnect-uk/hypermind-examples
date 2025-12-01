@@ -363,7 +363,6 @@ mod performance_tests {
     use std::time::Instant;
 
     #[test]
-    #[ignore] // Run with --ignored flag
     fn perf_simd_vs_scalar_encoding() {
         let dict = Arc::new(Dictionary::new());
 

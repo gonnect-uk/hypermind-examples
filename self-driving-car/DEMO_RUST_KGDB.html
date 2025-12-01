@@ -33,9 +33,12 @@
 
         #container {
             display: grid;
-            grid-template-rows: 70px calc(100vh - 370px) 180px 120px;
+            grid-template-rows: 70px 1fr 180px 120px;
             height: 100vh;
-            overflow: hidden;
+            width: 100vw;
+            min-width: 1400px;  /* Ensure all panels fit */
+            overflow-x: auto;   /* Allow horizontal scroll if needed */
+            overflow-y: hidden;
         }
 
         /* TOP BAR */
@@ -95,19 +98,22 @@
         /* MIDDLE - Main Content */
         #middle-section {
             display: grid;
-            grid-template-columns: 320px 1fr 480px;
+            grid-template-columns: 300px 1fr 450px;
             gap: 10px;
             padding: 10px;
-            overflow: hidden;
+            overflow-x: auto;  /* Allow horizontal scroll if needed */
+            overflow-y: hidden;
             height: 100%;
+            min-width: 1200px;  /* Ensure all 3 panels fit */
         }
 
         /* LEFT - Reasoning Steps */
         #reasoning-panel {
             background: rgba(0, 0, 0, 0.85);
-            padding: 25px;
+            padding: 20px;
             overflow-y: auto;
             border-right: 2px solid rgba(79, 195, 247, 0.3);
+            height: 100%;
         }
 
         .reasoning-step {
@@ -169,9 +175,15 @@
         #scene-container {
             position: relative;
             background: #0a0e27;
+            height: 100%;
         }
 
-        #scene { width: 100%; height: 100%; }
+        #scene {
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            display: block;
+        }
 
         /* Distance Overlay */
         #distance-overlay {
@@ -250,12 +262,12 @@
         /* RIGHT - Decision & SPARQL/Datalog */
         #decision-panel {
             background: rgba(0, 0, 0, 0.85);
-            padding: 20px;
-            padding-bottom: 80px;
-            overflow-y: auto;
-            overflow-x: hidden;
+            padding: 15px;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
             border-left: 2px solid rgba(79, 195, 247, 0.3);
-            scroll-behavior: smooth;
         }
 
         #decision-panel::-webkit-scrollbar {
@@ -275,10 +287,10 @@
 
         .decision-box {
             background: linear-gradient(135deg, rgba(244, 67, 54, 0.3) 0%, rgba(211, 47, 47, 0.3) 100%);
-            padding: 25px;
-            border-radius: 20px;
-            margin: 15px 0;
-            border: 4px solid #f44336;
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin: 10px 0;
+            border: 3px solid #f44336;
             position: relative;
             animation: fadeIn 0.6s;
         }
@@ -699,13 +711,18 @@
 
         .tab-content {
             display: none;
-            animation: fadeInTab 0.4s ease;
             overflow-y: auto;
-            max-height: calc(100% - 180px);
         }
 
         .tab-content.active {
-            display: block;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .tab-nav {
+            flex-shrink: 0;
         }
 
         @keyframes fadeInTab {
@@ -713,16 +730,107 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Decision Panel Improvements */
-        #decision-panel {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            overflow: hidden;
-        }
-
         #decision-container {
             flex-shrink: 0;
+        }
+
+        #decision-panel > h2 {
+            flex-shrink: 0;
+        }
+
+        #sparql-container,
+        #datalog-container,
+        #hypergraph-container,
+        #physics-container {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        /* About Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(20, 30, 48, 0.95) 0%, rgba(36, 59, 85, 0.95) 100%);
+            margin: 3% auto;
+            padding: 30px;
+            border: 2px solid #4fc3f7;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 1000px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 50px rgba(79, 195, 247, 0.3);
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: #4fc3f7;
+        }
+
+        .about-section {
+            margin: 20px 0;
+        }
+
+        .about-section h3 {
+            color: #4fc3f7;
+            border-bottom: 2px solid #4fc3f7;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .about-section pre {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4fc3f7;
+            overflow-x: auto;
+            font-size: 13px;
+        }
+
+        .about-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .about-section li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .about-section li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #4fc3f7;
+        }
+
+        .tech-badge {
+            display: inline-block;
+            background: rgba(79, 195, 247, 0.2);
+            padding: 4px 10px;
+            border-radius: 5px;
+            margin: 3px;
+            border: 1px solid #4fc3f7;
+            font-size: 12px;
         }
     </style>
 </head>
@@ -731,17 +839,202 @@
         <!-- TOP BAR -->
         <div id="top-bar" style="display: flex; align-items: center; justify-content: space-between; padding: 0 20px; gap: 15px;">
             <div id="scenario-number" style="flex-shrink: 0;">READY</div>
-            <div id="scenario-title" style="flex: 1; text-align: center;">🎬 Press "Start Scenario" to begin (Server: localhost:8080)</div>
+            <div id="scenario-title" style="flex: 1; text-align: center;">🎬 Press "Start Scenario" to begin (TypeScript SDK Backend: localhost:8080)</div>
             <div style="display: flex; align-items: center; gap: 6px; background: rgba(76, 175, 80, 0.15); padding: 4px 10px; border-radius: 6px; border: 2px solid #4caf50; flex-shrink: 0;">
                 <span style="font-size: 16px;">⚡</span>
                 <div style="display: flex; flex-direction: column; gap: 0px;">
                     <span style="font-size: 8px; font-weight: bold; color: #4caf50; letter-spacing: 0.5px;">RUST-KGDB</span>
-                    <span style="font-size: 12px; font-weight: bold; color: #fff; font-family: monospace; line-height: 1.1;">v0.1.1</span>
-                    <span style="font-size: 7px; color: #81c784; line-height: 1.1;">SPARQL 1.1/1.2 + Hypergraph</span>
+                    <span style="font-size: 12px; font-weight: bold; color: #fff; font-family: monospace; line-height: 1.1;">v0.1.3</span>
+                    <span style="font-size: 7px; color: #81c784; line-height: 1.1;">100% W3C Certified</span>
                 </div>
                 <span style="font-size: 10px; color: #81c784;">🕸️</span>
             </div>
             <button class="control-btn" onclick="nextScenario()" id="start-btn" style="flex-shrink: 0;">▶️ Start Scenario</button>
+            <button onclick="document.getElementById('aboutModal').style.display='block'" style="background: none; border: 2px solid #4fc3f7; color: #4fc3f7; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; flex-shrink: 0; transition: all 0.3s;" onmouseover="this.style.background='rgba(79, 195, 247, 0.2)'" onmouseout="this.style.background='none'">
+                ℹ️ About
+            </button>
+        </div>
+
+        <!-- ABOUT MODAL -->
+        <div id="aboutModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" onclick="document.getElementById('aboutModal').style.display='none'">&times;</span>
+                <h2 style="color: #4fc3f7; margin-top: 0; font-size: 28px;">🚗 Autonomous Vehicle Demo - Technical Architecture</h2>
+
+                <div class="about-section">
+                    <h3>📊 Overview</h3>
+                    <p>This demo showcases <strong>explainable AI</strong> for autonomous vehicles using the <strong>rust-kgdb</strong> knowledge graph database. Unlike black-box neural networks, every decision is made through transparent SPARQL queries and logical reasoning that can be audited for ISO 26262 compliance.</p>
+                    <p><strong>Technology Stack:</strong></p>
+                    <p>
+                        <span class="tech-badge">Three.js r128</span>
+                        <span class="tech-badge">rust-kgdb v0.1.3</span>
+                        <span class="tech-badge">TypeScript SDK (NAPI-RS)</span>
+                        <span class="tech-badge">Express.js Backend</span>
+                        <span class="tech-badge">SPARQL 1.1</span>
+                        <span class="tech-badge">OWL Ontology</span>
+                    </p>
+                </div>
+
+                <div class="about-section">
+                    <h3>🎮 3D Simulator Setup (Three.js)</h3>
+                    <p>The car simulator uses <strong>Three.js</strong> for real-time 3D rendering:</p>
+                    <ul>
+                        <li><strong>Scene</strong>: 3D environment with fog, lighting, and camera positioned at (0, 35, 70)</li>
+                        <li><strong>Vehicle Model</strong>: BoxGeometry (5×2×3 units) with metallic material, positioned on y=1</li>
+                        <li><strong>Road</strong>: PlaneGeometry (200×20 units) with yellow lane markings (dashed lines)</li>
+                        <li><strong>Obstacles</strong>: Dynamic creation based on scenario type:
+                            <ul style="margin-left: 25px; margin-top: 5px;">
+                                <li>Traffic Light: CylinderGeometry + BoxGeometry with red/yellow/green emissive materials</li>
+                                <li>Pedestrian: CylinderGeometry (torso) + SphereGeometry (head) at crosswalk position</li>
+                                <li>School Zone: Speed limit sign with TextGeometry ("30 km/h")</li>
+                            </ul>
+                        </li>
+                        <li><strong>Animation Loop</strong>: 60 FPS using <code>requestAnimationFrame()</code>, updates car position via <code>carPosition += 0.15</code> until reaching calculated stop position</li>
+                        <li><strong>Stop Position Calculation</strong>:
+                            <ul style="margin-left: 25px; margin-top: 5px;">
+                                <li>Traffic Light/School Zone: <code>obstaclePosition - safetyMargin</code></li>
+                                <li>Crosswalk: <code>(crosswalkStart + 1) - safetyMargin - (carLength/2)</code> (accounts for car front edge)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="about-section">
+                    <h3>🎬 Scenario Structure</h3>
+                    <p>Each scenario is defined as a JavaScript object with 11 key properties:</p>
+                    <pre>{
+  name: "Scenario Title",
+  number: "SCENARIO X/3",
+  initialSpeed: 72,              // km/h
+  obstacleType: "traffic_light", // traffic_light | pedestrian | school_zone
+  obstaclePosition: -30,         // X-coordinate in meters
+  safetyMargin: 15,              // Minimum distance before obstacle
+  carLength: 5,                  // Used for stop position calculation
+  turtleData: "...",             // RDF triples in N-Triples format
+  sparqlQuery: "...",            // SPARQL ASK or SELECT query
+  queryType: "ask",              // ask | select
+  reasoning: [...],              // 6-step reasoning process
+  decision: {...},               // Final decision (action, reason, priority)
+  datalog: {...},                // Datalog rules + inference chain
+  hypergraph: {...},             // Nodes and hyperedges for visualization
+  physics: {...}                 // Deceleration formulas
+}</pre>
+                </div>
+
+                <div class="about-section">
+                    <h3>🔄 Data Flow & Architecture</h3>
+                    <pre>User Clicks "Start Scenario"
+    ↓
+1. Load RDF Triples → POST /load (TypeScript Backend)
+   Backend: db.loadTtl(turtleData) → InMemoryBackend (rust-kgdb)
+   Response: {triples_loaded: N, execution_time_ms: X}
+    ↓
+2. Execute SPARQL Query → POST /ask or /select
+   Backend: db.queryAsk() or db.querySelect()
+   SPARQL Engine: Pattern matching via SPOC/POCS/OCSP/CSPO indexes
+   Response: {result: boolean} or {results: [...], count: N}
+    ↓
+3. Update UI
+   - Left Panel: Display 6 reasoning steps
+   - Center: Start car animation (carPosition += 0.15 per frame)
+   - Right Panel: Show Decision + populate 4 tabs (SPARQL, Datalog, Hypergraph, Physics)
+    ↓
+4. Animation Loop
+   - Check: if (carPosition >= stopPosition) → animationActive = false
+   - Update distance overlay and speed indicator
+   - Render scene: renderer.render(scene, camera)</pre>
+                </div>
+
+                <div class="about-section">
+                    <h3>📐 3 Demo Scenarios</h3>
+                    <ul>
+                        <li><strong>Scenario 1: Red Traffic Light</strong>
+                            <ul style="margin-left: 25px; margin-top: 5px;">
+                                <li>Data: 9 RDF triples (Vehicle + TrafficLight properties)</li>
+                                <li>Query Type: ASK (checks if red light exists ahead)</li>
+                                <li>Decision: EMERGENCY BRAKE (100%)</li>
+                                <li>Compliance: ISO 26262 Red Light Constraint</li>
+                            </ul>
+                        </li>
+                        <li><strong>Scenario 2: Pedestrian in Crosswalk</strong>
+                            <ul style="margin-left: 25px; margin-top: 5px;">
+                                <li>Data: 8 RDF triples (Vehicle + Pedestrian + Crosswalk)</li>
+                                <li>Query Type: ASK (checks if pedestrian in crosswalk)</li>
+                                <li>Decision: EMERGENCY BRAKE (100%)</li>
+                                <li>Compliance: SAE J3016 Vulnerable Road User Protection</li>
+                            </ul>
+                        </li>
+                        <li><strong>Scenario 3: School Zone Speed Violation</strong>
+                            <ul style="margin-left: 25px; margin-top: 5px;">
+                                <li>Data: 4 RDF triples (Vehicle speed + Zone speed limit)</li>
+                                <li>Query Type: SELECT (retrieves speed violation details)</li>
+                                <li>Decision: BRAKE 60% (decelerate to 27 km/h)</li>
+                                <li>Compliance: UL 4600 Speed Limit Constraint</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="about-section">
+                    <h3>🗄️ Backend Architecture (TypeScript SDK)</h3>
+                    <pre>Express Server (typescript_backend.ts)
+    ↓
+NAPI-RS Bindings (rust-kgdb-napi.node - 2.4MB native addon)
+    ↓
+Rust Core (rust-kgdb v0.1.3)
+  ├── SPARQL Engine: 64 builtin functions, W3C 1.1 compliant
+  ├── Storage: InMemoryBackend (HashMap-based, 24 bytes/triple)
+  ├── Indexes: SPOC, POCS, OCSP, CSPO for fast pattern matching
+  └── Dictionary: String interning (8-byte node references)</pre>
+                    <p><strong>Performance</strong>: 2.78 µs triple lookups, 146K triples/sec bulk insert</p>
+                </div>
+
+                <div class="about-section">
+                    <h3>🎨 UI Components</h3>
+                    <ul>
+                        <li><strong>Left Panel (300px)</strong>: 6-step reasoning process with icons</li>
+                        <li><strong>Center Panel (flexible)</strong>: Three.js 3D canvas with overlays (distance, speed)</li>
+                        <li><strong>Right Panel (450px)</strong>: Decision box + 4 tabs
+                            <ul style="margin-left: 25px; margin-top: 5px;">
+                                <li>🔍 SPARQL: Query text + execution results + timing</li>
+                                <li>🧮 Datalog: Inference rules + forward chaining steps</li>
+                                <li>🕸️ Hypergraph: Native n-ary relationship visualization (H1/H2/H3)</li>
+                                <li>⚙️ Physics: Deceleration formulas (a = (v²-u²)/2s)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Bottom Section</strong>: SPARQL Query Log + Event Timeline</li>
+                    </ul>
+                </div>
+
+                <div class="about-section">
+                    <h3>📚 Professional Ontology</h3>
+                    <p>Located at <code>ontology/gonnect-av-ontology.ttl</code> - A complete OWL ontology with:</p>
+                    <ul>
+                        <li><strong>30+ Classes</strong>: Vehicle, Pedestrian, TrafficLight, SchoolZone, Event, Decision, etc.</li>
+                        <li><strong>25+ Properties</strong>: hasVelocity, speedLimit, brakeIntensity, positionX, state, etc.</li>
+                        <li><strong>Safety Constraints</strong>: RedLightConstraint, PedestrianYieldConstraint, SpeedLimitConstraint</li>
+                        <li><strong>Standards</strong>: ISO 26262, SAE J3016, UL 4600 references</li>
+                        <li><strong>SKOS Definitions</strong>: Professional documentation for all terms</li>
+                    </ul>
+                </div>
+
+                <div class="about-section">
+                    <h3>🚀 Quick Start</h3>
+                    <pre># Install dependencies
+npm install
+
+# Start TypeScript backend + open demo
+make ts-demo
+
+# Or manually:
+npm start &
+open DEMO_RUST_KGDB.html</pre>
+                </div>
+
+                <p style="text-align: center; margin-top: 30px; color: #4fc3f7; font-size: 14px;">
+                    Built with ❤️ using rust-kgdb v0.1.3 • Gonnect Technologies • 2025
+                </p>
+            </div>
         </div>
 
         <!-- MIDDLE SECTION -->
@@ -781,7 +1074,7 @@
 
             <!-- RIGHT: Decision & Tabbed Details -->
             <div id="decision-panel">
-                <h2 style="font-size: 18px; margin-bottom: 12px; color: #4fc3f7;">⚡ Decision Output</h2>
+                <h2 style="font-size: 16px; margin-bottom: 8px; color: #4fc3f7;">⚡ Decision Output</h2>
                 <div id="decision-container">
                     <div class="decision-box" style="border-color: #666; background: rgba(100, 100, 100, 0.2);">
                         <div class="action-label">⏸️ IDLE</div>
@@ -799,19 +1092,39 @@
 
                 <!-- Tab Content Panels -->
                 <div id="tab-sparql" class="tab-content active">
-                    <div id="sparql-container"></div>
+                    <div id="sparql-container">
+                        <div style="padding: 40px; text-align: center; color: #666;">
+                            <div style="font-size: 48px; margin-bottom: 20px;">🔍</div>
+                            <div style="font-size: 16px;">Press "Start Scenario" to see SPARQL queries</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="tab-datalog" class="tab-content">
-                    <div id="datalog-container"></div>
+                    <div id="datalog-container">
+                        <div style="padding: 40px; text-align: center; color: #666;">
+                            <div style="font-size: 48px; margin-bottom: 20px;">🧮</div>
+                            <div style="font-size: 16px;">Press "Start Scenario" to see Datalog rules</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="tab-hypergraph" class="tab-content">
-                    <div id="hypergraph-container"></div>
+                    <div id="hypergraph-container">
+                        <div style="padding: 40px; text-align: center; color: #666;">
+                            <div style="font-size: 48px; margin-bottom: 20px;">🕸️</div>
+                            <div style="font-size: 16px;">Press "Start Scenario" to see Hypergraphs</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="tab-physics" class="tab-content">
-                    <div id="physics-container"></div>
+                    <div id="physics-container">
+                        <div style="padding: 40px; text-align: center; color: #666;">
+                            <div style="font-size: 48px; margin-bottom: 20px;">⚙️</div>
+                            <div style="font-size: 16px;">Press "Start Scenario" to see Physics calculations</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -863,19 +1176,19 @@
                 obstaclePosition: -30,
                 safetyMargin: 8,
                 // REAL RDF DATA (Turtle format)
-                turtleData: `@prefix av: <http://zenya.com/ontology/av#> .
-@prefix sensor: <http://zenya.com/ontology/sensor#> .
+                turtleData: `@prefix av: <http://gonnect.com/ontology/av#> .
+@prefix sensor: <http://gonnect.com/ontology/sensor#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
-<http://zenya.com/vehicle/ego>
+<http://gonnect.com/vehicle/ego>
     a av:Vehicle ;
     rdfs:label "Ego Vehicle" ;
     av:hasVelocity "13.3"^^xsd:float ;
     av:positionX "-80.0"^^xsd:float ;
     av:carLength "5.0"^^xsd:float .
 
-<http://zenya.com/traffic_light/tl_001>
+<http://gonnect.com/traffic_light/tl_001>
     a av:TrafficLight ;
     rdfs:label "Traffic Light 001" ;
     av:state "red"^^xsd:string ;
@@ -884,8 +1197,8 @@
     av:distanceMeters "30.0"^^xsd:float .`,
                 // REAL SPARQL QUERY (will be executed)
                 sparqlQuery: `ASK WHERE {
-  ?tl <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://zenya.com/ontology/av#TrafficLight> .
-  ?tl <http://zenya.com/ontology/av#state> "red" .
+  ?tl <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://gonnect.com/ontology/av#TrafficLight> .
+  ?tl <http://gonnect.com/ontology/av#state> "red" .
 }`,
                 queryType: 'ask',
                 reasoning: [
@@ -963,26 +1276,17 @@
                 crosswalkStart: -43,
                 carLength: 5,
                 safetyMargin: 12,
-                turtleData: `@prefix av: <http://zenya.com/ontology/av#> .
-@prefix sensor: <http://zenya.com/ontology/sensor#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-<http://zenya.com/vehicle/ego>
-    a av:Vehicle ;
-    av:hasVelocity "10.0"^^xsd:float ;
-    av:positionX "-60.0"^^xsd:float .
-
-<http://zenya.com/crosswalk/cw_001>
-    a av:Crosswalk ;
-    av:positionX "0.0"^^xsd:float .
-
-<http://zenya.com/pedestrian/ped_001>
-    a av:Pedestrian ;
-    av:positionX "0.0"^^xsd:float ;
-    av:inCrosswalk <http://zenya.com/crosswalk/cw_001> .`,
+                turtleData: `<http://gonnect.com/vehicle/ego> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://gonnect.com/ontology/av#Vehicle> .
+<http://gonnect.com/vehicle/ego> <http://gonnect.com/ontology/av#hasVelocity> "10.0" .
+<http://gonnect.com/vehicle/ego> <http://gonnect.com/ontology/av#positionX> "-60.0" .
+<http://gonnect.com/crosswalk/cw_001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://gonnect.com/ontology/av#Crosswalk> .
+<http://gonnect.com/crosswalk/cw_001> <http://gonnect.com/ontology/av#positionX> "0.0" .
+<http://gonnect.com/pedestrian/ped_001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://gonnect.com/ontology/av#Pedestrian> .
+<http://gonnect.com/pedestrian/ped_001> <http://gonnect.com/ontology/av#positionX> "0.0" .
+<http://gonnect.com/pedestrian/ped_001> <http://gonnect.com/ontology/av#inCrosswalk> <http://gonnect.com/crosswalk/cw_001> .`,
                 sparqlQuery: `ASK WHERE {
-  ?ped <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://zenya.com/ontology/av#Pedestrian> .
-  ?ped <http://zenya.com/ontology/av#inCrosswalk> ?crosswalk .
+  ?ped <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://gonnect.com/ontology/av#Pedestrian> .
+  ?ped <http://gonnect.com/ontology/av#inCrosswalk> ?crosswalk .
 }`,
                 queryType: 'ask',
                 reasoning: [
@@ -1059,22 +1363,16 @@
                 obstacleType: "school_zone",
                 obstaclePosition: -20,
                 safetyMargin: 15,
-                turtleData: `@prefix av: <http://zenya.com/ontology/av#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-<http://zenya.com/vehicle/ego>
-    a av:Vehicle ;
-    av:hasVelocity "15.0"^^xsd:float .
-
-<http://zenya.com/zone/school_001>
-    a av:SchoolZone ;
-    av:speedLimit "8.33"^^xsd:float .`,
+                turtleData: `<http://gonnect.com/vehicle/ego> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://gonnect.com/ontology/av#Vehicle> .
+<http://gonnect.com/vehicle/ego> <http://gonnect.com/ontology/av#hasVelocity> "20.0"^^<http://www.w3.org/2001/XMLSchema#float> .
+<http://gonnect.com/zone/school_001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://gonnect.com/ontology/av#SchoolZone> .
+<http://gonnect.com/zone/school_001> <http://gonnect.com/ontology/av#speedLimit> "8.33"^^<http://www.w3.org/2001/XMLSchema#float> .`,
                 sparqlQuery: `SELECT ?zone ?limit ?vehicle ?speed
 WHERE {
-  ?zone <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://zenya.com/ontology/av#SchoolZone> .
-  ?zone <http://zenya.com/ontology/av#speedLimit> ?limit .
-  ?vehicle <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://zenya.com/ontology/av#Vehicle> .
-  ?vehicle <http://zenya.com/ontology/av#hasVelocity> ?speed .
+  ?zone <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://gonnect.com/ontology/av#SchoolZone> .
+  ?zone <http://gonnect.com/ontology/av#speedLimit> ?limit .
+  ?vehicle <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://gonnect.com/ontology/av#Vehicle> .
+  ?vehicle <http://gonnect.com/ontology/av#hasVelocity> ?speed .
   FILTER(?speed > ?limit)
 }`,
                 queryType: 'select',
@@ -1232,7 +1530,8 @@ WHERE {
 
                 const execTimeUs = `${queryResult.execution_time_us.toFixed(0)}µs`;
                 const execTimeMs = (queryResult.execution_time_us / 1000).toFixed(2);
-                logSPARQL('query', `${queryType} SUCCESS`, `Result: ${queryResult.result}`, queryResult.result, execTimeUs);
+                const resultSummary = queryType === 'ASK' ? `Result: ${queryResult.result}` : `Found ${queryResult.count} results`;
+                logSPARQL('query', `${queryType} SUCCESS`, resultSummary, queryResult.result || queryResult.count, execTimeUs);
                 addEvent("Query Result", `✅ Executed in ${execTimeMs}ms`);
 
                 return queryResult;
@@ -1249,12 +1548,16 @@ WHERE {
             scene.background = new THREE.Color(0x0a0e27);
             scene.fog = new THREE.Fog(0x0a0e27, 30, 150);
 
-            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const container = document.getElementById('scene-container');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
             camera.position.set(0, 35, 70);
             camera.lookAt(0, 0, 0);
 
             renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('scene'), antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setSize(width, height);
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -1635,7 +1938,7 @@ WHERE {
             // Check API health
             const apiOk = await checkApiHealth();
             if (!apiOk) {
-                alert('❌ Cannot connect to SPARQL API at ' + API_BASE + '\n\nMake sure av-server is running:\npython3 av-wasm/server.py');
+                alert('❌ Cannot connect to SPARQL API at ' + API_BASE + '\n\nMake sure TypeScript backend is running:\nnpm start\n\nOr use: make ts-start');
                 btn.disabled = false;
                 return;
             }
@@ -1695,8 +1998,8 @@ WHERE {
                     sparqlResultHTML = `<div class="sparql-result">
                         <strong>REAL SPARQL SELECT Result:</strong><br>
                         Bindings: ${queryResult.count}<br>
-                        ${queryResult.bindings.length > 0 ?
-                            `<pre>${JSON.stringify(queryResult.bindings[0], null, 2)}</pre>` :
+                        ${queryResult.results && queryResult.results.length > 0 ?
+                            `<pre>${JSON.stringify(queryResult.results[0], null, 2)}</pre>` :
                             'No results'
                         }<br>
                         <strong>Execution Time:</strong> ${(queryResult.execution_time_us / 1000).toFixed(2)} ms
@@ -1826,9 +2129,12 @@ WHERE {
         };
 
         window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
+            const container = document.getElementById('scene-container');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            camera.aspect = width / height;
             camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setSize(width, height);
         });
 
         // Initialize scene and check API

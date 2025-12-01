@@ -68,13 +68,21 @@ fn main() {
 
 fn node_to_string(node: &Node) -> String {
     match node {
-        Node::IRI(iri) => iri.to_string(),
-        Node::Literal(value, datatype) => format!("\"{}\"^^<{}>", value, datatype),
-        Node::BlankNode(id) => format!("_:{}", id),
+        Node::Iri(iri) => iri.0.to_string(),
+        Node::Literal(lit) => {
+            if let Some(dt) = lit.datatype {
+                format!("\"{}\"^^<{}>", lit.lexical_form, dt)
+            } else if let Some(lang) = lit.language {
+                format!("\"{}\"@{}", lit.lexical_form, lang)
+            } else {
+                format!("\"{}\"", lit.lexical_form)
+            }
+        },
+        Node::BlankNode(id) => format!("_:{}", id.0),
         Node::QuotedTriple(t) => format!("<<{} {} {}>>",
             node_to_string(&t.subject),
             node_to_string(&t.predicate),
             node_to_string(&t.object)),
-        Node::Variable(v) => format!("?{}", v),
+        Node::Variable(v) => format!("?{}", v.0),
     }
 }

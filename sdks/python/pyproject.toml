@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rust-kgdb"
+version = "0.1.3"
+description = "High-performance RDF/SPARQL database with 100% W3C compliance"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "Gonnect Team", email = "noreply@gonnect.ai"},
+]
+keywords = ["rdf", "sparql", "semantic-web", "knowledge-graph", "database", "triplestore"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Rust",
+    "Topic :: Database",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/zenya/rust-kgdb"
+Documentation = "https://github.com/zenya/rust-kgdb/tree/main/docs"
+Repository = "https://github.com/zenya/rust-kgdb"
+Issues = "https://github.com/zenya/rust-kgdb/issues"
+
+[tool.setuptools]
+packages = ["rust_kgdb_py"]
+package-data = {"rust_kgdb_py" = ["*.dylib", "*.so", "*.dll"]}

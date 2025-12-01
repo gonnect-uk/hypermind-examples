@@ -4,7 +4,6 @@ use mobile_app_generator::{SwiftGenerator, MobileApplication, BusinessPersona, B
 use std::path::PathBuf;
 
 #[test]
-#[ignore] // Run with: cargo test generate_production_apps -- --ignored
 fn generate_production_apps() {
     let output_dir = PathBuf::from("ios/GeneratedApps");
     std::fs::create_dir_all(&output_dir).unwrap();

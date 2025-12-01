@@ -6,7 +6,7 @@ use std::fmt;
 /// RDF Triple: Subject-Predicate-Object
 ///
 /// Zero-copy representation using borrowed nodes.
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct Triple<'a> {
     /// Subject (must be IRI, BlankNode, or QuotedTriple)
     pub subject: Node<'a>,

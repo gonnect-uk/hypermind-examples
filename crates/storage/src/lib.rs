@@ -16,7 +16,7 @@
 //! # Example
 //!
 //! ```rust,ignore
-//! use storage::{QuadStore, StorageBackend, InMemoryBackend};
+//! use storage::{QuadStore, StorageBackend, InMemoryBackend, QuadPattern};
 //! use rdf_model::{Node, Triple, Quad, Dictionary};
 //!
 //! // Create in-memory quad store

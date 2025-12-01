@@ -1,0 +1,33 @@
+# Exclude Rust source code
+src/
+Cargo.toml
+Cargo.lock
+build.rs
+target/
+
+# Exclude development files
+.DS_Store
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Exclude CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Exclude tests
+tests/
+test/
+__tests__/
+*.test.js
+*.spec.js
+
+# Keep only compiled binaries and documentation
+!index.js
+!index.d.ts
+!README.md
+!LICENSE
+!*.node

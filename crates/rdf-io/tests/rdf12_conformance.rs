@@ -293,7 +293,6 @@ fn test_rdf12_ntriples_quoted_triple() {
 
 /// Run all RDF 1.2 Turtle syntax tests from W3C test suite
 #[test]
-#[ignore] // Run with: cargo test --package rdf-io --test rdf12_conformance -- --ignored
 fn test_rdf12_w3c_turtle_syntax_full() {
     let turtle_syntax_dir = PathBuf::from(RDF12_TEST_DIR)
         .join("rdf-turtle")
@@ -374,7 +373,6 @@ fn test_rdf12_w3c_turtle_syntax_full() {
 
 /// Run all RDF 1.2 Turtle evaluation tests
 #[test]
-#[ignore]
 fn test_rdf12_w3c_turtle_eval_full() {
     let turtle_eval_dir = PathBuf::from(RDF12_TEST_DIR)
         .join("rdf-turtle")

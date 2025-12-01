@@ -197,19 +197,23 @@ impl GraphDB {
         // Execute SELECT query
         match query {
             Query::Select { pattern, dataset, .. } => {
-                // CRITICAL: Pass FROM/FROM NAMED dataset to executor if specified
-                // This was the root cause of "FROM clause not implemented" bug
-                if !dataset.default.is_empty() || !dataset.named.is_empty() {
-                    executor = executor.with_dataset(dataset);
-                }
+                // Determine the pattern to execute based on dataset (FROM clause)
+                let has_from_clause = !dataset.default.is_empty() || !dataset.named.is_empty();
 
-                // Wrap pattern with GRAPH clause for app isolation
-                let graph_scoped_pattern = Algebra::Graph {
-                    graph: VarOrNode::Node(self.app_graph_node.clone()),
-                    input: Box::new(pattern),
+                let execution_pattern = if has_from_clause {
+                    // CRITICAL FIX: When FROM/FROM NAMED is specified, DON'T wrap with app graph
+                    // The FROM clause already specifies which graphs to query
+                    executor = executor.with_dataset(dataset);
+                    pattern
+                } else {
+                    // No FROM clause - wrap pattern with GRAPH clause for app isolation
+                    Algebra::Graph {
+                        graph: VarOrNode::Node(self.app_graph_node.clone()),
+                        input: Box::new(pattern),
+                    }
                 };
 
-                let bindings = executor.execute(&graph_scoped_pattern)
+                let bindings = executor.execute(&execution_pattern)
                     .map_err(|e| GonnectError::QueryError { message: format!("Query execution error: {:?}", e) })?;
 
                 // Convert bindings to QueryResult with ALL variables
@@ -285,7 +289,80 @@ impl GraphDB {
                 }
                 Ok(results)
             }
-            _ => Err(GonnectError::QueryError { message: "Only SELECT queries supported via FFI".to_string() }),
+            Query::Construct { template, dataset, pattern, .. } => {
+                // CRITICAL: Pass FROM/FROM NAMED dataset to executor if specified
+                if !dataset.default.is_empty() || !dataset.named.is_empty() {
+                    executor = executor.with_dataset(dataset);
+                }
+
+                // Wrap pattern with GRAPH clause for app isolation
+                let graph_scoped_pattern = Algebra::Graph {
+                    graph: VarOrNode::Node(self.app_graph_node.clone()),
+                    input: Box::new(pattern),
+                };
+
+                eprintln!("DEBUG: Executing CONSTRUCT pattern in graph: {:?}", self.app_graph_node);
+                eprintln!("DEBUG: Pattern: {:?}", graph_scoped_pattern);
+
+                // Execute pattern to get bindings
+                let bindings = executor.execute(&graph_scoped_pattern)
+                    .map_err(|e| GonnectError::QueryError { message: format!("Query execution error: {:?}", e) })?;
+
+                eprintln!("DEBUG: Got {} bindings", bindings.len());
+
+                // Apply template to construct triples
+                let mut results = Vec::new();
+                eprintln!("DEBUG: Template has {} patterns", template.len());
+                for (i, binding) in bindings.iter().enumerate() {
+                    eprintln!("DEBUG: Processing binding {}: {:?}", i, binding);
+                    for (j, triple_pattern) in template.iter().enumerate() {
+                        eprintln!("DEBUG: Applying template pattern {}: {:?}", j, triple_pattern);
+                        // Substitute variables in template with binding values
+                        let subject = match &triple_pattern.subject {
+                            VarOrNode::Var(v) => {
+                                let val = binding.get(v).cloned();
+                                eprintln!("DEBUG: Subject var {:?} -> {:?}", v, val);
+                                val
+                            },
+                            VarOrNode::Node(n) => Some(n.clone()),
+                        };
+
+                        let predicate = match &triple_pattern.predicate {
+                            VarOrNode::Var(v) => {
+                                let val = binding.get(v).cloned();
+                                eprintln!("DEBUG: Predicate var {:?} -> {:?}", v, val);
+                                val
+                            },
+                            VarOrNode::Node(n) => Some(n.clone()),
+                        };
+
+                        let object = match &triple_pattern.object {
+                            VarOrNode::Var(v) => {
+                                let val = binding.get(v).cloned();
+                                eprintln!("DEBUG: Object var {:?} -> {:?}", v, val);
+                                val
+                            },
+                            VarOrNode::Node(n) => Some(n.clone()),
+                        };
+
+                        // Build triple if all positions are bound
+                        if let (Some(s), Some(p), Some(o)) = (&subject, &predicate, &object) {
+                            eprintln!("DEBUG: Creating triple: {:?} {:?} {:?}", s, p, o);
+                            results.push(TripleResult {
+                                subject: node_to_string(s),
+                                predicate: node_to_string(p),
+                                object: node_to_string(o),
+                                graph: None,
+                            });
+                        } else {
+                            eprintln!("DEBUG: Skipping - not all positions bound: s={:?}, p={:?}, o={:?}", subject.is_some(), predicate.is_some(), object.is_some());
+                        }
+                    }
+                }
+                eprintln!("DEBUG: Total constructed triples: {}", results.len());
+                Ok(results)
+            }
+            _ => Err(GonnectError::QueryError { message: "Query type not supported via FFI (ASK/DESCRIBE not implemented)".to_string() }),
         }
     }
 
@@ -630,6 +707,28 @@ fn node_to_string(node: &Node) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_construct_parser() {
+        // Test that SPARQL parser correctly parses CONSTRUCT template
+        let sparql_str = r#"
+            CONSTRUCT { ?a <http://example.org/friendOf> ?b }
+            WHERE { ?a <http://example.org/knows> ?b }
+        "#;
+
+        let mut parser = SPARQLParser::new();
+        let query = parser.parse_query(sparql_str).expect("Should parse CONSTRUCT query");
+
+        if let Query::Construct { template, .. } = query {
+            eprintln!("Parsed CONSTRUCT template with {} patterns", template.len());
+            for (i, tp) in template.iter().enumerate() {
+                eprintln!("  Pattern {}: {:?}", i, tp);
+            }
+            assert_eq!(template.len(), 1, "Should have 1 template pattern");
+        } else {
+            panic!("Query should be CONSTRUCT, got: {:?}", query);
+        }
+    }
 
     #[test]
     fn test_create_graphdb() {

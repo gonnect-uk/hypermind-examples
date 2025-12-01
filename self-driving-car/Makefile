@@ -1,15 +1,23 @@
-.PHONY: help build start stop demo clean test health
+.PHONY: help build start stop demo clean test health ts-setup ts-start ts-stop ts-demo
 
 # Colors for output
 GREEN  = \033[0;32m
 YELLOW = \033[0;33m
+BLUE   = \033[0;34m
+CYAN   = \033[0;36m
 NC     = \033[0m # No Color
 
 help: ## Show this help message
-	@echo "$(GREEN)🚗 Self-Driving Car Demo - rust-kgdb$(NC)"
+	@echo "$(GREEN)🚗 Self-Driving Car Demo - rust-kgdb v0.1.3$(NC)"
 	@echo ""
-	@echo "$(YELLOW)Available commands:$(NC)"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(GREEN)%-12s$(NC) %s\n", $$1, $$2}'
+	@echo "$(CYAN)📘 TYPESCRIPT SDK BACKEND (DEFAULT):$(NC)"
+	@echo "  $(GREEN)ts-demo      $(NC) Setup and start TypeScript SDK backend + open demo"
+	@echo "  $(GREEN)ts-start     $(NC) Start TypeScript SDK backend server"
+	@echo "  $(GREEN)ts-stop      $(NC) Stop TypeScript SDK backend server"
+	@echo "  $(GREEN)ts-setup     $(NC) Install npm dependencies"
+	@echo ""
+	@echo "$(YELLOW)Other Commands:$(NC)"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep -v 'ts-' | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(GREEN)%-12s$(NC) %s\n", $$1, $$2}'
 
 build: ## Build av-server binary (release mode)
 	@echo "$(GREEN)🔨 Building av-server...$(NC)"
@@ -89,5 +97,56 @@ logs: ## Show server logs
 		echo "$(YELLOW)No log file found. Is the server running?$(NC)"; \
 	fi
 
-# Default target
-.DEFAULT_GOAL := demo
+# Default target (use TypeScript backend!)
+.DEFAULT_GOAL := ts-demo
+
+# ===== TYPESCRIPT SDK BACKEND =====
+
+ts-setup: ## Install TypeScript dependencies
+	@echo "$(CYAN)📦 Installing TypeScript dependencies...$(NC)"
+	@npm install
+	@echo "$(GREEN)✅ Dependencies installed$(NC)"
+
+ts-start: ## Start TypeScript SDK backend server
+	@echo "$(CYAN)📘 Starting TypeScript SDK backend...$(NC)"
+	@if lsof -i :8080 > /dev/null 2>&1; then \
+		echo "$(YELLOW)⚠️  Port 8080 already in use. Stopping...$(NC)"; \
+		$(MAKE) ts-stop; \
+		sleep 1; \
+	fi
+	@nohup npm start > typescript-backend.log 2>&1 & echo $$! > typescript-backend.pid
+	@sleep 3
+	@if curl -s http://localhost:8080/health > /dev/null 2>&1; then \
+		echo "$(GREEN)✅ TypeScript SDK backend started at http://localhost:8080$(NC)"; \
+		curl -s http://localhost:8080/health | jq; \
+	else \
+		echo "$(YELLOW)❌ Server failed to start. Check typescript-backend.log$(NC)"; \
+		exit 1; \
+	fi
+
+ts-stop: ## Stop TypeScript SDK backend server
+	@echo "$(YELLOW)🛑 Stopping TypeScript backend...$(NC)"
+	@if [ -f typescript-backend.pid ]; then \
+		kill -9 $$(cat typescript-backend.pid) 2>/dev/null || true; \
+		rm typescript-backend.pid; \
+		echo "$(GREEN)✅ Server stopped$(NC)"; \
+	else \
+		pkill -9 -f "ts-node typescript_backend.ts" 2>/dev/null || true; \
+		pkill -9 -f "node typescript_backend.js" 2>/dev/null || true; \
+		echo "$(GREEN)✅ No server running$(NC)"; \
+	fi
+
+ts-demo: ts-start ## Start TypeScript SDK backend and open demo
+	@echo "$(CYAN)🌐 Opening demo...$(NC)"
+	@sleep 1
+	@open DEMO_RUST_KGDB.html || xdg-open DEMO_RUST_KGDB.html 2>/dev/null || echo "$(YELLOW)Please open: file://$(PWD)/DEMO_RUST_KGDB.html$(NC)"
+	@echo ""
+	@echo "$(GREEN)✅ Demo ready!$(NC)"
+	@echo "$(GREEN)📍 URL: file://$(PWD)/DEMO_RUST_KGDB.html$(NC)"
+	@echo "$(CYAN)📘 Backend: TypeScript SDK (NAPI-RS + in-memory)$(NC)"
+	@echo "$(GREEN)🔌 API: http://localhost:8080$(NC)"
+	@echo ""
+	@echo "$(YELLOW)To stop the server, run: make ts-stop$(NC)"
+
+# Default target (use TypeScript backend now!)
+.DEFAULT_GOAL := ts-demo

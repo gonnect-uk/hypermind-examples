@@ -12,6 +12,7 @@ description = "Complete SPARQL 1.1 parser, optimizer, and executor"
 rdf-model = { path = "../rdf-model" }
 hypergraph = { path = "../hypergraph" }
 storage = { path = "../storage" }
+wcoj = { path = "../wcoj" }
 parking_lot = { workspace = true }
 smallvec = { workspace = true }
 ahash = { workspace = true }

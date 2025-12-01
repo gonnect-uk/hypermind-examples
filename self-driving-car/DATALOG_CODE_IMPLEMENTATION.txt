@@ -1,0 +1,283 @@
+════════════════════════════════════════════════════════════════
+RUST CODE IMPLEMENTATION - WHERE THE MAGIC HAPPENS
+════════════════════════════════════════════════════════════════
+
+📂 CODE LOCATIONS:
+
+1. RDF Triple Storage:
+   ../crates/storage/src/quad_store.rs
+   
+2. SPARQL Query Execution:
+   ../crates/sparql/src/executor.rs
+   
+3. Datalog Engine:
+   ../crates/datalog/src/lib.rs
+   ../crates/datalog/src/inference.rs
+   
+4. Integration Layer:
+   ../crates/reasoning/src/executor.rs
+
+────────────────────────────────────────────────────────────────
+PSEUDO-CODE: How It Actually Executes
+────────────────────────────────────────────────────────────────
+
+// File: crates/reasoning/src/executor.rs
+
+pub fn process_sensor_event(
+    quad_store: &QuadStore,
+    sensor_data: SensorData
+) -> Decision {
+    
+    // STEP 1: Convert sensor data to RDF triples
+    let triples = sensor_data_to_rdf(&sensor_data);
+    
+    // Example:
+    // triples = [
+    //   Triple { s: ped_001, p: rdf:type, o: av:Pedestrian },
+    //   Triple { s: ped_001, p: av:inCrosswalk, o: cw_001 },
+    //   Triple { s: ped_001, p: av:confidence, o: 0.95 }
+    // ]
+    
+    // STEP 2: Load triples into QuadStore
+    for triple in triples {
+        quad_store.insert(triple)?;
+    }
+    
+    // STEP 3: Execute SPARQL query (optional, for complex patterns)
+    let sparql = "
+        SELECT ?ped ?cw WHERE {
+            ?ped a av:Pedestrian .
+            ?ped av:inCrosswalk ?cw .
+        }
+    ";
+    let bindings = quad_store.query_select(sparql)?;
+    
+    // STEP 4: Convert RDF to Datalog facts
+    let facts = rdf_to_datalog_facts(&quad_store);
+    
+    // facts = FactBase {
+    //   pedestrian(ped_001),
+    //   inCrosswalk(ped_001, cw_001),
+    //   confidence(ped_001, 0.95),
+    //   vehicle(ego),
+    //   hasVelocity(ego, 13.3)
+    // }
+    
+    // STEP 5: Load Datalog rules
+    let rules = load_safety_rules();
+    
+    // rules = [
+    //   Rule {
+    //     head: critical(V),
+    //     body: [pedestrian(P), inCrosswalk(P), confidence(P,C), C > 0.9]
+    //   },
+    //   Rule {
+    //     head: action(V, emergencyBrake),
+    //     body: [critical(V), rightOfWay(P)]
+    //   }
+    // ]
+    
+    // STEP 6: Execute forward chaining
+    let inferred_facts = forward_chain(&facts, &rules);
+    
+    // inferred_facts = [
+    //   critical(ego),
+    //   rightOfWay(ped_001),
+    //   action(ego, emergencyBrake)
+    // ]
+    
+    // STEP 7: Extract decision
+    let decision = extract_action(&inferred_facts);
+    
+    // decision = Decision {
+    //   action: EmergencyBrake,
+    //   intensity: 100,
+    //   provenance: [
+    //     "critical(ego) derived from rule R1",
+    //     "rightOfWay(ped_001) derived from rule R2",
+    //     "action(ego, emergencyBrake) derived from rule R3"
+    //   ]
+    // }
+    
+    decision
+}
+
+────────────────────────────────────────────────────────────────
+KEY FUNCTION: rdf_to_datalog_facts()
+────────────────────────────────────────────────────────────────
+
+fn rdf_to_datalog_facts(quad_store: &QuadStore) -> FactBase {
+    let mut facts = FactBase::new();
+    
+    // Iterate all triples in the store
+    for triple in quad_store.iter_triples() {
+        
+        // Pattern 1: rdf:type triples → unary predicates
+        if triple.predicate == RDF_TYPE {
+            // <ped_001> rdf:type av:Pedestrian
+            // → pedestrian(ped_001)
+            
+            let predicate_name = extract_class_name(triple.object);
+            facts.insert(Fact {
+                predicate: predicate_name,  // "pedestrian"
+                args: vec![triple.subject]  // [ped_001]
+            });
+        }
+        
+        // Pattern 2: property triples → binary predicates
+        else {
+            // <ped_001> av:inCrosswalk <cw_001>
+            // → inCrosswalk(ped_001, cw_001)
+            
+            let predicate_name = extract_property_name(triple.predicate);
+            facts.insert(Fact {
+                predicate: predicate_name,     // "inCrosswalk"
+                args: vec![
+                    triple.subject,            // ped_001
+                    triple.object              // cw_001
+                ]
+            });
+        }
+    }
+    
+    facts
+}
+
+────────────────────────────────────────────────────────────────
+KEY FUNCTION: forward_chain()
+────────────────────────────────────────────────────────────────
+
+fn forward_chain(initial_facts: &FactBase, rules: &[Rule]) -> FactBase {
+    let mut facts = initial_facts.clone();
+    let mut changed = true;
+    
+    // Iterate until fixpoint (no new facts derived)
+    while changed {
+        changed = false;
+        
+        // Try each rule
+        for rule in rules {
+            // Try to match rule body against current facts
+            let matches = unify_rule(&rule, &facts);
+            
+            for bindings in matches {
+                // Apply bindings to rule head
+                let new_fact = instantiate_head(&rule.head, &bindings);
+                
+                // Add new fact if not already present
+                if !facts.contains(&new_fact) {
+                    facts.insert(new_fact);
+                    changed = true;  // Continue iteration
+                }
+            }
+        }
+    }
+    
+    facts
+}
+
+────────────────────────────────────────────────────────────────
+KEY FUNCTION: unify_rule()
+────────────────────────────────────────────────────────────────
+
+fn unify_rule(rule: &Rule, facts: &FactBase) -> Vec<Bindings> {
+    let mut all_bindings = vec![Bindings::new()];
+    
+    // Process each condition in rule body
+    for condition in &rule.body {
+        let mut new_bindings = vec![];
+        
+        for existing_binding in all_bindings {
+            // Find all facts that match this condition
+            let matching_facts = find_matching_facts(
+                condition,
+                facts,
+                &existing_binding
+            );
+            
+            for fact in matching_facts {
+                // Extend bindings with new variable assignments
+                let mut extended = existing_binding.clone();
+                if extend_bindings(&mut extended, condition, fact) {
+                    new_bindings.push(extended);
+                }
+            }
+        }
+        
+        all_bindings = new_bindings;
+        
+        // No matches for this condition → rule fails
+        if all_bindings.is_empty() {
+            return vec![];
+        }
+    }
+    
+    all_bindings
+}
+
+────────────────────────────────────────────────────────────────
+CONCRETE EXAMPLE: Step-by-Step Trace
+────────────────────────────────────────────────────────────────
+
+Initial Facts:
+  pedestrian(ped_001)
+  inCrosswalk(ped_001, cw_001)
+  confidence(ped_001, 0.95)
+
+Rule:
+  critical(V) :- pedestrian(P), inCrosswalk(P), confidence(P, C), C > 0.9
+
+Iteration 1 of forward_chain():
+
+  Try rule "critical(V) :- ..."
+  
+  Call unify_rule():
+    
+    all_bindings = [{}]  // Start with empty binding
+    
+    Condition 1: pedestrian(P)
+      Find matching facts: [pedestrian(ped_001)]
+      Extend binding: P = ped_001
+      all_bindings = [{P: ped_001}]
+    
+    Condition 2: inCrosswalk(P)
+      P is already bound to ped_001
+      Find facts matching inCrosswalk(ped_001, ?)
+      Found: inCrosswalk(ped_001, cw_001)
+      all_bindings = [{P: ped_001}]
+    
+    Condition 3: confidence(P, C)
+      P = ped_001 (bound)
+      C = unbound
+      Find facts matching confidence(ped_001, ?)
+      Found: confidence(ped_001, 0.95)
+      Extend binding: C = 0.95
+      all_bindings = [{P: ped_001, C: 0.95}]
+    
+    Condition 4: C > 0.9
+      Evaluate: 0.95 > 0.9 → TRUE
+      all_bindings = [{P: ped_001, C: 0.95}]
+  
+  Result: 1 binding found!
+  
+  Instantiate head critical(V) with bindings:
+    V = ego (from context or another fact)
+    new_fact = critical(ego)
+  
+  Insert critical(ego) into facts
+  changed = true
+  
+Iteration 2 of forward_chain():
+
+  Try all rules again with updated facts...
+  (Rules for rightOfWay and action will now match)
+
+Final facts after fixpoint:
+  pedestrian(ped_001)
+  inCrosswalk(ped_001, cw_001)
+  confidence(ped_001, 0.95)
+  critical(ego)           ← INFERRED
+  rightOfWay(ped_001)     ← INFERRED
+  action(ego, emergencyBrake)  ← INFERRED
+
+════════════════════════════════════════════════════════════════

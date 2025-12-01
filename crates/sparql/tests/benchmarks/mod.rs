@@ -434,7 +434,6 @@ mod tests {
     use super::*;
 
     #[test]
-    #[ignore] // Requires dataset
     fn test_lubm_benchmark() {
         let config = BenchmarkConfig {
             scale_factor: 1, // LUBM(1)

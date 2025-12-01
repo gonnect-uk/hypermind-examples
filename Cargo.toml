@@ -14,10 +14,11 @@ members = [
     "crates/mobile-ffi",
     "crates/mobile-app-generator",
     "crates/sdk",
+    "sdks/typescript/native/rust-kgdb-napi",
 ]
 
 [workspace.package]
-version = "0.1.3"
+version = "0.1.7"
 edition = "2021"
 authors = ["Gonnect Team"]
 license = "Apache-2.0"

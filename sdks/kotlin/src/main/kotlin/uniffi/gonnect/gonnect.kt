@@ -1945,34 +1945,34 @@ sealed class GonnectException: kotlin.Exception() {
     
     class ParseException(
         
-        val `message`: kotlin.String
+        val `errorMessage`: kotlin.String
         ) : GonnectException() {
         override val message
-            get() = "message=${ `message` }"
+            get() = "errorMessage=${ `errorMessage` }"
     }
     
     class QueryException(
         
-        val `message`: kotlin.String
+        val `errorMessage`: kotlin.String
         ) : GonnectException() {
         override val message
-            get() = "message=${ `message` }"
+            get() = "errorMessage=${ `errorMessage` }"
     }
     
     class IoException(
         
-        val `message`: kotlin.String
+        val `errorMessage`: kotlin.String
         ) : GonnectException() {
         override val message
-            get() = "message=${ `message` }"
+            get() = "errorMessage=${ `errorMessage` }"
     }
     
     class InvalidInput(
         
-        val `message`: kotlin.String
+        val `errorMessage`: kotlin.String
         ) : GonnectException() {
         override val message
-            get() = "message=${ `message` }"
+            get() = "errorMessage=${ `errorMessage` }"
     }
     
 

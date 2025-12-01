@@ -248,6 +248,21 @@ impl NTriplesParser {
     }
 }
 
+// ============================================================================
+// Strategy Pattern Implementation
+// ============================================================================
+
+impl crate::RDFParser for NTriplesParser {
+    fn parse<'a>(&'a mut self, content: &'a str) -> crate::ParseResult<Vec<Quad<'a>>> {
+        // Delegate to inherent method (dereference mutable to get immutable reference)
+        NTriplesParser::parse(&*self, content)
+    }
+
+    fn format(&self) -> crate::RDFFormat {
+        crate::RDFFormat::NTriples
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

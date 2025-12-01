@@ -21,7 +21,7 @@
 //! let dict = Dictionary::new();
 //! let subject = Node::iri(dict.intern("http://example.org/subject"));
 //! let predicate = Node::iri(dict.intern("http://example.org/predicate"));
-//! let object = Node::literal_str(dict.intern("value"), None, None);
+//! let object = Node::literal_str(dict.intern("value"));
 //!
 //! let triple = Triple::new(subject, predicate, object);
 //! ```

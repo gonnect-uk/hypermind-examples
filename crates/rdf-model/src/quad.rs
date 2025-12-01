@@ -6,7 +6,7 @@ use std::fmt;
 /// RDF Quad: Subject-Predicate-Object-Graph
 ///
 /// Extends Triple with optional graph name for named graphs.
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct Quad<'a> {
     /// Subject (must be IRI, BlankNode, or QuotedTriple)
     pub subject: Node<'a>,

@@ -263,7 +263,6 @@ mod tests {
     use super::*;
 
     #[test]
-    #[ignore] // Requires cloned w3c/rdf-tests repository
     fn test_discover_w3c_tests() {
         let config = W3CTestConfig {
             test_data_dir: PathBuf::from("../../test-data/rdf-tests"),

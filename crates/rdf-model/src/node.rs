@@ -10,7 +10,7 @@ use std::fmt;
 ///
 /// Uses borrowed references ('a lifetime) for zero-copy semantics.
 /// All strings are expected to be interned via Dictionary.
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub enum Node<'a> {
     /// IRI/URI reference
     /// Example: <http://example.org/resource>
@@ -175,7 +175,7 @@ impl<'a> fmt::Display for Node<'a> {
 }
 
 /// IRI reference (borrowed string)
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct IriRef<'a>(pub &'a str);
 
 impl<'a> IriRef<'a> {
@@ -222,7 +222,7 @@ impl<'a> fmt::Display for IriRef<'a> {
 }
 
 /// RDF Literal with optional language or datatype
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct Literal<'a> {
     /// Lexical form (string representation)
     pub lexical_form: &'a str,
@@ -323,7 +323,7 @@ impl fmt::Display for BlankNodeId {
 }
 
 /// SPARQL variable
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct Variable<'a>(pub &'a str);
 
 impl<'a> Variable<'a> {

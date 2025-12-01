@@ -673,4 +673,229 @@ The iOS build script (`scripts/build-ios.sh`) automatically:
 - `Cargo.toml` - Workspace uniffi 0.30.0 version declaration
 
 This approach ensures we always use the LATEST uniffi version with full professional-grade implementation.
-- Add to memory @CLAUDE.md
+
+---
+
+## SDK Development
+
+### SDK Structure
+
+The project includes **3 customer-facing SDKs** in `sdks/`:
+
+```
+sdks/
+├── python/              # Python SDK (UniFFI 0.30)
+├── typescript/          # TypeScript/Node.js SDK (NAPI-RS)
+└── kotlin/              # Kotlin/JVM SDK (UniFFI 0.30)
+```
+
+### Python SDK (✅ 100% Complete)
+
+**Location**: `sdks/python/`
+**Bindings**: UniFFI 0.30.0
+**Status**: Ready for PyPI upload
+
+```bash
+# Build Python SDK
+cd sdks/python
+python3 -m build
+
+# Verify package
+ls dist/rust_kgdb-0.1.3.tar.gz  # 18KB source distribution
+
+# Upload to PyPI
+twine upload dist/rust_kgdb-0.1.3.tar.gz
+```
+
+**Key Files**:
+- `rust_kgdb_py/__init__.py` - Public API exports
+- `rust_kgdb_py/gonnect.py` - UniFFI generated bindings (77KB)
+- `setup.py` - PyPI packaging configuration
+- `pyproject.toml` - Modern Python packaging
+- `tests/test_regression.py` - 29 regression tests (at SDK root)
+
+**Customer Usage**:
+```python
+from rust_kgdb_py import GraphDb
+
+db = GraphDb("http://example.org/my-app")
+db.load_ttl('@prefix foaf: <http://xmlns.com/foaf/0.1/> . <http://example.org/alice> foaf:name "Alice" .', None)
+results = db.query_select('SELECT ?name WHERE { ?person <http://xmlns.com/foaf/0.1/name> ?name }')
+print(results[0].bindings["name"])  # "Alice"
+```
+
+### TypeScript SDK (⏳ 95% Complete)
+
+**Location**: `sdks/typescript/`
+**Bindings**: NAPI-RS 2.16
+**Status**: Implementation complete, needs build compatibility fix
+
+```bash
+# Build TypeScript SDK (requires Rust 1.88+ OR napi-build 2.0)
+cd sdks/typescript
+npm install
+npm run build
+
+# Run tests
+npm test
+
+# Publish to npm
+npm publish
+```
+
+**Key Files**:
+- `native/rust-kgdb-napi/src/lib.rs` - Complete NAPI-RS implementation
+- `index.d.ts` - TypeScript type definitions
+- `index.js` - JavaScript entry point
+- `package.json` - npm packaging configuration
+- `tests/regression.test.ts` - 28 regression tests
+
+**Architecture**:
+- NAPI-RS crate in `native/rust-kgdb-napi/` (workspace member)
+- Full GraphDB API implementation in Rust
+- Automatic N-API bindings generation
+- Native Node.js addon (`.node` file)
+
+**Customer Usage**:
+```typescript
+import { GraphDB } from 'rust-kgdb'
+
+const db = new GraphDB('http://example.org/my-app')
+db.loadTtl('@prefix foaf: <http://xmlns.com/foaf/0.1/> . <http://example.org/alice> foaf:name "Alice" .', null)
+const results = db.querySelect('SELECT ?name WHERE { ?person foaf:name ?name }')
+console.log(results[0].bindings.name)  // "Alice"
+```
+
+**Known Issue**: NAPI-RS 2.3.1 requires Rust 1.88, current version is 1.87
+**Fix**: Either upgrade Rust or use `napi-build = "2.0"` in `native/rust-kgdb-napi/Cargo.toml`
+
+### Kotlin SDK (⏳ 80% Complete)
+
+**Location**: `sdks/kotlin/`
+**Bindings**: UniFFI 0.30.0
+**Status**: 4/5 tests passing, CONSTRUCT query bug identified
+
+```bash
+# Generate Kotlin bindings
+./target/release/uniffi-bindgen generate crates/mobile-ffi/src/gonnect.udl --language kotlin --out-dir sdks/kotlin/src/main/kotlin
+
+# Build native library for JVM
+cargo build --release -p mobile-ffi
+ln -sf target/release/libmobile_ffi.dylib target/release/libuniffi_gonnect.dylib
+
+# Run tests
+cd sdks/kotlin
+./gradlew test
+
+# Build package
+./gradlew build
+```
+
+**Key Files**:
+- `src/main/kotlin/uniffi/gonnect/gonnect.kt` - UniFFI generated bindings (81KB)
+- `src/test/kotlin/direct/DirectBindingsTest.kt` - Direct bindings tests (5 tests)
+- `build.gradle.kts` - Gradle configuration with JNA
+- `settings.gradle.kts` - Gradle settings
+
+**Native Library Setup**:
+1. Build `mobile-ffi` as cdylib: `cargo build --release -p mobile-ffi`
+2. Create symlink: `ln -sf libmobile_ffi.dylib libuniffi_gonnect.dylib`
+3. Gradle finds library via `jna.library.path` system property pointing to `target/release`
+
+**JNA Configuration** (in `build.gradle.kts`):
+```kotlin
+tasks.test {
+    systemProperty("jna.library.path", "${projectDir}/../../target/release")
+}
+
+dependencies {
+    implementation("net.java.dev.jna:jna:5.14.0")
+}
+```
+
+**Customer Usage**:
+```kotlin
+import uniffi.gonnect.GraphDb
+
+val db = GraphDb("http://example.org/my-app")
+db.loadTtl("<http://example.org/alice> <http://xmlns.com/foaf/0.1/name> \"Alice\" .", null)
+val results = db.querySelect("SELECT ?name WHERE { ?person <http://xmlns.com/foaf/0.1/name> ?name }")
+println(results[0].bindings["name"])  // "Alice"
+```
+
+**Test Status** (as of 2025-11-29):
+- ✅ Basic triple insert and query
+- ✅ Count triples
+- ✅ Named graph operations
+- ❌ SPARQL CONSTRUCT query (parser template extraction bug)
+- ✅ Get version
+
+**Known Issue**: CONSTRUCT queries return 0 triples instead of expected results
+**Root Cause**: SPARQL parser returns empty template (`template.len() == 0`)
+**Location**: `crates/sparql/src/parser.rs` - `parse_construct_query()`
+**Debug Evidence**:
+```
+DEBUG: Template has 0 patterns  ← Parser bug
+DEBUG: Got 2 bindings           ← Pattern matching works!
+CONSTRUCT returned 0 triples    ← No triples constructed
+```
+
+### SDK Testing Best Practices
+
+**Python SDK Tests**:
+```bash
+cd sdks/python
+python3 -m pytest tests/test_regression.py -v  # Tests at SDK root
+```
+
+**TypeScript SDK Tests**:
+```bash
+cd sdks/typescript
+npm test  # Runs Jest test suite
+```
+
+**Kotlin SDK Tests**:
+```bash
+cd sdks/kotlin
+./gradlew test --tests "direct.DirectBindingsTest"  # All tests
+./gradlew test --tests "direct.DirectBindingsTest.testBasicTripleInsertQuery"  # Single test
+```
+
+### SDK Generation Commands
+
+**Generate Python Bindings**:
+```bash
+cargo build --bin uniffi-bindgen --package mobile-ffi --release
+./target/release/uniffi-bindgen generate crates/mobile-ffi/src/gonnect.udl --language python --out-dir /tmp/python-bindings
+cp /tmp/python-bindings/gonnect.py sdks/python/rust_kgdb_py/
+```
+
+**Generate Kotlin Bindings**:
+```bash
+./target/release/uniffi-bindgen generate crates/mobile-ffi/src/gonnect.udl --language kotlin --out-dir sdks/kotlin/src/main/kotlin
+```
+
+**Generate Swift Bindings** (for iOS):
+```bash
+./scripts/build-ios.sh  # Automatically generates Swift bindings
+```
+
+### SDK Performance Characteristics
+
+All SDKs share the same Rust core, so performance is identical:
+- **Lookup**: 2.78 µs per triple
+- **Bulk Insert**: 146K triples/sec
+- **Memory**: 24 bytes/triple
+- **Zero-copy**: No data serialization overhead between language boundaries
+- **Thread-safe**: All SDKs support concurrent access via `Arc<Mutex<QuadStore>>`
+
+### SDK Documentation
+
+For SDK-specific documentation, see:
+- `sdks/python/README.md` - Python SDK guide
+- `sdks/typescript/README.md` - TypeScript SDK guide
+- `sdks/kotlin/README.md` - Kotlin SDK guide
+- `SDK_COMPLETION_FINAL.md` - Complete SDK status report
+- `KOTLIN_SDK_STATUS.md` - Kotlin SDK detailed status
+
+---

@@ -1155,6 +1155,21 @@ fn boolean_literal(input: &str) -> IResult<&str, NodePattern> {
     ))(input)
 }
 
+// ============================================================================
+// Strategy Pattern Implementation
+// ============================================================================
+
+impl crate::RDFParser for TurtleParser {
+    fn parse<'a>(&'a mut self, content: &'a str) -> crate::ParseResult<Vec<Quad<'a>>> {
+        // Delegate to inherent method (signatures match - both take &mut self)
+        TurtleParser::parse(self, content)
+    }
+
+    fn format(&self) -> crate::RDFFormat {
+        crate::RDFFormat::Turtle
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

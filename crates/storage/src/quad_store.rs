@@ -65,9 +65,30 @@ impl<B: StorageBackend> QuadStore<B> {
     /// - Better CPU cache locality
     ///
     /// # Example
-    /// ```rust,ignore
-    /// let quads = vec![quad1, quad2, quad3];
-    /// store.batch_insert(quads)?;
+    /// ```rust
+    /// use storage::QuadStore;
+    /// use rdf_model::{Node, Quad};
+    ///
+    /// let mut store = QuadStore::new_in_memory();
+    /// let dict = store.dictionary();
+    ///
+    /// let quads = vec![
+    ///     Quad::new(
+    ///         Node::iri(dict.intern("http://example.org/s1")),
+    ///         Node::iri(dict.intern("http://example.org/p")),
+    ///         Node::literal_str(dict.intern("value1")),
+    ///         None,
+    ///     ),
+    ///     Quad::new(
+    ///         Node::iri(dict.intern("http://example.org/s2")),
+    ///         Node::iri(dict.intern("http://example.org/p")),
+    ///         Node::literal_str(dict.intern("value2")),
+    ///         None,
+    ///     ),
+    /// ];
+    ///
+    /// store.batch_insert(quads).unwrap();
+    /// assert_eq!(store.len(), 2);
     /// ```
     pub fn batch_insert(&mut self, quads: Vec<Quad>) -> StorageResult<()> {
         // Pre-allocate: each quad → 4 index entries

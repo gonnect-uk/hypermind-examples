@@ -292,14 +292,21 @@ impl<'a> SPARQLParser<'a> {
         let mut offset = None;
 
         for inner in pair.into_inner() {
+            eprintln!("CONSTRUCT query inner rule: {:?}", inner.as_rule());
             match inner.as_rule() {
                 Rule::ConstructTemplate => {
+                    eprintln!("Found ConstructTemplate");
                     // Parse construct template (triple patterns to construct)
                     for template_inner in inner.into_inner() {
+                        eprintln!("  ConstructTemplate inner rule: {:?}", template_inner.as_rule());
                         if template_inner.as_rule() == Rule::ConstructTriples {
-                            template.extend(self.parse_construct_triples(template_inner)?);
+                            eprintln!("  Found ConstructTriples, parsing...");
+                            let parsed = self.parse_construct_triples(template_inner)?;
+                            eprintln!("  Parsed {} patterns from ConstructTriples", parsed.len());
+                            template.extend(parsed);
                         }
                     }
+                    eprintln!("ConstructTemplate total patterns: {}", template.len());
                 }
                 Rule::DatasetClause => {
                     // CRITICAL: Merge multiple FROM/FROM NAMED clauses (W3C SPARQL 1.1 spec)
@@ -332,12 +339,132 @@ impl<'a> SPARQLParser<'a> {
 
     fn parse_construct_triples(&mut self, pair: pest::iterators::Pair<'a, Rule>) -> ParseResult<Vec<TriplePattern<'a>>> {
         let mut patterns = Vec::new();
+        eprintln!("    parse_construct_triples called");
         for inner in pair.into_inner() {
-            if inner.as_rule() == Rule::TriplesSameSubject {
-                patterns.extend(self.parse_triples_same_subject_path(inner)?);
+            eprintln!("      ConstructTriples inner rule: {:?}", inner.as_rule());
+            match inner.as_rule() {
+                Rule::TriplesSameSubject => {
+                    eprintln!("      Found TriplesSameSubject");
+                    // Parse simple triples (without property paths) for CONSTRUCT templates
+                    let parsed = self.parse_triples_same_subject(inner)?;
+                    eprintln!("      Parsed {} patterns from TriplesSameSubject", parsed.len());
+                    patterns.extend(parsed);
+                }
+                Rule::ConstructTriples => {
+                    eprintln!("      Found recursive ConstructTriples");
+                    // Handle recursive ConstructTriples (separated by ".")
+                    patterns.extend(self.parse_construct_triples(inner)?);
+                }
+                _ => {
+                    eprintln!("      Skipping rule: {:?}", inner.as_rule());
+                }
             }
         }
+        eprintln!("    parse_construct_triples returning {} patterns", patterns.len());
         Ok(patterns)
+    }
+
+    fn parse_triples_same_subject(&mut self, pair: pest::iterators::Pair<'a, Rule>) -> ParseResult<Vec<TriplePattern<'a>>> {
+        let mut subject = None;
+        let mut property_list = vec![];
+
+        for inner in pair.into_inner() {
+            eprintln!("        TriplesSameSubject inner: {:?}", inner.as_rule());
+            match inner.as_rule() {
+                Rule::VarOrTerm => {
+                    subject = Some(self.parse_var_or_term(inner)?);
+                    eprintln!("        Found subject");
+                }
+                Rule::PropertyListNotEmpty => {
+                    eprintln!("        Found PropertyListNotEmpty, parsing...");
+                    property_list = self.parse_property_list_not_empty(inner)?;
+                    eprintln!("        Parsed {} property-object pairs", property_list.len());
+                }
+                _ => {}
+            }
+        }
+
+        let subj = subject.ok_or_else(|| ParseError::Syntax("No subject in triple".to_string()))?;
+
+        Ok(property_list.into_iter().map(|(pred, obj)| {
+            TriplePattern {
+                subject: subj.clone(),
+                predicate: pred,
+                object: obj,
+            }
+        }).collect())
+    }
+
+    fn parse_property_list_not_empty(&mut self, pair: pest::iterators::Pair<'a, Rule>) -> ParseResult<Vec<(VarOrNode<'a>, VarOrNode<'a>)>> {
+        let mut result = vec![];
+        let mut current_verb = None;
+
+        for inner in pair.into_inner() {
+            eprintln!("          PropertyListNotEmpty inner: {:?}", inner.as_rule());
+            match inner.as_rule() {
+                Rule::Verb => {
+                    current_verb = Some(self.parse_verb(inner)?);
+                    eprintln!("          Found verb");
+                }
+                Rule::ObjectList => {
+                    if let Some(verb) = &current_verb {
+                        let objects = self.parse_object_list(inner)?;
+                        eprintln!("          Found {} objects for verb", objects.len());
+                        for obj in objects {
+                            result.push((verb.clone(), obj));
+                        }
+                    }
+                }
+                _ => {}
+            }
+        }
+
+        Ok(result)
+    }
+
+    fn parse_verb(&mut self, pair: pest::iterators::Pair<'a, Rule>) -> ParseResult<VarOrNode<'a>> {
+        // Handle "a" keyword (shorthand for rdf:type) BEFORE consuming pair
+        if pair.as_str().trim() == "a" {
+            return Ok(VarOrNode::Node(Node::iri("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")));
+        }
+
+        for inner in pair.into_inner() {
+            match inner.as_rule() {
+                Rule::VarOrIri => {
+                    return self.parse_var_or_iri(inner);
+                }
+                _ => {}
+            }
+        }
+        Err(ParseError::Syntax("Invalid verb".to_string()))
+    }
+
+    fn parse_object_list(&mut self, pair: pest::iterators::Pair<'a, Rule>) -> ParseResult<Vec<VarOrNode<'a>>> {
+        let mut objects = vec![];
+        for inner in pair.into_inner() {
+            if inner.as_rule() == Rule::Object {
+                objects.push(self.parse_object(inner)?);
+            }
+        }
+        Ok(objects)
+    }
+
+    fn parse_object(&mut self, pair: pest::iterators::Pair<'a, Rule>) -> ParseResult<VarOrNode<'a>> {
+        for inner in pair.into_inner() {
+            if inner.as_rule() == Rule::GraphNode {
+                return self.parse_graph_node(inner);
+            }
+        }
+        Err(ParseError::Syntax("Invalid object".to_string()))
+    }
+
+    fn parse_graph_node(&mut self, pair: pest::iterators::Pair<'a, Rule>) -> ParseResult<VarOrNode<'a>> {
+        for inner in pair.into_inner() {
+            if inner.as_rule() == Rule::VarOrTerm {
+                return self.parse_var_or_term(inner);
+            }
+        }
+        Err(ParseError::Syntax("Invalid graph node".to_string()))
     }
 
     fn parse_describe_query(&mut self, pair: pest::iterators::Pair<'a, Rule>) -> ParseResult<Query<'a>> {
