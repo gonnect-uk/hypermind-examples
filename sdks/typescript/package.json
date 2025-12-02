@@ -1,6 +1,6 @@
 {
   "name": "rust-kgdb",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "High-performance RDF/SPARQL database with 100% W3C compliance and WCOJ execution",
   "main": "index.js",
   "types": "index.d.ts",
@@ -21,7 +21,7 @@
     "build:debug": "napi build --platform native/rust-kgdb-napi",
     "prepublishOnly": "napi prepublish -t npm",
     "test": "jest",
-    "version": "0.1.11"
+    "version": "0.1.12"
   },
   "keywords": [
     "rdf",
@@ -56,10 +56,10 @@
     "*.node"
   ],
   "optionalDependencies": {
-    "rust-kgdb-win32-x64-msvc": "0.1.11",
-    "rust-kgdb-darwin-x64": "0.1.11",
-    "rust-kgdb-linux-x64-gnu": "0.1.11",
-    "rust-kgdb-darwin-arm64": "0.1.11",
-    "rust-kgdb-linux-arm64-gnu": "0.1.11"
+    "rust-kgdb-win32-x64-msvc": "0.1.12",
+    "rust-kgdb-darwin-x64": "0.1.12",
+    "rust-kgdb-linux-x64-gnu": "0.1.12",
+    "rust-kgdb-darwin-arm64": "0.1.12",
+    "rust-kgdb-linux-arm64-gnu": "0.1.12"
   }
 }

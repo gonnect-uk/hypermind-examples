@@ -108,7 +108,7 @@ rust-kgdb uses a pluggable storage architecture. **Default is in-memory** (zero 
 |---------|--------------|----------|--------|
 | **InMemory** | `default` | Development, testing, embedded | ✅ **Production Ready** |
 | **RocksDB** | `rocksdb-backend` | Production, large datasets | ✅ **61 tests passing** |
-| **LMDB** | `lmdb-backend` | Read-heavy workloads | ⏳ Planned v0.2.0 |
+| **LMDB** | `lmdb-backend` | Read-heavy workloads | ✅ **31 tests passing** |
 
 ### InMemory (Default)
 
@@ -175,6 +175,58 @@ store.flush()?;
 - Concurrent access (5 tests)
 - Unicode & binary data (4 tests)
 - Large key/value handling (8 tests)
+
+### LMDB (Memory-Mapped Persistent)
+
+B+tree based storage with memory-mapped I/O (via `heed` crate). Optimized for **read-heavy workloads** with MVCC (Multi-Version Concurrency Control). Tested with **31 comprehensive tests**.
+
+```toml
+# Cargo.toml - Enable LMDB backend
+[dependencies]
+storage = { version = "0.1.12", features = ["lmdb-backend"] }
+```
+
+```rust
+use storage::{QuadStore, LmdbBackend};
+
+// Create persistent database (default 10GB map size)
+let backend = LmdbBackend::new("/path/to/data")?;
+let store = QuadStore::new(backend);
+
+// Or with custom map size (1GB)
+let backend = LmdbBackend::with_map_size("/path/to/data", 1024 * 1024 * 1024)?;
+
+// Features:
+// - Memory-mapped I/O (zero-copy reads)
+// - MVCC for concurrent readers
+// - Crash-safe ACID transactions
+// - Range & prefix scanning
+// - Excellent for read-heavy workloads
+
+// Sync to disk
+store.flush()?;
+```
+
+**When to use LMDB vs RocksDB:**
+
+| Characteristic | LMDB | RocksDB |
+|----------------|------|---------|
+| **Read Performance** | ✅ Faster (memory-mapped) | Good |
+| **Write Performance** | Good | ✅ Faster (LSM-tree) |
+| **Concurrent Readers** | ✅ Unlimited | Limited by locks |
+| **Write Amplification** | Low | Higher (compaction) |
+| **Memory Usage** | Higher (map size) | Lower (cache-based) |
+| **Best For** | Read-heavy, OLAP | Write-heavy, OLTP |
+
+**LMDB Test Coverage:**
+- Basic CRUD operations (8 tests)
+- Range scanning (4 tests)
+- Prefix scanning (3 tests)
+- Batch operations (3 tests)
+- Large key/value handling (4 tests)
+- Concurrent access (4 tests)
+- Statistics & flush (3 tests)
+- Edge cases (2 tests)
 
 ### TypeScript SDK
 
@@ -508,6 +560,14 @@ Total: ~120 bytes/triple including indexes
 ---
 
 ## Version History
+
+### v0.1.12 (2025-12-01) - LMDB Backend Release
+
+- **LMDB storage backend** fully implemented (31 tests passing)
+- Memory-mapped I/O for optimal read performance
+- MVCC concurrency for unlimited concurrent readers
+- Complete LMDB vs RocksDB comparison documentation
+- Sample application with 87 triples demonstrating all features
 
 ### v0.1.9 (2025-12-01) - SIMD + PGO Release
 
