@@ -1,0 +1,37 @@
+# rust-kgdb Development Cluster - Override Configuration
+#
+# For local development with debug logging and exposed ports
+#
+# Usage:
+#   docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+
+version: '3.8'
+
+services:
+  coordinator:
+    environment:
+      - RUST_LOG=debug,tower_http=debug
+    ports:
+      - "8080:8080"
+      - "9090:9090"
+    volumes:
+      # Mount source for hot-reload (requires rebuild)
+      - ../target:/app/target:ro
+
+  executor-1:
+    environment:
+      - RUST_LOG=debug
+    ports:
+      - "9091:9090"   # Expose gRPC for debugging
+
+  executor-2:
+    environment:
+      - RUST_LOG=debug
+    ports:
+      - "9092:9090"
+
+  executor-3:
+    environment:
+      - RUST_LOG=debug
+    ports:
+      - "9093:9090"

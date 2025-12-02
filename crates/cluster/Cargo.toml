@@ -1,0 +1,70 @@
+[package]
+name = "cluster"
+version = "0.2.0"
+edition = "2021"
+description = "Distributed clustering support for rust-kgdb"
+license = "MIT OR Apache-2.0"
+authors = ["rust-kgdb team"]
+repository = "https://github.com/gonnect/rust-kgdb"
+keywords = ["rdf", "sparql", "distributed", "cluster", "hdrf"]
+categories = ["database", "data-structures"]
+
+[dependencies]
+# Core dependencies
+thiserror = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+
+# Hashing
+xxhash-rust = { version = "0.8", features = ["xxh64"] }
+siphasher = "1.0"
+
+# Collections
+dashmap = "5.5"
+parking_lot = "0.12"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+# Storage dependency (for PartitionedStore)
+# storage = { path = "../storage", features = ["rocksdb-backend"] }
+# rdf-model = { path = "../rdf-model" }
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+tokio-test = "0.4"
+rand = "0.8"
+tempfile = "3"
+
+# Benchmarks will be added later
+# [[bench]]
+# name = "hdrf_benchmark"
+# harness = false
+
+[features]
+default = []
+grpc = ["dep:tonic", "dep:prost"]
+
+[dependencies.tonic]
+version = "0.11"
+optional = true
+
+[dependencies.prost]
+version = "0.12"
+optional = true
+
+# ============================================================================
+# Binaries
+# ============================================================================
+
+[[bin]]
+name = "coordinator"
+path = "src/bin/coordinator.rs"
+
+[[bin]]
+name = "executor"
+path = "src/bin/executor.rs"

@@ -14,11 +14,12 @@ members = [
     "crates/mobile-ffi",
     "crates/mobile-app-generator",
     "crates/sdk",
+    "crates/cluster",
     "sdks/typescript/native/rust-kgdb-napi",
 ]
 
 [workspace.package]
-version = "0.1.9"
+version = "0.2.0"
 edition = "2021"
 authors = ["Gonnect Team"]
 license = "Apache-2.0"
@@ -67,6 +68,10 @@ thiserror = "1.0"
 anyhow = "1.0"
 tracing = "0.1"
 tracing-subscriber = "0.3"
+
+# Hashing (for cluster)
+xxhash-rust = { version = "0.8", features = ["xxh64"] }
+siphasher = "1.0"
 
 # Templating (for mobile-app-generator)
 tera = "1.19"

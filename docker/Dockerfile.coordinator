@@ -1,0 +1,66 @@
+# rust-kgdb Coordinator Node
+# Multi-stage build for minimal production image
+
+# ============================================================================
+# Stage 1: Build
+# ============================================================================
+FROM rust:1.83-slim-bookworm AS builder
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libssl-dev \
+    libclang-dev \
+    cmake \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /usr/src/rust-kgdb
+
+# Copy workspace files
+COPY Cargo.toml Cargo.lock ./
+COPY crates ./crates
+
+# Build coordinator binary
+RUN cargo build --release --bin coordinator
+
+# ============================================================================
+# Stage 2: Runtime
+# ============================================================================
+FROM debian:bookworm-slim
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    libssl3 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN useradd -m -u 1000 rust-kgdb
+
+# Create data directory
+RUN mkdir -p /data && chown rust-kgdb:rust-kgdb /data
+
+# Copy binary from builder
+COPY --from=builder /usr/src/rust-kgdb/target/release/coordinator /usr/local/bin/
+
+# Switch to non-root user
+USER rust-kgdb
+
+# Environment defaults
+ENV RUST_LOG=info
+ENV NODE_ID=0
+ENV NODE_ROLE=coordinator
+ENV PARTITION_COUNT=9
+ENV GRPC_ADDR=0.0.0.0:9090
+ENV HTTP_ADDR=0.0.0.0:8080
+ENV DATA_DIR=/data
+
+# Expose ports
+EXPOSE 8080 9090
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8080/health || exit 1
+
+# Run coordinator
+ENTRYPOINT ["coordinator"]
