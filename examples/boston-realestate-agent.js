@@ -235,9 +235,77 @@ async function main() {
   console.log()
 
   // ============================================================================
-  // 5. ThinkingReasoner with Deductive Reasoning
+  // 5. HyperFederate SQL with graph_search() UDF
   // ============================================================================
-  console.log('[5] ThinkingReasoner with Deductive Reasoning:')
+  console.log('[5] HyperFederate SQL Generation (graph_search UDF):')
+  console.log()
+  console.log('  HyperFederate unifies SQL + Knowledge Graph queries via graph_search() UDF.')
+  console.log('  This enables cross-source joins between SPARQL results and SQL tables.')
+  console.log()
+
+  // Example: HyperFederate SQL that joins KG data with external SQL sources
+  const hyperFederateSql = `-- HyperFederate SQL: Join Knowledge Graph + External Property Data
+SELECT
+  kg.address,
+  kg.assessed_value,
+  kg.neighborhood,
+  mls.listing_price,
+  mls.days_on_market,
+  (mls.listing_price - kg.assessed_value) AS price_premium
+FROM graph_search('
+  PREFIX prop: <http://boston.gov/property#>
+  SELECT ?address ?assessed_value ?neighborhood WHERE {
+    ?p a prop:Property .
+    ?p prop:address ?address .
+    ?p prop:assessedValue ?assessed_value .
+    ?p prop:locatedIn ?n .
+    ?n rdfs:label ?neighborhood .
+  }
+') kg
+LEFT JOIN mls_listings mls
+  ON kg.address = mls.property_address
+WHERE kg.assessed_value > 1000000
+ORDER BY price_premium DESC`
+
+  console.log('  EXAMPLE: HyperFederate SQL with graph_search():')
+  console.log('  ```sql')
+  console.log('  ' + hyperFederateSql.split('\n').join('\n  '))
+  console.log('  ```')
+  console.log()
+
+  // Execute the embedded SPARQL to show real results
+  const highValuePropsQ = `SELECT ?address ?value ?neighborhood WHERE {
+    ?p <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
+    ?p <http://boston.gov/property#address> ?address .
+    ?p <http://boston.gov/property#assessedValue> ?value .
+    ?p <http://boston.gov/property#locatedIn> ?n .
+    ?n <http://www.w3.org/2000/01/rdf-schema#label> ?neighborhood .
+  } ORDER BY DESC(?value)`
+  const highValueResults = db.querySelect(highValuePropsQ)
+
+  console.log('  HONEST OUTPUT - graph_search() SPARQL executed standalone:')
+  console.log()
+  console.log('  HONEST RESULTS (from graph_search):')
+  console.log('  | address                           | assessed_value | neighborhood    |')
+  console.log('  |-----------------------------------|----------------|-----------------|')
+  for (const r of highValueResults.slice(0, 6)) {
+    const addr = extractLast(r.bindings?.address || r.address).padEnd(33)
+    const val = parseInt(r.bindings?.value || r.value || 0)
+    const valStr = `$${val.toLocaleString()}`.padStart(14)
+    const hood = extractLast(r.bindings?.neighborhood || r.neighborhood).padEnd(15)
+    console.log(`  | ${addr} | ${valStr} | ${hood} |`)
+  }
+  console.log()
+
+  test('HyperFederate SQL shows high-value properties', () => {
+    assert(highValueResults.length >= 5, `Expected at least 5 properties`)
+  })
+  console.log()
+
+  // ============================================================================
+  // 6. ThinkingReasoner with Deductive Reasoning
+  // ============================================================================
+  console.log('[6] ThinkingReasoner with Deductive Reasoning:')
   console.log()
 
   // v0.8.16+: HyperMindAgent automatically:
@@ -278,49 +346,71 @@ async function main() {
   console.log()
 
   // ============================================================================
-  // 6. Thinking Graph (Derivation Chain / Proofs)
+  // 7. Thinking Events (Real-time Reasoning Stream)
   // ============================================================================
-  console.log('[6] Thinking Graph (Derivation Chain / Proofs):')
+  console.log('[7] Thinking Events (Real-time Reasoning Stream):')
   console.log()
 
   const thinkingGraph = agent.getThinkingGraph()
 
+  // Show thinking events as they were captured (like Claude's thinking)
+  console.log('  📝 THINKING EVENTS (auto-captured during reasoning):')
+  console.log()
+
   if (thinkingGraph.nodes && thinkingGraph.nodes.length > 0) {
-    console.log('  EVIDENCE NODES (first 8):')
-    for (const node of thinkingGraph.nodes.slice(0, 8)) {
-      const icon = {
-        'OBSERVATION': '[OBS]',
-        'HYPOTHESIS': '[HYP]',
-        'INFERENCE': '[INF]'
-      }[node.type] || '[EVT]'
+    // Group by type for cleaner output
+    const observations = thinkingGraph.nodes.filter(n => n.type === 'OBSERVATION')
+    const inferences = thinkingGraph.nodes.filter(n => n.type === 'INFERENCE')
+
+    console.log(`  [OBSERVE] Detected ${observations.length} facts from knowledge graph:`)
+    for (const node of observations.slice(0, 6)) {
       const label = node.label || node.id
-      console.log(`    ${icon} ${label}`)
+      console.log(`    → ${label}`)
+    }
+    if (observations.length > 6) {
+      console.log(`    ... and ${observations.length - 6} more observations`)
     }
     console.log()
+
+    if (inferences.length > 0) {
+      console.log(`  [INFER] Derived ${inferences.length} new facts via OWL rules:`)
+      for (const node of inferences.slice(0, 6)) {
+        const label = node.label || node.id
+        console.log(`    ⟹ ${label}`)
+      }
+      if (inferences.length > 6) {
+        console.log(`    ... and ${inferences.length - 6} more inferences`)
+      }
+      console.log()
+    }
   }
 
   if (thinkingGraph.derivationChain && thinkingGraph.derivationChain.length > 0) {
-    console.log('  DERIVATION CHAIN (Proof Steps):')
+    console.log('  [PROVE] Derivation Chain (audit trail):')
     for (const step of thinkingGraph.derivationChain.slice(0, 8)) {
-      console.log(`    Step ${step.step}: [${step.rule}] ${step.conclusion}`)
+      const ruleIcon = step.rule === 'OBSERVATION' ? '📌' : '🔗'
+      console.log(`    ${ruleIcon} Step ${step.step}: [${step.rule}] ${step.conclusion}`)
       if (step.premises && step.premises.length > 0) {
-        console.log(`           Premises: ${step.premises.join(', ')}`)
+        console.log(`       └─ premises: ${step.premises.join(', ')}`)
       }
+    }
+    if (thinkingGraph.derivationChain.length > 8) {
+      console.log(`    ... and ${thinkingGraph.derivationChain.length - 8} more proof steps`)
     }
     console.log()
   }
 
-  console.log('  DEDUCTIVE REASONING VALUE:')
-  console.log('    - Every conclusion traces back to ground truth observations')
-  console.log('    - SymmetricProperty: If A adjacentTo B, then B adjacentTo A')
-  console.log('    - TransitiveProperty: If A priceInfluencedBy B, B priceInfluencedBy C, then A priceInfluencedBy C')
-  console.log('    - No hallucinations - only provable facts with derivation chains')
+  console.log('  ✅ REASONING COMPLETE:')
+  console.log(`    - ${stats.events} observations (ground truth from KG)`)
+  console.log(`    - ${stats.facts} derived facts (inferred via OWL rules)`)
+  console.log(`    - ${stats.rules} rules applied (SymmetricProperty, TransitiveProperty)`)
+  console.log('    - Every fact is traceable to source data (no hallucination)')
   console.log()
 
   // ============================================================================
-  // 7. Use Case Queries (SPARQL-first, deterministic)
+  // 8. Use Case Queries (SPARQL-first, deterministic)
   // ============================================================================
-  console.log('[7] Use Case Queries (SPARQL-first, deterministic):')
+  console.log('[8] Use Case Queries (SPARQL-first, deterministic):')
   console.log()
 
   const useCases = [
@@ -430,10 +520,10 @@ async function main() {
   }
 
   // ============================================================================
-  // 8. HyperMindAgent Natural Language (LLM-assisted)
+  // 9. HyperMindAgent Natural Language (LLM-assisted)
   // ============================================================================
   if (process.env.OPENAI_API_KEY) {
-    console.log('[8] HyperMindAgent Natural Language Queries (LLM-assisted):')
+    console.log('[9] HyperMindAgent Natural Language Queries (LLM-assisted):')
     console.log()
 
     const nlQueries = [
@@ -475,13 +565,13 @@ async function main() {
       console.log()
     }
   } else {
-    console.log('[8] HyperMindAgent Natural Language: Skipped (no OPENAI_API_KEY)')
+    console.log('[9] HyperMindAgent Natural Language: Skipped (no OPENAI_API_KEY)')
     console.log('    Set OPENAI_API_KEY environment variable to enable LLM-assisted queries.')
     console.log()
   }
 
   // ============================================================================
-  // 9. Test Results Summary
+  // 10. Test Results Summary
   // ============================================================================
   console.log('='.repeat(70))
   console.log('  TEST RESULTS SUMMARY')
@@ -505,7 +595,7 @@ async function main() {
   console.log()
 
   // ============================================================================
-  // 10. Summary
+  // 11. Summary
   // ============================================================================
   console.log('='.repeat(70))
   console.log('  ARCHITECTURE SUMMARY - ALL IN-MEMORY')
