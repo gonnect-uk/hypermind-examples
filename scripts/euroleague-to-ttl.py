@@ -42,43 +42,43 @@ def fetch_game_data(season: int, game_code: int):
 
     print(f"Fetching game data: Season {season}, Game {game_code}")
     pbp = PlayByPlay()
-    df = pbp.get_game_play_by_play(season, game_code)
+    df = pbp.get_game_play_by_play_data(season, game_code)
     return df
 
 def convert_to_ttl(df, output_path: Path, season: int, game_code: int):
-    """Convert DataFrame to RDF TTL format."""
+    """Convert DataFrame to N-Triples format (full URIs for reliable parsing)."""
 
-    # TTL prefixes
-    ttl = """@prefix euro: <http://euroleague.net/ontology#> .
-@prefix team: <http://euroleague.net/team/> .
-@prefix player: <http://euroleague.net/player/> .
-@prefix event: <http://euroleague.net/event/> .
-@prefix game: <http://euroleague.net/game/> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+    # Use N-Triples format with full URIs
+    RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    RDFS = "http://www.w3.org/2000/01/rdf-schema#"
+    OWL = "http://www.w3.org/2002/07/owl#"
+    XSD = "http://www.w3.org/2001/XMLSchema#"
+    EURO = "http://euroleague.net/ontology#"
+    TEAM = "http://euroleague.net/team/"
+    PLAYER = "http://euroleague.net/player/"
+    EVENT = "http://euroleague.net/event/"
+    GAME = "http://euroleague.net/game/"
 
-# Ontology Classes
-euro:Game rdf:type owl:Class .
-euro:Team rdf:type owl:Class .
-euro:Player rdf:type owl:Class .
-euro:Event rdf:type owl:Class .
-euro:Shot rdfs:subClassOf euro:Event .
-euro:Assist rdfs:subClassOf euro:Event .
-euro:Rebound rdfs:subClassOf euro:Event .
-euro:Turnover rdfs:subClassOf euro:Event .
-euro:Foul rdfs:subClassOf euro:Event .
-euro:Block rdfs:subClassOf euro:Event .
-euro:Steal rdfs:subClassOf euro:Event .
+    lines = []
 
-# OWL Properties for Reasoning
-euro:teammateOf rdf:type owl:SymmetricProperty ;
-    rdfs:label "teammate relationship (symmetric)" .
-euro:assistedBy rdf:type owl:TransitiveProperty ;
-    rdfs:label "assisted by (transitive chain)" .
+    # Ontology Classes
+    lines.append(f'<{EURO}Game> <{RDF}type> <{OWL}Class> .')
+    lines.append(f'<{EURO}Team> <{RDF}type> <{OWL}Class> .')
+    lines.append(f'<{EURO}Player> <{RDF}type> <{OWL}Class> .')
+    lines.append(f'<{EURO}Event> <{RDF}type> <{OWL}Class> .')
+    lines.append(f'<{EURO}Shot> <{RDFS}subClassOf> <{EURO}Event> .')
+    lines.append(f'<{EURO}Assist> <{RDFS}subClassOf> <{EURO}Event> .')
+    lines.append(f'<{EURO}Rebound> <{RDFS}subClassOf> <{EURO}Event> .')
+    lines.append(f'<{EURO}Turnover> <{RDFS}subClassOf> <{EURO}Event> .')
+    lines.append(f'<{EURO}Foul> <{RDFS}subClassOf> <{EURO}Event> .')
+    lines.append(f'<{EURO}Block> <{RDFS}subClassOf> <{EURO}Event> .')
+    lines.append(f'<{EURO}Steal> <{RDFS}subClassOf> <{EURO}Event> .')
 
-"""
+    # OWL Properties
+    lines.append(f'<{EURO}teammateOf> <{RDF}type> <{OWL}SymmetricProperty> .')
+    lines.append(f'<{EURO}assistedBy> <{RDF}type> <{OWL}TransitiveProperty> .')
+
+    ttl = '\n'.join(lines) + '\n'
 
     # Track unique entities
     teams = set()
@@ -87,21 +87,16 @@ euro:assistedBy rdf:type owl:TransitiveProperty ;
 
     # Game ID
     game_id = f"{season}_{game_code}"
-    ttl += f"""
-# Game Instance
-game:{game_id} rdf:type euro:Game ;
-    rdfs:label "Euroleague Game {season}/{game_code}" ;
-    euro:season "{season}"^^xsd:integer .
-
-"""
+    lines.append(f'<{GAME}{game_id}> <{RDF}type> <{EURO}Game> .')
+    lines.append(f'<{GAME}{game_id}> <{RDFS}label> "Euroleague Game {season}/{game_code}" .')
 
     # Process each play-by-play event
     for idx, row in df.iterrows():
         # Extract fields (column names may vary)
         team = str(row.get('CODETEAM', row.get('team', 'UNKNOWN'))).lower().replace(' ', '_')
-        player = str(row.get('PLAYER', row.get('player', 'unknown'))).lower().replace(' ', '_').replace('.', '')
+        player = str(row.get('PLAYER', row.get('player', 'unknown'))).lower().replace(' ', '_').replace('.', '').replace(',', '_')
         play_type = str(row.get('PLAYTYPE', row.get('playtype', 'event'))).lower().replace(' ', '_')
-        description = str(row.get('PLAYINFO', row.get('playinfo', '')))
+        description = str(row.get('PLAYINFO', row.get('playinfo', ''))).replace('"', "'")
         quarter = row.get('QUARTER', row.get('quarter', 1))
 
         # Track teams
@@ -121,24 +116,20 @@ game:{game_id} rdf:type euro:Game ;
             'type': event_type,
             'player': player,
             'team': team,
-            'description': description,
+            'description': description[:50] if description else event_type,
             'quarter': quarter
         })
 
     # Add teams
     for team in teams:
-        ttl += f"""
-team:{team} rdf:type euro:Team ;
-    rdfs:label "{team.replace('_', ' ').title()}" .
-"""
+        lines.append(f'<{TEAM}{team}> <{RDF}type> <{EURO}Team> .')
+        lines.append(f'<{TEAM}{team}> <{RDFS}label> "{team.replace("_", " ").title()}" .')
 
     # Add players with team relationships
     for player, team in players.items():
-        ttl += f"""
-player:{player} rdf:type euro:Player ;
-    rdfs:label "{player.replace('_', ' ').title()}" ;
-    euro:playsFor team:{team} .
-"""
+        lines.append(f'<{PLAYER}{player}> <{RDF}type> <{EURO}Player> .')
+        lines.append(f'<{PLAYER}{player}> <{RDFS}label> "{player.replace("_", " ").title()}" .')
+        lines.append(f'<{PLAYER}{player}> <{EURO}playsFor> <{TEAM}{team}> .')
 
     # Add teammate relationships (players on same team)
     team_players = {}
@@ -150,18 +141,17 @@ player:{player} rdf:type euro:Player ;
     for team, player_list in team_players.items():
         for i, p1 in enumerate(player_list):
             for p2 in player_list[i+1:]:
-                ttl += f"player:{p1} euro:teammateOf player:{p2} .\n"
+                lines.append(f'<{PLAYER}{p1}> <{EURO}teammateOf> <{PLAYER}{p2}> .')
 
     # Add events
     for event in events[:100]:  # Limit to first 100 events for demo
         if event['player'] and event['player'] != 'nan':
-            ttl += f"""
-event:{event['id']} rdf:type euro:{event['type']} ;
-    rdfs:label "{event['description'][:50] if event['description'] else event['type']}" ;
-    euro:player player:{event['player']} ;
-    euro:team team:{event['team']} ;
-    euro:quarter "{event['quarter']}"^^xsd:integer .
-"""
+            lines.append(f'<{EVENT}{event["id"]}> <{RDF}type> <{EURO}{event["type"]}> .')
+            lines.append(f'<{EVENT}{event["id"]}> <{RDFS}label> "{event["description"]}" .')
+            lines.append(f'<{EVENT}{event["id"]}> <{EURO}player> <{PLAYER}{event["player"]}> .')
+            lines.append(f'<{EVENT}{event["id"]}> <{EURO}team> <{TEAM}{event["team"]}> .')
+
+    ttl = '\n'.join(lines)
 
     # Write output
     output_path.parent.mkdir(parents=True, exist_ok=True)

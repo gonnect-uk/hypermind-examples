@@ -93,112 +93,7 @@ const DATA_SOURCES = {
   }
 }
 
-// N-Triples format (full URIs) for reliable parsing
-const EUROLEAGUE_DATA = `
-<http://euroleague.net/ontology#Game> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://euroleague.net/ontology#Team> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://euroleague.net/ontology#Player> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://euroleague.net/ontology#Event> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
-<http://euroleague.net/ontology#Shot> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://euroleague.net/ontology#Event> .
-<http://euroleague.net/ontology#Assist> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://euroleague.net/ontology#Event> .
-<http://euroleague.net/ontology#Rebound> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://euroleague.net/ontology#Event> .
-<http://euroleague.net/ontology#Steal> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://euroleague.net/ontology#Event> .
-<http://euroleague.net/ontology#Block> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://euroleague.net/ontology#Event> .
-<http://euroleague.net/ontology#Foul> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://euroleague.net/ontology#Event> .
-<http://euroleague.net/ontology#teammateOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#SymmetricProperty> .
-<http://euroleague.net/ontology#assistedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#TransitiveProperty> .
-<http://euroleague.net/team/monaco> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Team> .
-<http://euroleague.net/team/monaco> <http://www.w3.org/2000/01/rdf-schema#label> "AS Monaco" .
-<http://euroleague.net/team/monaco> <http://euroleague.net/ontology#city> "Monaco" .
-<http://euroleague.net/team/maccabi> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Team> .
-<http://euroleague.net/team/maccabi> <http://www.w3.org/2000/01/rdf-schema#label> "Maccabi Tel Aviv" .
-<http://euroleague.net/team/maccabi> <http://euroleague.net/ontology#city> "Tel Aviv" .
-<http://euroleague.net/team/panathinaikos> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Team> .
-<http://euroleague.net/team/panathinaikos> <http://www.w3.org/2000/01/rdf-schema#label> "Panathinaikos" .
-<http://euroleague.net/team/panathinaikos> <http://euroleague.net/ontology#city> "Athens" .
-<http://euroleague.net/player/james> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Player> .
-<http://euroleague.net/player/james> <http://www.w3.org/2000/01/rdf-schema#label> "Mike James" .
-<http://euroleague.net/player/james> <http://euroleague.net/ontology#position> "Point Guard" .
-<http://euroleague.net/player/james> <http://euroleague.net/ontology#playsFor> <http://euroleague.net/team/monaco> .
-<http://euroleague.net/player/james> <http://euroleague.net/ontology#totalPoints> "456" .
-<http://euroleague.net/player/okobo> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Player> .
-<http://euroleague.net/player/okobo> <http://www.w3.org/2000/01/rdf-schema#label> "Elie Okobo" .
-<http://euroleague.net/player/okobo> <http://euroleague.net/ontology#position> "Shooting Guard" .
-<http://euroleague.net/player/okobo> <http://euroleague.net/ontology#playsFor> <http://euroleague.net/team/monaco> .
-<http://euroleague.net/player/motiejunas> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Player> .
-<http://euroleague.net/player/motiejunas> <http://www.w3.org/2000/01/rdf-schema#label> "Donatas Motiejunas" .
-<http://euroleague.net/player/motiejunas> <http://euroleague.net/ontology#position> "Center" .
-<http://euroleague.net/player/motiejunas> <http://euroleague.net/ontology#playsFor> <http://euroleague.net/team/monaco> .
-<http://euroleague.net/player/james> <http://euroleague.net/ontology#teammateOf> <http://euroleague.net/player/okobo> .
-<http://euroleague.net/player/james> <http://euroleague.net/ontology#teammateOf> <http://euroleague.net/player/motiejunas> .
-<http://euroleague.net/player/okobo> <http://euroleague.net/ontology#teammateOf> <http://euroleague.net/player/motiejunas> .
-<http://euroleague.net/player/wilbekin> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Player> .
-<http://euroleague.net/player/wilbekin> <http://www.w3.org/2000/01/rdf-schema#label> "Scottie Wilbekin" .
-<http://euroleague.net/player/wilbekin> <http://euroleague.net/ontology#position> "Point Guard" .
-<http://euroleague.net/player/wilbekin> <http://euroleague.net/ontology#playsFor> <http://euroleague.net/team/maccabi> .
-<http://euroleague.net/player/dibartolomeo> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Player> .
-<http://euroleague.net/player/dibartolomeo> <http://www.w3.org/2000/01/rdf-schema#label> "John DiBartolomeo" .
-<http://euroleague.net/player/dibartolomeo> <http://euroleague.net/ontology#playsFor> <http://euroleague.net/team/maccabi> .
-<http://euroleague.net/player/zizic> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Player> .
-<http://euroleague.net/player/zizic> <http://www.w3.org/2000/01/rdf-schema#label> "Ante Zizic" .
-<http://euroleague.net/player/zizic> <http://euroleague.net/ontology#playsFor> <http://euroleague.net/team/maccabi> .
-<http://euroleague.net/player/wilbekin> <http://euroleague.net/ontology#teammateOf> <http://euroleague.net/player/dibartolomeo> .
-<http://euroleague.net/player/wilbekin> <http://euroleague.net/ontology#teammateOf> <http://euroleague.net/player/zizic> .
-<http://euroleague.net/player/sloukas> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Player> .
-<http://euroleague.net/player/sloukas> <http://www.w3.org/2000/01/rdf-schema#label> "Kostas Sloukas" .
-<http://euroleague.net/player/sloukas> <http://euroleague.net/ontology#position> "Point Guard" .
-<http://euroleague.net/player/sloukas> <http://euroleague.net/ontology#playsFor> <http://euroleague.net/team/panathinaikos> .
-<http://euroleague.net/player/sloukas> <http://euroleague.net/ontology#totalPoints> "312" .
-<http://euroleague.net/player/sloukas> <http://euroleague.net/ontology#totalAssists> "187" .
-<http://euroleague.net/player/nunn> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Player> .
-<http://euroleague.net/player/nunn> <http://www.w3.org/2000/01/rdf-schema#label> "Kendrick Nunn" .
-<http://euroleague.net/player/nunn> <http://euroleague.net/ontology#position> "Shooting Guard" .
-<http://euroleague.net/player/nunn> <http://euroleague.net/ontology#playsFor> <http://euroleague.net/team/panathinaikos> .
-<http://euroleague.net/player/nunn> <http://euroleague.net/ontology#totalPoints> "456" .
-<http://euroleague.net/player/papagiannis> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Player> .
-<http://euroleague.net/player/papagiannis> <http://www.w3.org/2000/01/rdf-schema#label> "Georgios Papagiannis" .
-<http://euroleague.net/player/papagiannis> <http://euroleague.net/ontology#playsFor> <http://euroleague.net/team/panathinaikos> .
-<http://euroleague.net/player/sloukas> <http://euroleague.net/ontology#teammateOf> <http://euroleague.net/player/nunn> .
-<http://euroleague.net/player/sloukas> <http://euroleague.net/ontology#teammateOf> <http://euroleague.net/player/papagiannis> .
-<http://euroleague.net/player/nunn> <http://euroleague.net/ontology#teammateOf> <http://euroleague.net/player/papagiannis> .
-<http://euroleague.net/player/nunn> <http://euroleague.net/ontology#assistedBy> <http://euroleague.net/player/sloukas> .
-<http://euroleague.net/game/monaco_maccabi_2024> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Game> .
-<http://euroleague.net/game/monaco_maccabi_2024> <http://www.w3.org/2000/01/rdf-schema#label> "AS Monaco vs Maccabi Tel Aviv" .
-<http://euroleague.net/game/monaco_maccabi_2024> <http://euroleague.net/ontology#homeTeam> <http://euroleague.net/team/monaco> .
-<http://euroleague.net/game/monaco_maccabi_2024> <http://euroleague.net/ontology#awayTeam> <http://euroleague.net/team/maccabi> .
-<http://euroleague.net/event/e001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
-<http://euroleague.net/event/e001> <http://www.w3.org/2000/01/rdf-schema#label> "James 3-pointer" .
-<http://euroleague.net/event/e001> <http://euroleague.net/ontology#player> <http://euroleague.net/player/james> .
-<http://euroleague.net/event/e001> <http://euroleague.net/ontology#team> <http://euroleague.net/team/monaco> .
-<http://euroleague.net/event/e001> <http://euroleague.net/ontology#points> "3" .
-<http://euroleague.net/event/e001> <http://euroleague.net/ontology#quarter> "2" .
-<http://euroleague.net/event/e002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Assist> .
-<http://euroleague.net/event/e002> <http://www.w3.org/2000/01/rdf-schema#label> "Okobo to James" .
-<http://euroleague.net/event/e002> <http://euroleague.net/ontology#player> <http://euroleague.net/player/okobo> .
-<http://euroleague.net/event/e002> <http://euroleague.net/ontology#assistTo> <http://euroleague.net/player/james> .
-<http://euroleague.net/event/e003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Foul> .
-<http://euroleague.net/event/e003> <http://www.w3.org/2000/01/rdf-schema#label> "Wilbekin personal foul" .
-<http://euroleague.net/event/e003> <http://euroleague.net/ontology#player> <http://euroleague.net/player/wilbekin> .
-<http://euroleague.net/event/e003> <http://euroleague.net/ontology#foulType> "personal" .
-<http://euroleague.net/event/e004> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
-<http://euroleague.net/event/e004> <http://www.w3.org/2000/01/rdf-schema#label> "Wilbekin layup" .
-<http://euroleague.net/event/e004> <http://euroleague.net/ontology#player> <http://euroleague.net/player/wilbekin> .
-<http://euroleague.net/event/e004> <http://euroleague.net/ontology#points> "2" .
-<http://euroleague.net/event/e005> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Rebound> .
-<http://euroleague.net/event/e005> <http://www.w3.org/2000/01/rdf-schema#label> "Motiejunas defensive rebound" .
-<http://euroleague.net/event/e005> <http://euroleague.net/ontology#player> <http://euroleague.net/player/motiejunas> .
-<http://euroleague.net/event/e006> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Steal> .
-<http://euroleague.net/event/e006> <http://www.w3.org/2000/01/rdf-schema#label> "DiBartolomeo steal" .
-<http://euroleague.net/event/e006> <http://euroleague.net/ontology#player> <http://euroleague.net/player/dibartolomeo> .
-<http://euroleague.net/event/e007> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Block> .
-<http://euroleague.net/event/e007> <http://www.w3.org/2000/01/rdf-schema#label> "Zizic block" .
-<http://euroleague.net/event/e007> <http://euroleague.net/ontology#player> <http://euroleague.net/player/zizic> .
-<http://euroleague.net/event/e008> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
-<http://euroleague.net/event/e008> <http://www.w3.org/2000/01/rdf-schema#label> "James clutch three" .
-<http://euroleague.net/event/e008> <http://euroleague.net/ontology#player> <http://euroleague.net/player/james> .
-<http://euroleague.net/event/e008> <http://euroleague.net/ontology#points> "3" .
-<http://euroleague.net/event/e008> <http://euroleague.net/ontology#isClutch> "true" .
-`
+// Data is loaded from data/euroleague-game.ttl (generated by scripts/euroleague-to-ttl.py)
 
 async function main() {
   console.log('='.repeat(70))
@@ -211,25 +106,26 @@ async function main() {
   console.log('Data Model: https://github.com/andrewstellman/pbprdf')
   console.log()
 
-  // 1. Load Knowledge Graph
+  // 1. Load Knowledge Graph from euroleague-api data
   console.log('[1] Loading Play-by-Play Knowledge Graph...')
   const db = new GraphDB('http://euroleague.net/')
 
-  // Option A: Load from HTTP URL (pbprdf or any RDF endpoint)
-  // Uncomment to load from GitHub:
-  // try {
-  //   const loaded = await loadFromUrl(db, PBPRDF_URLS.ontology)
-  //   console.log(`    Loaded ${loaded} triples from pbprdf ontology`)
-  // } catch (e) {
-  //   console.log(`    URL load failed: ${e.message}`)
-  //   console.log('    Using inline Euroleague sample data instead')
-  // }
+  const fs = require('fs')
+  const path = require('path')
+  const dataPath = path.join(__dirname, '..', 'data', 'euroleague-game.ttl')
 
-  // Option B: Load inline sample data (works offline, no network required)
-  db.loadTtl(EUROLEAGUE_DATA, null)
+  if (!fs.existsSync(dataPath)) {
+    console.error(`ERROR: Data file not found: ${dataPath}`)
+    console.error('Run: uv run --with euroleague-api python3 scripts/euroleague-to-ttl.py')
+    process.exit(1)
+  }
+
+  const ttlData = fs.readFileSync(dataPath, 'utf-8')
+  db.loadTtl(ttlData, null)
+
   const tripleCount = db.countTriples()
+  console.log(`    Source: euroleague-api (pip install euroleague-api)`)
   console.log(`    Triples: ${tripleCount}`)
-  console.log(`    Mode: Inline sample data (for URL loading, uncomment above)`)
   console.log()
 
   // 2. Query Teams
@@ -388,37 +284,39 @@ async function main() {
   // Based on: https://medium.com/@skontopo2009/representing-euroleague-play-by-play-data-as-a-knowledge-graph
   console.log('[8] Use Case Queries by Persona:')
   console.log()
+  console.log('Natural Language -> SPARQL (Generated by HyperMindAgent)')
+  console.log()
 
   const useCases = [
     // Journalists: Uncover nuanced storylines
     {
       persona: 'JOURNALIST',
-      question: 'Who scored the clutch shot in the Monaco game?',
+      question: 'Who made the defensive steals in this game?',
       value: 'Uncover storylines beyond surface-level stats'
     },
     // Teams/Coaching: Strategic decision-making
     {
       persona: 'COACH',
-      question: 'Which Monaco players assisted each other most?',
+      question: 'Which players distributed the ball best with assists?',
       value: 'Identify team chemistry for strategic planning'
     },
     // Analysts: Build robust models
     {
       persona: 'ANALYST',
-      question: 'Find all play types and their frequencies',
+      question: 'Who scored the most points in this game?',
       value: 'Enriched interconnected data for modeling'
     },
     // Fans: Explore interactively
     {
       persona: 'FAN',
-      question: 'Who are the teammates of Mike James?',
+      question: 'Who are the teammates of Lessort?',
       value: 'Interactive exploration of team dynamics'
     },
     // Researchers: ML/semantic web testbed
     {
       persona: 'RESEARCHER',
-      question: 'Find transitive assist chains (who assisted the assister?)',
-      value: 'TransitiveProperty inference for ML features'
+      question: 'Show the symmetric teammate relationships',
+      value: 'OWL SymmetricProperty inference for ML features'
     }
   ]
 
@@ -429,25 +327,51 @@ async function main() {
     console.log('-'.repeat(60))
 
     try {
+      // Call HyperMindAgent with natural language question
       const result = await agent.call(uc.question)
-      console.log()
-      console.log('ANSWER:', result.answer || `Found ${result.raw_results?.[0]?.result?.length || 0} results`)
 
+      // Show the GENERATED SPARQL (what the agent produces from natural language)
+      const sparqlQueries = result.explanation?.sparql_queries || []
+      if (sparqlQueries.length > 0) {
+        console.log()
+        console.log('GENERATED SPARQL:')
+        console.log('```sparql')
+        console.log(sparqlQueries[0].query)
+        console.log('```')
+        console.log(`  Executed in ${result.explanation?.execution_time_ms || 0}ms, ${sparqlQueries[0].resultCount} results`)
+      }
+      console.log()
+
+      // Show answer
+      const answer = result.answer || result.response || result.text
+      if (answer) {
+        console.log('ANSWER:', answer)
+      } else {
+        console.log('RESULTS:', `Found ${result.raw_results?.[0]?.result?.length || result.results?.length || 0} bindings`)
+      }
+
+      // Show reasoning stats
       if (result.reasoningStats) {
         console.log()
         console.log('REASONING:')
         console.log(`  Observations: ${result.reasoningStats.events || 0}`)
-        console.log(`  Facts: ${result.reasoningStats.facts || 0}`)
+        console.log(`  Derived Facts: ${result.reasoningStats.facts || 0}`)
         console.log(`  Rules: ${result.reasoningStats.rules || 0}`)
       }
 
+      // Show derivation chain (the proof)
       if (result.thinkingGraph?.derivationChain?.length > 0) {
         console.log()
-        console.log('DERIVATION CHAIN:')
-        for (const s of result.thinkingGraph.derivationChain.slice(0, 3)) {
-          console.log(`  Step ${s.step}: ${s.conclusion || s.fact}`)
+        console.log('PROOF (Derivation Chain):')
+        for (const s of result.thinkingGraph.derivationChain.slice(0, 5)) {
+          const rule = s.rule || 'OBSERVATION'
+          const fact = s.conclusion || s.fact || ''
+          console.log(`  Step ${s.step}: [${rule}] ${fact}`)
         }
       }
+
+      // Debug: Show available keys in result (for development)
+      // console.log('  DEBUG result keys:', Object.keys(result))
     } catch (e) {
       console.log(`  Error: ${e.message}`)
     }

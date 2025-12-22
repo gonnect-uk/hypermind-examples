@@ -8,49 +8,255 @@ Source: https://medium.com/@skontopo2009/
 Data Model: https://github.com/andrewstellman/pbprdf
 
 [1] Loading Play-by-Play Knowledge Graph...
-    Triples: 103
-    Mode: Inline sample data (for URL loading, uncomment above)
+    Source: euroleague-api (pip install euroleague-api)
+    Triples: 596
 
 [2] Teams in the Graph:
-    - AS Monaco
-    - Maccabi Tel Aviv
-    - Panathinaikos
+    - Ber
+    - Pan
 
 [3] Players and Teams:
-    - Kendrick Nunn (panathinaikos)
-    - Mike James (monaco)
-    - Elie Okobo (monaco)
-    - Ante Zizic (maccabi)
-    - Kostas Sloukas (panathinaikos)
-    - Scottie Wilbekin (maccabi)
-    - Donatas Motiejunas (monaco)
-    - Georgios Papagiannis (panathinaikos)
-    - John DiBartolomeo (maccabi)
+    - None (pan)
+    - Osman Cedi (pan)
+    - Bean Justin (ber)
+    - Grant Jerian (pan)
+    - Olinde Louis (ber)
+    - Brown Lorenzo (pan)
+    - Nunn Kendrick (pan)
+    - Wetzell Yanni (ber)
+    - Rapieque Elias (ber)
+    - Sloukas Kostas (pan)
+    - Yurtseven Omer (pan)
+    - Grigonis Marius (pan)
+    - Lessort Mathias (pan)
+    - Spagnolo Matteo (ber)
+    - Koumadje Khalifa (ber)
+    - Mattisseck Jonas (ber)
+    - Williams Trevion (ber)
+    - Hermannsson Martin (ber)
+    - Hernangomez Juancho (pan)
+    - Mcdowell-White Will (ber)
+    - Mitoglou Konstantinos (pan)
+    - Kalaitzakis Panagiotis (pan)
 
 [4] Play-by-Play Events:
-    - Zizic block by zizic
-    - Okobo to James by okobo
-    - Wilbekin layup by wilbekin
-    - James 3-pointer by james
-    - DiBartolomeo steal by dibartolomeo
-    - James clutch three by james
-    - Wilbekin personal foul by wilbekin
-    - Motiejunas defensive rebound by motiejunas
+    - In by wetzell__yanni
+    - In by williams__trevion
+    - In by spagnolo__matteo
+    - In by mcdowell-white__will
+    - In by bean__justin
+    - In by sloukas__kostas
+    - In by grant__jerian
+    - In by hernangomez__juancho
+    - Out by koumadje__khalifa
+    - Out by rapieque__elias
+    - Out by mattisseck__jonas
+    - Out by hermannsson__martin
+    - Out by olinde__louis
+    - Out by brown__lorenzo
+    - Out by nunn__kendrick
+    - Out by mitoglou__konstantinos
+    - Event by none
+    - Foul (1) by brown__lorenzo
+    - Foul (1) by lessort__mathias
+    - Foul (1) by grigonis__marius
+    - Foul (1) by mitoglou__konstantinos
+    - Foul (1) by rapieque__elias
+    - Foul (1) by williams__trevion
+    - Foul (1) by mcdowell-white__will
+    - Foul (2) by mitoglou__konstantinos
+    - Steal (1) by lessort__mathias
+    - Steal (1) by mitoglou__konstantinos
+    - Steal (1) by mattisseck__jonas
+    - Assist (1) by nunn__kendrick
+    - Assist (1) by rapieque__elias
+    - Assist (1) by hermannsson__martin
+    - Assist (1) by brown__lorenzo
+    - Assist (1) by williams__trevion
+    - Assist (1) by lessort__mathias
+    - Assist (2) by nunn__kendrick
+    - Assist (2) by williams__trevion
+    - Begin Period by none
+    - Turnover (1) by hermannsson__martin
+    - Turnover (1) by brown__lorenzo
+    - Turnover (1) by grigonis__marius
+    - Turnover (2) by hermannsson__martin
+    - Foul Drawn (1) by hermannsson__martin
+    - Foul Drawn (1) by koumadje__khalifa
+    - Foul Drawn (1) by mattisseck__jonas
+    - Foul Drawn (1) by mitoglou__konstantinos
+    - Foul Drawn (1) by nunn__kendrick
+    - Foul Drawn (1) by lessort__mathias
+    - Foul Drawn (1) by wetzell__yanni
+    - Foul Drawn (2) by koumadje__khalifa
+    - Def Rebound (1) by olinde__louis
+    - Def Rebound (1) by nunn__kendrick
+    - Def Rebound (1) by mitoglou__konstantinos
+    - Def Rebound (1) by hermannsson__martin
+    - Def Rebound (1) by lessort__mathias
+    - Def Rebound (1) by brown__lorenzo
+    - Def Rebound (1) by spagnolo__matteo
+    - Def Rebound (1) by williams__trevion
+    - Def Rebound (2) by nunn__kendrick
+    - Def Rebound (2) by mitoglou__konstantinos
+    - Def Rebound (2) by lessort__mathias
+    - Def Rebound (3) by mitoglou__konstantinos
+    - Off Rebound (1) by koumadje__khalifa
+    - Off Rebound (1) by wetzell__yanni
+    - Off Rebound (2) by koumadje__khalifa
+    - TV Time Out (1) by none
+    - Two Pointer (1/1 - 2 pt) by lessort__mathias
+    - Two Pointer (1/1 - 2 pt) by nunn__kendrick
+    - Two Pointer (1/1 - 2 pt) by olinde__louis
+    - Two Pointer (1/1 - 2 pt) by brown__lorenzo
+    - Two Pointer (1/1 - 2 pt) by mattisseck__jonas
+    - Two Pointer (1/1 - 2 pt) by spagnolo__matteo
+    - Two Pointer (2/2 - 4 pt) by lessort__mathias
+    - Two Pointer (2/4 - 4 pt) by spagnolo__matteo
+    - Two Pointer (3/3 - 8 pt) by lessort__mathias
+    - Free Throw In (1/1 - 1 pt) by wetzell__yanni
+    - Free Throw In (1/1 - 3 pt) by mattisseck__jonas
+    - Free Throw In (1/1 - 3 pt) by nunn__kendrick
+    - Free Throw In (1/1 - 4 pt) by mitoglou__konstantinos
+    - Free Throw In (1/1 - 5 pt) by lessort__mathias
+    - Free Throw In (2/2 - 2 pt) by wetzell__yanni
+    - Free Throw In (2/2 - 4 pt) by nunn__kendrick
+    - Free Throw In (2/2 - 5 pt) by mitoglou__konstantinos
+    - Free Throw In (2/2 - 6 pt) by lessort__mathias
+    - Three Pointer (1/1 - 3 pt) by mitoglou__konstantinos
+    - Three Pointer (1/1 - 3 pt) by grigonis__marius
+    - Missed Two Pointer (0/1 - 0 pt) by grigonis__marius
+    - Missed Two Pointer (0/1 - 0 pt) by koumadje__khalifa
+    - Missed Two Pointer (0/1 - 0 pt) by williams__trevion
+    - Missed Two Pointer (0/1 - 0 pt) by wetzell__yanni
+    - Missed Two Pointer (0/1 - 0 pt) by sloukas__kostas
+    - Missed Two Pointer (0/2 - 0 pt) by koumadje__khalifa
+    - Missed Two Pointer (1/2 - 2 pt) by spagnolo__matteo
+    - Missed Two Pointer (1/3 - 2 pt) by spagnolo__matteo
+    - Missed Three Pointer (0/1 - 0 pt) by rapieque__elias
+    - Missed Three Pointer (0/1 - 0 pt) by williams__trevion
+    - Missed Three Pointer (0/1 - 2 pt) by olinde__louis
+    - Missed Three Pointer (0/1 - 2 pt) by brown__lorenzo
+    - Missed Three Pointer (0/1 - 4 pt) by nunn__kendrick
+    - Missed Three Pointer (0/2 - 2 pt) by olinde__louis
+    - Missed Three Pointer (0/3 - 2 pt) by olinde__louis
 
 [5] Teammate Relationships (owl:SymmetricProperty):
-    sloukas <-> nunn
-    james <-> okobo
-    wilbekin <-> zizic
-    james <-> motiejunas
-    okobo <-> motiejunas
-    nunn <-> papagiannis
-    sloukas <-> papagiannis
-    wilbekin <-> dibartolomeo
+    none <-> osman__cedi
+    grant__jerian <-> osman__cedi
+    brown__lorenzo <-> osman__cedi
+    nunn__kendrick <-> osman__cedi
+    sloukas__kostas <-> osman__cedi
+    grigonis__marius <-> osman__cedi
+    lessort__mathias <-> osman__cedi
+    hernangomez__juancho <-> osman__cedi
+    mitoglou__konstantinos <-> osman__cedi
+    olinde__louis <-> bean__justin
+    wetzell__yanni <-> bean__justin
+    rapieque__elias <-> bean__justin
+    spagnolo__matteo <-> bean__justin
+    koumadje__khalifa <-> bean__justin
+    mattisseck__jonas <-> bean__justin
+    williams__trevion <-> bean__justin
+    hermannsson__martin <-> bean__justin
+    mcdowell-white__will <-> bean__justin
+    none <-> grant__jerian
+    brown__lorenzo <-> grant__jerian
+    nunn__kendrick <-> grant__jerian
+    sloukas__kostas <-> grant__jerian
+    grigonis__marius <-> grant__jerian
+    lessort__mathias <-> grant__jerian
+    mitoglou__konstantinos <-> grant__jerian
+    none <-> brown__lorenzo
+    nunn__kendrick <-> brown__lorenzo
+    grigonis__marius <-> brown__lorenzo
+    lessort__mathias <-> brown__lorenzo
+    none <-> nunn__kendrick
+    grigonis__marius <-> nunn__kendrick
+    olinde__louis <-> wetzell__yanni
+    rapieque__elias <-> wetzell__yanni
+    koumadje__khalifa <-> wetzell__yanni
+    mattisseck__jonas <-> wetzell__yanni
+    hermannsson__martin <-> wetzell__yanni
+    olinde__louis <-> rapieque__elias
+    koumadje__khalifa <-> rapieque__elias
+    hermannsson__martin <-> rapieque__elias
+    none <-> sloukas__kostas
+    brown__lorenzo <-> sloukas__kostas
+    nunn__kendrick <-> sloukas__kostas
+    grigonis__marius <-> sloukas__kostas
+    lessort__mathias <-> sloukas__kostas
+    mitoglou__konstantinos <-> sloukas__kostas
+    none <-> yurtseven__omer
+    osman__cedi <-> yurtseven__omer
+    grant__jerian <-> yurtseven__omer
+    brown__lorenzo <-> yurtseven__omer
+    nunn__kendrick <-> yurtseven__omer
+    sloukas__kostas <-> yurtseven__omer
+    grigonis__marius <-> yurtseven__omer
+    lessort__mathias <-> yurtseven__omer
+    hernangomez__juancho <-> yurtseven__omer
+    mitoglou__konstantinos <-> yurtseven__omer
+    none <-> grigonis__marius
+    none <-> lessort__mathias
+    nunn__kendrick <-> lessort__mathias
+    grigonis__marius <-> lessort__mathias
+    olinde__louis <-> spagnolo__matteo
+    wetzell__yanni <-> spagnolo__matteo
+    rapieque__elias <-> spagnolo__matteo
+    koumadje__khalifa <-> spagnolo__matteo
+    mattisseck__jonas <-> spagnolo__matteo
+    williams__trevion <-> spagnolo__matteo
+    hermannsson__martin <-> spagnolo__matteo
+    olinde__louis <-> koumadje__khalifa
+    olinde__louis <-> mattisseck__jonas
+    rapieque__elias <-> mattisseck__jonas
+    koumadje__khalifa <-> mattisseck__jonas
+    hermannsson__martin <-> mattisseck__jonas
+    olinde__louis <-> williams__trevion
+    wetzell__yanni <-> williams__trevion
+    rapieque__elias <-> williams__trevion
+    koumadje__khalifa <-> williams__trevion
+    mattisseck__jonas <-> williams__trevion
+    hermannsson__martin <-> williams__trevion
+    olinde__louis <-> hermannsson__martin
+    koumadje__khalifa <-> hermannsson__martin
+    none <-> hernangomez__juancho
+    grant__jerian <-> hernangomez__juancho
+    brown__lorenzo <-> hernangomez__juancho
+    nunn__kendrick <-> hernangomez__juancho
+    sloukas__kostas <-> hernangomez__juancho
+    grigonis__marius <-> hernangomez__juancho
+    lessort__mathias <-> hernangomez__juancho
+    mitoglou__konstantinos <-> hernangomez__juancho
+    olinde__louis <-> mcdowell-white__will
+    wetzell__yanni <-> mcdowell-white__will
+    rapieque__elias <-> mcdowell-white__will
+    spagnolo__matteo <-> mcdowell-white__will
+    koumadje__khalifa <-> mcdowell-white__will
+    mattisseck__jonas <-> mcdowell-white__will
+    williams__trevion <-> mcdowell-white__will
+    hermannsson__martin <-> mcdowell-white__will
+    none <-> mitoglou__konstantinos
+    brown__lorenzo <-> mitoglou__konstantinos
+    nunn__kendrick <-> mitoglou__konstantinos
+    grigonis__marius <-> mitoglou__konstantinos
+    lessort__mathias <-> mitoglou__konstantinos
+    none <-> kalaitzakis__panagiotis
+    osman__cedi <-> kalaitzakis__panagiotis
+    grant__jerian <-> kalaitzakis__panagiotis
+    brown__lorenzo <-> kalaitzakis__panagiotis
+    nunn__kendrick <-> kalaitzakis__panagiotis
+    sloukas__kostas <-> kalaitzakis__panagiotis
+    yurtseven__omer <-> kalaitzakis__panagiotis
+    grigonis__marius <-> kalaitzakis__panagiotis
+    lessort__mathias <-> kalaitzakis__panagiotis
+    hernangomez__juancho <-> kalaitzakis__panagiotis
+    mitoglou__konstantinos <-> kalaitzakis__panagiotis
 
     Deduction: If James teammateOf Okobo, then Okobo teammateOf James
 
 [6] Assist Chain (owl:TransitiveProperty):
-    nunn <- assisted by <- sloukas
 
     Deduction: If Nunn assistedBy Sloukas, and X assistedBy Nunn,
                then X assistedBy Sloukas (transitive chain)
@@ -59,119 +265,155 @@ Data Model: https://github.com/andrewstellman/pbprdf
     Loading observations into ThinkingReasoner...
     Running deductive reasoning...
     Agent: euroleague-analyst
-    LLM: None (schema-based)
-    Observations: 10
-    Derived Facts: 18
+    LLM: OpenAI
+    Observations: 111
+    Derived Facts: 222
     Rules Applied: 2
 
 [8] Use Case Queries by Persona:
 
+Natural Language -> SPARQL (Generated by HyperMindAgent)
+
 ------------------------------------------------------------
-JOURNALIST: "Who scored the clutch shot in the Monaco game?"
+JOURNALIST: "Who made the defensive steals in this game?"
 VALUE: Uncover storylines beyond surface-level stats
 ------------------------------------------------------------
 
-ANSWER: Found 103 results
+GENERATED SPARQL:
+```sparql
+SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 100
+```
+  Executed in 38ms, 596 results
+
+ANSWER: Found 596 results
 
 REASONING:
-  Observations: 10
-  Facts: 18
+  Observations: 111
+  Derived Facts: 222
   Rules: 2
 
-DERIVATION CHAIN:
-  Step 1: sloukas teammateOf nunn
-  Step 2: james teammateOf okobo
-  Step 3: wilbekin teammateOf zizic
+PROOF (Derivation Chain):
+  Step 1: [OBSERVATION] none teammateOf osman__cedi
+  Step 2: [OBSERVATION] grant__jerian teammateOf osman__cedi
+  Step 3: [OBSERVATION] brown__lorenzo teammateOf osman__cedi
+  Step 4: [OBSERVATION] nunn__kendrick teammateOf osman__cedi
+  Step 5: [OBSERVATION] sloukas__kostas teammateOf osman__cedi
 
 ------------------------------------------------------------
-COACH: "Which Monaco players assisted each other most?"
+COACH: "Which players distributed the ball best with assists?"
 VALUE: Identify team chemistry for strategic planning
 ------------------------------------------------------------
 
-ANSWER: Found 105 results
+GENERATED SPARQL:
+```sparql
+SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 100
+```
+  Executed in 40ms, 598 results
+
+ANSWER: Found 598 results
 
 REASONING:
-  Observations: 10
-  Facts: 18
+  Observations: 111
+  Derived Facts: 222
   Rules: 2
 
-DERIVATION CHAIN:
-  Step 1: sloukas teammateOf nunn
-  Step 2: james teammateOf okobo
-  Step 3: wilbekin teammateOf zizic
+PROOF (Derivation Chain):
+  Step 1: [OBSERVATION] none teammateOf osman__cedi
+  Step 2: [OBSERVATION] grant__jerian teammateOf osman__cedi
+  Step 3: [OBSERVATION] brown__lorenzo teammateOf osman__cedi
+  Step 4: [OBSERVATION] nunn__kendrick teammateOf osman__cedi
+  Step 5: [OBSERVATION] sloukas__kostas teammateOf osman__cedi
 
 ------------------------------------------------------------
-ANALYST: "Find all play types and their frequencies"
+ANALYST: "Who scored the most points in this game?"
 VALUE: Enriched interconnected data for modeling
 ------------------------------------------------------------
 
-ANSWER: Found 107 results
+GENERATED SPARQL:
+```sparql
+SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 100
+```
+  Executed in 32ms, 600 results
+
+ANSWER: Found 600 results
 
 REASONING:
-  Observations: 10
-  Facts: 18
+  Observations: 111
+  Derived Facts: 222
   Rules: 2
 
-DERIVATION CHAIN:
-  Step 1: sloukas teammateOf nunn
-  Step 2: james teammateOf okobo
-  Step 3: wilbekin teammateOf zizic
+PROOF (Derivation Chain):
+  Step 1: [OBSERVATION] none teammateOf osman__cedi
+  Step 2: [OBSERVATION] grant__jerian teammateOf osman__cedi
+  Step 3: [OBSERVATION] brown__lorenzo teammateOf osman__cedi
+  Step 4: [OBSERVATION] nunn__kendrick teammateOf osman__cedi
+  Step 5: [OBSERVATION] sloukas__kostas teammateOf osman__cedi
 
 ------------------------------------------------------------
-FAN: "Who are the teammates of Mike James?"
+FAN: "Who are the teammates of Lessort?"
 VALUE: Interactive exploration of team dynamics
 ------------------------------------------------------------
 
-ANSWER: Found 109 results
+GENERATED SPARQL:
+```sparql
+SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 100
+```
+  Executed in 35ms, 602 results
+
+ANSWER: Found 602 results
 
 REASONING:
-  Observations: 10
-  Facts: 18
+  Observations: 111
+  Derived Facts: 222
   Rules: 2
 
-DERIVATION CHAIN:
-  Step 1: sloukas teammateOf nunn
-  Step 2: james teammateOf okobo
-  Step 3: wilbekin teammateOf zizic
+PROOF (Derivation Chain):
+  Step 1: [OBSERVATION] none teammateOf osman__cedi
+  Step 2: [OBSERVATION] grant__jerian teammateOf osman__cedi
+  Step 3: [OBSERVATION] brown__lorenzo teammateOf osman__cedi
+  Step 4: [OBSERVATION] nunn__kendrick teammateOf osman__cedi
+  Step 5: [OBSERVATION] sloukas__kostas teammateOf osman__cedi
 
 ------------------------------------------------------------
-RESEARCHER: "Find transitive assist chains (who assisted the assister?)"
-VALUE: TransitiveProperty inference for ML features
+RESEARCHER: "Show the symmetric teammate relationships"
+VALUE: OWL SymmetricProperty inference for ML features
 ------------------------------------------------------------
 
-ANSWER: Found 111 results
+ANSWER: Found 0 results
 
 REASONING:
-  Observations: 10
-  Facts: 18
+  Observations: 111
+  Derived Facts: 222
   Rules: 2
 
-DERIVATION CHAIN:
-  Step 1: sloukas teammateOf nunn
-  Step 2: james teammateOf okobo
-  Step 3: wilbekin teammateOf zizic
+PROOF (Derivation Chain):
+  Step 1: [OBSERVATION] none teammateOf osman__cedi
+  Step 2: [OBSERVATION] grant__jerian teammateOf osman__cedi
+  Step 3: [OBSERVATION] brown__lorenzo teammateOf osman__cedi
+  Step 4: [OBSERVATION] nunn__kendrick teammateOf osman__cedi
+  Step 5: [OBSERVATION] sloukas__kostas teammateOf osman__cedi
 
 [9] Thinking Graph (Explainable AI):
 
   EVIDENCE NODES:
-  [OBS] sloukas is teammate of nunn
-  [OBS] james is teammate of okobo
-  [OBS] wilbekin is teammate of zizic
-  [OBS] james is teammate of motiejunas
-  [OBS] okobo is teammate of motiejunas
-  [OBS] nunn is teammate of papagiannis
-  [OBS] sloukas is teammate of papagiannis
-  [OBS] wilbekin is teammate of dibartolomeo
+  [OBS] none is teammate of osman__cedi
+  [OBS] grant__jerian is teammate of osman__cedi
+  [OBS] brown__lorenzo is teammate of osman__cedi
+  [OBS] nunn__kendrick is teammate of osman__cedi
+  [OBS] sloukas__kostas is teammate of osman__cedi
+  [OBS] grigonis__marius is teammate of osman__cedi
+  [OBS] lessort__mathias is teammate of osman__cedi
+  [OBS] hernangomez__juancho is teammate of osman__cedi
 
   DERIVATION CHAIN (Proof Steps):
-  Step 1: [OBSERVATION] sloukas teammateOf nunn
-  Step 2: [OBSERVATION] james teammateOf okobo
-  Step 3: [OBSERVATION] wilbekin teammateOf zizic
-  Step 4: [OBSERVATION] james teammateOf motiejunas
-  Step 5: [OBSERVATION] okobo teammateOf motiejunas
-  Step 6: [OBSERVATION] nunn teammateOf papagiannis
-  Step 7: [OBSERVATION] sloukas teammateOf papagiannis
-  Step 8: [OBSERVATION] wilbekin teammateOf dibartolomeo
+  Step 1: [OBSERVATION] none teammateOf osman__cedi
+  Step 2: [OBSERVATION] grant__jerian teammateOf osman__cedi
+  Step 3: [OBSERVATION] brown__lorenzo teammateOf osman__cedi
+  Step 4: [OBSERVATION] nunn__kendrick teammateOf osman__cedi
+  Step 5: [OBSERVATION] sloukas__kostas teammateOf osman__cedi
+  Step 6: [OBSERVATION] grigonis__marius teammateOf osman__cedi
+  Step 7: [OBSERVATION] lessort__mathias teammateOf osman__cedi
+  Step 8: [OBSERVATION] hernangomez__juancho teammateOf osman__cedi
 
   VALUE: Every conclusion traces back to ground truth observations.
          No hallucinations - only provable facts.
@@ -180,11 +422,11 @@ DERIVATION CHAIN:
   SUMMARY
 ======================================================================
 
-  Knowledge Graph: 103 triples
-  Teams: 3
-  Players: 9
-  Events: 8
-  Teammate links: 8
+  Knowledge Graph: 596 triples
+  Teams: 2
+  Players: 22
+  Events: 100
+  Teammate links: 111
 
   OWL Properties enable automatic reasoning:
   - SymmetricProperty: A rel B => B rel A
