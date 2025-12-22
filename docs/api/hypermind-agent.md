@@ -182,6 +182,6 @@ Schema is extracted from loaded TTL data and used to generate valid SPARQL queri
 
 ## See Also
 
-- [Grounded Reasoning](../concepts/grounded-reasoning.md)
+- [Core Concepts](../concepts/README.md)
 - [GraphDB API](graphdb.md)
 - [ThinkingReasoner API](thinking-reasoner.md)

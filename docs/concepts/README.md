@@ -93,7 +93,7 @@ The ThinkingReasoner loads facts as observations and derives new facts:
 ThinkingReasoner:
   Agent: legal-research-analyst
   Observations: 10
-  Derived Facts: 10
+  Derived Facts: 17
   Rules Applied: 2
 
 EVIDENCE NODES:
@@ -116,10 +116,10 @@ Semantic similarity via random walk embeddings:
 // From npm run euroleague output:
 
 RDF2Vec Embeddings:
-  Entity Embeddings: 138
+  Entity Embeddings: 214
   Dimensions: 128
   Random Walks: 1380
-  Training Time: ~2.43s
+  Training Time: ~1.94s
 
 Use: Find similar entities (players, teams, events)
 ```

@@ -128,4 +128,4 @@ The `thinkingGraph.derivationChain` contains the complete proof chain from Think
 
 - [HyperMindAgent API](hypermind-agent.md)
 - [GraphDB API](graphdb.md)
-- [OWL Properties](../concepts/owl-properties.md)
+- [Core Concepts](../concepts/README.md)

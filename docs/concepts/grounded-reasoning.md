@@ -166,5 +166,4 @@ From `npm run legal`:
 ## See Also
 
 - [HyperMindAgent API](../api/hypermind-agent.md)
-- [OWL Properties](owl-properties.md)
-- [Derivation Chains](derivation-chains.md)
+- [Core Concepts](README.md)
