@@ -2,12 +2,19 @@
 <http://euroleague.net/ontology#Team> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://euroleague.net/ontology#Player> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://euroleague.net/ontology#Event> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://euroleague.net/ontology#Shot> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://euroleague.net/ontology#Shot> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/ontology#Assist> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://euroleague.net/ontology#Assist> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/ontology#Rebound> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://euroleague.net/ontology#Rebound> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/ontology#Turnover> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://euroleague.net/ontology#Turnover> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/ontology#Foul> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://euroleague.net/ontology#Foul> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/ontology#Block> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://euroleague.net/ontology#Block> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/ontology#Steal> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://euroleague.net/ontology#Steal> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://euroleague.net/ontology#Event> .
 <http://euroleague.net/ontology#teammateOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#SymmetricProperty> .
 <http://euroleague.net/ontology#assistedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#TransitiveProperty> .
@@ -202,23 +209,23 @@
 <http://euroleague.net/event/e00001> <http://www.w3.org/2000/01/rdf-schema#label> "Event" .
 <http://euroleague.net/event/e00001> <http://euroleague.net/ontology#player> <http://euroleague.net/player/none> .
 <http://euroleague.net/event/e00001> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00002> <http://www.w3.org/2000/01/rdf-schema#label> "Missed Two Pointer (0/1 -  0 pt)" .
 <http://euroleague.net/event/e00002> <http://euroleague.net/ontology#player> <http://euroleague.net/player/grigonis__marius> .
 <http://euroleague.net/event/e00002> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Rebound> .
 <http://euroleague.net/event/e00003> <http://www.w3.org/2000/01/rdf-schema#label> "Def Rebound (1)" .
 <http://euroleague.net/event/e00003> <http://euroleague.net/ontology#player> <http://euroleague.net/player/olinde__louis> .
 <http://euroleague.net/event/e00003> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00004> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00004> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00004> <http://www.w3.org/2000/01/rdf-schema#label> "Missed Two Pointer (0/1 -  0 pt)" .
 <http://euroleague.net/event/e00004> <http://euroleague.net/ontology#player> <http://euroleague.net/player/koumadje__khalifa> .
 <http://euroleague.net/event/e00004> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00005> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00005> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Rebound> .
 <http://euroleague.net/event/e00005> <http://www.w3.org/2000/01/rdf-schema#label> "Def Rebound (1)" .
 <http://euroleague.net/event/e00005> <http://euroleague.net/ontology#player> <http://euroleague.net/player/nunn__kendrick> .
 <http://euroleague.net/event/e00005> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00006> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00006> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00006> <http://www.w3.org/2000/01/rdf-schema#label> "Two Pointer (1/1 -  2 pt)" .
 <http://euroleague.net/event/e00006> <http://euroleague.net/ontology#player> <http://euroleague.net/player/lessort__mathias> .
 <http://euroleague.net/event/e00006> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
@@ -226,11 +233,11 @@
 <http://euroleague.net/event/e00007> <http://www.w3.org/2000/01/rdf-schema#label> "Assist (1)" .
 <http://euroleague.net/event/e00007> <http://euroleague.net/ontology#player> <http://euroleague.net/player/nunn__kendrick> .
 <http://euroleague.net/event/e00007> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00008> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00008> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Foul> .
 <http://euroleague.net/event/e00008> <http://www.w3.org/2000/01/rdf-schema#label> "Foul (1)" .
 <http://euroleague.net/event/e00008> <http://euroleague.net/ontology#player> <http://euroleague.net/player/brown__lorenzo> .
 <http://euroleague.net/event/e00008> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00009> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00009> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Foul> .
 <http://euroleague.net/event/e00009> <http://www.w3.org/2000/01/rdf-schema#label> "Foul Drawn (1)" .
 <http://euroleague.net/event/e00009> <http://euroleague.net/ontology#player> <http://euroleague.net/player/hermannsson__martin> .
 <http://euroleague.net/event/e00009> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
@@ -238,15 +245,15 @@
 <http://euroleague.net/event/e00010> <http://www.w3.org/2000/01/rdf-schema#label> "Turnover (1)" .
 <http://euroleague.net/event/e00010> <http://euroleague.net/ontology#player> <http://euroleague.net/player/hermannsson__martin> .
 <http://euroleague.net/event/e00010> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00011> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00011> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Steal> .
 <http://euroleague.net/event/e00011> <http://www.w3.org/2000/01/rdf-schema#label> "Steal (1)" .
 <http://euroleague.net/event/e00011> <http://euroleague.net/ontology#player> <http://euroleague.net/player/lessort__mathias> .
 <http://euroleague.net/event/e00011> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00012> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00012> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00012> <http://www.w3.org/2000/01/rdf-schema#label> "Two Pointer (1/1 -  2 pt)" .
 <http://euroleague.net/event/e00012> <http://euroleague.net/ontology#player> <http://euroleague.net/player/nunn__kendrick> .
 <http://euroleague.net/event/e00012> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00013> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00013> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00013> <http://www.w3.org/2000/01/rdf-schema#label> "Two Pointer (1/1 -  2 pt)" .
 <http://euroleague.net/event/e00013> <http://euroleague.net/ontology#player> <http://euroleague.net/player/olinde__louis> .
 <http://euroleague.net/event/e00013> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
@@ -254,7 +261,7 @@
 <http://euroleague.net/event/e00014> <http://www.w3.org/2000/01/rdf-schema#label> "Assist (1)" .
 <http://euroleague.net/event/e00014> <http://euroleague.net/ontology#player> <http://euroleague.net/player/rapieque__elias> .
 <http://euroleague.net/event/e00014> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00015> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00015> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00015> <http://www.w3.org/2000/01/rdf-schema#label> "Three Pointer (1/1 -  3 pt)" .
 <http://euroleague.net/event/e00015> <http://euroleague.net/ontology#player> <http://euroleague.net/player/mitoglou__konstantinos> .
 <http://euroleague.net/event/e00015> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
@@ -262,11 +269,11 @@
 <http://euroleague.net/event/e00016> <http://www.w3.org/2000/01/rdf-schema#label> "Assist (2)" .
 <http://euroleague.net/event/e00016> <http://euroleague.net/ontology#player> <http://euroleague.net/player/nunn__kendrick> .
 <http://euroleague.net/event/e00016> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00017> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00017> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00017> <http://www.w3.org/2000/01/rdf-schema#label> "Missed Three Pointer (0/1 -  2 pt)" .
 <http://euroleague.net/event/e00017> <http://euroleague.net/ontology#player> <http://euroleague.net/player/olinde__louis> .
 <http://euroleague.net/event/e00017> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00018> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00018> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Rebound> .
 <http://euroleague.net/event/e00018> <http://www.w3.org/2000/01/rdf-schema#label> "Def Rebound (2)" .
 <http://euroleague.net/event/e00018> <http://euroleague.net/ontology#player> <http://euroleague.net/player/nunn__kendrick> .
 <http://euroleague.net/event/e00018> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
@@ -274,31 +281,31 @@
 <http://euroleague.net/event/e00019> <http://www.w3.org/2000/01/rdf-schema#label> "Turnover (1)" .
 <http://euroleague.net/event/e00019> <http://euroleague.net/ontology#player> <http://euroleague.net/player/brown__lorenzo> .
 <http://euroleague.net/event/e00019> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00020> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00020> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Foul> .
 <http://euroleague.net/event/e00020> <http://www.w3.org/2000/01/rdf-schema#label> "Foul (1)" .
 <http://euroleague.net/event/e00020> <http://euroleague.net/ontology#player> <http://euroleague.net/player/lessort__mathias> .
 <http://euroleague.net/event/e00020> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00021> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00021> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Foul> .
 <http://euroleague.net/event/e00021> <http://www.w3.org/2000/01/rdf-schema#label> "Foul Drawn (1)" .
 <http://euroleague.net/event/e00021> <http://euroleague.net/ontology#player> <http://euroleague.net/player/koumadje__khalifa> .
 <http://euroleague.net/event/e00021> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00022> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00022> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00022> <http://www.w3.org/2000/01/rdf-schema#label> "Missed Three Pointer (0/2 -  2 pt)" .
 <http://euroleague.net/event/e00022> <http://euroleague.net/ontology#player> <http://euroleague.net/player/olinde__louis> .
 <http://euroleague.net/event/e00022> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00023> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00023> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Rebound> .
 <http://euroleague.net/event/e00023> <http://www.w3.org/2000/01/rdf-schema#label> "Off Rebound (1)" .
 <http://euroleague.net/event/e00023> <http://euroleague.net/ontology#player> <http://euroleague.net/player/koumadje__khalifa> .
 <http://euroleague.net/event/e00023> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00024> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00024> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00024> <http://www.w3.org/2000/01/rdf-schema#label> "Missed Two Pointer (0/2 -  0 pt)" .
 <http://euroleague.net/event/e00024> <http://euroleague.net/ontology#player> <http://euroleague.net/player/koumadje__khalifa> .
 <http://euroleague.net/event/e00024> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00025> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00025> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Rebound> .
 <http://euroleague.net/event/e00025> <http://www.w3.org/2000/01/rdf-schema#label> "Def Rebound (1)" .
 <http://euroleague.net/event/e00025> <http://euroleague.net/ontology#player> <http://euroleague.net/player/mitoglou__konstantinos> .
 <http://euroleague.net/event/e00025> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00026> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00026> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00026> <http://www.w3.org/2000/01/rdf-schema#label> "Two Pointer (1/1 -  2 pt)" .
 <http://euroleague.net/event/e00026> <http://euroleague.net/ontology#player> <http://euroleague.net/player/brown__lorenzo> .
 <http://euroleague.net/event/e00026> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
@@ -306,7 +313,7 @@
 <http://euroleague.net/event/e00027> <http://www.w3.org/2000/01/rdf-schema#label> "Turnover (2)" .
 <http://euroleague.net/event/e00027> <http://euroleague.net/ontology#player> <http://euroleague.net/player/hermannsson__martin> .
 <http://euroleague.net/event/e00027> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00028> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00028> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Steal> .
 <http://euroleague.net/event/e00028> <http://www.w3.org/2000/01/rdf-schema#label> "Steal (1)" .
 <http://euroleague.net/event/e00028> <http://euroleague.net/ontology#player> <http://euroleague.net/player/mitoglou__konstantinos> .
 <http://euroleague.net/event/e00028> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
@@ -314,11 +321,11 @@
 <http://euroleague.net/event/e00029> <http://www.w3.org/2000/01/rdf-schema#label> "Turnover (1)" .
 <http://euroleague.net/event/e00029> <http://euroleague.net/ontology#player> <http://euroleague.net/player/grigonis__marius> .
 <http://euroleague.net/event/e00029> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00030> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00030> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Steal> .
 <http://euroleague.net/event/e00030> <http://www.w3.org/2000/01/rdf-schema#label> "Steal (1)" .
 <http://euroleague.net/event/e00030> <http://euroleague.net/ontology#player> <http://euroleague.net/player/mattisseck__jonas> .
 <http://euroleague.net/event/e00030> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00031> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00031> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00031> <http://www.w3.org/2000/01/rdf-schema#label> "Two Pointer (1/1 -  2 pt)" .
 <http://euroleague.net/event/e00031> <http://euroleague.net/ontology#player> <http://euroleague.net/player/mattisseck__jonas> .
 <http://euroleague.net/event/e00031> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
@@ -326,11 +333,11 @@
 <http://euroleague.net/event/e00032> <http://www.w3.org/2000/01/rdf-schema#label> "Assist (1)" .
 <http://euroleague.net/event/e00032> <http://euroleague.net/ontology#player> <http://euroleague.net/player/hermannsson__martin> .
 <http://euroleague.net/event/e00032> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00033> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00033> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Foul> .
 <http://euroleague.net/event/e00033> <http://www.w3.org/2000/01/rdf-schema#label> "Foul (1)" .
 <http://euroleague.net/event/e00033> <http://euroleague.net/ontology#player> <http://euroleague.net/player/grigonis__marius> .
 <http://euroleague.net/event/e00033> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00034> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00034> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Foul> .
 <http://euroleague.net/event/e00034> <http://www.w3.org/2000/01/rdf-schema#label> "Foul Drawn (1)" .
 <http://euroleague.net/event/e00034> <http://euroleague.net/ontology#player> <http://euroleague.net/player/mattisseck__jonas> .
 <http://euroleague.net/event/e00034> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
@@ -338,43 +345,43 @@
 <http://euroleague.net/event/e00035> <http://www.w3.org/2000/01/rdf-schema#label> "Free Throw In (1/1 -  3 pt)" .
 <http://euroleague.net/event/e00035> <http://euroleague.net/ontology#player> <http://euroleague.net/player/mattisseck__jonas> .
 <http://euroleague.net/event/e00035> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00036> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00036> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00036> <http://www.w3.org/2000/01/rdf-schema#label> "Missed Three Pointer (0/1 -  2 pt)" .
 <http://euroleague.net/event/e00036> <http://euroleague.net/ontology#player> <http://euroleague.net/player/brown__lorenzo> .
 <http://euroleague.net/event/e00036> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00037> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00037> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Rebound> .
 <http://euroleague.net/event/e00037> <http://www.w3.org/2000/01/rdf-schema#label> "Def Rebound (1)" .
 <http://euroleague.net/event/e00037> <http://euroleague.net/ontology#player> <http://euroleague.net/player/hermannsson__martin> .
 <http://euroleague.net/event/e00037> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00038> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00038> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00038> <http://www.w3.org/2000/01/rdf-schema#label> "Missed Three Pointer (0/3 -  2 pt)" .
 <http://euroleague.net/event/e00038> <http://euroleague.net/ontology#player> <http://euroleague.net/player/olinde__louis> .
 <http://euroleague.net/event/e00038> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00039> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00039> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Rebound> .
 <http://euroleague.net/event/e00039> <http://www.w3.org/2000/01/rdf-schema#label> "Off Rebound (2)" .
 <http://euroleague.net/event/e00039> <http://euroleague.net/ontology#player> <http://euroleague.net/player/koumadje__khalifa> .
 <http://euroleague.net/event/e00039> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00040> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00040> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Foul> .
 <http://euroleague.net/event/e00040> <http://www.w3.org/2000/01/rdf-schema#label> "Foul (1)" .
 <http://euroleague.net/event/e00040> <http://euroleague.net/ontology#player> <http://euroleague.net/player/mitoglou__konstantinos> .
 <http://euroleague.net/event/e00040> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00041> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00041> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Foul> .
 <http://euroleague.net/event/e00041> <http://www.w3.org/2000/01/rdf-schema#label> "Foul Drawn (2)" .
 <http://euroleague.net/event/e00041> <http://euroleague.net/ontology#player> <http://euroleague.net/player/koumadje__khalifa> .
 <http://euroleague.net/event/e00041> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00042> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00042> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00042> <http://www.w3.org/2000/01/rdf-schema#label> "Missed Three Pointer (0/1 -  0 pt)" .
 <http://euroleague.net/event/e00042> <http://euroleague.net/ontology#player> <http://euroleague.net/player/rapieque__elias> .
 <http://euroleague.net/event/e00042> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00043> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00043> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Rebound> .
 <http://euroleague.net/event/e00043> <http://www.w3.org/2000/01/rdf-schema#label> "Def Rebound (1)" .
 <http://euroleague.net/event/e00043> <http://euroleague.net/ontology#player> <http://euroleague.net/player/lessort__mathias> .
 <http://euroleague.net/event/e00043> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00044> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00044> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Foul> .
 <http://euroleague.net/event/e00044> <http://www.w3.org/2000/01/rdf-schema#label> "Foul (1)" .
 <http://euroleague.net/event/e00044> <http://euroleague.net/ontology#player> <http://euroleague.net/player/rapieque__elias> .
 <http://euroleague.net/event/e00044> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00045> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00045> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Foul> .
 <http://euroleague.net/event/e00045> <http://www.w3.org/2000/01/rdf-schema#label> "Foul Drawn (1)" .
 <http://euroleague.net/event/e00045> <http://euroleague.net/ontology#player> <http://euroleague.net/player/mitoglou__konstantinos> .
 <http://euroleague.net/event/e00045> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
@@ -406,19 +413,19 @@
 <http://euroleague.net/event/e00052> <http://www.w3.org/2000/01/rdf-schema#label> "Free Throw In (2/2 -  5 pt)" .
 <http://euroleague.net/event/e00052> <http://euroleague.net/ontology#player> <http://euroleague.net/player/mitoglou__konstantinos> .
 <http://euroleague.net/event/e00052> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00053> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00053> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00053> <http://www.w3.org/2000/01/rdf-schema#label> "Missed Two Pointer (0/1 -  0 pt)" .
 <http://euroleague.net/event/e00053> <http://euroleague.net/ontology#player> <http://euroleague.net/player/williams__trevion> .
 <http://euroleague.net/event/e00053> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00054> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00054> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Rebound> .
 <http://euroleague.net/event/e00054> <http://www.w3.org/2000/01/rdf-schema#label> "Def Rebound (2)" .
 <http://euroleague.net/event/e00054> <http://euroleague.net/ontology#player> <http://euroleague.net/player/mitoglou__konstantinos> .
 <http://euroleague.net/event/e00054> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00055> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00055> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Foul> .
 <http://euroleague.net/event/e00055> <http://www.w3.org/2000/01/rdf-schema#label> "Foul (1)" .
 <http://euroleague.net/event/e00055> <http://euroleague.net/ontology#player> <http://euroleague.net/player/williams__trevion> .
 <http://euroleague.net/event/e00055> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00056> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00056> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Foul> .
 <http://euroleague.net/event/e00056> <http://www.w3.org/2000/01/rdf-schema#label> "Foul Drawn (1)" .
 <http://euroleague.net/event/e00056> <http://euroleague.net/ontology#player> <http://euroleague.net/player/nunn__kendrick> .
 <http://euroleague.net/event/e00056> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
@@ -450,7 +457,7 @@
 <http://euroleague.net/event/e00063> <http://www.w3.org/2000/01/rdf-schema#label> "Free Throw In (2/2 -  4 pt)" .
 <http://euroleague.net/event/e00063> <http://euroleague.net/ontology#player> <http://euroleague.net/player/nunn__kendrick> .
 <http://euroleague.net/event/e00063> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00064> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00064> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00064> <http://www.w3.org/2000/01/rdf-schema#label> "Two Pointer (1/1 -  2 pt)" .
 <http://euroleague.net/event/e00064> <http://euroleague.net/ontology#player> <http://euroleague.net/player/spagnolo__matteo> .
 <http://euroleague.net/event/e00064> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
@@ -458,23 +465,23 @@
 <http://euroleague.net/event/e00065> <http://www.w3.org/2000/01/rdf-schema#label> "Assist (1)" .
 <http://euroleague.net/event/e00065> <http://euroleague.net/ontology#player> <http://euroleague.net/player/williams__trevion> .
 <http://euroleague.net/event/e00065> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00066> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00066> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00066> <http://www.w3.org/2000/01/rdf-schema#label> "Two Pointer (2/2 -  4 pt)" .
 <http://euroleague.net/event/e00066> <http://euroleague.net/ontology#player> <http://euroleague.net/player/lessort__mathias> .
 <http://euroleague.net/event/e00066> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00067> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00067> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00067> <http://www.w3.org/2000/01/rdf-schema#label> "Missed Two Pointer (1/2 -  2 pt)" .
 <http://euroleague.net/event/e00067> <http://euroleague.net/ontology#player> <http://euroleague.net/player/spagnolo__matteo> .
 <http://euroleague.net/event/e00067> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00068> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00068> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Rebound> .
 <http://euroleague.net/event/e00068> <http://www.w3.org/2000/01/rdf-schema#label> "Def Rebound (1)" .
 <http://euroleague.net/event/e00068> <http://euroleague.net/ontology#player> <http://euroleague.net/player/brown__lorenzo> .
 <http://euroleague.net/event/e00068> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00069> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00069> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Foul> .
 <http://euroleague.net/event/e00069> <http://www.w3.org/2000/01/rdf-schema#label> "Foul (1)" .
 <http://euroleague.net/event/e00069> <http://euroleague.net/ontology#player> <http://euroleague.net/player/mcdowell-white__will> .
 <http://euroleague.net/event/e00069> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00070> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00070> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Foul> .
 <http://euroleague.net/event/e00070> <http://www.w3.org/2000/01/rdf-schema#label> "Foul Drawn (1)" .
 <http://euroleague.net/event/e00070> <http://euroleague.net/ontology#player> <http://euroleague.net/player/lessort__mathias> .
 <http://euroleague.net/event/e00070> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
@@ -502,59 +509,59 @@
 <http://euroleague.net/event/e00076> <http://www.w3.org/2000/01/rdf-schema#label> "Free Throw In (2/2 -  6 pt)" .
 <http://euroleague.net/event/e00076> <http://euroleague.net/ontology#player> <http://euroleague.net/player/lessort__mathias> .
 <http://euroleague.net/event/e00076> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00077> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00077> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00077> <http://www.w3.org/2000/01/rdf-schema#label> "Missed Three Pointer (0/1 -  0 pt)" .
 <http://euroleague.net/event/e00077> <http://euroleague.net/ontology#player> <http://euroleague.net/player/williams__trevion> .
 <http://euroleague.net/event/e00077> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00078> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00078> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Rebound> .
 <http://euroleague.net/event/e00078> <http://www.w3.org/2000/01/rdf-schema#label> "Def Rebound (3)" .
 <http://euroleague.net/event/e00078> <http://euroleague.net/ontology#player> <http://euroleague.net/player/mitoglou__konstantinos> .
 <http://euroleague.net/event/e00078> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00079> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00079> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00079> <http://www.w3.org/2000/01/rdf-schema#label> "Two Pointer (3/3 -  8 pt)" .
 <http://euroleague.net/event/e00079> <http://euroleague.net/ontology#player> <http://euroleague.net/player/lessort__mathias> .
 <http://euroleague.net/event/e00079> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00080> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00080> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00080> <http://www.w3.org/2000/01/rdf-schema#label> "Missed Two Pointer (1/3 -  2 pt)" .
 <http://euroleague.net/event/e00080> <http://euroleague.net/ontology#player> <http://euroleague.net/player/spagnolo__matteo> .
 <http://euroleague.net/event/e00080> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00081> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00081> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Rebound> .
 <http://euroleague.net/event/e00081> <http://www.w3.org/2000/01/rdf-schema#label> "Off Rebound (1)" .
 <http://euroleague.net/event/e00081> <http://euroleague.net/ontology#player> <http://euroleague.net/player/wetzell__yanni> .
 <http://euroleague.net/event/e00081> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00082> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00082> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00082> <http://www.w3.org/2000/01/rdf-schema#label> "Missed Two Pointer (0/1 -  0 pt)" .
 <http://euroleague.net/event/e00082> <http://euroleague.net/ontology#player> <http://euroleague.net/player/wetzell__yanni> .
 <http://euroleague.net/event/e00082> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00083> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00083> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Rebound> .
 <http://euroleague.net/event/e00083> <http://www.w3.org/2000/01/rdf-schema#label> "Def Rebound (2)" .
 <http://euroleague.net/event/e00083> <http://euroleague.net/ontology#player> <http://euroleague.net/player/lessort__mathias> .
 <http://euroleague.net/event/e00083> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00084> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00084> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00084> <http://www.w3.org/2000/01/rdf-schema#label> "Missed Three Pointer (0/1 -  4 pt)" .
 <http://euroleague.net/event/e00084> <http://euroleague.net/ontology#player> <http://euroleague.net/player/nunn__kendrick> .
 <http://euroleague.net/event/e00084> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00085> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00085> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Rebound> .
 <http://euroleague.net/event/e00085> <http://www.w3.org/2000/01/rdf-schema#label> "Def Rebound (1)" .
 <http://euroleague.net/event/e00085> <http://euroleague.net/ontology#player> <http://euroleague.net/player/spagnolo__matteo> .
 <http://euroleague.net/event/e00085> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00086> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00086> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00086> <http://www.w3.org/2000/01/rdf-schema#label> "Two Pointer (2/4 -  4 pt)" .
 <http://euroleague.net/event/e00086> <http://euroleague.net/ontology#player> <http://euroleague.net/player/spagnolo__matteo> .
 <http://euroleague.net/event/e00086> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00087> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00087> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00087> <http://www.w3.org/2000/01/rdf-schema#label> "Missed Two Pointer (0/1 -  0 pt)" .
 <http://euroleague.net/event/e00087> <http://euroleague.net/ontology#player> <http://euroleague.net/player/sloukas__kostas> .
 <http://euroleague.net/event/e00087> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00088> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00088> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Rebound> .
 <http://euroleague.net/event/e00088> <http://www.w3.org/2000/01/rdf-schema#label> "Def Rebound (1)" .
 <http://euroleague.net/event/e00088> <http://euroleague.net/ontology#player> <http://euroleague.net/player/williams__trevion> .
 <http://euroleague.net/event/e00088> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00089> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00089> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Foul> .
 <http://euroleague.net/event/e00089> <http://www.w3.org/2000/01/rdf-schema#label> "Foul (2)" .
 <http://euroleague.net/event/e00089> <http://euroleague.net/ontology#player> <http://euroleague.net/player/mitoglou__konstantinos> .
 <http://euroleague.net/event/e00089> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .
-<http://euroleague.net/event/e00090> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00090> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Foul> .
 <http://euroleague.net/event/e00090> <http://www.w3.org/2000/01/rdf-schema#label> "Foul Drawn (1)" .
 <http://euroleague.net/event/e00090> <http://euroleague.net/ontology#player> <http://euroleague.net/player/wetzell__yanni> .
 <http://euroleague.net/event/e00090> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
@@ -586,7 +593,7 @@
 <http://euroleague.net/event/e00097> <http://www.w3.org/2000/01/rdf-schema#label> "Free Throw In (2/2 -  2 pt)" .
 <http://euroleague.net/event/e00097> <http://euroleague.net/ontology#player> <http://euroleague.net/player/wetzell__yanni> .
 <http://euroleague.net/event/e00097> <http://euroleague.net/ontology#team> <http://euroleague.net/team/ber> .
-<http://euroleague.net/event/e00098> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Event> .
+<http://euroleague.net/event/e00098> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
 <http://euroleague.net/event/e00098> <http://www.w3.org/2000/01/rdf-schema#label> "Three Pointer (1/1 -  3 pt)" .
 <http://euroleague.net/event/e00098> <http://euroleague.net/ontology#player> <http://euroleague.net/player/grigonis__marius> .
 <http://euroleague.net/event/e00098> <http://euroleague.net/ontology#team> <http://euroleague.net/team/pan> .

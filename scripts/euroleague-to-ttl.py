@@ -61,17 +61,26 @@ def convert_to_ttl(df, output_path: Path, season: int, game_code: int):
 
     lines = []
 
-    # Ontology Classes
+    # Ontology Classes - All event types MUST be declared as owl:Class
+    # for proper schema extraction by HyperMindAgent
     lines.append(f'<{EURO}Game> <{RDF}type> <{OWL}Class> .')
     lines.append(f'<{EURO}Team> <{RDF}type> <{OWL}Class> .')
     lines.append(f'<{EURO}Player> <{RDF}type> <{OWL}Class> .')
     lines.append(f'<{EURO}Event> <{RDF}type> <{OWL}Class> .')
+    # Event subclasses - MUST declare as owl:Class AND rdfs:subClassOf
+    lines.append(f'<{EURO}Shot> <{RDF}type> <{OWL}Class> .')
     lines.append(f'<{EURO}Shot> <{RDFS}subClassOf> <{EURO}Event> .')
+    lines.append(f'<{EURO}Assist> <{RDF}type> <{OWL}Class> .')
     lines.append(f'<{EURO}Assist> <{RDFS}subClassOf> <{EURO}Event> .')
+    lines.append(f'<{EURO}Rebound> <{RDF}type> <{OWL}Class> .')
     lines.append(f'<{EURO}Rebound> <{RDFS}subClassOf> <{EURO}Event> .')
+    lines.append(f'<{EURO}Turnover> <{RDF}type> <{OWL}Class> .')
     lines.append(f'<{EURO}Turnover> <{RDFS}subClassOf> <{EURO}Event> .')
+    lines.append(f'<{EURO}Foul> <{RDF}type> <{OWL}Class> .')
     lines.append(f'<{EURO}Foul> <{RDFS}subClassOf> <{EURO}Event> .')
+    lines.append(f'<{EURO}Block> <{RDF}type> <{OWL}Class> .')
     lines.append(f'<{EURO}Block> <{RDFS}subClassOf> <{EURO}Event> .')
+    lines.append(f'<{EURO}Steal> <{RDF}type> <{OWL}Class> .')
     lines.append(f'<{EURO}Steal> <{RDFS}subClassOf> <{EURO}Event> .')
 
     # OWL Properties
@@ -109,7 +118,8 @@ def convert_to_ttl(df, output_path: Path, season: int, game_code: int):
 
         # Create event
         event_id = f"e{idx:05d}"
-        event_type = map_play_type(play_type)
+        # Pass both play_type and description for better type detection
+        event_type = map_play_type(play_type, description)
 
         events.append({
             'id': event_id,
@@ -166,20 +176,30 @@ def convert_to_ttl(df, output_path: Path, season: int, game_code: int):
     print(f"  const ttl = fs.readFileSync('{output_path}', 'utf-8')")
     print(f"  db.loadTtl(ttl, null)")
 
-def map_play_type(play_type: str) -> str:
-    """Map play type to ontology class."""
+def map_play_type(play_type: str, description: str = '') -> str:
+    """Map play type to ontology class.
+
+    Checks both PLAYTYPE and PLAYINFO (description) for event type keywords.
+    This ensures events like "Steal (1)" in description get properly typed.
+    """
     mapping = {
         '2pt': 'Shot',
         '3pt': 'Shot',
         'ft': 'Shot',
         'fta': 'Shot',
         'ftm': 'Shot',
+        'two pointer': 'Shot',
+        'three pointer': 'Shot',
+        'free throw': 'Shot',
         'as': 'Assist',
         'ast': 'Assist',
         'assist': 'Assist',
         'reb': 'Rebound',
         'dreb': 'Rebound',
         'oreb': 'Rebound',
+        'rebound': 'Rebound',
+        'def rebound': 'Rebound',
+        'off rebound': 'Rebound',
         'to': 'Turnover',
         'turnover': 'Turnover',
         'pf': 'Foul',
@@ -190,9 +210,17 @@ def map_play_type(play_type: str) -> str:
         'steal': 'Steal',
     }
 
+    # First check play_type
     for key, value in mapping.items():
         if key in play_type.lower():
             return value
+
+    # Then check description as fallback
+    desc_lower = description.lower()
+    for key, value in mapping.items():
+        if key in desc_lower:
+            return value
+
     return 'Event'
 
 def main():

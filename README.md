@@ -50,7 +50,7 @@ npm start
 
 All examples include sample data. No external databases needed.
 
-See `examples/euroleague-output.txt` for actual run output.
+See [EUROLEAGUE_ANALYTICS.md](EUROLEAGUE_ANALYTICS.md) for detailed output with 100% test pass rate.
 
 ---
 
@@ -119,6 +119,7 @@ console.log(result.thinkingGraph.derivationChain)
 
 | Example | What It Shows | Run Command |
 |---------|---------------|-------------|
+| `euroleague` | **Basketball KG with OWL reasoning + RDF2Vec** | `npm run euroleague` |
 | `fraud-detection` | Circular payment detection | `npm run fraud` |
 | `federation` | Query KGDB + external DBs | `npm run federation` |
 | `graphframes` | PageRank, connected components | `npm run graphframes` |
@@ -126,6 +127,12 @@ console.log(result.thinkingGraph.derivationChain)
 | `pregel` | Bulk parallel graph processing | `npm run pregel` |
 | `embeddings` | Vector similarity search | `npm run embeddings` |
 | `deductive` | ThinkingReasoner with proofs | `npm run deductive` |
+
+**Featured Example**: The [Euroleague Basketball](EUROLEAGUE_ANALYTICS.md) example demonstrates:
+- RDF2Vec embeddings (138 entities, 128D)
+- ThinkingReasoner with OWL rules (111 observations → 222 derived facts)
+- Prompt optimization with schema extraction
+- 100% test pass rate with assertions
 
 ---
 
@@ -238,6 +245,7 @@ Results on LUBM dataset (3,272 triples):
 ```
 hypermind-examples/
 ├── examples/
+│   ├── euroleague-basketball-agent.js    # Basketball KG + RDF2Vec + ThinkingReasoner
 │   ├── hyperfederate-hypermind-demo.js   # Federation demo
 │   ├── fraud-memory-hypergraph.js        # Fraud detection
 │   ├── hypermind-deductive-demo.ts       # Deductive reasoning
@@ -250,9 +258,11 @@ hypermind-examples/
 │   ├── framework-comparison-benchmark.js
 │   └── benchmark-frameworks.py
 ├── data/
+│   ├── euroleague-game.ttl               # Euroleague basketball play-by-play
 │   ├── fraud-graph.ttl                   # Sample fraud data
 │   ├── insurance-claims.ttl              # Insurance claims
 │   └── lubm-sample.ttl                   # LUBM benchmark data
+├── EUROLEAGUE_ANALYTICS.md               # Detailed Euroleague output
 ├── package.json
 └── README.md
 ```
