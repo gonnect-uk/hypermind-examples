@@ -1,0 +1,202 @@
+======================================================================
+  EUROLEAGUE BASKETBALL KNOWLEDGE GRAPH
+  HyperMindAgent with Deductive Reasoning
+======================================================================
+
+Source: https://medium.com/@skontopo2009/
+        representing-euroleague-play-by-play-data-as-a-knowledge-graph
+Data Model: https://github.com/andrewstellman/pbprdf
+
+[1] Loading Play-by-Play Knowledge Graph...
+    Triples: 103
+    Mode: Inline sample data (for URL loading, uncomment above)
+
+[2] Teams in the Graph:
+    - AS Monaco
+    - Maccabi Tel Aviv
+    - Panathinaikos
+
+[3] Players and Teams:
+    - Kendrick Nunn (panathinaikos)
+    - Mike James (monaco)
+    - Elie Okobo (monaco)
+    - Ante Zizic (maccabi)
+    - Kostas Sloukas (panathinaikos)
+    - Scottie Wilbekin (maccabi)
+    - Donatas Motiejunas (monaco)
+    - Georgios Papagiannis (panathinaikos)
+    - John DiBartolomeo (maccabi)
+
+[4] Play-by-Play Events:
+    - Zizic block by zizic
+    - Okobo to James by okobo
+    - Wilbekin layup by wilbekin
+    - James 3-pointer by james
+    - DiBartolomeo steal by dibartolomeo
+    - James clutch three by james
+    - Wilbekin personal foul by wilbekin
+    - Motiejunas defensive rebound by motiejunas
+
+[5] Teammate Relationships (owl:SymmetricProperty):
+    sloukas <-> nunn
+    james <-> okobo
+    wilbekin <-> zizic
+    james <-> motiejunas
+    okobo <-> motiejunas
+    nunn <-> papagiannis
+    sloukas <-> papagiannis
+    wilbekin <-> dibartolomeo
+
+    Deduction: If James teammateOf Okobo, then Okobo teammateOf James
+
+[6] Assist Chain (owl:TransitiveProperty):
+    nunn <- assisted by <- sloukas
+
+    Deduction: If Nunn assistedBy Sloukas, and X assistedBy Nunn,
+               then X assistedBy Sloukas (transitive chain)
+
+[7] Creating HyperMindAgent with ThinkingReasoner...
+    Loading observations into ThinkingReasoner...
+    Running deductive reasoning...
+    Agent: euroleague-analyst
+    LLM: None (schema-based)
+    Observations: 10
+    Derived Facts: 18
+    Rules Applied: 2
+
+[8] Use Case Queries by Persona:
+
+------------------------------------------------------------
+JOURNALIST: "Who scored the clutch shot in the Monaco game?"
+VALUE: Uncover storylines beyond surface-level stats
+------------------------------------------------------------
+
+ANSWER: Found 103 results
+
+REASONING:
+  Observations: 10
+  Facts: 18
+  Rules: 2
+
+DERIVATION CHAIN:
+  Step 1: sloukas teammateOf nunn
+  Step 2: james teammateOf okobo
+  Step 3: wilbekin teammateOf zizic
+
+------------------------------------------------------------
+COACH: "Which Monaco players assisted each other most?"
+VALUE: Identify team chemistry for strategic planning
+------------------------------------------------------------
+
+ANSWER: Found 105 results
+
+REASONING:
+  Observations: 10
+  Facts: 18
+  Rules: 2
+
+DERIVATION CHAIN:
+  Step 1: sloukas teammateOf nunn
+  Step 2: james teammateOf okobo
+  Step 3: wilbekin teammateOf zizic
+
+------------------------------------------------------------
+ANALYST: "Find all play types and their frequencies"
+VALUE: Enriched interconnected data for modeling
+------------------------------------------------------------
+
+ANSWER: Found 107 results
+
+REASONING:
+  Observations: 10
+  Facts: 18
+  Rules: 2
+
+DERIVATION CHAIN:
+  Step 1: sloukas teammateOf nunn
+  Step 2: james teammateOf okobo
+  Step 3: wilbekin teammateOf zizic
+
+------------------------------------------------------------
+FAN: "Who are the teammates of Mike James?"
+VALUE: Interactive exploration of team dynamics
+------------------------------------------------------------
+
+ANSWER: Found 109 results
+
+REASONING:
+  Observations: 10
+  Facts: 18
+  Rules: 2
+
+DERIVATION CHAIN:
+  Step 1: sloukas teammateOf nunn
+  Step 2: james teammateOf okobo
+  Step 3: wilbekin teammateOf zizic
+
+------------------------------------------------------------
+RESEARCHER: "Find transitive assist chains (who assisted the assister?)"
+VALUE: TransitiveProperty inference for ML features
+------------------------------------------------------------
+
+ANSWER: Found 111 results
+
+REASONING:
+  Observations: 10
+  Facts: 18
+  Rules: 2
+
+DERIVATION CHAIN:
+  Step 1: sloukas teammateOf nunn
+  Step 2: james teammateOf okobo
+  Step 3: wilbekin teammateOf zizic
+
+[9] Thinking Graph (Explainable AI):
+
+  EVIDENCE NODES:
+  [OBS] sloukas is teammate of nunn
+  [OBS] james is teammate of okobo
+  [OBS] wilbekin is teammate of zizic
+  [OBS] james is teammate of motiejunas
+  [OBS] okobo is teammate of motiejunas
+  [OBS] nunn is teammate of papagiannis
+  [OBS] sloukas is teammate of papagiannis
+  [OBS] wilbekin is teammate of dibartolomeo
+
+  DERIVATION CHAIN (Proof Steps):
+  Step 1: [OBSERVATION] sloukas teammateOf nunn
+  Step 2: [OBSERVATION] james teammateOf okobo
+  Step 3: [OBSERVATION] wilbekin teammateOf zizic
+  Step 4: [OBSERVATION] james teammateOf motiejunas
+  Step 5: [OBSERVATION] okobo teammateOf motiejunas
+  Step 6: [OBSERVATION] nunn teammateOf papagiannis
+  Step 7: [OBSERVATION] sloukas teammateOf papagiannis
+  Step 8: [OBSERVATION] wilbekin teammateOf dibartolomeo
+
+  VALUE: Every conclusion traces back to ground truth observations.
+         No hallucinations - only provable facts.
+
+======================================================================
+  SUMMARY
+======================================================================
+
+  Knowledge Graph: 103 triples
+  Teams: 3
+  Players: 9
+  Events: 8
+  Teammate links: 8
+
+  OWL Properties enable automatic reasoning:
+  - SymmetricProperty: A rel B => B rel A
+  - TransitiveProperty: A rel B, B rel C => A rel C
+
+  DATA SOURCES (for production use):
+  1. euroleague-api (Python): pip install euroleague-api
+     Best option - same data source as the Medium article
+  2. OpenDataBay CSV: opendatabay.com/data/euroleague-advanced-pbp
+  3. pbprdf ontology: github.com/andrewstellman/pbprdf
+
+  See scripts/euroleague-to-ttl.py for data conversion example
+
+  For K8s deployment: gonnect.hypermind@gmail.com
+

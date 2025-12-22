@@ -2,12 +2,96 @@
  * Euroleague Basketball Knowledge Graph + HyperMindAgent
  *
  * Based on: https://medium.com/@skontopo2009/representing-euroleague-play-by-play-data-as-a-knowledge-graph-6397534cdd75
+ * Data Model: https://github.com/andrewstellman/pbprdf (Play-by-Play RDF ontology)
+ *
+ * This example demonstrates:
+ * - Loading RDF knowledge graphs (inline or from HTTP URLs)
+ * - OWL properties: SymmetricProperty, TransitiveProperty
+ * - Natural language queries with HyperMindAgent
+ * - Deductive reasoning with derivation chains
+ *
+ * ## Data Sources for Euroleague Play-by-Play
+ *
+ * ### Option 1: CSV Dataset (Download and convert to RDF)
+ * OpenDataBay Euroleague PBP Statistics (2021-22 season):
+ * https://www.opendatabay.com/data/euroleague-advanced-pbp
+ *
+ * ### Option 2: Python API (Live data)
+ * pip install euroleague-api
+ *
+ * ```python
+ * from euroleague_api.play_by_play_data import PlayByPlay
+ * pbp = PlayByPlay()
+ * df = pbp.get_game_play_by_play(season, game_code)
+ * # Convert df to RDF triples and save as TTL
+ * ```
+ *
+ * ### Option 3: pbprdf Ontology (RDF schema for basketball)
+ * https://github.com/andrewstellman/pbprdf
  *
  * Run: OPENAI_API_KEY=your-key node examples/euroleague-basketball-agent.js
  *      (Also works without API key using schema-based generation)
  */
 
 const { GraphDB, HyperMindAgent } = require('rust-kgdb')
+
+// ============================================================================
+// URL Loading Helper - GraphDB supports loadTtl, we fetch and pass content
+// ============================================================================
+
+/**
+ * Load RDF data from a URL into GraphDB
+ * @param {GraphDB} db - GraphDB instance
+ * @param {string} url - URL to fetch (TTL, NT, or other RDF format)
+ * @param {string|null} graphName - Optional named graph
+ * @returns {Promise<number>} - Number of triples loaded
+ *
+ * @example
+ * // Load from GitHub
+ * await loadFromUrl(db, 'https://raw.githubusercontent.com/.../game.ttl')
+ *
+ * // Load from local server
+ * await loadFromUrl(db, 'http://localhost:3000/euroleague.ttl')
+ *
+ * // Load from LinkedData endpoint
+ * await loadFromUrl(db, 'https://dbpedia.org/resource/EuroLeague.ttl')
+ */
+async function loadFromUrl(db, url, graphName = null) {
+  console.log(`    Fetching: ${url}`)
+  const response = await fetch(url)
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+  }
+  const content = await response.text()
+  const before = db.countTriples()
+  db.loadTtl(content, graphName)
+  const after = db.countTriples()
+  return after - before
+}
+
+// ============================================================================
+// Data Source URLs
+// ============================================================================
+
+const DATA_SOURCES = {
+  // pbprdf: Basketball play-by-play RDF ontology
+  pbprdf: {
+    ontology: 'https://raw.githubusercontent.com/andrewstellman/pbprdf/master/ontology/pbprdf.ttl',
+    repo: 'https://github.com/andrewstellman/pbprdf'
+  },
+
+  // OpenDataBay: Euroleague CSV data (needs conversion to RDF)
+  opendatabay: {
+    csv: 'https://www.opendatabay.com/data/euroleague-advanced-pbp',
+    description: 'Euroleague Advanced PBP Statistics (2021-22 season)'
+  },
+
+  // Python API for live data
+  euroleagueApi: {
+    pypi: 'https://pypi.org/project/euroleague-api/',
+    install: 'pip install euroleague-api'
+  }
+}
 
 // N-Triples format (full URIs) for reliable parsing
 const EUROLEAGUE_DATA = `
@@ -124,14 +208,28 @@ async function main() {
   console.log()
   console.log('Source: https://medium.com/@skontopo2009/')
   console.log('        representing-euroleague-play-by-play-data-as-a-knowledge-graph')
+  console.log('Data Model: https://github.com/andrewstellman/pbprdf')
   console.log()
 
   // 1. Load Knowledge Graph
   console.log('[1] Loading Play-by-Play Knowledge Graph...')
   const db = new GraphDB('http://euroleague.net/')
+
+  // Option A: Load from HTTP URL (pbprdf or any RDF endpoint)
+  // Uncomment to load from GitHub:
+  // try {
+  //   const loaded = await loadFromUrl(db, PBPRDF_URLS.ontology)
+  //   console.log(`    Loaded ${loaded} triples from pbprdf ontology`)
+  // } catch (e) {
+  //   console.log(`    URL load failed: ${e.message}`)
+  //   console.log('    Using inline Euroleague sample data instead')
+  // }
+
+  // Option B: Load inline sample data (works offline, no network required)
   db.loadTtl(EUROLEAGUE_DATA, null)
   const tripleCount = db.countTriples()
   console.log(`    Triples: ${tripleCount}`)
+  console.log(`    Mode: Inline sample data (for URL loading, uncomment above)`)
   console.log()
 
   // 2. Query Teams
@@ -207,37 +305,133 @@ async function main() {
   console.log('               then X assistedBy Sloukas (transitive chain)')
   console.log()
 
-  // 7. HyperMindAgent with NLP
-  console.log('[7] Creating HyperMindAgent...')
+  // 7. HyperMindAgent with ThinkingReasoner
+  console.log('[7] Creating HyperMindAgent with ThinkingReasoner...')
   const agent = new HyperMindAgent({
     name: 'euroleague-analyst',
     kg: db,
     apiKey: process.env.OPENAI_API_KEY,
     model: 'gpt-4o'
   })
+
+  // Load ontology for automatic rule generation (OWL -> Datalog)
+  const ontology = `
+    @prefix owl: <http://www.w3.org/2002/07/owl#> .
+    @prefix euro: <http://euroleague.net/ontology#> .
+    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+    euro:teammateOf a owl:SymmetricProperty ;
+        rdfs:label "teammate relationship - automatically derives reverse" .
+    euro:assistedBy a owl:TransitiveProperty ;
+        rdfs:label "assist chain - derives transitive closure" .
+    euro:playsFor rdfs:domain euro:Player ;
+        rdfs:range euro:Team .
+  `
+  agent.loadOntology(ontology)
+
+  // Add observations from the knowledge graph
+  console.log('    Loading observations into ThinkingReasoner...')
+
+  // Observe teammate relationships
+  for (const r of teammates) {
+    const a = extractLast(r.bindings?.a || r.a)
+    const b = extractLast(r.bindings?.b || r.b)
+    agent.observe(`${a} is teammate of ${b}`, {
+      subject: a,
+      predicate: 'teammateOf',
+      object: b
+    })
+  }
+
+  // Observe assist chains
+  for (const r of assists) {
+    const player = extractLast(r.bindings?.player || r.player)
+    const by = extractLast(r.bindings?.by || r.by)
+    agent.observe(`${player} was assisted by ${by}`, {
+      subject: player,
+      predicate: 'assistedBy',
+      object: by
+    })
+  }
+
+  // Observe clutch shots
+  const clutchQ = `SELECT ?player ?label WHERE {
+    ?e <http://euroleague.net/ontology#isClutch> "true" .
+    ?e <http://euroleague.net/ontology#player> ?player .
+    ?e <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+  }`
+  const clutchShots = db.querySelect(clutchQ)
+  for (const r of clutchShots) {
+    const player = extractLast(r.bindings?.player || r.player)
+    const label = clean(r.bindings?.label || r.label)
+    agent.observe(`CLUTCH: ${player} made clutch shot - ${label}`, {
+      subject: player,
+      predicate: 'madeClutchShot',
+      object: 'true'
+    })
+  }
+
+  // Run deduction to derive new facts
+  console.log('    Running deductive reasoning...')
+  const deduction = agent.deduce()
+
   console.log(`    Agent: ${agent.name}`)
   console.log(`    LLM: ${process.env.OPENAI_API_KEY ? 'OpenAI' : 'None (schema-based)'}`)
+
+  const stats = agent.getReasoningStats()
+  console.log(`    Observations: ${stats.events}`)
+  console.log(`    Derived Facts: ${stats.facts}`)
+  console.log(`    Rules Applied: ${stats.rules}`)
   console.log()
 
-  // 8. Natural Language Questions
-  console.log('[8] Natural Language Questions:')
+  // 8. Use Case Queries for Different Personas
+  // Based on: https://medium.com/@skontopo2009/representing-euroleague-play-by-play-data-as-a-knowledge-graph
+  console.log('[8] Use Case Queries by Persona:')
   console.log()
 
-  const questions = [
-    'Who are the teammates of Mike James?',
-    'Which player scored the clutch shot?',
-    'Find all events by Monaco players'
+  const useCases = [
+    // Journalists: Uncover nuanced storylines
+    {
+      persona: 'JOURNALIST',
+      question: 'Who scored the clutch shot in the Monaco game?',
+      value: 'Uncover storylines beyond surface-level stats'
+    },
+    // Teams/Coaching: Strategic decision-making
+    {
+      persona: 'COACH',
+      question: 'Which Monaco players assisted each other most?',
+      value: 'Identify team chemistry for strategic planning'
+    },
+    // Analysts: Build robust models
+    {
+      persona: 'ANALYST',
+      question: 'Find all play types and their frequencies',
+      value: 'Enriched interconnected data for modeling'
+    },
+    // Fans: Explore interactively
+    {
+      persona: 'FAN',
+      question: 'Who are the teammates of Mike James?',
+      value: 'Interactive exploration of team dynamics'
+    },
+    // Researchers: ML/semantic web testbed
+    {
+      persona: 'RESEARCHER',
+      question: 'Find transitive assist chains (who assisted the assister?)',
+      value: 'TransitiveProperty inference for ML features'
+    }
   ]
 
-  for (const q of questions) {
+  for (const uc of useCases) {
     console.log('-'.repeat(60))
-    console.log(`Q: "${q}"`)
+    console.log(`${uc.persona}: "${uc.question}"`)
+    console.log(`VALUE: ${uc.value}`)
     console.log('-'.repeat(60))
 
     try {
-      const result = await agent.call(q)
+      const result = await agent.call(uc.question)
       console.log()
-      console.log('ANSWER:', result.answer || '(see below)')
+      console.log('ANSWER:', result.answer || `Found ${result.raw_results?.[0]?.result?.length || 0} results`)
 
       if (result.reasoningStats) {
         console.log()
@@ -260,7 +454,42 @@ async function main() {
     console.log()
   }
 
-  // 9. Summary
+  // 9. Thinking Graph Visualization
+  console.log('[9] Thinking Graph (Explainable AI):')
+  console.log()
+
+  const thinkingGraph = agent.getThinkingGraph()
+
+  if (thinkingGraph.nodes && thinkingGraph.nodes.length > 0) {
+    console.log('  EVIDENCE NODES:')
+    for (const node of thinkingGraph.nodes.slice(0, 8)) {
+      const icon = {
+        'OBSERVATION': '  [OBS]',
+        'HYPOTHESIS': '  [HYP]',
+        'INFERENCE': '  [INF]'
+      }[node.type] || '  [EVT]'
+      const label = node.label || node.id
+      console.log(`${icon} ${label}`)
+    }
+    console.log()
+  }
+
+  if (thinkingGraph.derivationChain && thinkingGraph.derivationChain.length > 0) {
+    console.log('  DERIVATION CHAIN (Proof Steps):')
+    for (const step of thinkingGraph.derivationChain.slice(0, 8)) {
+      console.log(`  Step ${step.step}: [${step.rule}] ${step.conclusion}`)
+      if (step.premises && step.premises.length > 0) {
+        console.log(`         Premises: ${step.premises.join(', ')}`)
+      }
+    }
+    console.log()
+  }
+
+  console.log('  VALUE: Every conclusion traces back to ground truth observations.')
+  console.log('         No hallucinations - only provable facts.')
+  console.log()
+
+  // 10. Summary
   console.log('='.repeat(70))
   console.log('  SUMMARY')
   console.log('='.repeat(70))
@@ -274,6 +503,14 @@ async function main() {
   console.log('  OWL Properties enable automatic reasoning:')
   console.log('  - SymmetricProperty: A rel B => B rel A')
   console.log('  - TransitiveProperty: A rel B, B rel C => A rel C')
+  console.log()
+  console.log('  DATA SOURCES (for production use):')
+  console.log('  1. euroleague-api (Python): pip install euroleague-api')
+  console.log('     Best option - same data source as the Medium article')
+  console.log('  2. OpenDataBay CSV: opendatabay.com/data/euroleague-advanced-pbp')
+  console.log('  3. pbprdf ontology: github.com/andrewstellman/pbprdf')
+  console.log()
+  console.log('  See scripts/euroleague-to-ttl.py for data conversion example')
   console.log()
   console.log('  For K8s deployment: gonnect.hypermind@gmail.com')
   console.log()

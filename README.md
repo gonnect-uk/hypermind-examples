@@ -28,11 +28,15 @@ HyperMind = LLM Planning + Knowledge Graph + Deductive Reasoning
 ## Run Examples
 
 ```bash
+# Euroleague basketball play-by-play with OWL reasoning
+npm run euroleague
+
 # Fraud detection with reasoning
 npm run fraud
 
-# Cross-database federation (KGDB + mock Snowflake)
+# Cross-database federation (KGDB + Snowflake + BigQuery)
 npm run federation
+npm run federation:3way
 
 # Graph analytics (PageRank, shortest paths)
 npm run graphframes
@@ -45,6 +49,8 @@ npm start
 ```
 
 All examples include sample data. No external databases needed.
+
+See `examples/euroleague-output.txt` for actual run output.
 
 ---
 
