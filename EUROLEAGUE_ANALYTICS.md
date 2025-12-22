@@ -142,60 +142,52 @@ Step 8: [OBSERVATION] hernangomez__juancho teammateOf osman__cedi
 
 ## HyperMindAgent.call() Response Structure
 
-**ACTUAL OUTPUT** - Complete response from `agent.call("Who made the defensive steals?")`:
+**Note**: HyperMindAgent natural language queries depend on LLM interpretation. For deterministic results, use the direct SPARQL queries shown in "Use Case Queries" section below.
 
-```yaml
-sparql:
-  SELECT ?entity WHERE {
-    ?event a <http://euroleague.net/ontology#Steal> .
-    ?event <http://euroleague.net/ontology#player> ?entity
-  } LIMIT 100
+**ACTUAL OUTPUT** - `agent.call("Who are the teammates of Lessort?")`:
 
-results (actual data):
-  -> event=e00011, entity=lessort__mathias
-  -> entity=mitoglou__konstantinos, event=e00028
-  -> entity=mattisseck__jonas, event=e00030
+```javascript
+{
+  answer: "Cedi Osman, Jerian Grant, Lorenzo Brown, Kendrick Nunn, Kostas Sloukas and 106 more",
 
-answer:
-  "Found 3 results"
+  sparql: "SELECT ?s ?o WHERE { ?s <http://euroleague.net/ontology#teammateOf> ?o } LIMIT 100",
 
-thinking:
-  predicatesIdentified: auto-detected
-  schemaMatches: 11 classes, 7 predicates
+  raw_results: [
+    { "s": "http://euroleague.net/player/none", "o": "http://euroleague.net/player/osman__cedi" },
+    { "s": "http://euroleague.net/player/grant__jerian", "o": "http://euroleague.net/player/osman__cedi" },
+    { "o": "http://euroleague.net/player/osman__cedi", "s": "http://euroleague.net/player/brown__lorenzo" },
+    { "o": "http://euroleague.net/player/osman__cedi", "s": "http://euroleague.net/player/nunn__kendrick" },
+    { "s": "http://euroleague.net/player/sloukas__kostas", "o": "http://euroleague.net/player/osman__cedi" }
+    // ... 106 more results
+  ],
 
-reasoning:
-  observations: 111
-  derivedFacts: 222
-  rulesApplied: 2
-
-proof:
-  derivationChain:
-    - step: 1, rule: "OBSERVATION", conclusion: "none teammateOf osman__cedi"
-    - step: 2, rule: "OBSERVATION", conclusion: "grant__jerian teammateOf osman__cedi"
-    - step: 3, rule: "OBSERVATION", conclusion: "brown__lorenzo teammateOf osman__cedi"
-    - step: 4, rule: "OBSERVATION", conclusion: "nunn__kendrick teammateOf osman__cedi"
-  proofHash: "sha256:19b4806a903"
-  verified: true
+  resultCount: 111
+}
 ```
 
-**Second Query** - `agent.call("Who are the teammates of Lessort?")`:
+**TABLE Format** - `agent.call("Who are the teammates of Lessort?")` with `answerFormat: 'table'`:
 
-```yaml
-sparql:
-  SELECT ?s ?o WHERE {
-    ?s <http://euroleague.net/ontology#teammateOf> ?o
-  } LIMIT 100
-
-results (actual data):
-  -> s=none, o=osman__cedi
-  -> s=grant__jerian, o=osman__cedi
-  -> o=osman__cedi, s=brown__lorenzo
-  -> o=osman__cedi, s=nunn__kendrick
-  -> o=osman__cedi, s=sloukas__kostas
-  ... and 106 more
-
-answer:
-  "Found 111 results"
+```
+┌────────────────────────────────────────┐
+│ Results (111 total)                     │
+├────────────────────────────────────────┤
+│  Cedi Osman                            │
+│  Jerian Grant                          │
+│  Lorenzo Brown                         │
+│  Kendrick Nunn                         │
+│  Kostas Sloukas                        │
+│  Marius Grigonis                       │
+│  Mathias Lessort                       │
+│  Juancho Hernangomez                   │
+│  Konstantinos Mitoglou                 │
+│  Justin Bean                           │
+│  Louis Olinde                          │
+│  Yanni Wetzell                         │
+│  Elias Rapieque                        │
+│  Matteo Spagnolo                       │
+│  Khalifa Koumadje                      │
+│  ... and 96 more                       │
+└────────────────────────────────────────┘
 ```
 
 ---

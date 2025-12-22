@@ -149,41 +149,54 @@ Step 8: [OBSERVATION] Dorchester adjacentTo SouthBoston
 
 ## HyperMindAgent.call() Response Structure
 
-**ACTUAL OUTPUT** - Complete response from `agent.call("What are the most expensive properties?")`:
+**Note**: HyperMindAgent natural language queries depend on LLM interpretation. For deterministic results, use the direct SPARQL queries shown in "Use Case Queries" section below.
 
-```yaml
-sparql:
-  SELECT ?s ?o WHERE {
-    ?s <http://boston.gov/property#locatedIn> ?o
-  } LIMIT 100
+**ACTUAL OUTPUT** - `agent.call("Which neighborhoods are adjacent to Back Bay?")`:
 
-results (actual data):
-  -> s=property_BB002, o=BackBay
-  -> o=BackBay, s=property_BB003
-  -> s=property_BH001, o=BeaconHill
-  -> o=BeaconHill, s=property_BH002
-  -> s=property_SE001, o=SouthEnd
-  ... and 13 more
+```javascript
+{
+  answer: "SouthEnd, Roxbury, JamaicaPlain, BackBay, BeaconHill and 4 more",
 
-answer:
-  "Found 18 results"
+  sparql: "SELECT ?s ?o WHERE { ?s <http://boston.gov/property#adjacentTo> ?o } LIMIT 100",
 
-thinking:
-  predicatesIdentified: auto-detected
-  schemaMatches: 3 classes, 14 predicates
+  raw_results: [
+    { "s": "http://boston.gov/property#SouthEnd", "o": "http://boston.gov/property#Roxbury" },
+    { "s": "http://boston.gov/property#JamaicaPlain", "o": "http://boston.gov/property#Roxbury" },
+    { "s": "http://boston.gov/property#BackBay", "o": "http://boston.gov/property#SouthEnd" },
+    { "s": "http://boston.gov/property#BackBay", "o": "http://boston.gov/property#BeaconHill" }
+  ],
 
-reasoning:
-  observations: 16
-  derivedFacts: 28
-  rulesApplied: 2
+  thinkingGraph: {
+    observations: 16,
+    derivedFacts: 28,
+    rulesApplied: 2
+  }
+}
+```
 
-proof:
-  derivationChain:
-    - step: 1, rule: "OBSERVATION", conclusion: "SouthEnd adjacentTo Roxbury"
-    - step: 2, rule: "OBSERVATION", conclusion: "JamaicaPlain adjacentTo Roxbury"
-    - step: 3, rule: "OBSERVATION", conclusion: "BackBay adjacentTo SouthEnd"
-  proofHash: "sha256:..."
-  verified: true
+**TABLE Format** - `agent.call("What properties are in Boston?")` with `answerFormat: 'table'`:
+
+```
+┌────────────────────────────────────────┐
+│ Results (18 total)                      │
+├────────────────────────────────────────┤
+│  Property_BB001                        │
+│  BackBay                               │
+│  Property_BB002                        │
+│  Property_BB003                        │
+│  Property_RX001                        │
+│  Roxbury                               │
+│  Property_RX002                        │
+│  Brighton                              │
+│  Property_BR001                        │
+│  SouthEnd                              │
+│  Property_SE001                        │
+│  Property_SE002                        │
+│  Property_BH001                        │
+│  BeaconHill                            │
+│  Property_BH002                        │
+│  ... and 3 more                        │
+└────────────────────────────────────────┘
 ```
 
 ---

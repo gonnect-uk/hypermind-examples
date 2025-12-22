@@ -21,9 +21,9 @@ npm run legal
 
 | Metric | Value |
 |--------|-------|
-| **Pass Rate** | 100.0% |
-| **Tests Passed** | 21 |
-| **Tests Failed** | 0 |
+| **Pass Rate** | 90.5% |
+| **Tests Passed** | 19 |
+| **Tests Failed** | 2 |
 
 ---
 
@@ -107,7 +107,7 @@ ORDER BY westlaw.citation_count DESC
 
 **ACTUAL OUTPUT** - Auto-captured during reasoning:
 
-### [OBSERVE] - Detected 10 facts from knowledge graph:
+### [OBSERVE] - Detected facts from knowledge graph:
 
 ```
 -> KennethClark workedWith MamieClark
@@ -116,35 +116,36 @@ ORDER BY westlaw.citation_count DESC
 -> ThurgoodMarshall workedWith RobertCarter
 -> RobertCarter workedWith JackGreenberg
 -> ThurgoodMarshall workedWith JackGreenberg
-... and 4 more observations
+-> ThurgoodMarshall mentored JackGreenberg
+-> JackGreenberg mentored ConstanceBakerMotley
+... and more observations
 ```
 
 ### [INFER] - Applied OWL Rules:
 
 | Rule | Description | Effect |
 |------|-------------|--------|
-| SymmetricProperty | `A workedWith B => B workedWith A` | 10 -> 17 facts |
+| SymmetricProperty | `A workedWith B => B workedWith A` | Doubles collaboration facts |
 | TransitiveProperty | `A mentored B, B mentored C => A mentored C` | Chain inference |
 
 ### [PROVE] - Derivation Chain (audit trail):
 
 ```
 Step 1: [OBSERVATION] KennethClark workedWith MamieClark
-Step 2: [OBSERVATION] SpotswoodRobinson workedWith OliverHill
-Step 3: [OBSERVATION] JamesNabrit workedWith GeorgeHayes
-Step 4: [OBSERVATION] ThurgoodMarshall workedWith RobertCarter
-Step 5: [OBSERVATION] RobertCarter workedWith JackGreenberg
-Step 6: [OBSERVATION] ThurgoodMarshall workedWith JackGreenberg
-Step 7: [OBSERVATION] ThurgoodMarshall workedWith ConstanceBakerMotley
-Step 8: [OBSERVATION] ThurgoodMarshall mentored JackGreenberg
-... and 9 more proof steps
+Step 2: [INFERENCE] MamieClark workedWith KennethClark (SymmetricProperty)
+Step 3: [OBSERVATION] ThurgoodMarshall workedWith RobertCarter
+Step 4: [INFERENCE] RobertCarter workedWith ThurgoodMarshall (SymmetricProperty)
+Step 5: [OBSERVATION] ThurgoodMarshall mentored JackGreenberg
+Step 6: [OBSERVATION] JackGreenberg mentored ConstanceBakerMotley
+Step 7: [INFERENCE] ThurgoodMarshall mentored ConstanceBakerMotley (TransitiveProperty)
+... and more proof steps
 ```
 
 ### REASONING COMPLETE:
 
-- 10 observations (ground truth from KG)
-- 17 derived facts (inferred via OWL rules)
-- 2 rules applied (SymmetricProperty, TransitiveProperty)
+- Ground truth observations from knowledge graph
+- Derived facts inferred via OWL rules
+- SymmetricProperty and TransitiveProperty applied
 - Every fact is traceable to source data (no hallucination)
 - Cryptographic proof hashes for audit trails
 
@@ -152,38 +153,33 @@ Step 8: [OBSERVATION] ThurgoodMarshall mentored JackGreenberg
 
 ## HyperMindAgent.call() Response Structure
 
-**ACTUAL OUTPUT** - Complete response from `agent.call("Who was the lead attorney?")`:
+**Note**: HyperMindAgent natural language queries depend on LLM interpretation. For deterministic results, use the direct SPARQL queries shown in "Use Case Queries" section below.
 
-```yaml
-sparql:
-  SELECT ?s ?o WHERE {
-    ?s <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?o
-  } LIMIT 100
+**ACTUAL OUTPUT** - Natural language query example:
 
-results (actual data):
-  -> s=Justice, o=Person
-  -> s=Attorney, o=Person
-  -> s=Plaintiff, o=Person
+```javascript
+// Query: "Who argued the Brown v. Board case?"
+{
+  // LLM interpreted "argued" as date rather than attorneys
+  sparql: "SELECT ?s ?o WHERE { ?s <http://law.gov/case#dateArgued> ?o } LIMIT 100",
+  answer: "BrownVBoard and 1952-12-09",
+  raw_results: [{ "s": "http://law.gov/case#BrownVBoard", "o": "1952-12-09" }]
+}
 
-answer:
-  "Found 3 results"
+// For accurate attorney results, use direct SPARQL (see Use Case Queries below):
+// SELECT ?attorney WHERE { <http://law.gov/case#BrownVBoard> <http://law.gov/case#arguedBy> ?attorney }
+```
 
-thinking:
-  predicatesIdentified: auto-detected
-  schemaMatches: 6 classes, 22 predicates
+**Best Practice**: For legal research requiring precision, use the deterministic SPARQL queries in the "Use Case Queries" section. The natural language interface is best for exploration.
 
-reasoning:
-  observations: 10
-  derivedFacts: 17
-  rulesApplied: 2
+**Direct SPARQL Query Result** (accurate):
 
-proof:
-  derivationChain:
-    - step: 1, rule: "OBSERVATION", conclusion: "KennethClark workedWith MamieClark"
-    - step: 2, rule: "OBSERVATION", conclusion: "SpotswoodRobinson workedWith OliverHill"
-    - step: 3, rule: "OBSERVATION", conclusion: "JamesNabrit workedWith GeorgeHayes"
-  proofHash: "sha256:..."
-  verified: true
+```javascript
+// Query: SELECT ?name WHERE { :BrownVBoard :arguedBy ?a . ?a rdfs:label ?name }
+{
+  answer: "Thurgood Marshall, Robert L. Carter, Jack Greenberg, Oliver Hill, Louis L. Redding and 4 more",
+  resultCount: 9
+}
 ```
 
 ---
@@ -206,16 +202,16 @@ Mentorships: 3 (mentored links)
 Entity Embeddings: 196
 Dimensions: 128
 Random Walks: 560
-Training Time: 0.40s
+Training Time: 0.47s
 Mode: Native Rust (zero JavaScript overhead)
 ```
 
 **Legal Entity Similarity (via Native Rust):**
 ```
 Similar to Thurgood Marshall:
-  - workedWith (score: 0.657)
-  - HarryBriggs (score: 0.638)
-  - JamesNabrit (score: 0.634)
+  - workedWith (score: 0.687)
+  - mentored (score: 0.655)
+  - JamesNabrit (score: 0.641)
 ```
 
 ## ThinkingReasoner Summary
@@ -227,6 +223,18 @@ OWL Rules: 2
   - SymmetricProperty: A workedWith B => B workedWith A
   - TransitiveProperty: A mentored B, B mentored C => A mentored C
 ```
+
+**OWL Reasoning Example:**
+
+When `ThurgoodMarshall workedWith RobertCarter` is observed, the reasoner automatically infers:
+- `RobertCarter workedWith ThurgoodMarshall` (via SymmetricProperty)
+
+When the mentorship chain is observed:
+- `ThurgoodMarshall mentored JackGreenberg`
+- `JackGreenberg mentored ConstanceBakerMotley`
+
+The reasoner infers:
+- `ThurgoodMarshall mentored ConstanceBakerMotley` (via TransitiveProperty)
 
 ---
 
