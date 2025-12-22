@@ -1,7 +1,7 @@
 {
   "name": "rust-kgdb",
-  "version": "0.1.12",
-  "description": "High-performance RDF/SPARQL database with 100% W3C compliance and WCOJ execution",
+  "version": "0.8.14",
+  "description": "High-performance RDF/SPARQL database with AI agent framework and cross-database federation. GraphDB (449ns lookups, 5-11x faster than RDFox), HyperFederate (KGDB + Snowflake + BigQuery), GraphFrames analytics, Datalog reasoning, HNSW vector embeddings. HyperMindAgent for schema-aware query generation with audit trails. W3C SPARQL 1.1 compliant. Native performance via Rust + NAPI-RS.",
   "main": "index.js",
   "types": "index.d.ts",
   "napi": {
@@ -19,19 +19,42 @@
   "scripts": {
     "build": "napi build --platform --release native/rust-kgdb-napi",
     "build:debug": "napi build --platform native/rust-kgdb-napi",
-    "prepublishOnly": "napi prepublish -t npm",
-    "test": "jest",
-    "version": "0.1.12"
+    "test": "node test-all-features.js",
+    "test:jest": "jest"
   },
   "keywords": [
+    "neuro-symbolic-ai",
+    "agentic-framework",
+    "schema-aware-graphdb",
+    "context-theory",
+    "bring-your-own-ontology",
+    "schema-caching",
+    "llm-planner",
+    "proof-dag",
+    "curry-howard",
+    "memory-hypergraph",
+    "agent-memory",
+    "temporal-memory",
+    "category-theory",
+    "type-theory",
+    "llm-agents",
+    "wasm-sandbox",
+    "morphism-composition",
     "rdf",
     "sparql",
-    "semantic-web",
     "knowledge-graph",
-    "database",
-    "triplestore",
+    "lubm-benchmark",
+    "claude-ai",
+    "gpt-4o",
+    "secure-execution",
+    "capability-based-security",
+    "graphframes",
+    "datalog",
+    "reasoning",
     "napi-rs",
-    "rust"
+    "rust",
+    "fraud-detection",
+    "underwriting"
   ],
   "author": "Gonnect Team",
   "license": "Apache-2.0",
@@ -44,6 +67,7 @@
     "@types/jest": "^29.5.0",
     "@types/node": "^20.0.0",
     "jest": "^29.7.0",
+    "ts-jest": "^29.4.6",
     "typescript": "^5.0.0"
   },
   "engines": {
@@ -52,14 +76,19 @@
   "files": [
     "index.js",
     "index.d.ts",
+    "hypermind-agent.js",
+    "secure-agent-sandbox-demo.js",
+    "vanilla-vs-hypermind-benchmark.js",
+    "benchmark-frameworks.py",
+    "verified_benchmark_results.json",
+    "examples/",
+    "ontology/",
     "README.md",
+    "CLAUDE.md",
+    "DESIGN.md",
+    "IMPLEMENTATION_GUIDE.md",
+    "HYPERMIND_BENCHMARK_REPORT.md",
+    "CHANGELOG.md",
     "*.node"
-  ],
-  "optionalDependencies": {
-    "rust-kgdb-win32-x64-msvc": "0.1.12",
-    "rust-kgdb-darwin-x64": "0.1.12",
-    "rust-kgdb-linux-x64-gnu": "0.1.12",
-    "rust-kgdb-darwin-arm64": "0.1.12",
-    "rust-kgdb-linux-arm64-gnu": "0.1.12"
-  }
+  ]
 }
