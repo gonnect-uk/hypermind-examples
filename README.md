@@ -52,6 +52,36 @@ console.log(result.thinkingGraph.derivationChain)  // Proof steps
 
 ---
 
+## Answer Formats
+
+HyperMindAgent returns formatted answers (not just "Found X results"):
+
+```javascript
+// TEXT format (default) - Natural language
+const agent = new HyperMindAgent({ name: 'demo', kg: db })
+const result = await agent.call("Who are the teammates of Lessort?")
+console.log(result.answer)
+// → "Cedi Osman, Jerian Grant, Lorenzo Brown, Kendrick Nunn, Kostas Sloukas and 106 more"
+
+// TABLE format - Professional tabular output
+const agent = new HyperMindAgent({ name: 'demo', kg: db, answerFormat: 'table' })
+// → ┌────────────────────────────────────────┐
+//   │ Results (111 total)                     │
+//   ├────────────────────────────────────────┤
+//   │  Cedi Osman                            │
+//   │  Jerian Grant                          │
+//   │  ...                                   │
+//   └────────────────────────────────────────┘
+
+// JSON format - Structured data
+const agent = new HyperMindAgent({ name: 'demo', kg: db, answerFormat: 'json' })
+// → { "count": 111, "results": [...], "reasoning": {...} }
+```
+
+**Works with or without API key.** See [HyperMindAgent API](docs/api/hypermind-agent.md) for details.
+
+---
+
 ## Examples
 
 | Example | Description | Command |
