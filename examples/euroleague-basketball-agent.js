@@ -496,13 +496,7 @@ SELECT ?player (COUNT(?steal) AS ?steal_count) WHERE {
         console.log('  HONEST OUTPUT (HyperMindAgent.call() response):')
         console.log()
 
-        // 1. Answer
-        const answer = result.answer || result.response || result.text
-        console.log('  answer:')
-        console.log(`    "${answer}"`)
-        console.log()
-
-        // 2. Generated SPARQL
+        // 1. Generated SPARQL (show first)
         if (result.explanation?.sparql_queries?.length > 0) {
           console.log('  sparql:')
           console.log('    ```sparql')
@@ -511,20 +505,48 @@ SELECT ?player (COUNT(?steal) AS ?steal_count) WHERE {
           console.log()
         }
 
-        // 3. Thinking (schema analysis)
+        // 2. ACTUAL RAW RESULTS (the real data!)
+        console.log('  results (actual data):')
+        if (result.raw_results?.length > 0) {
+          for (const r of result.raw_results) {
+            if (r.success && Array.isArray(r.result)) {
+              for (const row of r.result.slice(0, 5)) {
+                const b = row.bindings || row
+                const vals = Object.entries(b)
+                  .map(([k, v]) => `${k}=${extractLast(String(v))}`)
+                  .join(', ')
+                console.log(`    -> ${vals}`)
+              }
+              if (r.result.length > 5) {
+                console.log(`    ... and ${r.result.length - 5} more`)
+              }
+            }
+          }
+        } else {
+          console.log('    (no raw_results - check agent configuration)')
+        }
+        console.log()
+
+        // 3. Answer (natural language summary)
+        const answer = result.answer || result.response || result.text
+        console.log('  answer:')
+        console.log(`    "${answer}"`)
+        console.log()
+
+        // 4. Thinking (schema analysis)
         console.log('  thinking:')
         console.log(`    predicatesIdentified: ${result.explanation?.predicates_used?.join(', ') || 'auto-detected'}`)
         console.log(`    schemaMatches: ${schema.classes?.length || 0} classes, ${schema.predicates?.length || 0} predicates`)
         console.log()
 
-        // 4. Reasoning stats
+        // 5. Reasoning stats
         console.log('  reasoning:')
         console.log(`    observations: ${result.reasoningStats?.events || stats.events}`)
         console.log(`    derivedFacts: ${result.reasoningStats?.facts || stats.facts}`)
         console.log(`    rulesApplied: ${result.reasoningStats?.rules || stats.rules}`)
         console.log()
 
-        // 5. Proof / Derivation Chain
+        // 6. Proof / Derivation Chain
         if (result.thinkingGraph?.derivationChain?.length > 0) {
           console.log('  proof:')
           console.log('    derivationChain:')

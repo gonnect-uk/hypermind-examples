@@ -544,6 +544,25 @@ ORDER BY price_premium DESC`
           console.log('  ```')
         }
 
+        // Show ACTUAL RESULTS (real data values!)
+        console.log('  RESULTS (actual data):')
+        if (result.raw_results?.length > 0) {
+          for (const r of result.raw_results) {
+            if (r.success && Array.isArray(r.result)) {
+              for (const row of r.result.slice(0, 5)) {
+                const b = row.bindings || row
+                const vals = Object.entries(b)
+                  .map(([k, v]) => `${k}=${extractLast(String(v))}`)
+                  .join(', ')
+                console.log(`    -> ${vals}`)
+              }
+              if (r.result.length > 5) {
+                console.log(`    ... and ${r.result.length - 5} more`)
+              }
+            }
+          }
+        }
+
         const answer = result.answer || result.response || result.text
         if (answer) {
           console.log(`  ANSWER: ${answer}`)

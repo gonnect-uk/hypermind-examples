@@ -152,13 +152,21 @@ Step 8: [OBSERVATION] Dorchester adjacentTo SouthBoston
 **ACTUAL OUTPUT** - Complete response from `agent.call("What are the most expensive properties?")`:
 
 ```yaml
-answer:
-  "Found 18 results"
-
 sparql:
   SELECT ?s ?o WHERE {
     ?s <http://boston.gov/property#locatedIn> ?o
   } LIMIT 100
+
+results (actual data):
+  -> s=property_BB002, o=BackBay
+  -> o=BackBay, s=property_BB003
+  -> s=property_BH001, o=BeaconHill
+  -> o=BeaconHill, s=property_BH002
+  -> s=property_SE001, o=SouthEnd
+  ... and 13 more
+
+answer:
+  "Found 18 results"
 
 thinking:
   predicatesIdentified: auto-detected

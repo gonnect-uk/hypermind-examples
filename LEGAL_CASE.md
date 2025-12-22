@@ -155,13 +155,18 @@ Step 8: [OBSERVATION] ThurgoodMarshall mentored JackGreenberg
 **ACTUAL OUTPUT** - Complete response from `agent.call("Who was the lead attorney?")`:
 
 ```yaml
-answer:
-  "Found 3 results"
-
 sparql:
   SELECT ?s ?o WHERE {
     ?s <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?o
   } LIMIT 100
+
+results (actual data):
+  -> s=Justice, o=Person
+  -> s=Attorney, o=Person
+  -> s=Plaintiff, o=Person
+
+answer:
+  "Found 3 results"
 
 thinking:
   predicatesIdentified: auto-detected

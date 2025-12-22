@@ -145,14 +145,19 @@ Step 8: [OBSERVATION] hernangomez__juancho teammateOf osman__cedi
 **ACTUAL OUTPUT** - Complete response from `agent.call("Who made the defensive steals?")`:
 
 ```yaml
-answer:
-  "Found 3 results"
-
 sparql:
   SELECT ?entity WHERE {
     ?event a <http://euroleague.net/ontology#Steal> .
     ?event <http://euroleague.net/ontology#player> ?entity
   } LIMIT 100
+
+results (actual data):
+  -> event=e00011, entity=lessort__mathias
+  -> entity=mitoglou__konstantinos, event=e00028
+  -> entity=mattisseck__jonas, event=e00030
+
+answer:
+  "Found 3 results"
 
 thinking:
   predicatesIdentified: auto-detected
@@ -169,8 +174,28 @@ proof:
     - step: 2, rule: "OBSERVATION", conclusion: "grant__jerian teammateOf osman__cedi"
     - step: 3, rule: "OBSERVATION", conclusion: "brown__lorenzo teammateOf osman__cedi"
     - step: 4, rule: "OBSERVATION", conclusion: "nunn__kendrick teammateOf osman__cedi"
-  proofHash: "sha256:19b47fcc548"
+  proofHash: "sha256:19b4806a903"
   verified: true
+```
+
+**Second Query** - `agent.call("Who are the teammates of Lessort?")`:
+
+```yaml
+sparql:
+  SELECT ?s ?o WHERE {
+    ?s <http://euroleague.net/ontology#teammateOf> ?o
+  } LIMIT 100
+
+results (actual data):
+  -> s=none, o=osman__cedi
+  -> s=grant__jerian, o=osman__cedi
+  -> o=osman__cedi, s=brown__lorenzo
+  -> o=osman__cedi, s=nunn__kendrick
+  -> o=osman__cedi, s=sloukas__kostas
+  ... and 106 more
+
+answer:
+  "Found 111 results"
 ```
 
 ---
