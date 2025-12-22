@@ -7,6 +7,8 @@
     "start": "node examples/hyperfederate-hypermind-demo.js",
     "fraud": "node examples/fraud-memory-hypergraph.js",
     "federation": "node examples/hyperfederate-hypermind-demo.js",
+    "federation:3way": "node examples/hyperfederate-3way-demo.js",
+    "euroleague": "node examples/euroleague-basketball-agent.js",
     "graphframes": "npx ts-node examples/graphframes-example.ts",
     "datalog": "npx ts-node examples/datalog-example.ts",
     "pregel": "npx ts-node examples/pregel-example.ts",
@@ -26,7 +28,12 @@
     "llm",
     "ai-agent",
     "rdf",
-    "owl"
+    "owl",
+    "euroleague",
+    "basketball",
+    "federation",
+    "snowflake",
+    "bigquery"
   ],
   "author": "Gonnect Team",
   "license": "Apache-2.0",

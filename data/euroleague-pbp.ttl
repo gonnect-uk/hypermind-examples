@@ -1,0 +1,192 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix euro: <http://euroleague.net/ontology#> .
+@prefix game: <http://euroleague.net/game/2024/> .
+@prefix player: <http://euroleague.net/player/> .
+@prefix team: <http://euroleague.net/team/> .
+
+# ============================================================
+# EUROLEAGUE BASKETBALL ONTOLOGY
+# Based on: https://medium.com/@skontopo2009/
+# ============================================================
+
+# Core Classes
+euro:Game a owl:Class ;
+    rdfs:label "Basketball Game" .
+
+euro:Team a owl:Class ;
+    rdfs:label "Basketball Team" .
+
+euro:Player a owl:Class ;
+    rdfs:label "Basketball Player" .
+
+euro:Event a owl:Class ;
+    rdfs:label "Play-by-Play Event" .
+
+euro:Shot rdfs:subClassOf euro:Event .
+euro:Assist rdfs:subClassOf euro:Event .
+euro:Rebound rdfs:subClassOf euro:Event .
+euro:Steal rdfs:subClassOf euro:Event .
+euro:Block rdfs:subClassOf euro:Event .
+euro:Foul rdfs:subClassOf euro:Event .
+euro:Turnover rdfs:subClassOf euro:Event .
+
+# OWL Properties (generate reasoning rules)
+euro:teammateOf a owl:SymmetricProperty .
+euro:assistedBy a owl:TransitiveProperty .
+euro:playsFor a owl:TransitiveProperty .
+
+# ============================================================
+# TEAMS
+# ============================================================
+
+team:panathinaikos a euro:Team ;
+    rdfs:label "Panathinaikos" ;
+    euro:city "Athens" .
+
+team:olympiacos a euro:Team ;
+    rdfs:label "Olympiacos" ;
+    euro:city "Piraeus" .
+
+team:real_madrid a euro:Team ;
+    rdfs:label "Real Madrid" ;
+    euro:city "Madrid" .
+
+team:barcelona a euro:Team ;
+    rdfs:label "FC Barcelona" ;
+    euro:city "Barcelona" .
+
+team:monaco a euro:Team ;
+    rdfs:label "AS Monaco" ;
+    euro:city "Monaco" .
+
+team:maccabi a euro:Team ;
+    rdfs:label "Maccabi Tel Aviv" ;
+    euro:city "Tel Aviv" .
+
+# ============================================================
+# PLAYERS - Panathinaikos
+# ============================================================
+
+player:sloukas a euro:Player ;
+    rdfs:label "Kostas Sloukas" ;
+    euro:position "Point Guard" ;
+    euro:playsFor team:panathinaikos ;
+    euro:totalPoints "312"^^xsd:integer ;
+    euro:totalAssists "187"^^xsd:integer .
+
+player:nunn a euro:Player ;
+    rdfs:label "Kendrick Nunn" ;
+    euro:position "Shooting Guard" ;
+    euro:playsFor team:panathinaikos ;
+    euro:totalPoints "456"^^xsd:integer .
+
+player:papagiannis a euro:Player ;
+    rdfs:label "Georgios Papagiannis" ;
+    euro:position "Center" ;
+    euro:playsFor team:panathinaikos ;
+    euro:totalRebounds "198"^^xsd:integer .
+
+player:grant a euro:Player ;
+    rdfs:label "Jerian Grant" ;
+    euro:position "Point Guard" ;
+    euro:playsFor team:panathinaikos .
+
+# Teammate relationships
+player:sloukas euro:teammateOf player:nunn .
+player:sloukas euro:teammateOf player:papagiannis .
+player:nunn euro:teammateOf player:papagiannis .
+
+# ============================================================
+# PLAYERS - Olympiacos
+# ============================================================
+
+player:vezenkov a euro:Player ;
+    rdfs:label "Sasha Vezenkov" ;
+    euro:position "Small Forward" ;
+    euro:playsFor team:olympiacos ;
+    euro:totalPoints "423"^^xsd:integer .
+
+player:fournier a euro:Player ;
+    rdfs:label "Evan Fournier" ;
+    euro:position "Shooting Guard" ;
+    euro:playsFor team:olympiacos .
+
+player:walkup a euro:Player ;
+    rdfs:label "Thomas Walkup" ;
+    euro:position "Point Guard" ;
+    euro:playsFor team:olympiacos .
+
+player:vezenkov euro:teammateOf player:fournier .
+player:vezenkov euro:teammateOf player:walkup .
+
+# ============================================================
+# GAME: Derby Match
+# ============================================================
+
+game:pao_oly_2024 a euro:Game ;
+    rdfs:label "Panathinaikos vs Olympiacos - Round 15" ;
+    euro:homeTeam team:panathinaikos ;
+    euro:awayTeam team:olympiacos ;
+    euro:finalScore "89-82" .
+
+# ============================================================
+# PLAY-BY-PLAY EVENTS
+# ============================================================
+
+game:event001 a euro:Shot ;
+    euro:player player:sloukas ;
+    euro:points "3"^^xsd:integer ;
+    euro:quarter "1"^^xsd:integer ;
+    euro:gameTime "09:45" .
+
+game:event002 a euro:Assist ;
+    euro:player player:grant ;
+    euro:assistTo player:sloukas ;
+    euro:quarter "1"^^xsd:integer .
+
+game:event003 a euro:Shot ;
+    euro:player player:vezenkov ;
+    euro:points "2"^^xsd:integer ;
+    euro:quarter "1"^^xsd:integer .
+
+game:event004 a euro:Rebound ;
+    euro:player player:papagiannis ;
+    euro:reboundType "defensive" ;
+    euro:quarter "1"^^xsd:integer .
+
+game:event005 a euro:Shot ;
+    euro:player player:nunn ;
+    euro:points "2"^^xsd:integer ;
+    euro:quarter "1"^^xsd:integer .
+
+game:event006 a euro:Assist ;
+    euro:player player:sloukas ;
+    euro:assistTo player:nunn ;
+    euro:quarter "1"^^xsd:integer .
+
+# Clutch events (Q4, last 2 minutes)
+game:event050 a euro:Shot ;
+    euro:player player:sloukas ;
+    euro:points "3"^^xsd:integer ;
+    euro:quarter "4"^^xsd:integer ;
+    euro:gameTime "01:45" ;
+    euro:isClutch "true"^^xsd:boolean .
+
+game:event051 a euro:Steal ;
+    euro:player player:grant ;
+    euro:quarter "4"^^xsd:integer ;
+    euro:isClutch "true"^^xsd:boolean .
+
+game:event052 a euro:Shot ;
+    euro:player player:nunn ;
+    euro:points "2"^^xsd:integer ;
+    euro:quarter "4"^^xsd:integer ;
+    euro:isClutch "true"^^xsd:boolean .
+
+game:event053 a euro:Block ;
+    euro:player player:papagiannis ;
+    euro:quarter "4"^^xsd:integer ;
+    euro:isClutch "true"^^xsd:boolean .
