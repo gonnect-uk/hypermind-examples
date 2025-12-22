@@ -11,6 +11,7 @@
     "euroleague": "node examples/euroleague-basketball-agent.js",
     "boston": "node examples/boston-realestate-agent.js",
     "legal": "node examples/legal-case-agent.js",
+    "reasoning": "node examples/reasoning-visualizer.js",
     "graphframes": "npx ts-node examples/graphframes-example.ts",
     "datalog": "npx ts-node examples/datalog-example.ts",
     "pregel": "npx ts-node examples/pregel-example.ts",
