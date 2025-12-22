@@ -1,0 +1,72 @@
+@prefix ins: <http://insurance.example.org/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Ontology
+ins:hasClaim a owl:ObjectProperty ;
+    rdfs:domain ins:Policy ;
+    rdfs:range ins:Claim .
+
+ins:hasPolicy a owl:ObjectProperty ;
+    rdfs:domain ins:Customer ;
+    rdfs:range ins:Policy .
+
+ins:referredBy a owl:TransitiveProperty ;
+    rdfs:label "referred by chain" .
+
+# Class hierarchy
+ins:HighRiskClaim rdfs:subClassOf ins:Claim .
+ins:AutoClaim rdfs:subClassOf ins:Claim .
+ins:PropertyClaim rdfs:subClassOf ins:Claim .
+
+# Customers
+ins:cust001 a ins:Customer ;
+    rdfs:label "John Doe" ;
+    ins:creditScore "720"^^xsd:integer ;
+    ins:hasPolicy ins:pol001 .
+
+ins:cust002 a ins:Customer ;
+    rdfs:label "Jane Smith" ;
+    ins:creditScore "680"^^xsd:integer ;
+    ins:hasPolicy ins:pol002 ;
+    ins:referredBy ins:cust001 .
+
+ins:cust003 a ins:Customer ;
+    rdfs:label "Bob Wilson" ;
+    ins:creditScore "590"^^xsd:integer ;
+    ins:hasPolicy ins:pol003 ;
+    ins:referredBy ins:cust002 .
+
+# Policies
+ins:pol001 a ins:Policy ;
+    ins:type "auto" ;
+    ins:premium "1200"^^xsd:decimal ;
+    ins:hasClaim ins:clm001 .
+
+ins:pol002 a ins:Policy ;
+    ins:type "property" ;
+    ins:premium "2400"^^xsd:decimal ;
+    ins:hasClaim ins:clm002 .
+
+ins:pol003 a ins:Policy ;
+    ins:type "auto" ;
+    ins:premium "1800"^^xsd:decimal ;
+    ins:hasClaim ins:clm003 .
+
+# Claims
+ins:clm001 a ins:AutoClaim ;
+    ins:amount "5000"^^xsd:decimal ;
+    ins:status "approved" ;
+    ins:date "2024-03-15"^^xsd:date .
+
+ins:clm002 a ins:PropertyClaim ;
+    ins:amount "15000"^^xsd:decimal ;
+    ins:status "pending" ;
+    ins:date "2024-04-20"^^xsd:date .
+
+ins:clm003 a ins:HighRiskClaim ;
+    ins:amount "25000"^^xsd:decimal ;
+    ins:status "under_review" ;
+    ins:date "2024-05-10"^^xsd:date ;
+    ins:suspicionScore "0.85"^^xsd:decimal .

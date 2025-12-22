@@ -1,0 +1,83 @@
+@prefix ub: <http://swat.cse.lehigh.edu/onto/univ-bench.owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# LUBM Benchmark Sample Data
+# Lehigh University Benchmark for OWL reasoners
+
+# University
+<http://www.University0.edu> a ub:University ;
+    ub:name "University0" .
+
+# Departments
+<http://www.University0.edu/Department0> a ub:Department ;
+    ub:name "Department0" ;
+    ub:subOrganizationOf <http://www.University0.edu> .
+
+<http://www.University0.edu/Department1> a ub:Department ;
+    ub:name "Department1" ;
+    ub:subOrganizationOf <http://www.University0.edu> .
+
+# Faculty
+<http://www.University0.edu/Department0/FullProfessor0> a ub:FullProfessor ;
+    ub:name "FullProfessor0" ;
+    ub:worksFor <http://www.University0.edu/Department0> ;
+    ub:teacherOf <http://www.University0.edu/Department0/Course0> .
+
+<http://www.University0.edu/Department0/AssociateProfessor0> a ub:AssociateProfessor ;
+    ub:name "AssociateProfessor0" ;
+    ub:worksFor <http://www.University0.edu/Department0> ;
+    ub:teacherOf <http://www.University0.edu/Department0/Course1> .
+
+<http://www.University0.edu/Department0/AssistantProfessor0> a ub:AssistantProfessor ;
+    ub:name "AssistantProfessor0" ;
+    ub:worksFor <http://www.University0.edu/Department0> ;
+    ub:teacherOf <http://www.University0.edu/Department0/GraduateCourse0> .
+
+# Courses
+<http://www.University0.edu/Department0/Course0> a ub:Course ;
+    ub:name "Course0" .
+
+<http://www.University0.edu/Department0/Course1> a ub:Course ;
+    ub:name "Course1" .
+
+<http://www.University0.edu/Department0/GraduateCourse0> a ub:GraduateCourse ;
+    ub:name "GraduateCourse0" .
+
+# Students
+<http://www.University0.edu/Department0/GraduateStudent0> a ub:GraduateStudent ;
+    ub:name "GraduateStudent0" ;
+    ub:memberOf <http://www.University0.edu/Department0> ;
+    ub:advisor <http://www.University0.edu/Department0/FullProfessor0> ;
+    ub:takesCourse <http://www.University0.edu/Department0/GraduateCourse0> .
+
+<http://www.University0.edu/Department0/GraduateStudent1> a ub:GraduateStudent ;
+    ub:name "GraduateStudent1" ;
+    ub:memberOf <http://www.University0.edu/Department0> ;
+    ub:advisor <http://www.University0.edu/Department0/AssociateProfessor0> ;
+    ub:takesCourse <http://www.University0.edu/Department0/GraduateCourse0> .
+
+<http://www.University0.edu/Department0/UndergraduateStudent0> a ub:UndergraduateStudent ;
+    ub:name "UndergraduateStudent0" ;
+    ub:memberOf <http://www.University0.edu/Department0> ;
+    ub:takesCourse <http://www.University0.edu/Department0/Course0> ;
+    ub:takesCourse <http://www.University0.edu/Department0/Course1> .
+
+<http://www.University0.edu/Department0/UndergraduateStudent1> a ub:UndergraduateStudent ;
+    ub:name "UndergraduateStudent1" ;
+    ub:memberOf <http://www.University0.edu/Department0> ;
+    ub:takesCourse <http://www.University0.edu/Department0/Course0> .
+
+# Publications
+<http://www.University0.edu/Department0/Publication0> a ub:Publication ;
+    ub:name "Publication0" ;
+    ub:publicationAuthor <http://www.University0.edu/Department0/FullProfessor0> .
+
+<http://www.University0.edu/Department0/Publication1> a ub:Publication ;
+    ub:name "Publication1" ;
+    ub:publicationAuthor <http://www.University0.edu/Department0/AssociateProfessor0> ;
+    ub:publicationAuthor <http://www.University0.edu/Department0/GraduateStudent0> .
+
+# Research groups
+<http://www.University0.edu/Department0/ResearchGroup0> a ub:ResearchGroup ;
+    ub:subOrganizationOf <http://www.University0.edu/Department0> .

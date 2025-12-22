@@ -1,0 +1,57 @@
+@prefix fraud: <http://fraud.example.org/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Ontology - OWL properties that generate reasoning rules
+fraud:transfers a owl:TransitiveProperty ;
+    rdfs:label "transfers funds to"@en .
+
+fraud:relatedTo a owl:SymmetricProperty ;
+    rdfs:label "is related to"@en .
+
+fraud:ordersFrom a owl:TransitiveProperty ;
+    rdfs:label "orders from supplier"@en .
+
+# Class hierarchy
+fraud:HighRiskCustomer rdfs:subClassOf fraud:Customer .
+fraud:SuspiciousTransaction rdfs:subClassOf fraud:Transaction .
+
+# Sample fraud ring - circular payments
+fraud:alice a fraud:Customer ;
+    rdfs:label "Alice Smith" ;
+    fraud:riskScore "0.35"^^xsd:decimal ;
+    fraud:transfers fraud:bob .
+
+fraud:bob a fraud:Customer ;
+    rdfs:label "Bob Jones" ;
+    fraud:riskScore "0.45"^^xsd:decimal ;
+    fraud:transfers fraud:carol .
+
+fraud:carol a fraud:HighRiskCustomer ;
+    rdfs:label "Carol Davis" ;
+    fraud:riskScore "0.82"^^xsd:decimal ;
+    fraud:transfers fraud:alice .
+
+# Relationships
+fraud:alice fraud:relatedTo fraud:bob .
+fraud:bob fraud:relatedTo fraud:carol .
+
+# Transactions
+fraud:txn001 a fraud:Transaction ;
+    fraud:from fraud:alice ;
+    fraud:to fraud:bob ;
+    fraud:amount "10000"^^xsd:decimal ;
+    fraud:date "2024-01-15"^^xsd:date .
+
+fraud:txn002 a fraud:Transaction ;
+    fraud:from fraud:bob ;
+    fraud:to fraud:carol ;
+    fraud:amount "9500"^^xsd:decimal ;
+    fraud:date "2024-01-16"^^xsd:date .
+
+fraud:txn003 a fraud:SuspiciousTransaction ;
+    fraud:from fraud:carol ;
+    fraud:to fraud:alice ;
+    fraud:amount "9000"^^xsd:decimal ;
+    fraud:date "2024-01-17"^^xsd:date .

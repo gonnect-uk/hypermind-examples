@@ -1,0 +1,47 @@
+{
+  "name": "hypermind-examples",
+  "version": "1.0.0",
+  "description": "Working examples for the HyperMind neuro-symbolic AI framework",
+  "main": "examples/hyperfederate-hypermind-demo.js",
+  "scripts": {
+    "start": "node examples/hyperfederate-hypermind-demo.js",
+    "fraud": "node examples/fraud-memory-hypergraph.js",
+    "federation": "node examples/hyperfederate-hypermind-demo.js",
+    "graphframes": "npx ts-node examples/graphframes-example.ts",
+    "datalog": "npx ts-node examples/datalog-example.ts",
+    "pregel": "npx ts-node examples/pregel-example.ts",
+    "embeddings": "npx ts-node examples/embeddings-example.ts",
+    "deductive": "npx ts-node examples/hypermind-deductive-demo.ts",
+    "bench:hypermind": "node benchmarks/vanilla-vs-hypermind-benchmark.js",
+    "bench:frameworks": "node benchmarks/framework-comparison-benchmark.js",
+    "bench:python": "python benchmarks/benchmark-frameworks.py"
+  },
+  "keywords": [
+    "hypermind",
+    "neuro-symbolic",
+    "knowledge-graph",
+    "sparql",
+    "reasoning",
+    "deductive",
+    "llm",
+    "ai-agent",
+    "rdf",
+    "owl"
+  ],
+  "author": "Gonnect Team",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gonnect-uk/hypermind-examples.git"
+  },
+  "dependencies": {
+    "rust-kgdb": "^0.8.12"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
