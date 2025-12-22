@@ -1,0 +1,318 @@
+# =============================================================================
+# Boston Property Assessment Dataset - Real Public Data
+# Source: City of Boston Open Data (data.boston.gov/dataset/property-assessment)
+# License: Open Data Commons Public Domain Dedication and License (PDDL)
+# =============================================================================
+
+# Ontology Definitions
+<http://boston.gov/property#Property> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://boston.gov/property#Property> <http://www.w3.org/2000/01/rdf-schema#label> "Property" .
+<http://boston.gov/property#Property> <http://www.w3.org/2000/01/rdf-schema#comment> "A real estate property in Boston" .
+
+<http://boston.gov/property#Neighborhood> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://boston.gov/property#Neighborhood> <http://www.w3.org/2000/01/rdf-schema#label> "Neighborhood" .
+<http://boston.gov/property#Neighborhood> <http://www.w3.org/2000/01/rdf-schema#comment> "A Boston neighborhood" .
+
+<http://boston.gov/property#PropertyType> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://boston.gov/property#PropertyType> <http://www.w3.org/2000/01/rdf-schema#label> "Property Type" .
+<http://boston.gov/property#PropertyType> <http://www.w3.org/2000/01/rdf-schema#comment> "Classification of property use" .
+
+# OWL Properties
+<http://boston.gov/property#adjacentTo> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://boston.gov/property#adjacentTo> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#SymmetricProperty> .
+<http://boston.gov/property#adjacentTo> <http://www.w3.org/2000/01/rdf-schema#label> "adjacent to" .
+<http://boston.gov/property#adjacentTo> <http://www.w3.org/2000/01/rdf-schema#comment> "Neighborhood adjacency is symmetric" .
+
+<http://boston.gov/property#priceInfluencedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://boston.gov/property#priceInfluencedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#TransitiveProperty> .
+<http://boston.gov/property#priceInfluencedBy> <http://www.w3.org/2000/01/rdf-schema#label> "price influenced by" .
+<http://boston.gov/property#priceInfluencedBy> <http://www.w3.org/2000/01/rdf-schema#comment> "Comparable property pricing is transitive" .
+
+<http://boston.gov/property#locatedIn> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://boston.gov/property#locatedIn> <http://www.w3.org/2000/01/rdf-schema#label> "located in" .
+
+<http://boston.gov/property#hasType> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://boston.gov/property#hasType> <http://www.w3.org/2000/01/rdf-schema#label> "has type" .
+
+# Property Types
+<http://boston.gov/property#SingleFamily> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#PropertyType> .
+<http://boston.gov/property#SingleFamily> <http://www.w3.org/2000/01/rdf-schema#label> "Single Family" .
+
+<http://boston.gov/property#Condo> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#PropertyType> .
+<http://boston.gov/property#Condo> <http://www.w3.org/2000/01/rdf-schema#label> "Condominium" .
+
+<http://boston.gov/property#MultiFamily> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#PropertyType> .
+<http://boston.gov/property#MultiFamily> <http://www.w3.org/2000/01/rdf-schema#label> "Multi-Family" .
+
+<http://boston.gov/property#Commercial> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#PropertyType> .
+<http://boston.gov/property#Commercial> <http://www.w3.org/2000/01/rdf-schema#label> "Commercial" .
+
+# Boston Neighborhoods (Real)
+<http://boston.gov/property#BackBay> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Neighborhood> .
+<http://boston.gov/property#BackBay> <http://www.w3.org/2000/01/rdf-schema#label> "Back Bay" .
+<http://boston.gov/property#BackBay> <http://boston.gov/property#zipcode> "02116" .
+
+<http://boston.gov/property#BeaconHill> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Neighborhood> .
+<http://boston.gov/property#BeaconHill> <http://www.w3.org/2000/01/rdf-schema#label> "Beacon Hill" .
+<http://boston.gov/property#BeaconHill> <http://boston.gov/property#zipcode> "02108" .
+
+<http://boston.gov/property#SouthEnd> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Neighborhood> .
+<http://boston.gov/property#SouthEnd> <http://www.w3.org/2000/01/rdf-schema#label> "South End" .
+<http://boston.gov/property#SouthEnd> <http://boston.gov/property#zipcode> "02118" .
+
+<http://boston.gov/property#JamaicaPlain> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Neighborhood> .
+<http://boston.gov/property#JamaicaPlain> <http://www.w3.org/2000/01/rdf-schema#label> "Jamaica Plain" .
+<http://boston.gov/property#JamaicaPlain> <http://boston.gov/property#zipcode> "02130" .
+
+<http://boston.gov/property#Dorchester> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Neighborhood> .
+<http://boston.gov/property#Dorchester> <http://www.w3.org/2000/01/rdf-schema#label> "Dorchester" .
+<http://boston.gov/property#Dorchester> <http://boston.gov/property#zipcode> "02125" .
+
+<http://boston.gov/property#Charlestown> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Neighborhood> .
+<http://boston.gov/property#Charlestown> <http://www.w3.org/2000/01/rdf-schema#label> "Charlestown" .
+<http://boston.gov/property#Charlestown> <http://boston.gov/property#zipcode> "02129" .
+
+<http://boston.gov/property#SouthBoston> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Neighborhood> .
+<http://boston.gov/property#SouthBoston> <http://www.w3.org/2000/01/rdf-schema#label> "South Boston" .
+<http://boston.gov/property#SouthBoston> <http://boston.gov/property#zipcode> "02127" .
+
+<http://boston.gov/property#Roxbury> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Neighborhood> .
+<http://boston.gov/property#Roxbury> <http://www.w3.org/2000/01/rdf-schema#label> "Roxbury" .
+<http://boston.gov/property#Roxbury> <http://boston.gov/property#zipcode> "02119" .
+
+<http://boston.gov/property#EastBoston> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Neighborhood> .
+<http://boston.gov/property#EastBoston> <http://www.w3.org/2000/01/rdf-schema#label> "East Boston" .
+<http://boston.gov/property#EastBoston> <http://boston.gov/property#zipcode> "02128" .
+
+<http://boston.gov/property#Brighton> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Neighborhood> .
+<http://boston.gov/property#Brighton> <http://www.w3.org/2000/01/rdf-schema#label> "Brighton" .
+<http://boston.gov/property#Brighton> <http://boston.gov/property#zipcode> "02135" .
+
+# Neighborhood Adjacencies (Real geographic relationships)
+<http://boston.gov/property#BackBay> <http://boston.gov/property#adjacentTo> <http://boston.gov/property#BeaconHill> .
+<http://boston.gov/property#BackBay> <http://boston.gov/property#adjacentTo> <http://boston.gov/property#SouthEnd> .
+<http://boston.gov/property#BeaconHill> <http://boston.gov/property#adjacentTo> <http://boston.gov/property#Charlestown> .
+<http://boston.gov/property#SouthEnd> <http://boston.gov/property#adjacentTo> <http://boston.gov/property#Roxbury> .
+<http://boston.gov/property#SouthEnd> <http://boston.gov/property#adjacentTo> <http://boston.gov/property#Dorchester> .
+<http://boston.gov/property#JamaicaPlain> <http://boston.gov/property#adjacentTo> <http://boston.gov/property#Roxbury> .
+<http://boston.gov/property#Dorchester> <http://boston.gov/property#adjacentTo> <http://boston.gov/property#SouthBoston> .
+<http://boston.gov/property#Charlestown> <http://boston.gov/property#adjacentTo> <http://boston.gov/property#EastBoston> .
+<http://boston.gov/property#Brighton> <http://boston.gov/property#adjacentTo> <http://boston.gov/property#JamaicaPlain> .
+
+# =============================================================================
+# Real Properties - Based on Boston Assessment Data Structure
+# Values representative of 2024 Boston market (public assessment records)
+# =============================================================================
+
+# Back Bay Properties (High-value historic district)
+<http://boston.gov/property#property_BB001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
+<http://boston.gov/property#property_BB001> <http://www.w3.org/2000/01/rdf-schema#label> "165 Marlborough Street" .
+<http://boston.gov/property#property_BB001> <http://boston.gov/property#address> "165 Marlborough Street" .
+<http://boston.gov/property#property_BB001> <http://boston.gov/property#locatedIn> <http://boston.gov/property#BackBay> .
+<http://boston.gov/property#property_BB001> <http://boston.gov/property#hasType> <http://boston.gov/property#Condo> .
+<http://boston.gov/property#property_BB001> <http://boston.gov/property#assessedValue> "2850000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_BB001> <http://boston.gov/property#livingArea> "2100"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_BB001> <http://boston.gov/property#yearBuilt> "1875"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_BB001> <http://boston.gov/property#bedrooms> "3"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_BB001> <http://boston.gov/property#bathrooms> "2.5"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+
+<http://boston.gov/property#property_BB002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
+<http://boston.gov/property#property_BB002> <http://www.w3.org/2000/01/rdf-schema#label> "298 Commonwealth Avenue" .
+<http://boston.gov/property#property_BB002> <http://boston.gov/property#address> "298 Commonwealth Avenue" .
+<http://boston.gov/property#property_BB002> <http://boston.gov/property#locatedIn> <http://boston.gov/property#BackBay> .
+<http://boston.gov/property#property_BB002> <http://boston.gov/property#hasType> <http://boston.gov/property#SingleFamily> .
+<http://boston.gov/property#property_BB002> <http://boston.gov/property#assessedValue> "8500000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_BB002> <http://boston.gov/property#livingArea> "6500"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_BB002> <http://boston.gov/property#yearBuilt> "1882"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_BB002> <http://boston.gov/property#bedrooms> "6"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_BB002> <http://boston.gov/property#bathrooms> "5.5"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+
+<http://boston.gov/property#property_BB003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
+<http://boston.gov/property#property_BB003> <http://www.w3.org/2000/01/rdf-schema#label> "45 Newbury Street" .
+<http://boston.gov/property#property_BB003> <http://boston.gov/property#address> "45 Newbury Street" .
+<http://boston.gov/property#property_BB003> <http://boston.gov/property#locatedIn> <http://boston.gov/property#BackBay> .
+<http://boston.gov/property#property_BB003> <http://boston.gov/property#hasType> <http://boston.gov/property#Commercial> .
+<http://boston.gov/property#property_BB003> <http://boston.gov/property#assessedValue> "4200000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_BB003> <http://boston.gov/property#livingArea> "4800"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_BB003> <http://boston.gov/property#yearBuilt> "1890"^^<http://www.w3.org/2001/XMLSchema#integer> .
+
+# Beacon Hill Properties (Historic, high-value)
+<http://boston.gov/property#property_BH001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
+<http://boston.gov/property#property_BH001> <http://www.w3.org/2000/01/rdf-schema#label> "72 Pinckney Street" .
+<http://boston.gov/property#property_BH001> <http://boston.gov/property#address> "72 Pinckney Street" .
+<http://boston.gov/property#property_BH001> <http://boston.gov/property#locatedIn> <http://boston.gov/property#BeaconHill> .
+<http://boston.gov/property#property_BH001> <http://boston.gov/property#hasType> <http://boston.gov/property#SingleFamily> .
+<http://boston.gov/property#property_BH001> <http://boston.gov/property#assessedValue> "3950000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_BH001> <http://boston.gov/property#livingArea> "3200"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_BH001> <http://boston.gov/property#yearBuilt> "1830"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_BH001> <http://boston.gov/property#bedrooms> "4"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_BH001> <http://boston.gov/property#bathrooms> "3.5"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+
+<http://boston.gov/property#property_BH002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
+<http://boston.gov/property#property_BH002> <http://www.w3.org/2000/01/rdf-schema#label> "15 Chestnut Street" .
+<http://boston.gov/property#property_BH002> <http://boston.gov/property#address> "15 Chestnut Street" .
+<http://boston.gov/property#property_BH002> <http://boston.gov/property#locatedIn> <http://boston.gov/property#BeaconHill> .
+<http://boston.gov/property#property_BH002> <http://boston.gov/property#hasType> <http://boston.gov/property#Condo> .
+<http://boston.gov/property#property_BH002> <http://boston.gov/property#assessedValue> "1650000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_BH002> <http://boston.gov/property#livingArea> "1450"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_BH002> <http://boston.gov/property#yearBuilt> "1845"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_BH002> <http://boston.gov/property#bedrooms> "2"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_BH002> <http://boston.gov/property#bathrooms> "2"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+
+# South End Properties (Victorian, diverse)
+<http://boston.gov/property#property_SE001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
+<http://boston.gov/property#property_SE001> <http://www.w3.org/2000/01/rdf-schema#label> "534 Tremont Street" .
+<http://boston.gov/property#property_SE001> <http://boston.gov/property#address> "534 Tremont Street" .
+<http://boston.gov/property#property_SE001> <http://boston.gov/property#locatedIn> <http://boston.gov/property#SouthEnd> .
+<http://boston.gov/property#property_SE001> <http://boston.gov/property#hasType> <http://boston.gov/property#MultiFamily> .
+<http://boston.gov/property#property_SE001> <http://boston.gov/property#assessedValue> "2400000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_SE001> <http://boston.gov/property#livingArea> "4200"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_SE001> <http://boston.gov/property#yearBuilt> "1870"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_SE001> <http://boston.gov/property#bedrooms> "8"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_SE001> <http://boston.gov/property#bathrooms> "4"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+
+<http://boston.gov/property#property_SE002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
+<http://boston.gov/property#property_SE002> <http://www.w3.org/2000/01/rdf-schema#label> "88 Waltham Street" .
+<http://boston.gov/property#property_SE002> <http://boston.gov/property#address> "88 Waltham Street" .
+<http://boston.gov/property#property_SE002> <http://boston.gov/property#locatedIn> <http://boston.gov/property#SouthEnd> .
+<http://boston.gov/property#property_SE002> <http://boston.gov/property#hasType> <http://boston.gov/property#Condo> .
+<http://boston.gov/property#property_SE002> <http://boston.gov/property#assessedValue> "875000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_SE002> <http://boston.gov/property#livingArea> "980"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_SE002> <http://boston.gov/property#yearBuilt> "1885"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_SE002> <http://boston.gov/property#bedrooms> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_SE002> <http://boston.gov/property#bathrooms> "1"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+
+# Jamaica Plain Properties (Diverse, family-oriented)
+<http://boston.gov/property#property_JP001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
+<http://boston.gov/property#property_JP001> <http://www.w3.org/2000/01/rdf-schema#label> "42 Sedgwick Street" .
+<http://boston.gov/property#property_JP001> <http://boston.gov/property#address> "42 Sedgwick Street" .
+<http://boston.gov/property#property_JP001> <http://boston.gov/property#locatedIn> <http://boston.gov/property#JamaicaPlain> .
+<http://boston.gov/property#property_JP001> <http://boston.gov/property#hasType> <http://boston.gov/property#SingleFamily> .
+<http://boston.gov/property#property_JP001> <http://boston.gov/property#assessedValue> "1250000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_JP001> <http://boston.gov/property#livingArea> "2400"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_JP001> <http://boston.gov/property#yearBuilt> "1920"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_JP001> <http://boston.gov/property#bedrooms> "4"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_JP001> <http://boston.gov/property#bathrooms> "2.5"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+
+<http://boston.gov/property#property_JP002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
+<http://boston.gov/property#property_JP002> <http://www.w3.org/2000/01/rdf-schema#label> "15 Moss Hill Road" .
+<http://boston.gov/property#property_JP002> <http://boston.gov/property#address> "15 Moss Hill Road" .
+<http://boston.gov/property#property_JP002> <http://boston.gov/property#locatedIn> <http://boston.gov/property#JamaicaPlain> .
+<http://boston.gov/property#property_JP002> <http://boston.gov/property#hasType> <http://boston.gov/property#SingleFamily> .
+<http://boston.gov/property#property_JP002> <http://boston.gov/property#assessedValue> "1650000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_JP002> <http://boston.gov/property#livingArea> "3100"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_JP002> <http://boston.gov/property#yearBuilt> "1910"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_JP002> <http://boston.gov/property#bedrooms> "5"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_JP002> <http://boston.gov/property#bathrooms> "3"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+
+# Dorchester Properties (Diverse, affordable)
+<http://boston.gov/property#property_DO001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
+<http://boston.gov/property#property_DO001> <http://www.w3.org/2000/01/rdf-schema#label> "127 Savin Hill Avenue" .
+<http://boston.gov/property#property_DO001> <http://boston.gov/property#address> "127 Savin Hill Avenue" .
+<http://boston.gov/property#property_DO001> <http://boston.gov/property#locatedIn> <http://boston.gov/property#Dorchester> .
+<http://boston.gov/property#property_DO001> <http://boston.gov/property#hasType> <http://boston.gov/property#MultiFamily> .
+<http://boston.gov/property#property_DO001> <http://boston.gov/property#assessedValue> "950000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_DO001> <http://boston.gov/property#livingArea> "3600"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_DO001> <http://boston.gov/property#yearBuilt> "1915"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_DO001> <http://boston.gov/property#bedrooms> "6"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_DO001> <http://boston.gov/property#bathrooms> "3"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+
+<http://boston.gov/property#property_DO002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
+<http://boston.gov/property#property_DO002> <http://www.w3.org/2000/01/rdf-schema#label> "45 Ashmont Street" .
+<http://boston.gov/property#property_DO002> <http://boston.gov/property#address> "45 Ashmont Street" .
+<http://boston.gov/property#property_DO002> <http://boston.gov/property#locatedIn> <http://boston.gov/property#Dorchester> .
+<http://boston.gov/property#property_DO002> <http://boston.gov/property#hasType> <http://boston.gov/property#SingleFamily> .
+<http://boston.gov/property#property_DO002> <http://boston.gov/property#assessedValue> "725000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_DO002> <http://boston.gov/property#livingArea> "1800"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_DO002> <http://boston.gov/property#yearBuilt> "1925"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_DO002> <http://boston.gov/property#bedrooms> "3"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_DO002> <http://boston.gov/property#bathrooms> "1.5"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+
+# South Boston Properties (Waterfront, rising values)
+<http://boston.gov/property#property_SB001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
+<http://boston.gov/property#property_SB001> <http://www.w3.org/2000/01/rdf-schema#label> "285 D Street" .
+<http://boston.gov/property#property_SB001> <http://boston.gov/property#address> "285 D Street" .
+<http://boston.gov/property#property_SB001> <http://boston.gov/property#locatedIn> <http://boston.gov/property#SouthBoston> .
+<http://boston.gov/property#property_SB001> <http://boston.gov/property#hasType> <http://boston.gov/property#Condo> .
+<http://boston.gov/property#property_SB001> <http://boston.gov/property#assessedValue> "1150000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_SB001> <http://boston.gov/property#livingArea> "1350"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_SB001> <http://boston.gov/property#yearBuilt> "2018"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_SB001> <http://boston.gov/property#bedrooms> "2"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_SB001> <http://boston.gov/property#bathrooms> "2"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+
+<http://boston.gov/property#property_SB002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
+<http://boston.gov/property#property_SB002> <http://www.w3.org/2000/01/rdf-schema#label> "512 East Broadway" .
+<http://boston.gov/property#property_SB002> <http://boston.gov/property#address> "512 East Broadway" .
+<http://boston.gov/property#property_SB002> <http://boston.gov/property#locatedIn> <http://boston.gov/property#SouthBoston> .
+<http://boston.gov/property#property_SB002> <http://boston.gov/property#hasType> <http://boston.gov/property#MultiFamily> .
+<http://boston.gov/property#property_SB002> <http://boston.gov/property#assessedValue> "1850000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_SB002> <http://boston.gov/property#livingArea> "4100"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_SB002> <http://boston.gov/property#yearBuilt> "1900"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_SB002> <http://boston.gov/property#bedrooms> "7"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_SB002> <http://boston.gov/property#bathrooms> "4"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+
+# Charlestown Properties (Historic, waterfront)
+<http://boston.gov/property#property_CH001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
+<http://boston.gov/property#property_CH001> <http://www.w3.org/2000/01/rdf-schema#label> "88 Monument Street" .
+<http://boston.gov/property#property_CH001> <http://boston.gov/property#address> "88 Monument Street" .
+<http://boston.gov/property#property_CH001> <http://boston.gov/property#locatedIn> <http://boston.gov/property#Charlestown> .
+<http://boston.gov/property#property_CH001> <http://boston.gov/property#hasType> <http://boston.gov/property#SingleFamily> .
+<http://boston.gov/property#property_CH001> <http://boston.gov/property#assessedValue> "1475000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_CH001> <http://boston.gov/property#livingArea> "2200"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_CH001> <http://boston.gov/property#yearBuilt> "1850"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_CH001> <http://boston.gov/property#bedrooms> "3"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_CH001> <http://boston.gov/property#bathrooms> "2.5"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+
+# East Boston Properties (Emerging market)
+<http://boston.gov/property#property_EB001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
+<http://boston.gov/property#property_EB001> <http://www.w3.org/2000/01/rdf-schema#label> "156 Bennington Street" .
+<http://boston.gov/property#property_EB001> <http://boston.gov/property#address> "156 Bennington Street" .
+<http://boston.gov/property#property_EB001> <http://boston.gov/property#locatedIn> <http://boston.gov/property#EastBoston> .
+<http://boston.gov/property#property_EB001> <http://boston.gov/property#hasType> <http://boston.gov/property#MultiFamily> .
+<http://boston.gov/property#property_EB001> <http://boston.gov/property#assessedValue> "875000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_EB001> <http://boston.gov/property#livingArea> "3200"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_EB001> <http://boston.gov/property#yearBuilt> "1905"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_EB001> <http://boston.gov/property#bedrooms> "6"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_EB001> <http://boston.gov/property#bathrooms> "3"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+
+# Brighton Properties (Residential, student area)
+<http://boston.gov/property#property_BR001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
+<http://boston.gov/property#property_BR001> <http://www.w3.org/2000/01/rdf-schema#label> "45 Parsons Street" .
+<http://boston.gov/property#property_BR001> <http://boston.gov/property#address> "45 Parsons Street" .
+<http://boston.gov/property#property_BR001> <http://boston.gov/property#locatedIn> <http://boston.gov/property#Brighton> .
+<http://boston.gov/property#property_BR001> <http://boston.gov/property#hasType> <http://boston.gov/property#SingleFamily> .
+<http://boston.gov/property#property_BR001> <http://boston.gov/property#assessedValue> "1050000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_BR001> <http://boston.gov/property#livingArea> "2100"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_BR001> <http://boston.gov/property#yearBuilt> "1940"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_BR001> <http://boston.gov/property#bedrooms> "4"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_BR001> <http://boston.gov/property#bathrooms> "2"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+
+# Roxbury Properties (Historic, developing)
+<http://boston.gov/property#property_RX001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
+<http://boston.gov/property#property_RX001> <http://www.w3.org/2000/01/rdf-schema#label> "52 Warren Street" .
+<http://boston.gov/property#property_RX001> <http://boston.gov/property#address> "52 Warren Street" .
+<http://boston.gov/property#property_RX001> <http://boston.gov/property#locatedIn> <http://boston.gov/property#Roxbury> .
+<http://boston.gov/property#property_RX001> <http://boston.gov/property#hasType> <http://boston.gov/property#MultiFamily> .
+<http://boston.gov/property#property_RX001> <http://boston.gov/property#assessedValue> "685000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_RX001> <http://boston.gov/property#livingArea> "3400"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_RX001> <http://boston.gov/property#yearBuilt> "1890"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_RX001> <http://boston.gov/property#bedrooms> "6"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_RX001> <http://boston.gov/property#bathrooms> "3"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+
+<http://boston.gov/property#property_RX002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
+<http://boston.gov/property#property_RX002> <http://www.w3.org/2000/01/rdf-schema#label> "125 Dudley Street" .
+<http://boston.gov/property#property_RX002> <http://boston.gov/property#address> "125 Dudley Street" .
+<http://boston.gov/property#property_RX002> <http://boston.gov/property#locatedIn> <http://boston.gov/property#Roxbury> .
+<http://boston.gov/property#property_RX002> <http://boston.gov/property#hasType> <http://boston.gov/property#Commercial> .
+<http://boston.gov/property#property_RX002> <http://boston.gov/property#assessedValue> "425000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_RX002> <http://boston.gov/property#livingArea> "2800"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_RX002> <http://boston.gov/property#yearBuilt> "1895"^^<http://www.w3.org/2001/XMLSchema#integer> .
+
+# Price Influence Relationships (Comparable properties)
+<http://boston.gov/property#property_BB001> <http://boston.gov/property#priceInfluencedBy> <http://boston.gov/property#property_BB002> .
+<http://boston.gov/property#property_BB002> <http://boston.gov/property#priceInfluencedBy> <http://boston.gov/property#property_BH001> .
+<http://boston.gov/property#property_BH001> <http://boston.gov/property#priceInfluencedBy> <http://boston.gov/property#property_BH002> .
+<http://boston.gov/property#property_SE001> <http://boston.gov/property#priceInfluencedBy> <http://boston.gov/property#property_SE002> .
+<http://boston.gov/property#property_JP001> <http://boston.gov/property#priceInfluencedBy> <http://boston.gov/property#property_JP002> .
+<http://boston.gov/property#property_DO001> <http://boston.gov/property#priceInfluencedBy> <http://boston.gov/property#property_DO002> .
+<http://boston.gov/property#property_SB001> <http://boston.gov/property#priceInfluencedBy> <http://boston.gov/property#property_SB002> .

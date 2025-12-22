@@ -9,6 +9,8 @@
     "federation": "node examples/hyperfederate-hypermind-demo.js",
     "federation:3way": "node examples/hyperfederate-3way-demo.js",
     "euroleague": "node examples/euroleague-basketball-agent.js",
+    "boston": "node examples/boston-realestate-agent.js",
+    "legal": "node examples/legal-case-agent.js",
     "graphframes": "npx ts-node examples/graphframes-example.ts",
     "datalog": "npx ts-node examples/datalog-example.ts",
     "pregel": "npx ts-node examples/pregel-example.ts",
@@ -33,7 +35,14 @@
     "basketball",
     "federation",
     "snowflake",
-    "bigquery"
+    "bigquery",
+    "real-estate",
+    "boston",
+    "legal",
+    "brown-v-board",
+    "rdf2vec",
+    "embeddings",
+    "owl-reasoning"
   ],
   "author": "Gonnect Team",
   "license": "Apache-2.0",
@@ -42,7 +51,7 @@
     "url": "https://github.com/gonnect-uk/hypermind-examples.git"
   },
   "dependencies": {
-    "rust-kgdb": "^0.8.12"
+    "rust-kgdb": "^0.8.13"
   },
   "devDependencies": {
     "ts-node": "^10.9.2",

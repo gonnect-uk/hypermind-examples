@@ -1,0 +1,417 @@
+# =============================================================================
+# Brown v. Board of Education of Topeka - Real Legal Case Data
+# Sources:
+#   - National Archives (archives.gov/education/lessons/brown-v-board)
+#   - Cornell Law (law.cornell.edu/wex/brown_v_board_of_education_(1954))
+#   - Library of Congress (loc.gov/exhibits/brown)
+#   - Oyez Project (oyez.org/cases/1940-1955/347us483)
+# =============================================================================
+
+# Ontology Definitions
+<http://law.gov/case#Case> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://law.gov/case#Case> <http://www.w3.org/2000/01/rdf-schema#label> "Legal Case" .
+<http://law.gov/case#Case> <http://www.w3.org/2000/01/rdf-schema#comment> "A court case" .
+
+<http://law.gov/case#Person> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://law.gov/case#Person> <http://www.w3.org/2000/01/rdf-schema#label> "Person" .
+<http://law.gov/case#Person> <http://www.w3.org/2000/01/rdf-schema#comment> "A person involved in the case" .
+
+<http://law.gov/case#Attorney> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://law.gov/case#Attorney> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://law.gov/case#Person> .
+<http://law.gov/case#Attorney> <http://www.w3.org/2000/01/rdf-schema#label> "Attorney" .
+
+<http://law.gov/case#Justice> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://law.gov/case#Justice> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://law.gov/case#Person> .
+<http://law.gov/case#Justice> <http://www.w3.org/2000/01/rdf-schema#label> "Supreme Court Justice" .
+
+<http://law.gov/case#Plaintiff> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://law.gov/case#Plaintiff> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://law.gov/case#Person> .
+<http://law.gov/case#Plaintiff> <http://www.w3.org/2000/01/rdf-schema#label> "Plaintiff" .
+
+<http://law.gov/case#Organization> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://law.gov/case#Organization> <http://www.w3.org/2000/01/rdf-schema#label> "Organization" .
+<http://law.gov/case#Organization> <http://www.w3.org/2000/01/rdf-schema#comment> "An organization or institution" .
+
+# OWL Properties
+<http://law.gov/case#representedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://law.gov/case#representedBy> <http://www.w3.org/2000/01/rdf-schema#domain> <http://law.gov/case#Person> .
+<http://law.gov/case#representedBy> <http://www.w3.org/2000/01/rdf-schema#range> <http://law.gov/case#Attorney> .
+<http://law.gov/case#representedBy> <http://www.w3.org/2000/01/rdf-schema#label> "represented by" .
+
+<http://law.gov/case#arguedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://law.gov/case#arguedBy> <http://www.w3.org/2000/01/rdf-schema#domain> <http://law.gov/case#Case> .
+<http://law.gov/case#arguedBy> <http://www.w3.org/2000/01/rdf-schema#range> <http://law.gov/case#Attorney> .
+<http://law.gov/case#arguedBy> <http://www.w3.org/2000/01/rdf-schema#label> "argued by" .
+
+<http://law.gov/case#decidedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://law.gov/case#decidedBy> <http://www.w3.org/2000/01/rdf-schema#domain> <http://law.gov/case#Case> .
+<http://law.gov/case#decidedBy> <http://www.w3.org/2000/01/rdf-schema#range> <http://law.gov/case#Justice> .
+<http://law.gov/case#decidedBy> <http://www.w3.org/2000/01/rdf-schema#label> "decided by" .
+
+<http://law.gov/case#plaintiff> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://law.gov/case#plaintiff> <http://www.w3.org/2000/01/rdf-schema#domain> <http://law.gov/case#Case> .
+<http://law.gov/case#plaintiff> <http://www.w3.org/2000/01/rdf-schema#range> <http://law.gov/case#Plaintiff> .
+<http://law.gov/case#plaintiff> <http://www.w3.org/2000/01/rdf-schema#label> "plaintiff" .
+
+<http://law.gov/case#defendant> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://law.gov/case#defendant> <http://www.w3.org/2000/01/rdf-schema#domain> <http://law.gov/case#Case> .
+<http://law.gov/case#defendant> <http://www.w3.org/2000/01/rdf-schema#range> <http://law.gov/case#Organization> .
+<http://law.gov/case#defendant> <http://www.w3.org/2000/01/rdf-schema#label> "defendant" .
+
+# SymmetricProperty - Legal Team Collaboration
+<http://law.gov/case#workedWith> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://law.gov/case#workedWith> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#SymmetricProperty> .
+<http://law.gov/case#workedWith> <http://www.w3.org/2000/01/rdf-schema#domain> <http://law.gov/case#Attorney> .
+<http://law.gov/case#workedWith> <http://www.w3.org/2000/01/rdf-schema#range> <http://law.gov/case#Attorney> .
+<http://law.gov/case#workedWith> <http://www.w3.org/2000/01/rdf-schema#label> "worked with" .
+<http://law.gov/case#workedWith> <http://www.w3.org/2000/01/rdf-schema#comment> "Legal team collaboration is symmetric" .
+
+# TransitiveProperty - Mentorship Chains
+<http://law.gov/case#mentored> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://law.gov/case#mentored> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#TransitiveProperty> .
+<http://law.gov/case#mentored> <http://www.w3.org/2000/01/rdf-schema#domain> <http://law.gov/case#Attorney> .
+<http://law.gov/case#mentored> <http://www.w3.org/2000/01/rdf-schema#range> <http://law.gov/case#Attorney> .
+<http://law.gov/case#mentored> <http://www.w3.org/2000/01/rdf-schema#label> "mentored" .
+<http://law.gov/case#mentored> <http://www.w3.org/2000/01/rdf-schema#comment> "Mentorship chains are transitive" .
+
+<http://law.gov/case#citedIn> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://law.gov/case#citedIn> <http://www.w3.org/2000/01/rdf-schema#domain> <http://law.gov/case#Case> .
+<http://law.gov/case#citedIn> <http://www.w3.org/2000/01/rdf-schema#range> <http://law.gov/case#Case> .
+<http://law.gov/case#citedIn> <http://www.w3.org/2000/01/rdf-schema#label> "cited in" .
+
+<http://law.gov/case#overruled> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://law.gov/case#overruled> <http://www.w3.org/2000/01/rdf-schema#domain> <http://law.gov/case#Case> .
+<http://law.gov/case#overruled> <http://www.w3.org/2000/01/rdf-schema#range> <http://law.gov/case#Case> .
+<http://law.gov/case#overruled> <http://www.w3.org/2000/01/rdf-schema#label> "overruled" .
+
+# Datatype Properties
+<http://law.gov/case#caseNumber> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://law.gov/case#caseNumber> <http://www.w3.org/2000/01/rdf-schema#domain> <http://law.gov/case#Case> .
+<http://law.gov/case#caseNumber> <http://www.w3.org/2000/01/rdf-schema#label> "case number" .
+
+<http://law.gov/case#dateArgued> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://law.gov/case#dateArgued> <http://www.w3.org/2000/01/rdf-schema#domain> <http://law.gov/case#Case> .
+<http://law.gov/case#dateArgued> <http://www.w3.org/2000/01/rdf-schema#label> "date argued" .
+
+<http://law.gov/case#dateDecided> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://law.gov/case#dateDecided> <http://www.w3.org/2000/01/rdf-schema#domain> <http://law.gov/case#Case> .
+<http://law.gov/case#dateDecided> <http://www.w3.org/2000/01/rdf-schema#label> "date decided" .
+
+<http://law.gov/case#holding> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://law.gov/case#holding> <http://www.w3.org/2000/01/rdf-schema#domain> <http://law.gov/case#Case> .
+<http://law.gov/case#holding> <http://www.w3.org/2000/01/rdf-schema#label> "holding" .
+
+<http://law.gov/case#vote> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://law.gov/case#vote> <http://www.w3.org/2000/01/rdf-schema#domain> <http://law.gov/case#Case> .
+<http://law.gov/case#vote> <http://www.w3.org/2000/01/rdf-schema#label> "vote" .
+
+<http://law.gov/case#birthYear> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://law.gov/case#birthYear> <http://www.w3.org/2000/01/rdf-schema#domain> <http://law.gov/case#Person> .
+<http://law.gov/case#birthYear> <http://www.w3.org/2000/01/rdf-schema#label> "birth year" .
+
+<http://law.gov/case#role> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://law.gov/case#role> <http://www.w3.org/2000/01/rdf-schema#domain> <http://law.gov/case#Person> .
+<http://law.gov/case#role> <http://www.w3.org/2000/01/rdf-schema#label> "role" .
+
+# =============================================================================
+# The Case: Brown v. Board of Education of Topeka
+# 347 U.S. 483 (1954)
+# =============================================================================
+
+<http://law.gov/case#BrownVBoard> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Case> .
+<http://law.gov/case#BrownVBoard> <http://www.w3.org/2000/01/rdf-schema#label> "Brown v. Board of Education of Topeka" .
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#caseNumber> "347 U.S. 483" .
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#dateArgued> "1952-12-09" .
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#dateDecided> "1954-05-17" .
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#vote> "9-0" .
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#holding> "Separate educational facilities are inherently unequal and violate the Equal Protection Clause of the Fourteenth Amendment" .
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#overruled> <http://law.gov/case#PlessyVFerguson> .
+
+<http://law.gov/case#PlessyVFerguson> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Case> .
+<http://law.gov/case#PlessyVFerguson> <http://www.w3.org/2000/01/rdf-schema#label> "Plessy v. Ferguson" .
+<http://law.gov/case#PlessyVFerguson> <http://law.gov/case#caseNumber> "163 U.S. 537" .
+<http://law.gov/case#PlessyVFerguson> <http://law.gov/case#dateDecided> "1896-05-18" .
+<http://law.gov/case#PlessyVFerguson> <http://law.gov/case#holding> "Separate but equal doctrine" .
+<http://law.gov/case#PlessyVFerguson> <http://law.gov/case#vote> "7-1" .
+
+# =============================================================================
+# NAACP Legal Defense Team (Attorneys for Plaintiffs)
+# Source: National Archives, NAACP LDF
+# =============================================================================
+
+<http://law.gov/case#ThurgoodMarshall> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Attorney> .
+<http://law.gov/case#ThurgoodMarshall> <http://www.w3.org/2000/01/rdf-schema#label> "Thurgood Marshall" .
+<http://law.gov/case#ThurgoodMarshall> <http://law.gov/case#birthYear> "1908"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#ThurgoodMarshall> <http://law.gov/case#role> "Lead Counsel, NAACP Legal Defense Fund" .
+<http://law.gov/case#ThurgoodMarshall> <http://www.w3.org/2000/01/rdf-schema#comment> "First African American Supreme Court Justice (1967-1991). Chief architect of the legal strategy in Brown." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#arguedBy> <http://law.gov/case#ThurgoodMarshall> .
+
+<http://law.gov/case#RobertCarter> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Attorney> .
+<http://law.gov/case#RobertCarter> <http://www.w3.org/2000/01/rdf-schema#label> "Robert L. Carter" .
+<http://law.gov/case#RobertCarter> <http://law.gov/case#birthYear> "1917"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#RobertCarter> <http://law.gov/case#role> "NAACP Legal Defense Fund Attorney" .
+<http://law.gov/case#RobertCarter> <http://www.w3.org/2000/01/rdf-schema#comment> "Secured testimony from psychologist Kenneth B. Clark about segregation's effects on children." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#arguedBy> <http://law.gov/case#RobertCarter> .
+
+<http://law.gov/case#JackGreenberg> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Attorney> .
+<http://law.gov/case#JackGreenberg> <http://www.w3.org/2000/01/rdf-schema#label> "Jack Greenberg" .
+<http://law.gov/case#JackGreenberg> <http://law.gov/case#birthYear> "1924"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#JackGreenberg> <http://law.gov/case#role> "NAACP Legal Defense Fund Attorney" .
+<http://law.gov/case#JackGreenberg> <http://www.w3.org/2000/01/rdf-schema#comment> "Argued the Topeka case. Later directed NAACP LDF from 1961-1984." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#arguedBy> <http://law.gov/case#JackGreenberg> .
+
+<http://law.gov/case#ConstanceBakerMotley> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Attorney> .
+<http://law.gov/case#ConstanceBakerMotley> <http://www.w3.org/2000/01/rdf-schema#label> "Constance Baker Motley" .
+<http://law.gov/case#ConstanceBakerMotley> <http://law.gov/case#birthYear> "1921"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#ConstanceBakerMotley> <http://law.gov/case#role> "NAACP Legal Defense Fund Attorney" .
+<http://law.gov/case#ConstanceBakerMotley> <http://www.w3.org/2000/01/rdf-schema#comment> "First African American woman appointed to federal judiciary (1966)." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#arguedBy> <http://law.gov/case#ConstanceBakerMotley> .
+
+<http://law.gov/case#SpotswoodRobinson> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Attorney> .
+<http://law.gov/case#SpotswoodRobinson> <http://www.w3.org/2000/01/rdf-schema#label> "Spottswood Robinson III" .
+<http://law.gov/case#SpotswoodRobinson> <http://law.gov/case#birthYear> "1916"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#SpotswoodRobinson> <http://law.gov/case#role> "NAACP Legal Defense Fund Attorney" .
+<http://law.gov/case#SpotswoodRobinson> <http://www.w3.org/2000/01/rdf-schema#comment> "Argued Davis v. County School Board of Prince Edward County (Virginia case consolidated with Brown)." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#arguedBy> <http://law.gov/case#SpotswoodRobinson> .
+
+<http://law.gov/case#OliverHill> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Attorney> .
+<http://law.gov/case#OliverHill> <http://www.w3.org/2000/01/rdf-schema#label> "Oliver Hill" .
+<http://law.gov/case#OliverHill> <http://law.gov/case#birthYear> "1907"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#OliverHill> <http://law.gov/case#role> "NAACP Virginia Attorney" .
+<http://law.gov/case#OliverHill> <http://www.w3.org/2000/01/rdf-schema#comment> "Pioneering civil rights attorney in Virginia." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#arguedBy> <http://law.gov/case#OliverHill> .
+
+<http://law.gov/case#LouisRedding> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Attorney> .
+<http://law.gov/case#LouisRedding> <http://www.w3.org/2000/01/rdf-schema#label> "Louis L. Redding" .
+<http://law.gov/case#LouisRedding> <http://law.gov/case#birthYear> "1901"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#LouisRedding> <http://law.gov/case#role> "Delaware Attorney" .
+<http://law.gov/case#LouisRedding> <http://www.w3.org/2000/01/rdf-schema#comment> "First African American admitted to Delaware Bar. Argued Belton v. Gebhart." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#arguedBy> <http://law.gov/case#LouisRedding> .
+
+<http://law.gov/case#JamesNabrit> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Attorney> .
+<http://law.gov/case#JamesNabrit> <http://www.w3.org/2000/01/rdf-schema#label> "James Nabrit Jr." .
+<http://law.gov/case#JamesNabrit> <http://law.gov/case#birthYear> "1900"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#JamesNabrit> <http://law.gov/case#role> "Howard University Law School Professor" .
+<http://law.gov/case#JamesNabrit> <http://www.w3.org/2000/01/rdf-schema#comment> "Argued Bolling v. Sharpe (D.C. case)." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#arguedBy> <http://law.gov/case#JamesNabrit> .
+
+<http://law.gov/case#GeorgeHayes> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Attorney> .
+<http://law.gov/case#GeorgeHayes> <http://www.w3.org/2000/01/rdf-schema#label> "George E.C. Hayes" .
+<http://law.gov/case#GeorgeHayes> <http://law.gov/case#birthYear> "1894"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#GeorgeHayes> <http://law.gov/case#role> "Washington D.C. Attorney" .
+<http://law.gov/case#GeorgeHayes> <http://www.w3.org/2000/01/rdf-schema#comment> "Co-argued Bolling v. Sharpe with James Nabrit." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#arguedBy> <http://law.gov/case#GeorgeHayes> .
+
+# Legal Team Collaborations (SymmetricProperty - if A workedWith B, then B workedWith A)
+<http://law.gov/case#ThurgoodMarshall> <http://law.gov/case#workedWith> <http://law.gov/case#RobertCarter> .
+<http://law.gov/case#ThurgoodMarshall> <http://law.gov/case#workedWith> <http://law.gov/case#JackGreenberg> .
+<http://law.gov/case#ThurgoodMarshall> <http://law.gov/case#workedWith> <http://law.gov/case#ConstanceBakerMotley> .
+<http://law.gov/case#RobertCarter> <http://law.gov/case#workedWith> <http://law.gov/case#JackGreenberg> .
+<http://law.gov/case#SpotswoodRobinson> <http://law.gov/case#workedWith> <http://law.gov/case#OliverHill> .
+<http://law.gov/case#JamesNabrit> <http://law.gov/case#workedWith> <http://law.gov/case#GeorgeHayes> .
+
+# Mentorship Relationships (TransitiveProperty - if A mentored B and B mentored C, then A mentored C)
+<http://law.gov/case#ThurgoodMarshall> <http://law.gov/case#mentored> <http://law.gov/case#JackGreenberg> .
+<http://law.gov/case#ThurgoodMarshall> <http://law.gov/case#mentored> <http://law.gov/case#ConstanceBakerMotley> .
+<http://law.gov/case#JackGreenberg> <http://law.gov/case#mentored> <http://law.gov/case#ConstanceBakerMotley> .
+
+# =============================================================================
+# The Warren Court (Justices Who Decided)
+# Source: Supreme Court Historical Society
+# =============================================================================
+
+<http://law.gov/case#EarlWarren> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Justice> .
+<http://law.gov/case#EarlWarren> <http://www.w3.org/2000/01/rdf-schema#label> "Earl Warren" .
+<http://law.gov/case#EarlWarren> <http://law.gov/case#birthYear> "1891"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#EarlWarren> <http://law.gov/case#role> "Chief Justice" .
+<http://law.gov/case#EarlWarren> <http://www.w3.org/2000/01/rdf-schema#comment> "Delivered the unanimous opinion. Secured 9-0 vote through careful negotiations." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#decidedBy> <http://law.gov/case#EarlWarren> .
+
+<http://law.gov/case#HugoBlack> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Justice> .
+<http://law.gov/case#HugoBlack> <http://www.w3.org/2000/01/rdf-schema#label> "Hugo Black" .
+<http://law.gov/case#HugoBlack> <http://law.gov/case#birthYear> "1886"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#HugoBlack> <http://law.gov/case#role> "Associate Justice" .
+<http://law.gov/case#HugoBlack> <http://www.w3.org/2000/01/rdf-schema#comment> "Former Alabama Senator. Despite KKK membership in 1920s, became strong civil rights advocate." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#decidedBy> <http://law.gov/case#HugoBlack> .
+
+<http://law.gov/case#StanleyReed> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Justice> .
+<http://law.gov/case#StanleyReed> <http://www.w3.org/2000/01/rdf-schema#label> "Stanley Reed" .
+<http://law.gov/case#StanleyReed> <http://law.gov/case#birthYear> "1884"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#StanleyReed> <http://law.gov/case#role> "Associate Justice" .
+<http://law.gov/case#StanleyReed> <http://www.w3.org/2000/01/rdf-schema#comment> "Last holdout. Warren personally convinced him to join unanimous opinion." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#decidedBy> <http://law.gov/case#StanleyReed> .
+
+<http://law.gov/case#FelixFrankfurter> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Justice> .
+<http://law.gov/case#FelixFrankfurter> <http://www.w3.org/2000/01/rdf-schema#label> "Felix Frankfurter" .
+<http://law.gov/case#FelixFrankfurter> <http://law.gov/case#birthYear> "1882"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#FelixFrankfurter> <http://law.gov/case#role> "Associate Justice" .
+<http://law.gov/case#FelixFrankfurter> <http://www.w3.org/2000/01/rdf-schema#comment> "Former Harvard Law professor. Instrumental in strategy to achieve unanimous decision." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#decidedBy> <http://law.gov/case#FelixFrankfurter> .
+
+<http://law.gov/case#WilliamDouglas> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Justice> .
+<http://law.gov/case#WilliamDouglas> <http://www.w3.org/2000/01/rdf-schema#label> "William O. Douglas" .
+<http://law.gov/case#WilliamDouglas> <http://law.gov/case#birthYear> "1898"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#WilliamDouglas> <http://law.gov/case#role> "Associate Justice" .
+<http://law.gov/case#WilliamDouglas> <http://www.w3.org/2000/01/rdf-schema#comment> "Longest-serving justice in Supreme Court history (36 years)." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#decidedBy> <http://law.gov/case#WilliamDouglas> .
+
+<http://law.gov/case#RobertJackson> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Justice> .
+<http://law.gov/case#RobertJackson> <http://www.w3.org/2000/01/rdf-schema#label> "Robert H. Jackson" .
+<http://law.gov/case#RobertJackson> <http://law.gov/case#birthYear> "1892"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#RobertJackson> <http://law.gov/case#role> "Associate Justice" .
+<http://law.gov/case#RobertJackson> <http://www.w3.org/2000/01/rdf-schema#comment> "Traveled to Court from hospital after heart attack to be present for unanimous decision." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#decidedBy> <http://law.gov/case#RobertJackson> .
+
+<http://law.gov/case#HaroldBurton> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Justice> .
+<http://law.gov/case#HaroldBurton> <http://www.w3.org/2000/01/rdf-schema#label> "Harold Burton" .
+<http://law.gov/case#HaroldBurton> <http://law.gov/case#birthYear> "1888"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#HaroldBurton> <http://law.gov/case#role> "Associate Justice" .
+<http://law.gov/case#HaroldBurton> <http://www.w3.org/2000/01/rdf-schema#comment> "Former Republican Senator from Ohio." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#decidedBy> <http://law.gov/case#HaroldBurton> .
+
+<http://law.gov/case#TomClark> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Justice> .
+<http://law.gov/case#TomClark> <http://www.w3.org/2000/01/rdf-schema#label> "Tom C. Clark" .
+<http://law.gov/case#TomClark> <http://law.gov/case#birthYear> "1899"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#TomClark> <http://law.gov/case#role> "Associate Justice" .
+<http://law.gov/case#TomClark> <http://www.w3.org/2000/01/rdf-schema#comment> "Former U.S. Attorney General under Truman." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#decidedBy> <http://law.gov/case#TomClark> .
+
+<http://law.gov/case#ShermanMinton> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Justice> .
+<http://law.gov/case#ShermanMinton> <http://www.w3.org/2000/01/rdf-schema#label> "Sherman Minton" .
+<http://law.gov/case#ShermanMinton> <http://law.gov/case#birthYear> "1890"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#ShermanMinton> <http://law.gov/case#role> "Associate Justice" .
+<http://law.gov/case#ShermanMinton> <http://www.w3.org/2000/01/rdf-schema#comment> "Former Democratic Senator from Indiana." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#decidedBy> <http://law.gov/case#ShermanMinton> .
+
+# =============================================================================
+# Named Plaintiffs
+# Source: National Archives, Brown Foundation
+# =============================================================================
+
+<http://law.gov/case#OliverBrown> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Plaintiff> .
+<http://law.gov/case#OliverBrown> <http://www.w3.org/2000/01/rdf-schema#label> "Oliver Brown" .
+<http://law.gov/case#OliverBrown> <http://law.gov/case#role> "Lead Plaintiff (Kansas)" .
+<http://law.gov/case#OliverBrown> <http://www.w3.org/2000/01/rdf-schema#comment> "African American welder from Topeka. Father of Linda Brown. Case named after him strategically." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#plaintiff> <http://law.gov/case#OliverBrown> .
+<http://law.gov/case#OliverBrown> <http://law.gov/case#representedBy> <http://law.gov/case#ThurgoodMarshall> .
+
+<http://law.gov/case#LindaBrown> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Plaintiff> .
+<http://law.gov/case#LindaBrown> <http://www.w3.org/2000/01/rdf-schema#label> "Linda Brown" .
+<http://law.gov/case#LindaBrown> <http://law.gov/case#birthYear> "1943"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#LindaBrown> <http://law.gov/case#role> "Student Plaintiff (Kansas)" .
+<http://law.gov/case#LindaBrown> <http://www.w3.org/2000/01/rdf-schema#comment> "Third-grader denied enrollment in white school four blocks from home. Had to walk one mile to Black school." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#plaintiff> <http://law.gov/case#LindaBrown> .
+
+<http://law.gov/case#DorothyDavis> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Plaintiff> .
+<http://law.gov/case#DorothyDavis> <http://www.w3.org/2000/01/rdf-schema#label> "Dorothy E. Davis" .
+<http://law.gov/case#DorothyDavis> <http://law.gov/case#role> "Student Plaintiff (Virginia)" .
+<http://law.gov/case#DorothyDavis> <http://www.w3.org/2000/01/rdf-schema#comment> "Plaintiff in Davis v. County School Board of Prince Edward County (Virginia case)." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#plaintiff> <http://law.gov/case#DorothyDavis> .
+<http://law.gov/case#DorothyDavis> <http://law.gov/case#representedBy> <http://law.gov/case#SpotswoodRobinson> .
+
+<http://law.gov/case#BarbaraJohns> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Plaintiff> .
+<http://law.gov/case#BarbaraJohns> <http://www.w3.org/2000/01/rdf-schema#label> "Barbara Rose Johns" .
+<http://law.gov/case#BarbaraJohns> <http://law.gov/case#birthYear> "1935"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#BarbaraJohns> <http://law.gov/case#role> "Student Organizer (Virginia)" .
+<http://law.gov/case#BarbaraJohns> <http://www.w3.org/2000/01/rdf-schema#comment> "16-year-old who organized student strike in 1951. Her actions led to Davis v. County School Board." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#plaintiff> <http://law.gov/case#BarbaraJohns> .
+
+<http://law.gov/case#SpotswoodBolling> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Plaintiff> .
+<http://law.gov/case#SpotswoodBolling> <http://www.w3.org/2000/01/rdf-schema#label> "Spottswood Thomas Bolling Jr." .
+<http://law.gov/case#SpotswoodBolling> <http://law.gov/case#birthYear> "1939"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#SpotswoodBolling> <http://law.gov/case#role> "Student Plaintiff (D.C.)" .
+<http://law.gov/case#SpotswoodBolling> <http://www.w3.org/2000/01/rdf-schema#comment> "Lead plaintiff in Bolling v. Sharpe (D.C. case decided same day as Brown)." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#plaintiff> <http://law.gov/case#SpotswoodBolling> .
+<http://law.gov/case#SpotswoodBolling> <http://law.gov/case#representedBy> <http://law.gov/case#JamesNabrit> .
+
+<http://law.gov/case#HarryBriggs> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Plaintiff> .
+<http://law.gov/case#HarryBriggs> <http://www.w3.org/2000/01/rdf-schema#label> "Harry Briggs Jr." .
+<http://law.gov/case#HarryBriggs> <http://law.gov/case#role> "Student Plaintiff (South Carolina)" .
+<http://law.gov/case#HarryBriggs> <http://www.w3.org/2000/01/rdf-schema#comment> "Lead plaintiff in Briggs v. Elliott (South Carolina case)." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#plaintiff> <http://law.gov/case#HarryBriggs> .
+
+<http://law.gov/case#EthelBelton> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Plaintiff> .
+<http://law.gov/case#EthelBelton> <http://www.w3.org/2000/01/rdf-schema#label> "Ethel Louise Belton" .
+<http://law.gov/case#EthelBelton> <http://law.gov/case#role> "Student Plaintiff (Delaware)" .
+<http://law.gov/case#EthelBelton> <http://www.w3.org/2000/01/rdf-schema#comment> "Lead plaintiff in Belton v. Gebhart (Delaware case)." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#plaintiff> <http://law.gov/case#EthelBelton> .
+<http://law.gov/case#EthelBelton> <http://law.gov/case#representedBy> <http://law.gov/case#LouisRedding> .
+
+# =============================================================================
+# Defendant
+# =============================================================================
+
+<http://law.gov/case#TopekaSchoolBoard> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Organization> .
+<http://law.gov/case#TopekaSchoolBoard> <http://www.w3.org/2000/01/rdf-schema#label> "Board of Education of Topeka, Kansas" .
+<http://law.gov/case#TopekaSchoolBoard> <http://law.gov/case#role> "Defendant" .
+<http://law.gov/case#TopekaSchoolBoard> <http://www.w3.org/2000/01/rdf-schema#comment> "Operated segregated public schools under Kansas state law." .
+
+<http://law.gov/case#BrownVBoard> <http://law.gov/case#defendant> <http://law.gov/case#TopekaSchoolBoard> .
+
+# =============================================================================
+# Expert Witnesses
+# =============================================================================
+
+<http://law.gov/case#KennethClark> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Person> .
+<http://law.gov/case#KennethClark> <http://www.w3.org/2000/01/rdf-schema#label> "Kenneth B. Clark" .
+<http://law.gov/case#KennethClark> <http://law.gov/case#birthYear> "1914"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#KennethClark> <http://law.gov/case#role> "Psychologist, Expert Witness" .
+<http://law.gov/case#KennethClark> <http://www.w3.org/2000/01/rdf-schema#comment> "Conducted famous doll experiments showing psychological harm of segregation on Black children." .
+
+<http://law.gov/case#MamieClark> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Person> .
+<http://law.gov/case#MamieClark> <http://www.w3.org/2000/01/rdf-schema#label> "Mamie Phipps Clark" .
+<http://law.gov/case#MamieClark> <http://law.gov/case#birthYear> "1917"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://law.gov/case#MamieClark> <http://law.gov/case#role> "Psychologist, Expert Witness" .
+<http://law.gov/case#MamieClark> <http://www.w3.org/2000/01/rdf-schema#comment> "Co-developed doll experiments with Kenneth Clark. First Black woman to earn psychology PhD from Columbia." .
+
+<http://law.gov/case#KennethClark> <http://law.gov/case#workedWith> <http://law.gov/case#MamieClark> .
+
+# =============================================================================
+# Related Cases (Consolidated in Brown)
+# =============================================================================
+
+<http://law.gov/case#BriggsVElliott> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Case> .
+<http://law.gov/case#BriggsVElliott> <http://www.w3.org/2000/01/rdf-schema#label> "Briggs v. Elliott" .
+<http://law.gov/case#BriggsVElliott> <http://law.gov/case#caseNumber> "342 U.S. 350" .
+<http://law.gov/case#BriggsVElliott> <http://www.w3.org/2000/01/rdf-schema#comment> "South Carolina case consolidated with Brown" .
+
+<http://law.gov/case#DavisVCountySchoolBoard> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Case> .
+<http://law.gov/case#DavisVCountySchoolBoard> <http://www.w3.org/2000/01/rdf-schema#label> "Davis v. County School Board of Prince Edward County" .
+<http://law.gov/case#DavisVCountySchoolBoard> <http://law.gov/case#caseNumber> "103 F. Supp. 337" .
+<http://law.gov/case#DavisVCountySchoolBoard> <http://www.w3.org/2000/01/rdf-schema#comment> "Virginia case consolidated with Brown" .
+
+<http://law.gov/case#BeltonVGebhart> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Case> .
+<http://law.gov/case#BeltonVGebhart> <http://www.w3.org/2000/01/rdf-schema#label> "Belton v. Gebhart" .
+<http://law.gov/case#BeltonVGebhart> <http://law.gov/case#caseNumber> "91 A.2d 137" .
+<http://law.gov/case#BeltonVGebhart> <http://www.w3.org/2000/01/rdf-schema#comment> "Delaware case consolidated with Brown. Only lower court victory for plaintiffs." .
+
+<http://law.gov/case#BollingVSharpe> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://law.gov/case#Case> .
+<http://law.gov/case#BollingVSharpe> <http://www.w3.org/2000/01/rdf-schema#label> "Bolling v. Sharpe" .
+<http://law.gov/case#BollingVSharpe> <http://law.gov/case#caseNumber> "347 U.S. 497" .
+<http://law.gov/case#BollingVSharpe> <http://law.gov/case#dateDecided> "1954-05-17" .
+<http://law.gov/case#BollingVSharpe> <http://www.w3.org/2000/01/rdf-schema#comment> "D.C. case decided same day as Brown under Fifth Amendment Due Process Clause" .
