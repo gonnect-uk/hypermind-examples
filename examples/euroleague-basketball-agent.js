@@ -267,18 +267,13 @@ async function main() {
     model: 'gpt-4o'
   })
 
-  // Load OWL ontology for automatic rule generation
+  // Tell agent about OWL properties for deductive reasoning
+  // These same properties are also in euroleague-game.ttl (lines 19-20)
   const ontology = `
     @prefix owl: <http://www.w3.org/2002/07/owl#> .
     @prefix euro: <http://euroleague.net/ontology#> .
-    @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-
-    euro:teammateOf a owl:SymmetricProperty ;
-        rdfs:label "teammate relationship - automatically derives reverse" .
-    euro:assistedBy a owl:TransitiveProperty ;
-        rdfs:label "assist chain - derives transitive closure" .
-    euro:playsFor rdfs:domain euro:Player ;
-        rdfs:range euro:Team .
+    euro:teammateOf a owl:SymmetricProperty .
+    euro:assistedBy a owl:TransitiveProperty .
   `
   agent.loadOntology(ontology)
 

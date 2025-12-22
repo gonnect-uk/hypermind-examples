@@ -106,12 +106,11 @@ Data Model: https://github.com/andrewstellman/pbprdf
 
   HyperFederate is a federated query engine that unifies:
   - SQL queries over structured data
-  - Knowledge Graph queries via the `graph_search()` UDF
+  - Knowledge Graph queries via the graph_search() UDF
   - Cross-source joins between SQL tables and graph data
 
   ## HyperFederate SQL Grammar
 
-  ```sql
   -- Basic Query Structure
   SELECT [DISTINCT] columns FROM source [WHERE cond] [GROUP BY cols] [ORDER BY cols] [LIMIT n]
 
@@ -167,12 +166,10 @@ VALUE: Uncover storylines beyond surface-level stats
 ------------------------------------------------------------
 
 SPARQL:
-```sparql
-SELECT ?player WHERE {
-    ?e <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Steal> .
-    ?e <http://euroleague.net/ontology#player> ?player .
-  }
-```
+    SELECT ?player WHERE {
+      ?e rdf:type <http://euroleague.net/ontology#Steal> .
+      ?e <http://euroleague.net/ontology#player> ?player .
+    }
 
 RESULTS: 3 bindings
 SAMPLE (first 5):
@@ -192,12 +189,10 @@ VALUE: Identify team chemistry for strategic planning
 ------------------------------------------------------------
 
 SPARQL:
-```sparql
-SELECT ?player WHERE {
-    ?e <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Assist> .
-    ?e <http://euroleague.net/ontology#player> ?player .
-  }
-```
+    SELECT ?player WHERE {
+      ?e rdf:type <http://euroleague.net/ontology#Assist> .
+      ?e <http://euroleague.net/ontology#player> ?player .
+    }
 
 RESULTS: 8 bindings
 SAMPLE (first 5):
@@ -219,13 +214,11 @@ VALUE: Enriched interconnected data for modeling
 ------------------------------------------------------------
 
 SPARQL:
-```sparql
-SELECT ?player ?label WHERE {
-    ?e <http://euroleague.net/ontology#player> ?player .
-    ?e <http://www.w3.org/2000/01/rdf-schema#label> ?label .
-    FILTER(CONTAINS(?label, "Pointer"))
-  }
-```
+    SELECT ?player ?label WHERE {
+      ?e <http://euroleague.net/ontology#player> ?player .
+      ?e rdfs:label ?label .
+      FILTER(CONTAINS(?label, "Pointer"))
+    }
 
 RESULTS: 26 bindings
 SAMPLE (first 5):
@@ -247,11 +240,9 @@ VALUE: Interactive exploration of team dynamics
 ------------------------------------------------------------
 
 SPARQL:
-```sparql
-SELECT ?teammate WHERE {
-        <http://euroleague.net/player/lessort__mathias> <http://euroleague.net/ontology#teammateOf> ?teammate .
-      }
-```
+    SELECT ?teammate WHERE {
+      <http://euroleague.net/player/lessort__mathias> <http://euroleague.net/ontology#teammateOf> ?teammate .
+    }
 
 RESULTS: 8 bindings
 SAMPLE (first 5):

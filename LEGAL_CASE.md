@@ -150,7 +150,146 @@ Sources:
 
 ---
 
-## Use Case Queries
+## Real User Queries (Actual Output)
+
+These are actual outputs from `npm run legal` with assertions.
+
+### Query 1: LAW STUDENT - Key Attorneys
+
+```
+LAW STUDENT: "Who were the key attorneys in Brown v. Board of Education?"
+VALUE: Understand the NAACP Legal Defense Fund strategy
+```
+
+**SPARQL Generated:**
+```sparql
+SELECT ?attorney ?name ?role WHERE {
+  <http://law.gov/case#BrownVBoard> <http://law.gov/case#arguedBy> ?attorney .
+  ?attorney <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+  OPTIONAL { ?attorney <http://law.gov/case#role> ?role }
+}
+```
+
+**Results:** 9 bindings
+```
+name=Oliver Hill, role=NAACP Virginia Attorney
+name=George E.C. Hayes, role=Washington D.C. Attorney
+name=James Nabrit Jr., role=Howard University Law School Professor
+name=Louis L. Redding, role=Delaware Attorney
+name=Robert L. Carter, role=NAACP Legal Defense Fund Attorney
+```
+
+**Reasoning Context:**
+- Observations: 10
+- Derived Facts: 10
+- [PASS] Assertion verified
+
+### Query 2: LEGAL HISTORIAN - Unanimous Decision
+
+```
+LEGAL HISTORIAN: "Which Supreme Court justices decided the case unanimously?"
+VALUE: Research how Chief Justice Warren achieved unanimity
+```
+
+**SPARQL Generated:**
+```sparql
+SELECT ?justice ?name ?role WHERE {
+  <http://law.gov/case#BrownVBoard> <http://law.gov/case#decidedBy> ?justice .
+  ?justice <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+  OPTIONAL { ?justice <http://law.gov/case#role> ?role }
+}
+```
+
+**Results:** 9 bindings
+```
+name=Tom C. Clark, role=Associate Justice
+name=Hugo Black, role=Associate Justice
+name=Earl Warren, role=Chief Justice
+name=Stanley Reed, role=Associate Justice
+name=Harold Burton, role=Associate Justice
+```
+
+**Reasoning Context:**
+- Observations: 10
+- Derived Facts: 10
+- [PASS] Assertion verified
+
+### Query 3: CIVIL RIGHTS RESEARCHER - Named Plaintiffs
+
+```
+CIVIL RIGHTS RESEARCHER: "Who were the named plaintiffs in the consolidated cases?"
+VALUE: Document the personal stories behind the case
+```
+
+**SPARQL Generated:**
+```sparql
+SELECT ?plaintiff ?name ?role WHERE {
+  <http://law.gov/case#BrownVBoard> <http://law.gov/case#plaintiff> ?plaintiff .
+  ?plaintiff <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+  OPTIONAL { ?plaintiff <http://law.gov/case#role> ?role }
+}
+```
+
+**Results:** 7 bindings
+```
+name=Linda Brown, role=Student Plaintiff (Kansas)
+name=Ethel Louise Belton, role=Student Plaintiff (Delaware)
+name=Harry Briggs Jr., role=Student Plaintiff (South Carolina)
+name=Oliver Brown, role=Lead Plaintiff (Kansas)
+name=Barbara Rose Johns, role=Student Organizer (Virginia)
+```
+
+**Reasoning Context:**
+- Observations: 10
+- Derived Facts: 10
+- [PASS] Assertion verified
+
+### Query 4: BIOGRAPHY WRITER - Marshall's Network
+
+```
+BIOGRAPHY WRITER: "Who did Thurgood Marshall collaborate with?"
+VALUE: Map the professional network of the future Supreme Court Justice
+```
+
+**SPARQL Generated:**
+```sparql
+SELECT ?colleague ?name WHERE {
+  <http://law.gov/case#ThurgoodMarshall> <http://law.gov/case#workedWith> ?colleague .
+  ?colleague <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+}
+```
+
+**Results:** 3 bindings
+```
+name=Robert L. Carter
+name=Jack Greenberg
+name=Constance Baker Motley
+```
+
+**OWL Reasoning Applied:**
+- `workedWith` is `owl:SymmetricProperty` (auto-detected from TTL)
+- If Marshall workedWith Carter, then Carter workedWith Marshall
+- [PASS] Assertion verified
+
+### Derivation Chain (Proof Steps)
+
+```
+DERIVATION CHAIN (from ThinkingReasoner):
+  Step 1: [OBSERVATION] KennethClark workedWith MamieClark
+  Step 2: [OBSERVATION] SpotswoodRobinson workedWith OliverHill
+  Step 3: [OBSERVATION] JamesNabrit workedWith GeorgeHayes
+  Step 4: [OBSERVATION] ThurgoodMarshall workedWith RobertCarter
+  Step 5: [OBSERVATION] RobertCarter workedWith JackGreenberg
+  Step 6: [OBSERVATION] ThurgoodMarshall workedWith JackGreenberg
+  Step 7: [OBSERVATION] ThurgoodMarshall workedWith ConstanceBakerMotley
+  Step 8: [OBSERVATION] ThurgoodMarshall mentored JackGreenberg
+```
+
+Every conclusion traces back to ground truth observations. No hallucinations.
+
+---
+
+## SPARQL Use Case Queries
 
 ### LAW STUDENT: Key Attorneys
 
