@@ -100,48 +100,83 @@ function visualizeReasoning(question, response) {
   }
   console.log('└' + '─'.repeat(68) + '┘');
 
-  // Step 4: Reasoning Applied
+  // Step 4: Reasoning Applied (from actual response object)
   console.log('\n          ▼');
   console.log('\n┌' + '─'.repeat(68) + '┐');
-  console.log('│  🧠 REASONING APPLIED                                                │');
+  console.log('│  🧠 REASONING APPLIED (from response.reasoningStats)                 │');
   console.log('├' + '─'.repeat(68) + '┤');
 
   // Get reasoning stats from response object
   const reasoningStats = response.reasoningStats || {};
   const thinkingGraph = response.thinkingGraph || {};
-  const observations = reasoningStats.events || thinkingGraph.observations?.length || 0;
-  const derivedFacts = reasoningStats.facts || thinkingGraph.derivedFacts?.length || 0;
-  const rulesApplied = reasoningStats.rules || 2;
+  const derivationChain = thinkingGraph.derivationChain || [];
+
+  // Count rule types from actual derivation chain
+  const ruleTypes = {};
+  derivationChain.forEach(step => {
+    ruleTypes[step.rule] = (ruleTypes[step.rule] || 0) + 1;
+  });
+
+  const observations = ruleTypes['OBSERVATION'] || reasoningStats.events || 0;
+  const inferences = Object.entries(ruleTypes)
+    .filter(([rule]) => rule !== 'OBSERVATION')
+    .reduce((sum, [, count]) => sum + count, 0);
+  const rulesApplied = Object.keys(ruleTypes).filter(r => r !== 'OBSERVATION').length || reasoningStats.rules || 0;
 
   console.log(`│  Observations (ground truth):    ${String(observations).padEnd(30)}│`);
-  console.log(`│  Derived Facts (OWL inference):  ${String(derivedFacts).padEnd(30)}│`);
-  console.log(`│  Rules Applied:                  ${String(rulesApplied).padEnd(30)}│`);
+  console.log(`│  Inferences (OWL derived):       ${String(inferences).padEnd(30)}│`);
+  console.log(`│  Total Facts:                    ${String(observations + inferences).padEnd(30)}│`);
   console.log('│                                                                      │');
-  console.log('│  OWL Rules:                                                          │');
-  console.log('│    • SymmetricProperty: A rel B ⟹ B rel A                           │');
-  console.log('│    • TransitiveProperty: A→B, B→C ⟹ A→C                             │');
+  console.log('│  OWL RULES APPLIED (from derivationChain):                           │');
+
+  // Show actual rules from derivation chain
+  Object.entries(ruleTypes).forEach(([rule, count]) => {
+    if (rule !== 'OBSERVATION') {
+      const ruleDisplay = rule.replace('owl:', '').padEnd(25);
+      console.log(`│    • ${ruleDisplay} (${count} inferences)          │`);
+    }
+  });
+
+  if (rulesApplied === 0) {
+    console.log('│    (No OWL inference rules applied)                                 │');
+  }
   console.log('└' + '─'.repeat(68) + '┘');
 
-  // Step 5: Proof Chain
+  // Step 5: Proof Chain (from actual derivationChain)
   console.log('\n          ▼');
   console.log('\n┌' + '─'.repeat(68) + '┐');
-  console.log('│  🔐 PROOF CHAIN (Audit Trail)                                        │');
+  console.log('│  🔐 PROOF CHAIN (from response.thinkingGraph.derivationChain)        │');
   console.log('├' + '─'.repeat(68) + '┤');
 
-  const derivationChain = thinkingGraph.derivationChain || [];
   if (derivationChain.length > 0) {
-    derivationChain.slice(0, 4).forEach(step => {
-      const conclusion = step.conclusion || '';
-      const stepNum = String(step.step || step.stepNumber || '?').padStart(2, ' ');
-      const rule = (step.rule || 'OBSERVATION').substring(0, 11).padEnd(11);
-      console.log(`│  Step ${stepNum}: [${rule}] ${conclusion.substring(0, 40).padEnd(40)}│`);
+    // Show first 2 observations
+    const obsSteps = derivationChain.filter(s => s.rule === 'OBSERVATION').slice(0, 2);
+    obsSteps.forEach(step => {
+      const stepNum = String(step.step).padStart(3, ' ');
+      console.log(`│  Step${stepNum}: [OBSERVATION]                                          │`);
+      console.log(`│          "${step.conclusion}"`.padEnd(69) + '│');
     });
-    if (derivationChain.length > 4) {
-      console.log(`│  ... and ${derivationChain.length - 4} more steps                                         │`);
+
+    // Show first 2 inference steps with premises
+    const infSteps = derivationChain.filter(s => s.rule !== 'OBSERVATION').slice(0, 2);
+    if (infSteps.length > 0) {
+      console.log('│  ────────────────────────────────────────────────────────────────  │');
+      infSteps.forEach(step => {
+        const stepNum = String(step.step).padStart(3, ' ');
+        const rule = step.rule.replace('owl:', '');
+        console.log(`│  Step${stepNum}: [${rule}]`.padEnd(69) + '│');
+        console.log(`│          "${step.conclusion}"`.padEnd(69) + '│');
+        if (step.premises?.length > 0) {
+          console.log(`│          ↳ derived from: ${step.premises.join(', ')}`.padEnd(69) + '│');
+        }
+      });
     }
+
+    const totalSteps = derivationChain.length;
+    console.log('│  ────────────────────────────────────────────────────────────────  │');
+    console.log(`│  ... total ${totalSteps} proof steps (${observations} obs + ${inferences} inferences)`.padEnd(69) + '│');
   } else {
-    // Show sample observations if no chain
-    console.log('│  (Reasoning performed - showing ground truth observations)          │');
+    console.log('│  (No derivation chain available)                                    │');
   }
   console.log('│                                                                      │');
   const proofHash = thinkingGraph.proofHash || 'sha256:' + Date.now().toString(16);
