@@ -225,7 +225,11 @@ async function main() {
   console.log('[5] ThinkingReasoner with Deductive Reasoning:')
   console.log()
 
-  // NOTE: Embeddings are already in GraphDB from loadTtlWithEmbeddings() - no separate service needed!
+  // v0.8.16+: HyperMindAgent automatically:
+  // 1. Auto-detects OWL properties (SymmetricProperty, TransitiveProperty) from GraphDB
+  // 2. Auto-observes all triples that use OWL properties
+  // 3. Runs deductive reasoning to derive new facts
+  // NO manual loadOntology(), observe(), or deduce() calls needed!
   const agent = new HyperMindAgent({
     name: 'euroleague-analyst',
     kg: db,
@@ -233,32 +237,8 @@ async function main() {
     model: 'gpt-4o'
   })
 
-  // Tell agent about OWL properties for deductive reasoning
-  // (These are ALSO in euroleague-game.ttl but agent needs explicit notification for reasoning)
-  agent.loadOntology(`
-    @prefix owl: <http://www.w3.org/2002/07/owl#> .
-    @prefix euro: <http://euroleague.net/ontology#> .
-    euro:teammateOf a owl:SymmetricProperty .
-    euro:assistedBy a owl:TransitiveProperty .
-  `)
-
-  // Add observations from the knowledge graph
-  console.log('  Loading observations into ThinkingReasoner...')
-
-  // Observe teammate relationships
-  for (const r of teammates) {
-    const a = extractLast(r.bindings?.a || r.a)
-    const b = extractLast(r.bindings?.b || r.b)
-    agent.observe(`${a} is teammate of ${b}`, {
-      subject: a,
-      predicate: 'teammateOf',
-      object: b
-    })
-  }
-
-  // Run deduction to derive new facts
-  console.log('  Running deductive reasoning...')
-  const deduction = agent.deduce()
+  // Reasoning already complete - just get stats
+  console.log('  Auto-reasoning complete (OWL auto-detected from TTL)...')
 
   const stats = agent.getReasoningStats()
   console.log(`    Agent: ${agent.name}`)
