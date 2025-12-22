@@ -21,7 +21,7 @@ const {
   ThinkingReasoner,
   RpcFederationProxy,
   getVersion
-} = require('../index.js')
+} = require('rust-kgdb')
 
 // =============================================================================
 // BRAIN ONTOLOGY - Business Reasoning & AI Intelligence Network
