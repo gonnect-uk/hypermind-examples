@@ -545,25 +545,48 @@ SELECT ?player (COUNT(?steal) AS ?steal_count) WHERE {
     console.log('    Set OPENAI_API_KEY environment variable to enable LLM-assisted queries.')
     console.log()
 
-    // Show expected response structure even without API key
-    console.log('  EXPECTED OUTPUT STRUCTURE (HyperMindAgent.call() response):')
+    // Show actual SPARQL-first result (no LLM needed for deterministic queries)
+    console.log('  SPARQL-FIRST APPROACH (deterministic, no LLM needed):')
+    console.log()
+    console.log('  USER PROMPT: "Who made defensive steals?"')
+    console.log()
+    console.log('  GENERATED HYPERFEDERATE SQL:')
+    console.log('  ```sql')
+    console.log('  SELECT * FROM graph_search(\'')
+    console.log('    SELECT ?player WHERE {')
+    console.log('      ?event a <http://euroleague.net/ontology#Steal> .')
+    console.log('      ?event <http://euroleague.net/ontology#player> ?player')
+    console.log('    }')
+    console.log('  \')')
+    console.log('  ```')
+    console.log()
+
+    // Execute the actual query to show real results
+    const stealPlayersQ = `SELECT ?player WHERE {
+      ?e <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Steal> .
+      ?e <http://euroleague.net/ontology#player> ?player .
+    }`
+    const stealPlayers = db.querySelect(stealPlayersQ)
+
+    console.log('  HONEST RESULTS (executed):')
+    for (const r of stealPlayers) {
+      const player = extractLast(r.bindings?.player || r.player)
+      console.log(`    → ${player}`)
+    }
+    console.log()
+    console.log('  RESPONSE STRUCTURE:')
     console.log('  ```json')
     console.log('  {')
-    console.log('    "answer": "The defensive steals were made by Lessort, Mitoglou, and Mattisseck.",')
-    console.log('    "sparql": "SELECT ?player WHERE { ?e a euro:Steal . ?e euro:player ?player }",')
-    console.log('    "thinking": {')
-    console.log('      "predicatesIdentified": ["euro:Steal", "euro:player"],')
-    console.log('      "schemaMatches": 11')
-    console.log('    },')
+    console.log(`    "answer": "Found ${stealPlayers.length} players who made steals: ${stealPlayers.map(r => extractLast(r.bindings?.player || r.player)).join(', ')}",`)
+    console.log('    "sparql": "SELECT ?player WHERE { ?event a <...#Steal> . ?event <...#player> ?player }",')
     console.log('    "reasoning": {')
     console.log(`      "observations": ${stats.events},`)
     console.log(`      "derivedFacts": ${stats.facts},`)
     console.log(`      "rulesApplied": ${stats.rules}`)
     console.log('    },')
-    console.log('    "proof": {')
-    console.log('      "derivationChain": [...],')
-    console.log('      "proofHash": "sha256:abc123...",')
-    console.log('      "verified": true')
+    console.log('    "thinkingGraph": {')
+    console.log(`      "nodes": ${stats.events},`)
+    console.log(`      "derivationChain": ${stats.facts}`)
     console.log('    }')
     console.log('  }')
     console.log('  ```')
