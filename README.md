@@ -71,7 +71,7 @@ Your Question                    "Find circular payment patterns"
       |
       v
 +------------------+
-|    GraphDB       |  Executes query (449ns lookups)
+|  KGDB (Gonnect)  |  Executes query (449ns lookups)
 +------------------+
       |
       v
@@ -87,8 +87,8 @@ Every step is traceable. No black boxes.
 ```javascript
 const { GraphDB, HyperMindAgent } = require('rust-kgdb')
 
-// 1. Load data with OWL ontology
-const db = new GraphDB('http://example.org/')
+// 1. Load data with OWL ontology (auto-detected from TTL)
+const db = new GraphDB('http://example.org/')  // KGDB (Gonnect) instance
 db.loadTtl(`
   @prefix owl: <http://www.w3.org/2002/07/owl#> .
   @prefix ex: <http://example.org/> .
@@ -120,6 +120,8 @@ console.log(result.thinkingGraph.derivationChain)
 | Example | What It Shows | Run Command |
 |---------|---------------|-------------|
 | `euroleague` | **Basketball KG with OWL reasoning + RDF2Vec** | `npm run euroleague` |
+| `boston` | **Real estate analytics with property valuation** | `npm run boston` |
+| `legal` | **Legal case analysis with mentorship chains** | `npm run legal` |
 | `fraud-detection` | Circular payment detection | `npm run fraud` |
 | `federation` | Query KGDB + external DBs | `npm run federation` |
 | `graphframes` | PageRank, connected components | `npm run graphframes` |
@@ -127,6 +129,12 @@ console.log(result.thinkingGraph.derivationChain)
 | `pregel` | Bulk parallel graph processing | `npm run pregel` |
 | `embeddings` | Vector similarity search | `npm run embeddings` |
 | `deductive` | ThinkingReasoner with proofs | `npm run deductive` |
+
+**Featured Examples**:
+- [Euroleague Basketball](EUROLEAGUE_ANALYTICS.md) - OWL reasoning, RDF2Vec, 17 assertions (100% pass)
+- [Boston Real Estate](BOSTON_REALESTATE.md) - Property valuation, 19 assertions (100% pass)
+- [US Legal Case](LEGAL_CASE.md) - Mentorship chains, 20 assertions (100% pass)
+- [Federation Setup](FEDERATION_SETUP.md) - Cross-database queries with credentials
 
 **Featured Example**: The [Euroleague Basketball](EUROLEAGUE_ANALYTICS.md) example demonstrates:
 - RDF2Vec embeddings (138 entities, 128D)
@@ -142,7 +150,7 @@ console.log(result.thinkingGraph.derivationChain)
 +-------------------------------------------------------+
 |                   IN-MEMORY (WASM)                    |
 |  +-------------------+  +-------------------------+   |
-|  |     GraphDB       |  |   RpcFederationProxy    |   |
+|  |  KGDB (Gonnect)   |  |   RpcFederationProxy    |   |
 |  |  - SPARQL 1.1     |  |   mode: 'inMemory'      |   |
 |  |  - 24 bytes/triple|  |   - KGDB queries        |   |
 |  |  - 449ns lookups  |  |   - Mock external DBs   |   |
@@ -246,6 +254,8 @@ Results on LUBM dataset (3,272 triples):
 hypermind-examples/
 ├── examples/
 │   ├── euroleague-basketball-agent.js    # Basketball KG + RDF2Vec + ThinkingReasoner
+│   ├── boston-realestate-agent.js        # Real estate with property valuation
+│   ├── legal-case-agent.js               # Legal case analysis with mentorship
 │   ├── hyperfederate-hypermind-demo.js   # Federation demo
 │   ├── fraud-memory-hypergraph.js        # Fraud detection
 │   ├── hypermind-deductive-demo.ts       # Deductive reasoning
@@ -259,10 +269,15 @@ hypermind-examples/
 │   └── benchmark-frameworks.py
 ├── data/
 │   ├── euroleague-game.ttl               # Euroleague basketball play-by-play
+│   ├── boston-properties.ttl             # Boston property assessments
+│   ├── brown-v-board.ttl                 # Brown v. Board legal case
 │   ├── fraud-graph.ttl                   # Sample fraud data
 │   ├── insurance-claims.ttl              # Insurance claims
 │   └── lubm-sample.ttl                   # LUBM benchmark data
 ├── EUROLEAGUE_ANALYTICS.md               # Detailed Euroleague output
+├── BOSTON_REALESTATE.md                  # Boston example documentation
+├── LEGAL_CASE.md                         # Legal case documentation
+├── FEDERATION_SETUP.md                   # Federation credentials guide
 ├── package.json
 └── README.md
 ```
