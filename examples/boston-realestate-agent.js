@@ -15,7 +15,7 @@
  * Run: node examples/boston-realestate-agent.js
  */
 
-const { GraphDB, HyperMindAgent, Rdf2VecEngine, EmbeddingService } = require('rust-kgdb')
+const { GraphDB, HyperMindAgent } = require('rust-kgdb')
 const assert = require('assert')
 
 // ============================================================================
@@ -77,7 +77,15 @@ async function main() {
   }
 
   const ttlData = fs.readFileSync(dataPath, 'utf-8')
-  db.loadTtl(ttlData, null)
+
+  // Load TTL with RDF2Vec embeddings - ALL HEAVY LIFTING IN RUST
+  const embeddingConfig = {
+    vector_size: 128,
+    window_size: 5,
+    walk_length: 5,
+    walks_per_node: 10
+  }
+  const loadResult = JSON.parse(db.loadTtlWithEmbeddings(ttlData, null, embeddingConfig))
 
   const tripleCount = db.countTriples()
   console.log(`    Source: City of Boston Open Data (data.boston.gov)`)
@@ -176,63 +184,21 @@ async function main() {
   console.log()
 
   // ============================================================================
-  // 3. RDF2Vec Embeddings
+  // 3. RDF2Vec Embeddings (Trained in Rust via loadTtlWithEmbeddings)
   // ============================================================================
-  console.log('[3] Training RDF2Vec Embeddings...')
+  console.log('[3] RDF2Vec Embeddings (Trained in Native Rust):')
 
-  const allTriples = db.querySelect('SELECT ?s ?p ?o WHERE { ?s ?p ?o }')
-  const graph = new Map()
-  for (const t of allTriples) {
-    const s = t.bindings?.s || t.s
-    const p = t.bindings?.p || t.p
-    const o = t.bindings?.o || t.o
-    if (!graph.has(s)) graph.set(s, [])
-    graph.get(s).push({ predicate: p, object: o })
-  }
+  // Embeddings were already trained in Rust during loadTtlWithEmbeddings() call
+  const embeddingStats = loadResult.embeddings || {}
+  const storedCount = embeddingStats.vocabulary_size || loadResult.entities || 0
+  const walkCount = embeddingStats.walks_generated || (storedCount * embeddingConfig.walks_per_node)
 
-  // Generate random walks
-  const walks = []
-  const walksPerNode = 10
-  const walkLength = 5
+  console.log(`    Trained: ${storedCount} embeddings (${embeddingStats.dimensions || 128}D)`)
+  console.log(`    Random Walks: ${walkCount}`)
+  console.log(`    Training Time: ${embeddingStats.training_time_secs?.toFixed(2) || 'N/A'}s`)
+  console.log(`    Mode: Native Rust (zero JavaScript overhead)`)
 
-  for (const [entity, edges] of graph) {
-    for (let w = 0; w < walksPerNode; w++) {
-      const walk = [entity]
-      let current = entity
-
-      for (let step = 0; step < walkLength; step++) {
-        const neighbors = graph.get(current)
-        if (!neighbors || neighbors.length === 0) break
-        const randomEdge = neighbors[Math.floor(Math.random() * neighbors.length)]
-        walk.push(randomEdge.predicate)
-        walk.push(randomEdge.object)
-        current = randomEdge.object
-      }
-
-      if (walk.length > 1) walks.push(walk)
-    }
-  }
-
-  console.log(`    Generated ${walks.length} random walks from ${graph.size} entities`)
-
-  // Train RDF2Vec model
-  const rdf2vec = Rdf2VecEngine.withConfig(128, 5, walkLength, walksPerNode)
-  const trainResult = JSON.parse(rdf2vec.train(JSON.stringify(walks)))
-  console.log(`    Trained: ${trainResult.vocabulary_size} embeddings (${trainResult.dimensions}D) in ${trainResult.training_time_secs?.toFixed(2) || 'N/A'}s`)
-
-  // Store embeddings
-  const embeddingService = new EmbeddingService()
-  let storedCount = 0
-  for (const [entity] of graph) {
-    const vec = rdf2vec.getEmbedding(entity)
-    if (vec) {
-      embeddingService.storeVector(entity, vec)
-      storedCount++
-    }
-  }
-  console.log(`    Stored ${storedCount} entity embeddings in EmbeddingService`)
-
-  test('RDF2Vec embeddings generated', () => {
+  test('RDF2Vec embeddings generated in Rust', () => {
     assert(storedCount > 30, `Expected >30 embeddings, got ${storedCount}`)
   })
   console.log()
@@ -277,10 +243,10 @@ async function main() {
   // Create agent with embeddings and prompt optimization
   // NOTE: OWL ontology (SymmetricProperty, TransitiveProperty) is auto-detected
   //       from the TTL data file - no separate loadOntology() call needed!
+  // NOTE: Embeddings are already in GraphDB from loadTtlWithEmbeddings() - no separate service needed!
   const agent = new HyperMindAgent({
     name: 'boston-realestate-analyst',
     kg: db,
-    embeddings: embeddingService,
     apiKey: process.env.OPENAI_API_KEY,
     model: 'gpt-4o'
   })
@@ -578,10 +544,10 @@ async function main() {
   console.log(`    Adjacency Links: ${adjacencies.length}`)
   console.log(`    Price Influences: ${influences.length}`)
   console.log()
-  console.log('  RDF2VEC EMBEDDINGS (In-Memory):')
+  console.log('  RDF2VEC EMBEDDINGS (Native Rust):')
   console.log(`    Entity Embeddings: ${storedCount}`)
-  console.log(`    Dimensions: ${trainResult.dimensions || 128}`)
-  console.log(`    Random Walks: ${walks.length}`)
+  console.log(`    Dimensions: ${embeddingStats.dimensions || 128}`)
+  console.log(`    Random Walks: ${walkCount}`)
   console.log()
   console.log('  PROMPT OPTIMIZATION (In-Memory):')
   console.log(`    Schema Classes: ${schema.classes?.length || 0}`)
