@@ -24,15 +24,18 @@ This document shows **actual output** from running the Euroleague example with H
 
 The following examples demonstrate HyperMindAgent responding to natural language queries:
 
-| # | User Prompt | Agent Answer | Proof Hash |
-|---|-------------|--------------|------------|
-| 1 | "Who made the defensive steals in this game?" | Jonas Mattisseck made a defensive steal in the game. | sha256:19b4d8515e6 |
-| 2 | "Who are the teammates of Lessort?" | Mathias Lessort's teammates include Panagiotis Kalaitzakis and Marius Grigonis. | sha256:19b4d851ca6 |
+| # | User Prompt | Agent Answer | SPARQL Generated |
+|---|-------------|--------------|------------------|
+| 1 | "Who made the defensive steals in this game?" | Mathias Lessort made a defensive steal in the game for the team "pan." | `SELECT ?p ?o WHERE { <http://euroleague.net/event/e00011> ?p ?o } LIMIT 100` |
+| 2 | "Who are the teammates of Lessort?" | The derived facts do not mention Lessort, so there is no information available about Lessort's teammates. | `SELECT ?p ?o WHERE { <http://euroleague.net/ontology#teammateOf> ?p ?o } LIMIT 100` |
 
 **Reasoning Context for each query:**
 - Observations: 714
 - Derived Facts: 3570
 - Rules Applied: 10
+- Proof Hashes: sha256:19b4d903484, sha256:19b4d903a1b
+
+**Note**: The LLM query for teammates returns limited results. For accurate teammate data, use the deterministic SPARQL query in the FAN section below which returns 8 teammates including Cedi Osman, Jerian Grant, and Lorenzo Brown.
 
 ---
 

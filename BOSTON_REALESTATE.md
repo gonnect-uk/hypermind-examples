@@ -32,13 +32,15 @@ The following examples demonstrate HyperMindAgent responding to natural language
 
 | # | User Prompt | Agent Answer | SPARQL Generated |
 |---|-------------|--------------|------------------|
-| 1 | "What are the most expensive properties in Boston?" | The most expensive property in Boston from the provided data is located at 534 Tremont Street in the South End, with an assessed value of $2,400,000. | `SELECT ?p ?o WHERE { <http://boston.gov/property#property_SE001> ?p ?o } LIMIT 100` |
+| 1 | "What are the most expensive properties in Boston?" | The property at 88 Waltham Street in the South End of Boston, assessed at $875,000, is one of the most expensive properties mentioned. | `SELECT ?p ?o WHERE { <http://boston.gov/property#property_SE002> ?p ?o } LIMIT 100` |
 | 2 | "Which neighborhoods are near Beacon Hill?" | The neighborhoods near Beacon Hill are Charlestown and Back Bay. | `SELECT ?p ?o WHERE { <http://boston.gov/property#BeaconHill> ?p ?o } LIMIT 100` |
 
 **Reasoning Context for each query:**
 - Observations: 264
 - Derived Facts: 1319
 - Rules Applied: 10
+
+**Note**: For highest-value properties, use the deterministic SPARQL query in the INVESTOR section below (shows $8.5M at 298 Commonwealth Ave).
 
 ---
 

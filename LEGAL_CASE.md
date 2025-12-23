@@ -34,8 +34,10 @@ The following examples demonstrate HyperMindAgent responding to natural language
 | # | User Prompt | Agent Answer | Reasoning |
 |---|-------------|--------------|-----------|
 | 1 | "Who was the lead attorney in Brown v. Board of Education?" | The lead attorney in Brown v. Board of Education was Thurgood Marshall. | 292 observations → 1460 derived facts |
-| 2 | "What was the significance of the 9-0 unanimous decision?" | The 9-0 unanimous decision signifies a legal case outcome where all judges agreed, highlighting the collaboration among key legal figures such as Thurgood Marshall, Robert Carter, and others who worked together on the case. | 292 observations → 1460 derived facts |
-| 3 | "How did the Warren Court achieve consensus?" | The Warren Court achieved consensus through collaboration among key legal figures, such as Thurgood Marshall working with Robert Carter and Constance Baker Motley, and partnerships like those between Oliver Hill and Spotswood Robinson, and Mamie Clark and Kenneth Clark. | 292 observations → 1460 derived facts |
+| 2 | "What was the significance of the 9-0 unanimous decision?" | The 9-0 unanimous decision signifies a legal case where all judges agreed on the verdict, highlighting the collaborative efforts of notable legal figures such as Thurgood Marshall, Robert Carter, and others who worked together on the case. | 292 observations → 1460 derived facts |
+| 3 | "How did the Warren Court achieve consensus?" | The Warren Court achieved consensus through collaboration among key legal figures, such as Thurgood Marshall working with Robert Carter, Jack Greenberg, and Constance Baker Motley, as well as partnerships like Oliver Hill with Spotswood Robinson and Mamie Clark with Kenneth Clark. | 292 observations → 1460 derived facts |
+
+**Full Output**: [output/legal-case-output.json](output/legal-case-output.json)
 
 **Proof Chain Example:**
 ```
