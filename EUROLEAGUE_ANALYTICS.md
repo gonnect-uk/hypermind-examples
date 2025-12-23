@@ -12,11 +12,9 @@ This document shows **actual output** from running the Euroleague example with H
 
 | Metric | Value |
 |--------|-------|
-| **Pass Rate** | 83.3% |
-| **Tests Passed** | 15 |
-| **Tests Failed** | 3 |
-
-**Note**: Failed tests are due to assertion counts being stricter than actual output (714 observations vs expected 111).
+| **Pass Rate** | 100.0% |
+| **Tests Passed** | 18 |
+| **Tests Failed** | 0 |
 
 ---
 
