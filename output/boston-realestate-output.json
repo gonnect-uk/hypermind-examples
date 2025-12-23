@@ -1,0 +1,96 @@
+{
+  "timestamp": "2025-12-23T23:39:26.245Z",
+  "example": "boston-realestate-agent",
+  "passRate": "100.0%",
+  "stats": {
+    "tripleCount": 251,
+    "neighborhoods": 10,
+    "properties": 18
+  },
+  "testResults": {
+    "passed": 20,
+    "failed": 0,
+    "assertions": [
+      {
+        "name": "Neighborhoods count = 10",
+        "status": "PASS"
+      },
+      {
+        "name": "Properties count = 18",
+        "status": "PASS"
+      },
+      {
+        "name": "Property types count = 4 (SingleFamily, Condo, MultiFamily, Commercial)",
+        "status": "PASS"
+      },
+      {
+        "name": "Back Bay properties count = 3",
+        "status": "PASS"
+      },
+      {
+        "name": "Neighborhood adjacencies = 9 (symmetric creates 18 links)",
+        "status": "PASS"
+      },
+      {
+        "name": "Price influence relationships found",
+        "status": "PASS"
+      },
+      {
+        "name": "High-value properties (Back Bay + Beacon Hill) found",
+        "status": "PASS"
+      },
+      {
+        "name": "Historic properties (Beacon Hill) found",
+        "status": "PASS"
+      },
+      {
+        "name": "RDF2Vec embeddings generated in Rust",
+        "status": "PASS"
+      },
+      {
+        "name": "Schema has classes",
+        "status": "PASS"
+      },
+      {
+        "name": "Schema has predicates",
+        "status": "PASS"
+      },
+      {
+        "name": "HyperFederate SQL shows high-value properties",
+        "status": "PASS"
+      },
+      {
+        "name": "Observations loaded",
+        "status": "PASS"
+      },
+      {
+        "name": "Derived facts from OWL reasoning",
+        "status": "PASS"
+      },
+      {
+        "name": "OWL rules detected from TTL data",
+        "status": "PASS"
+      },
+      {
+        "name": "INVESTOR: What are the highest-value properties in Back Bay?",
+        "status": "PASS"
+      },
+      {
+        "name": "HOME BUYER: Which neighborhoods are adjacent to Back Bay?",
+        "status": "PASS"
+      },
+      {
+        "name": "APPRAISER: What properties influence pricing in the market?",
+        "status": "PASS"
+      },
+      {
+        "name": "HISTORIAN: What are the oldest properties in the dataset?",
+        "status": "PASS"
+      },
+      {
+        "name": "DEVELOPER: What multi-family properties exist in emerging areas?",
+        "status": "PASS"
+      }
+    ]
+  }
+}

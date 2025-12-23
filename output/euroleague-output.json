@@ -1,0 +1,92 @@
+{
+  "timestamp": "2025-12-23T23:39:31.675Z",
+  "example": "euroleague-basketball-agent",
+  "passRate": "83.3%",
+  "stats": {
+    "tripleCount": 603,
+    "teams": 2,
+    "players": 22,
+    "steals": 3
+  },
+  "testResults": {
+    "passed": 15,
+    "failed": 3,
+    "assertions": [
+      {
+        "name": "Teams count = 2 (BER, PAN)",
+        "status": "PASS"
+      },
+      {
+        "name": "Players count = 22",
+        "status": "PASS"
+      },
+      {
+        "name": "Steals count = 3 (Lessort, Mitoglou, Mattisseck)",
+        "status": "PASS"
+      },
+      {
+        "name": "Steal players are correct",
+        "status": "PASS"
+      },
+      {
+        "name": "Assist events count = 8",
+        "status": "PASS"
+      },
+      {
+        "name": "Teammate links = 111",
+        "status": "PASS"
+      },
+      {
+        "name": "Scoring events found",
+        "status": "PASS"
+      },
+      {
+        "name": "RDF2Vec embeddings generated in Rust",
+        "status": "PASS"
+      },
+      {
+        "name": "Schema has classes",
+        "status": "PASS"
+      },
+      {
+        "name": "Schema has predicates",
+        "status": "PASS"
+      },
+      {
+        "name": "HyperFederate SQL shows 3 steal players",
+        "status": "PASS"
+      },
+      {
+        "name": "Observations loaded = 111",
+        "status": "FAIL",
+        "error": "Expected 111 observations, got 714\n\n714 !== 111\n"
+      },
+      {
+        "name": "Derived facts = 222 (symmetric property doubles links)",
+        "status": "FAIL",
+        "error": "Expected 222 derived facts, got 3126\n\n3126 !== 222\n"
+      },
+      {
+        "name": "Rules applied = 2 (SymmetricProperty + TransitiveProperty)",
+        "status": "FAIL",
+        "error": "Expected 2 rules, got 10\n\n10 !== 2\n"
+      },
+      {
+        "name": "JOURNALIST: Who made the defensive steals?",
+        "status": "PASS"
+      },
+      {
+        "name": "COACH: Which players distributed the ball best with assists?",
+        "status": "PASS"
+      },
+      {
+        "name": "ANALYST: Who made scoring plays (Two/Three Pointers)?",
+        "status": "PASS"
+      },
+      {
+        "name": "FAN: Who are the teammates of Lessort?",
+        "status": "PASS"
+      }
+    ]
+  }
+}

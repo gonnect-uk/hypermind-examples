@@ -659,6 +659,21 @@ ORDER BY price_premium DESC`
   console.log('    - Verifiable: Assertions prove correctness')
   console.log()
 
+  // Save JSON output
+  if (process.env.OPENAI_API_KEY) {
+    const outputPath = path.join(__dirname, '..', 'output', 'boston-realestate-output.json')
+    fs.mkdirSync(path.dirname(outputPath), { recursive: true })
+    fs.writeFileSync(outputPath, JSON.stringify({
+      timestamp: new Date().toISOString(),
+      example: 'boston-realestate-agent',
+      passRate: `${passRate}%`,
+      stats: { tripleCount, neighborhoods: neighborhoods.length, properties: properties.length },
+      testResults
+    }, null, 2))
+    console.log(`  JSON output saved to: output/boston-realestate-output.json`)
+    console.log()
+  }
+
   // Exit with error if tests failed
   if (testResults.failed > 0) {
     process.exit(1)

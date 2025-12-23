@@ -35,6 +35,8 @@ The following examples demonstrate HyperMindAgent responding to natural language
 - Rules Applied: 10
 - Proof Hashes: sha256:19b4d903484, sha256:19b4d903a1b
 
+**Full Output**: [output/euroleague-output.json](output/euroleague-output.json)
+
 **Note**: The LLM query for teammates returns limited results. For accurate teammate data, use the deterministic SPARQL query in the FAN section below which returns 8 teammates including Cedi Osman, Jerian Grant, and Lorenzo Brown.
 
 ---

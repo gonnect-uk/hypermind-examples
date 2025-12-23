@@ -40,6 +40,8 @@ The following examples demonstrate HyperMindAgent responding to natural language
 - Derived Facts: 1319
 - Rules Applied: 10
 
+**Full Output**: [output/boston-realestate-output.json](output/boston-realestate-output.json)
+
 **Note**: For highest-value properties, use the deterministic SPARQL query in the INVESTOR section below (shows $8.5M at 298 Commonwealth Ave).
 
 ---

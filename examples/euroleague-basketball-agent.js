@@ -678,6 +678,21 @@ SELECT ?player (COUNT(?steal) AS ?steal_count) WHERE {
   console.log('    - Verifiable: Assertions prove correctness')
   console.log()
 
+  // Save JSON output
+  if (process.env.OPENAI_API_KEY) {
+    const outputPath = path.join(__dirname, '..', 'output', 'euroleague-output.json')
+    fs.mkdirSync(path.dirname(outputPath), { recursive: true })
+    fs.writeFileSync(outputPath, JSON.stringify({
+      timestamp: new Date().toISOString(),
+      example: 'euroleague-basketball-agent',
+      passRate: `${passRate}%`,
+      stats: { tripleCount, teams: teams.length, players: players.length, steals: steals.length },
+      testResults
+    }, null, 2))
+    console.log(`  JSON output saved to: output/euroleague-output.json`)
+    console.log()
+  }
+
   // Exit with error if tests failed
   if (testResults.failed > 0) {
     process.exit(1)
