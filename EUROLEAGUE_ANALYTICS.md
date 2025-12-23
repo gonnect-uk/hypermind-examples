@@ -12,9 +12,29 @@ This document shows **actual output** from running the Euroleague example with H
 
 | Metric | Value |
 |--------|-------|
-| **Pass Rate** | 100.0% |
-| **Tests Passed** | 18 |
-| **Tests Failed** | 0 |
+| **Pass Rate** | 83.3% |
+| **Tests Passed** | 15 |
+| **Tests Failed** | 3 |
+
+**Note**: Failed tests are due to assertion counts being stricter than actual output (714 observations vs expected 111).
+
+---
+
+## Natural Language Q&A (LLM-Assisted)
+
+> **OUTPUT REFERENCE**: All results below are from local execution on 2025-12-23. See `/tmp/demo-euroleague.txt` for full output.
+
+The following table shows **actual prompts and answers** from the HyperMindAgent:
+
+| # | User Prompt | Agent Answer | Proof Hash |
+|---|-------------|--------------|------------|
+| 1 | "Who made the defensive steals in this game?" | Jonas Mattisseck made a defensive steal in the game. | sha256:19b4d8515e6 |
+| 2 | "Who are the teammates of Lessort?" | Mathias Lessort's teammates include Panagiotis Kalaitzakis and Marius Grigonis. | sha256:19b4d851ca6 |
+
+**Reasoning Context for each query:**
+- Observations: 714
+- Derived Facts: 3570
+- Rules Applied: 10
 
 ---
 
@@ -227,6 +247,19 @@ OWL Rules: 2
 
 ## Use Case Queries (SPARQL-first, deterministic)
 
+> **OUTPUT REFERENCE**: All results below are from local execution on 2025-12-23. See `/tmp/demo-euroleague.txt` for full output.
+
+### Use Case Query Table (SPARQL Results)
+
+| Use Case | User Prompt | Results | Key Data Points |
+|----------|-------------|---------|-----------------|
+| **JOURNALIST** | "Who made the defensive steals?" | 3 bindings | lessort__mathias, mitoglou__konstantinos, mattisseck__jonas |
+| **COACH** | "Which players distributed the ball best with assists?" | 8 bindings | nunn__kendrick (2), rapieque__elias, hermannsson__martin, brown__lorenzo |
+| **ANALYST** | "Who made scoring plays (Two/Three Pointers)?" | 26 bindings | olinde__louis (4), brown__lorenzo |
+| **FAN** | "Who are the teammates of Lessort?" | 8 bindings | osman__cedi, grant__jerian, brown__lorenzo, sloukas__kostas |
+
+---
+
 ### JOURNALIST: "Who made the defensive steals?"
 
 **SPARQL:**
@@ -237,17 +270,18 @@ SELECT ?player WHERE {
 }
 ```
 
-**RESULTS:** 3 bindings
-```
-e=e00011, player=lessort__mathias
-player=mitoglou__konstantinos, e=e00028
-e=e00030, player=mattisseck__jonas
-```
+**RESULTS (TABLE FORMAT):**
+
+| event | player |
+|-------|--------|
+| e00011 | lessort__mathias |
+| e00028 | mitoglou__konstantinos |
+| e00030 | mattisseck__jonas |
 
 **REASONING CONTEXT:**
-- Observations: 111
-- Derived Facts: 222
-- Rules Applied: 2
+- Observations: 714
+- Derived Facts: 3126
+- Rules Applied: 10
 
 ---
 
@@ -261,14 +295,15 @@ SELECT ?player WHERE {
 }
 ```
 
-**RESULTS:** 8 bindings
-```
-player=nunn__kendrick, e=e00007
-player=rapieque__elias, e=e00014
-player=nunn__kendrick, e=e00016
-player=hermannsson__martin, e=e00032
-e=e00051, player=brown__lorenzo
-```
+**RESULTS (TABLE FORMAT):**
+
+| event | player |
+|-------|--------|
+| e00007 | nunn__kendrick |
+| e00014 | rapieque__elias |
+| e00016 | nunn__kendrick |
+| e00032 | hermannsson__martin |
+| e00051 | brown__lorenzo |
 
 ---
 
@@ -283,14 +318,15 @@ SELECT ?player ?label WHERE {
 }
 ```
 
-**RESULTS:** 26 bindings
-```
-e=e00013, label=1 - 2 pt), player=olinde__louis
-label=1 - 2 pt), e=e00017, player=olinde__louis
-label=2 - 2 pt), e=e00022, player=olinde__louis
-e=e00038, label=3 - 2 pt), player=olinde__louis
-label=1 - 2 pt), player=brown__lorenzo, e=e00026
-```
+**RESULTS (TABLE FORMAT):**
+
+| event | label | player |
+|-------|-------|--------|
+| e00013 | 1 - 2 pt) | olinde__louis |
+| e00017 | 1 - 2 pt) | olinde__louis |
+| e00022 | 2 - 2 pt) | olinde__louis |
+| e00038 | 3 - 2 pt) | olinde__louis |
+| e00026 | 1 - 2 pt) | brown__lorenzo |
 
 ---
 
@@ -303,14 +339,15 @@ SELECT ?teammate WHERE {
 }
 ```
 
-**RESULTS:** 8 bindings
-```
-teammate=osman__cedi
-teammate=grant__jerian
-teammate=brown__lorenzo
-teammate=sloukas__kostas
-teammate=yurtseven__omer
-```
+**RESULTS (TABLE FORMAT):**
+
+| teammate |
+|----------|
+| osman__cedi |
+| grant__jerian |
+| brown__lorenzo |
+| sloukas__kostas |
+| yurtseven__omer |
 
 ---
 
@@ -345,4 +382,16 @@ npm run euroleague
 
 ---
 
-*Generated from actual execution output on 2025-12-22*
+*Generated from actual execution output on 2025-12-23*
+
+---
+
+## Full Demo Output Reference
+
+The complete demo output is saved to:
+- **Local**: `/tmp/demo-euroleague.txt`
+
+Run the demo yourself:
+```bash
+OPENAI_API_KEY=your-key npm run euroleague
+```

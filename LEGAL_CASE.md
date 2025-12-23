@@ -21,9 +21,30 @@ npm run legal
 
 | Metric | Value |
 |--------|-------|
-| **Pass Rate** | 90.5% |
-| **Tests Passed** | 19 |
-| **Tests Failed** | 2 |
+| **Pass Rate** | 100.0% |
+| **Tests Passed** | 21 |
+| **Tests Failed** | 0 |
+
+---
+
+## Natural Language Q&A (LLM-Assisted)
+
+> **OUTPUT REFERENCE**: All results below are from local execution on 2025-12-23. See `/tmp/demo-legal.txt` for full output.
+
+The following table shows **actual prompts and answers** from the HyperMindAgent:
+
+| # | User Prompt | Agent Answer | Reasoning |
+|---|-------------|--------------|-----------|
+| 1 | "Who was the lead attorney in Brown v. Board of Education?" | The lead attorney in Brown v. Board of Education was Thurgood Marshall. | 292 observations → 1460 derived facts |
+| 2 | "What was the significance of the 9-0 unanimous decision?" | The 9-0 unanimous decision signifies a legal case outcome where all judges agreed, highlighting the collaboration among key legal figures such as Thurgood Marshall, Robert Carter, and others who worked together on the case. | 292 observations → 1460 derived facts |
+| 3 | "How did the Warren Court achieve consensus?" | The Warren Court achieved consensus through collaboration among key legal figures, such as Thurgood Marshall working with Robert Carter and Constance Baker Motley, and partnerships like those between Oliver Hill and Spotswood Robinson, and Mamie Clark and Kenneth Clark. | 292 observations → 1460 derived facts |
+
+**Proof Chain Example:**
+```
+Step 1: [HYPOTHESIS] Hypothesis: http://law.gov/case#Case http://www.w3.org/2000/01/rdf-schema#label Legal Case
+Step 2: [HYPOTHESIS] Hypothesis: http://law.gov/case#Case http://www.w3.org/2000/01/rdf-schema#comment A court case
+Step 3: [HYPOTHESIS] Hypothesis: http://law.gov/case#Case http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#Class
+```
 
 ---
 
@@ -217,9 +238,9 @@ Similar to Thurgood Marshall:
 ## ThinkingReasoner Summary
 
 ```
-Observations: 10
-Derived Facts: 17
-OWL Rules: 2
+Observations: 292
+Derived Facts: 1432
+OWL Rules: 10
   - SymmetricProperty: A workedWith B => B workedWith A
   - TransitiveProperty: A mentored B, B mentored C => A mentored C
 ```
@@ -240,6 +261,21 @@ The reasoner infers:
 
 ## Use Case Queries (SPARQL-first, deterministic)
 
+> **OUTPUT REFERENCE**: All results below are from local execution on 2025-12-23. See `/tmp/demo-legal.txt` for full output.
+
+### Use Case Query Table (SPARQL Results)
+
+| Use Case | User Prompt | Results | Key Data Points |
+|----------|-------------|---------|-----------------|
+| **LAW STUDENT** | "Who were the key attorneys in Brown v. Board of Education?" | 9 bindings | Thurgood Marshall, Robert Carter, Oliver Hill, Jack Greenberg |
+| **LEGAL HISTORIAN** | "Which Supreme Court justices decided the case unanimously?" | 9 bindings | Earl Warren (Chief), Hugo Black, Tom C. Clark |
+| **CIVIL RIGHTS RESEARCHER** | "Who were the named plaintiffs in the consolidated cases?" | 7 bindings | Linda Brown, Oliver Brown, Harry Briggs Jr., Barbara Rose Johns |
+| **CONSTITUTIONAL SCHOLAR** | "What case did Brown v. Board overrule?" | 1 binding | Plessy v. Ferguson (1896) - "Separate but equal doctrine" |
+| **BIOGRAPHY WRITER** | "Who did Thurgood Marshall collaborate with?" | 3 bindings | Robert Carter, Jack Greenberg, Constance Baker Motley |
+| **ACADEMIC** | "What was the mentorship chain at NAACP Legal Defense Fund?" | 3 bindings | Marshall→Greenberg→Motley |
+
+---
+
 ### LAW STUDENT: "Who were the key attorneys in Brown v. Board of Education?"
 
 **SPARQL:**
@@ -251,19 +287,20 @@ SELECT ?attorney ?name ?role WHERE {
 }
 ```
 
-**RESULTS:** 9 bindings
-```
-attorney=OliverHill, name=Oliver Hill, role=NAACP Virginia Attorney
-name=George E.C. Hayes, role=Washington D.C. Attorney, attorney=GeorgeHayes
-name=James Nabrit Jr., role=Howard University Law School Professor, attorney=JamesNabrit
-attorney=LouisRedding, name=Louis L. Redding, role=Delaware Attorney
-attorney=RobertCarter, role=NAACP Legal Defense Fund Attorney, name=Robert L. Carter
-```
+**RESULTS (TABLE FORMAT):**
+
+| attorney | name | role |
+|----------|------|------|
+| OliverHill | Oliver Hill | NAACP Virginia Attorney |
+| GeorgeHayes | George E.C. Hayes | Washington D.C. Attorney |
+| JamesNabrit | James Nabrit Jr. | Howard University Law School Professor |
+| LouisRedding | Louis L. Redding | Delaware Attorney |
+| RobertCarter | Robert L. Carter | NAACP Legal Defense Fund Attorney |
 
 **REASONING CONTEXT:**
-- Observations: 10
-- Derived Facts: 17
-- Rules Applied: 2
+- Observations: 292
+- Derived Facts: 1432
+- Rules Applied: 10
 
 ---
 
@@ -278,14 +315,15 @@ SELECT ?justice ?name ?role WHERE {
 }
 ```
 
-**RESULTS:** 9 bindings
-```
-justice=TomClark, name=Tom C. Clark, role=Associate Justice
-justice=HugoBlack, name=Hugo Black, role=Associate Justice
-name=Earl Warren, justice=EarlWarren, role=Chief Justice
-name=Stanley Reed, justice=StanleyReed, role=Associate Justice
-justice=HaroldBurton, name=Harold Burton, role=Associate Justice
-```
+**RESULTS (TABLE FORMAT):**
+
+| justice | name | role |
+|---------|------|------|
+| TomClark | Tom C. Clark | Associate Justice |
+| HugoBlack | Hugo Black | Associate Justice |
+| EarlWarren | Earl Warren | Chief Justice |
+| StanleyReed | Stanley Reed | Associate Justice |
+| HaroldBurton | Harold Burton | Associate Justice |
 
 ---
 
@@ -300,14 +338,15 @@ SELECT ?plaintiff ?name ?role WHERE {
 }
 ```
 
-**RESULTS:** 7 bindings
-```
-name=Linda Brown, role=Student Plaintiff (Kansas), plaintiff=LindaBrown
-role=Student Plaintiff (Delaware), name=Ethel Louise Belton, plaintiff=EthelBelton
-role=Student Plaintiff (South Carolina), name=Harry Briggs Jr., plaintiff=HarryBriggs
-plaintiff=OliverBrown, name=Oliver Brown, role=Lead Plaintiff (Kansas)
-plaintiff=BarbaraJohns, role=Student Organizer (Virginia), name=Barbara Rose Johns
-```
+**RESULTS (TABLE FORMAT):**
+
+| plaintiff | name | role |
+|-----------|------|------|
+| LindaBrown | Linda Brown | Student Plaintiff (Kansas) |
+| EthelBelton | Ethel Louise Belton | Student Plaintiff (Delaware) |
+| HarryBriggs | Harry Briggs Jr. | Student Plaintiff (South Carolina) |
+| OliverBrown | Oliver Brown | Lead Plaintiff (Kansas) |
+| BarbaraJohns | Barbara Rose Johns | Student Organizer (Virginia) |
 
 ---
 
@@ -322,10 +361,11 @@ SELECT ?overruled ?label ?holding WHERE {
 }
 ```
 
-**RESULTS:** 1 binding
-```
-overruled=PlessyVFerguson, holding=Separate but equal doctrine, label=Plessy v. Ferguson
-```
+**RESULTS (TABLE FORMAT):**
+
+| overruled | label | holding |
+|-----------|-------|---------|
+| PlessyVFerguson | Plessy v. Ferguson | Separate but equal doctrine |
 
 ---
 
@@ -339,12 +379,13 @@ SELECT ?colleague ?name WHERE {
 }
 ```
 
-**RESULTS:** 3 bindings
-```
-name=Robert L. Carter, colleague=RobertCarter
-name=Jack Greenberg, colleague=JackGreenberg
-colleague=ConstanceBakerMotley, name=Constance Baker Motley
-```
+**RESULTS (TABLE FORMAT):**
+
+| colleague | name |
+|-----------|------|
+| RobertCarter | Robert L. Carter |
+| JackGreenberg | Jack Greenberg |
+| ConstanceBakerMotley | Constance Baker Motley |
 
 ---
 
@@ -358,12 +399,13 @@ SELECT ?mentor ?mentee ?menteeName WHERE {
 }
 ```
 
-**RESULTS:** 3 bindings
-```
-mentee=JackGreenberg, mentor=ThurgoodMarshall, menteeName=Jack Greenberg
-mentee=ConstanceBakerMotley, menteeName=Constance Baker Motley, mentor=JackGreenberg
-mentor=ThurgoodMarshall, menteeName=Constance Baker Motley, mentee=ConstanceBakerMotley
-```
+**RESULTS (TABLE FORMAT):**
+
+| mentor | mentee | menteeName |
+|--------|--------|------------|
+| ThurgoodMarshall | JackGreenberg | Jack Greenberg |
+| JackGreenberg | ConstanceBakerMotley | Constance Baker Motley |
+| ThurgoodMarshall | ConstanceBakerMotley | Constance Baker Motley |
 
 ---
 
@@ -447,4 +489,17 @@ The knowledge graph captures the legal network, mentorship chains, and decision 
 
 ---
 
-*Generated from actual execution output on 2025-12-22*
+*Generated from actual execution output on 2025-12-23*
+
+---
+
+## Full Demo Output Reference
+
+The complete demo output is saved to:
+- **Local**: `/tmp/demo-legal.txt`
+- **Repo**: `output/legal-case-output.json`
+
+Run the demo yourself:
+```bash
+OPENAI_API_KEY=your-key npm run legal
+```

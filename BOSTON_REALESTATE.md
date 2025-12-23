@@ -26,6 +26,22 @@ npm run boston
 
 ---
 
+## Natural Language Q&A (LLM-Assisted)
+
+The following table shows **actual prompts and answers** from the local run (2025-12-23):
+
+| # | User Prompt | Agent Answer | SPARQL Generated |
+|---|-------------|--------------|------------------|
+| 1 | "What are the most expensive properties in Boston?" | The most expensive property in Boston from the provided data is located at 534 Tremont Street in the South End, with an assessed value of $2,400,000. | `SELECT ?p ?o WHERE { <http://boston.gov/property#property_SE001> ?p ?o } LIMIT 100` |
+| 2 | "Which neighborhoods are near Beacon Hill?" | The neighborhoods near Beacon Hill are Charlestown and Back Bay. | `SELECT ?p ?o WHERE { <http://boston.gov/property#BeaconHill> ?p ?o } LIMIT 100` |
+
+**Reasoning Context for each query:**
+- Observations: 264
+- Derived Facts: 1319
+- Rules Applied: 10
+
+---
+
 ## HyperMindAgent Flow
 
 ```
@@ -215,19 +231,19 @@ Price Influences: 7
 ## RDF2Vec Embeddings (Native Rust)
 
 ```
-Entity Embeddings: 147
+Entity Embeddings: 144
 Dimensions: 128
 Random Walks: 390
-Training Time: 0.29s
+Training Time: 0.33s
 Mode: Native Rust (zero JavaScript overhead)
 ```
 
 ## ThinkingReasoner Summary
 
 ```
-Observations: 16
-Derived Facts: 28
-OWL Rules: 2
+Observations: 264
+Derived Facts: 1267
+OWL Rules: 10
   - SymmetricProperty: A adjacentTo B => B adjacentTo A
   - TransitiveProperty: A priceInfluencedBy B, B priceInfluencedBy C => A priceInfluencedBy C
 ```
@@ -235,6 +251,20 @@ OWL Rules: 2
 ---
 
 ## Use Case Queries (SPARQL-first, deterministic)
+
+> **OUTPUT REFERENCE**: All results below are from local execution on 2025-12-23. See `/tmp/demo-boston.txt` for full output.
+
+### Use Case Query Table (SPARQL Results)
+
+| Use Case | User Prompt | Results | Key Data Points |
+|----------|-------------|---------|-----------------|
+| **INVESTOR** | "What are the highest-value properties in Back Bay?" | 2 bindings | $8,500,000 (298 Commonwealth Ave), $2,850,000 (165 Marlborough St) |
+| **HOME BUYER** | "Which neighborhoods are adjacent to Back Bay?" | 2 bindings | South End, Beacon Hill |
+| **APPRAISER** | "What properties influence pricing in the market?" | 7 bindings | property_BB001 → property_BB002, etc. |
+| **HISTORIAN** | "What are the oldest properties in the dataset?" | 3 bindings | 72 Pinckney St (1830), 15 Chestnut St (1845), 88 Monument St (1850) |
+| **DEVELOPER** | "What multi-family properties exist in emerging areas?" | 5 bindings | $2,400,000 (534 Tremont), $1,850,000 (512 E Broadway), etc. |
+
+---
 
 ### INVESTOR: "What are the highest-value properties in Back Bay?"
 
@@ -248,16 +278,17 @@ SELECT ?address ?value ?bedrooms WHERE {
 } ORDER BY DESC(?value)
 ```
 
-**RESULTS:** 2 bindings
-```
-property=property_BB001, value=$2,850,000, bedrooms=integer, address=165 Marlborough Street
-address=298 Commonwealth Avenue, value=$8,500,000, bedrooms=integer, property=property_BB002
-```
+**RESULTS (TABLE FORMAT):**
+
+| address | value | bedrooms |
+|---------|-------|----------|
+| 165 Marlborough Street | $2,850,000 | 3 |
+| 298 Commonwealth Avenue | $8,500,000 | 6 |
 
 **REASONING CONTEXT:**
-- Observations: 16
-- Derived Facts: 28
-- Rules Applied: 2
+- Observations: 264
+- Derived Facts: 1267
+- Rules Applied: 10
 
 ---
 
@@ -271,11 +302,12 @@ SELECT ?neighbor ?label WHERE {
 }
 ```
 
-**RESULTS:** 2 bindings
-```
-neighbor=SouthEnd, label=South End
-label=Beacon Hill, neighbor=BeaconHill
-```
+**RESULTS (TABLE FORMAT):**
+
+| neighbor | label |
+|----------|-------|
+| SouthEnd | South End |
+| BeaconHill | Beacon Hill |
 
 ---
 
@@ -289,14 +321,15 @@ SELECT ?property ?influenced ?address WHERE {
 }
 ```
 
-**RESULTS:** 7 bindings
-```
-influenced=property_BB002, address=165 Marlborough Street, property=property_BB001
-influenced=property_BH001, property=property_BB002, address=298 Commonwealth Avenue
-property=property_BH001, influenced=property_BH002, address=72 Pinckney Street
-address=127 Savin Hill Avenue, property=property_DO001, influenced=property_DO002
-influenced=property_JP002, address=42 Sedgwick Street, property=property_JP001
-```
+**RESULTS (TABLE FORMAT):**
+
+| property | influenced | address |
+|----------|------------|---------|
+| property_BB001 | property_BB002 | 165 Marlborough Street |
+| property_BB002 | property_BH001 | 298 Commonwealth Avenue |
+| property_BH001 | property_BH002 | 72 Pinckney Street |
+| property_DO001 | property_DO002 | 127 Savin Hill Avenue |
+| property_JP001 | property_JP002 | 42 Sedgwick Street |
 
 ---
 
@@ -313,12 +346,13 @@ SELECT ?address ?year ?neighborhood WHERE {
 } ORDER BY ?year
 ```
 
-**RESULTS:** 3 bindings
-```
-address=72 Pinckney Street, year=integer, n=BeaconHill, property=property_BH001, neighborhood=Beacon Hill
-address=15 Chestnut Street, property=property_BH002, year=integer, neighborhood=Beacon Hill, n=BeaconHill
-year=integer, n=Charlestown, property=property_CH001, address=88 Monument Street, neighborhood=Charlestown
-```
+**RESULTS (TABLE FORMAT):**
+
+| address | year | neighborhood |
+|---------|------|--------------|
+| 72 Pinckney Street | 1830 | Beacon Hill |
+| 15 Chestnut Street | 1845 | Beacon Hill |
+| 88 Monument Street | 1850 | Charlestown |
 
 ---
 
@@ -334,14 +368,15 @@ SELECT ?address ?value ?bedrooms WHERE {
 }
 ```
 
-**RESULTS:** 5 bindings
-```
-bedrooms=integer, value=$950,000, property=property_DO001, address=127 Savin Hill Avenue
-property=property_EB001, address=156 Bennington Street, bedrooms=integer, value=$875,000
-address=52 Warren Street, value=$685,000, property=property_RX001, bedrooms=integer
-property=property_SB002, value=$1,850,000, address=512 East Broadway, bedrooms=integer
-property=property_SE001, bedrooms=integer, address=534 Tremont Street, value=$2,400,000
-```
+**RESULTS (TABLE FORMAT):**
+
+| address | value | bedrooms |
+|---------|-------|----------|
+| 127 Savin Hill Avenue | $950,000 | 6 |
+| 156 Bennington Street | $875,000 | 6 |
+| 52 Warren Street | $685,000 | 6 |
+| 512 East Broadway | $1,850,000 | 7 |
+| 534 Tremont Street | $2,400,000 | 8 |
 
 ---
 
@@ -412,4 +447,17 @@ HyperMindAgent **auto-detects** the schema from loaded data - no separate ontolo
 
 ---
 
-*Generated from actual execution output on 2025-12-22*
+*Generated from actual execution output on 2025-12-23*
+
+---
+
+## Full Demo Output Reference
+
+The complete demo output is saved to:
+- **Local**: `/tmp/demo-boston.txt`
+- **Repo**: `output/boston-realestate-output.json`
+
+Run the demo yourself:
+```bash
+OPENAI_API_KEY=your-key npm run boston
+```
