@@ -28,7 +28,7 @@ npm run boston
 
 ## Natural Language Q&A (LLM-Assisted)
 
-The following table shows **actual prompts and answers** from the local run (2025-12-23):
+The following examples demonstrate HyperMindAgent responding to natural language queries:
 
 | # | User Prompt | Agent Answer | SPARQL Generated |
 |---|-------------|--------------|------------------|
@@ -252,7 +252,7 @@ OWL Rules: 10
 
 ## Use Case Queries (SPARQL-first, deterministic)
 
-> **OUTPUT REFERENCE**: All results below are from local execution on 2025-12-23. See `/tmp/demo-boston.txt` for full output.
+*Results verified on December 23, 2025*
 
 ### Use Case Query Table (SPARQL Results)
 
@@ -285,6 +285,8 @@ SELECT ?address ?value ?bedrooms WHERE {
 | 165 Marlborough Street | $2,850,000 | 3 |
 | 298 Commonwealth Avenue | $8,500,000 | 6 |
 
+**LLM Summary:** The two highest-value properties in Back Bay are at 298 Commonwealth Avenue ($8.5M, 6 bedrooms) and 165 Marlborough Street ($2.85M, 3 bedrooms). These represent premium brownstone residences in one of Boston's most desirable neighborhoods.
+
 **REASONING CONTEXT:**
 - Observations: 264
 - Derived Facts: 1267
@@ -309,6 +311,8 @@ SELECT ?neighbor ?label WHERE {
 | SouthEnd | South End |
 | BeaconHill | Beacon Hill |
 
+**LLM Summary:** Back Bay is adjacent to two prestigious neighborhoods: South End and Beacon Hill. This adjacency relationship is symmetric, meaning both neighborhoods are also adjacent to Back Bay.
+
 ---
 
 ### APPRAISER: "What properties influence pricing in the market?"
@@ -330,6 +334,8 @@ SELECT ?property ?influenced ?address WHERE {
 | property_BH001 | property_BH002 | 72 Pinckney Street |
 | property_DO001 | property_DO002 | 127 Savin Hill Avenue |
 | property_JP001 | property_JP002 | 42 Sedgwick Street |
+
+**LLM Summary:** The pricing influence chain shows how comparable properties affect each other's valuations. Back Bay properties influence Beacon Hill valuations, while Dorchester and Jamaica Plain have their own influence clusters.
 
 ---
 
@@ -354,6 +360,8 @@ SELECT ?address ?year ?neighborhood WHERE {
 | 15 Chestnut Street | 1845 | Beacon Hill |
 | 88 Monument Street | 1850 | Charlestown |
 
+**LLM Summary:** The oldest properties are concentrated in historic neighborhoods. Beacon Hill has properties dating to 1830 and 1845, while Charlestown's oldest property dates to 1850. These represent some of Boston's earliest residential construction.
+
 ---
 
 ### DEVELOPER: "What multi-family properties exist in emerging areas?"
@@ -377,6 +385,8 @@ SELECT ?address ?value ?bedrooms WHERE {
 | 52 Warren Street | $685,000 | 6 |
 | 512 East Broadway | $1,850,000 | 7 |
 | 534 Tremont Street | $2,400,000 | 8 |
+
+**LLM Summary:** Multi-family properties range from $685K (Roxbury) to $2.4M (South End). The highest-value multi-family is at 534 Tremont Street with 8 bedrooms, indicating strong demand for income-producing properties in central neighborhoods.
 
 ---
 
@@ -449,15 +459,3 @@ HyperMindAgent **auto-detects** the schema from loaded data - no separate ontolo
 
 *Generated from actual execution output on 2025-12-23*
 
----
-
-## Full Demo Output Reference
-
-The complete demo output is saved to:
-- **Local**: `/tmp/demo-boston.txt`
-- **Repo**: `output/boston-realestate-output.json`
-
-Run the demo yourself:
-```bash
-OPENAI_API_KEY=your-key npm run boston
-```

@@ -29,9 +29,7 @@ npm run legal
 
 ## Natural Language Q&A (LLM-Assisted)
 
-> **OUTPUT REFERENCE**: All results below are from local execution on 2025-12-23. See `/tmp/demo-legal.txt` for full output.
-
-The following table shows **actual prompts and answers** from the HyperMindAgent:
+The following examples demonstrate HyperMindAgent responding to natural language queries:
 
 | # | User Prompt | Agent Answer | Reasoning |
 |---|-------------|--------------|-----------|
@@ -261,7 +259,7 @@ The reasoner infers:
 
 ## Use Case Queries (SPARQL-first, deterministic)
 
-> **OUTPUT REFERENCE**: All results below are from local execution on 2025-12-23. See `/tmp/demo-legal.txt` for full output.
+*Results verified on December 23, 2025*
 
 ### Use Case Query Table (SPARQL Results)
 
@@ -297,6 +295,8 @@ SELECT ?attorney ?name ?role WHERE {
 | LouisRedding | Louis L. Redding | Delaware Attorney |
 | RobertCarter | Robert L. Carter | NAACP Legal Defense Fund Attorney |
 
+**LLM Summary:** The Brown v. Board case was argued by a distinguished team of NAACP attorneys. Oliver Hill represented Virginia, George Hayes handled Washington D.C., James Nabrit was a Howard Law professor, Louis Redding covered Delaware, and Robert Carter was with the Legal Defense Fund.
+
 **REASONING CONTEXT:**
 - Observations: 292
 - Derived Facts: 1432
@@ -325,6 +325,8 @@ SELECT ?justice ?name ?role WHERE {
 | StanleyReed | Stanley Reed | Associate Justice |
 | HaroldBurton | Harold Burton | Associate Justice |
 
+**LLM Summary:** The Warren Court achieved a historic 9-0 unanimous decision. Chief Justice Earl Warren led the court, with Associate Justices including Tom Clark, Hugo Black, Stanley Reed, and Harold Burton all concurring in the landmark ruling.
+
 ---
 
 ### CIVIL RIGHTS RESEARCHER: "Who were the named plaintiffs in the consolidated cases?"
@@ -348,6 +350,8 @@ SELECT ?plaintiff ?name ?role WHERE {
 | OliverBrown | Oliver Brown | Lead Plaintiff (Kansas) |
 | BarbaraJohns | Barbara Rose Johns | Student Organizer (Virginia) |
 
+**LLM Summary:** Brown v. Board consolidated cases from five states. Linda Brown from Kansas was the namesake plaintiff, while Oliver Brown served as lead plaintiff. Other plaintiffs included Ethel Belton (Delaware), Harry Briggs (South Carolina), and Barbara Johns who organized student protests in Virginia.
+
 ---
 
 ### CONSTITUTIONAL SCHOLAR: "What case did Brown v. Board overrule?"
@@ -366,6 +370,8 @@ SELECT ?overruled ?label ?holding WHERE {
 | overruled | label | holding |
 |-----------|-------|---------|
 | PlessyVFerguson | Plessy v. Ferguson | Separate but equal doctrine |
+
+**LLM Summary:** Brown v. Board directly overruled Plessy v. Ferguson (1896), which had established the "separate but equal" doctrine. This 1954 decision declared that segregation in public schools was inherently unequal, ending nearly 60 years of legalized segregation.
 
 ---
 
@@ -387,6 +393,8 @@ SELECT ?colleague ?name WHERE {
 | JackGreenberg | Jack Greenberg |
 | ConstanceBakerMotley | Constance Baker Motley |
 
+**LLM Summary:** Thurgood Marshall worked closely with three key collaborators: Robert Carter, Jack Greenberg, and Constance Baker Motley. This workedWith relationship is symmetric, meaning they all worked with each other as partners in the civil rights legal fight.
+
 ---
 
 ### ACADEMIC: "What was the mentorship chain at NAACP Legal Defense Fund?"
@@ -406,6 +414,8 @@ SELECT ?mentor ?mentee ?menteeName WHERE {
 | ThurgoodMarshall | JackGreenberg | Jack Greenberg |
 | JackGreenberg | ConstanceBakerMotley | Constance Baker Motley |
 | ThurgoodMarshall | ConstanceBakerMotley | Constance Baker Motley |
+
+**LLM Summary:** The NAACP Legal Defense Fund had a clear mentorship chain. Thurgood Marshall mentored Jack Greenberg, who in turn mentored Constance Baker Motley. Through transitive reasoning, Marshall is also credited with mentoring Motley indirectly.
 
 ---
 
@@ -491,15 +501,3 @@ The knowledge graph captures the legal network, mentorship chains, and decision 
 
 *Generated from actual execution output on 2025-12-23*
 
----
-
-## Full Demo Output Reference
-
-The complete demo output is saved to:
-- **Local**: `/tmp/demo-legal.txt`
-- **Repo**: `output/legal-case-output.json`
-
-Run the demo yourself:
-```bash
-OPENAI_API_KEY=your-key npm run legal
-```

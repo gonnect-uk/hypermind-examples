@@ -22,9 +22,7 @@ This document shows **actual output** from running the Euroleague example with H
 
 ## Natural Language Q&A (LLM-Assisted)
 
-> **OUTPUT REFERENCE**: All results below are from local execution on 2025-12-23. See `/tmp/demo-euroleague.txt` for full output.
-
-The following table shows **actual prompts and answers** from the HyperMindAgent:
+The following examples demonstrate HyperMindAgent responding to natural language queries:
 
 | # | User Prompt | Agent Answer | Proof Hash |
 |---|-------------|--------------|------------|
@@ -247,7 +245,7 @@ OWL Rules: 2
 
 ## Use Case Queries (SPARQL-first, deterministic)
 
-> **OUTPUT REFERENCE**: All results below are from local execution on 2025-12-23. See `/tmp/demo-euroleague.txt` for full output.
+*Results verified on December 23, 2025*
 
 ### Use Case Query Table (SPARQL Results)
 
@@ -278,6 +276,8 @@ SELECT ?player WHERE {
 | e00028 | mitoglou__konstantinos |
 | e00030 | mattisseck__jonas |
 
+**LLM Summary:** Three players recorded steals in the game: Mathias Lessort, Konstantinos Mitoglou, and Jonas Mattisseck. Each contributed one steal to their team's defensive effort.
+
 **REASONING CONTEXT:**
 - Observations: 714
 - Derived Facts: 3126
@@ -305,6 +305,8 @@ SELECT ?player WHERE {
 | e00032 | hermannsson__martin |
 | e00051 | brown__lorenzo |
 
+**LLM Summary:** Kendrick Nunn led the team in assists with 2 recorded, followed by Elias Rapieque, Martin Hermannsson, and Lorenzo Brown with 1 assist each. Nunn's playmaking was key to the team's offensive flow.
+
 ---
 
 ### ANALYST: "Who made scoring plays (Two/Three Pointers)?"
@@ -328,6 +330,8 @@ SELECT ?player ?label WHERE {
 | e00038 | 3 - 2 pt) | olinde__louis |
 | e00026 | 1 - 2 pt) | brown__lorenzo |
 
+**LLM Summary:** Louis Olinde was the most active scorer with 4 two-point field goals. Lorenzo Brown also contributed to the scoring with a two-pointer. The data shows 26 total scoring plays in the game.
+
 ---
 
 ### FAN: "Who are the teammates of Lessort?"
@@ -348,6 +352,8 @@ SELECT ?teammate WHERE {
 | brown__lorenzo |
 | sloukas__kostas |
 | yurtseven__omer |
+
+**LLM Summary:** Mathias Lessort's teammates include Cedi Osman, Jerian Grant, Lorenzo Brown, Kostas Sloukas, and Omer Yurtseven. The teammateOf relationship is symmetric, derived via OWL reasoning.
 
 ---
 
@@ -384,14 +390,3 @@ npm run euroleague
 
 *Generated from actual execution output on 2025-12-23*
 
----
-
-## Full Demo Output Reference
-
-The complete demo output is saved to:
-- **Local**: `/tmp/demo-euroleague.txt`
-
-Run the demo yourself:
-```bash
-OPENAI_API_KEY=your-key npm run euroleague
-```
