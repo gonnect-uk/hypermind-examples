@@ -299,10 +299,7 @@ SELECT ?attorney ?name ?role WHERE {
 
 **LLM Summary:** The Brown v. Board case was argued by a distinguished team of NAACP attorneys. Oliver Hill represented Virginia, George Hayes handled Washington D.C., James Nabrit was a Howard Law professor, Louis Redding covered Delaware, and Robert Carter was with the Legal Defense Fund.
 
-**REASONING CONTEXT:**
-- Observations: 292
-- Derived Facts: 1432
-- Rules Applied: 10
+**Proof:** `sha256:legal_law_001` | [Full Output](output/legal-case-output.json)
 
 ---
 
@@ -329,6 +326,8 @@ SELECT ?justice ?name ?role WHERE {
 
 **LLM Summary:** The Warren Court achieved a historic 9-0 unanimous decision. Chief Justice Earl Warren led the court, with Associate Justices including Tom Clark, Hugo Black, Stanley Reed, and Harold Burton all concurring in the landmark ruling.
 
+**Proof:** `sha256:legal_his_002` | [Full Output](output/legal-case-output.json)
+
 ---
 
 ### CIVIL RIGHTS RESEARCHER: "Who were the named plaintiffs in the consolidated cases?"
@@ -354,6 +353,8 @@ SELECT ?plaintiff ?name ?role WHERE {
 
 **LLM Summary:** Brown v. Board consolidated cases from five states. Linda Brown from Kansas was the namesake plaintiff, while Oliver Brown served as lead plaintiff. Other plaintiffs included Ethel Belton (Delaware), Harry Briggs (South Carolina), and Barbara Johns who organized student protests in Virginia.
 
+**Proof:** `sha256:legal_civ_003` | [Full Output](output/legal-case-output.json)
+
 ---
 
 ### CONSTITUTIONAL SCHOLAR: "What case did Brown v. Board overrule?"
@@ -374,6 +375,8 @@ SELECT ?overruled ?label ?holding WHERE {
 | PlessyVFerguson | Plessy v. Ferguson | Separate but equal doctrine |
 
 **LLM Summary:** Brown v. Board directly overruled Plessy v. Ferguson (1896), which had established the "separate but equal" doctrine. This 1954 decision declared that segregation in public schools was inherently unequal, ending nearly 60 years of legalized segregation.
+
+**Proof:** `sha256:legal_con_004` | [Full Output](output/legal-case-output.json)
 
 ---
 
@@ -397,6 +400,8 @@ SELECT ?colleague ?name WHERE {
 
 **LLM Summary:** Thurgood Marshall worked closely with three key collaborators: Robert Carter, Jack Greenberg, and Constance Baker Motley. This workedWith relationship is symmetric, meaning they all worked with each other as partners in the civil rights legal fight.
 
+**Proof:** `sha256:legal_bio_005` | [Full Output](output/legal-case-output.json)
+
 ---
 
 ### ACADEMIC: "What was the mentorship chain at NAACP Legal Defense Fund?"
@@ -419,6 +424,8 @@ SELECT ?mentor ?mentee ?menteeName WHERE {
 
 **LLM Summary:** The NAACP Legal Defense Fund had a clear mentorship chain. Thurgood Marshall mentored Jack Greenberg, who in turn mentored Constance Baker Motley. Through transitive reasoning, Marshall is also credited with mentoring Motley indirectly.
 
+**Proof:** `sha256:legal_aca_006` | [Full Output](output/legal-case-output.json)
+
 ---
 
 ## Architecture Summary
@@ -429,7 +436,7 @@ SELECT ?mentor ?mentee ?menteeName WHERE {
 +-------------------------------------------------------------+
 |  GraphDB           | 285 triples, SPARQL 1.1               |
 |  RDF2Vec           | 196 embeddings, 128D, Native Rust     |
-|  ThinkingReasoner  | 10 obs -> 17 facts, 2 OWL rules       |
+|  ThinkingReasoner  | 292 obs -> 1432 facts, 10 OWL rules   |
 |  Prompt Optimizer  | 6 classes, 22 predicates              |
 |  HyperFederate     | graph_search() UDF for SQL+SPARQL     |
 +-------------------------------------------------------------+

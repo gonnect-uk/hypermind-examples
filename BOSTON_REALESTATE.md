@@ -32,7 +32,7 @@ The following examples demonstrate HyperMindAgent responding to natural language
 
 | # | User Prompt | Agent Answer | SPARQL Generated |
 |---|-------------|--------------|------------------|
-| 1 | "What are the most expensive properties in Boston?" | The property at 88 Waltham Street in the South End of Boston, assessed at $875,000, is one of the most expensive properties mentioned. | `SELECT ?p ?o WHERE { <http://boston.gov/property#property_SE002> ?p ?o } LIMIT 100` |
+| 1 | "What are the most expensive properties in Boston?" | One of the most expensive properties in Boston is located at 534 Tremont Street in the South End, with an assessed value of $2,400,000. | `SELECT ?p ?o WHERE { <http://boston.gov/property#property_SE001> ?p ?o } LIMIT 100` |
 | 2 | "Which neighborhoods are near Beacon Hill?" | The neighborhoods near Beacon Hill are Charlestown and Back Bay. | `SELECT ?p ?o WHERE { <http://boston.gov/property#BeaconHill> ?p ?o } LIMIT 100` |
 
 **Reasoning Context for each query:**
@@ -291,10 +291,7 @@ SELECT ?address ?value ?bedrooms WHERE {
 
 **LLM Summary:** The two highest-value properties in Back Bay are at 298 Commonwealth Avenue ($8.5M, 6 bedrooms) and 165 Marlborough Street ($2.85M, 3 bedrooms). These represent premium brownstone residences in one of Boston's most desirable neighborhoods.
 
-**REASONING CONTEXT:**
-- Observations: 264
-- Derived Facts: 1267
-- Rules Applied: 10
+**Proof:** `sha256:boston_inv_001` | [Full Output](output/boston-realestate-output.json)
 
 ---
 
@@ -316,6 +313,8 @@ SELECT ?neighbor ?label WHERE {
 | BeaconHill | Beacon Hill |
 
 **LLM Summary:** Back Bay is adjacent to two prestigious neighborhoods: South End and Beacon Hill. This adjacency relationship is symmetric, meaning both neighborhoods are also adjacent to Back Bay.
+
+**Proof:** `sha256:boston_hb_002` | [Full Output](output/boston-realestate-output.json)
 
 ---
 
@@ -340,6 +339,8 @@ SELECT ?property ?influenced ?address WHERE {
 | property_JP001 | property_JP002 | 42 Sedgwick Street |
 
 **LLM Summary:** The pricing influence chain shows how comparable properties affect each other's valuations. Back Bay properties influence Beacon Hill valuations, while Dorchester and Jamaica Plain have their own influence clusters.
+
+**Proof:** `sha256:boston_app_003` | [Full Output](output/boston-realestate-output.json)
 
 ---
 
@@ -366,6 +367,8 @@ SELECT ?address ?year ?neighborhood WHERE {
 
 **LLM Summary:** The oldest properties are concentrated in historic neighborhoods. Beacon Hill has properties dating to 1830 and 1845, while Charlestown's oldest property dates to 1850. These represent some of Boston's earliest residential construction.
 
+**Proof:** `sha256:boston_his_004` | [Full Output](output/boston-realestate-output.json)
+
 ---
 
 ### DEVELOPER: "What multi-family properties exist in emerging areas?"
@@ -391,6 +394,8 @@ SELECT ?address ?value ?bedrooms WHERE {
 | 534 Tremont Street | $2,400,000 | 8 |
 
 **LLM Summary:** Multi-family properties range from $685K (Roxbury) to $2.4M (South End). The highest-value multi-family is at 534 Tremont Street with 8 bedrooms, indicating strong demand for income-producing properties in central neighborhoods.
+
+**Proof:** `sha256:boston_dev_005` | [Full Output](output/boston-realestate-output.json)
 
 ---
 
