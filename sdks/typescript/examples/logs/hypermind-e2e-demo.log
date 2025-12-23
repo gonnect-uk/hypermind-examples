@@ -1,0 +1,122 @@
+======================================================================
+ rust-kgdb HyperMind E2E Demo
+ Version: 0.2.0
+ Mode: INMEMORY
+======================================================================
+
+[1] Initializing KGDB...
+    Loaded insurance ontology
+    Loaded sample data
+    Total triples: 26
+
+[2] Initializing ThinkingReasoner (Rust core)...
+    Auto-generated 6 rules from ontology
+    - owl:TransitiveProperty -> transitivity rules
+    - owl:SymmetricProperty -> symmetry rules
+    - rdfs:subClassOf -> inheritance rules
+
+[3] Recording observations from SPARQL...
+    SPARQL returned 0, using triple data directly...
+    Found 3 payment transfers
+    Assertion: alice transfers bob
+    Assertion: bob transfers carol
+    Assertion: carol transfers alice
+    Hypothesis: Circular payment fraud (confidence: 0.85)
+
+[4] Running deductive reasoning (Rust core)...
+    Rules fired: 12
+    Iterations: 1
+    Derived facts: 12
+    Proofs generated: 12
+
+    Derived Facts:
+      - http://insurance.gonnect.ai/transfers: Uri("http://insurance.gonnect.ai/alice") -> Uri("http://insurance.gonnect.ai/carol")
+      - http://insurance.gonnect.ai/transfers: Uri("http://insurance.gonnect.ai/carol") -> Uri("http://insurance.gonnect.ai/bob")
+      - http://insurance.gonnect.ai/transfers: Uri("http://insurance.gonnect.ai/bob") -> Uri("http://insurance.gonnect.ai/alice")
+      - causalChain: Uri("event:72a8d24a-cc98-47f3-a698-45c36cbb40d2") -> Uri("event:83b12f5f-acd3-4638-a94d-2ca3fab80edf")
+      - causalChain: Uri("event:93fdfcb9-fdf9-404e-974d-c1accf6bb746") -> Uri("event:83b12f5f-acd3-4638-a94d-2ca3fab80edf")
+
+[5] Getting thinking graph...
+    Nodes: 16
+    Edges: 3
+    Derivation steps: 16
+
+    Derivation Chain:
+      Step 1: [HYPOTHESIS] Hypothesis: http://insurance.gonnect.ai/alice http://insurance.gonnect.ai/transfers http://insurance.gonnect.ai/bob
+      Step 2: [HYPOTHESIS] Hypothesis: http://insurance.gonnect.ai/bob http://insurance.gonnect.ai/transfers http://insurance.gonnect.ai/carol
+      Step 3: [HYPOTHESIS] Hypothesis: http://insurance.gonnect.ai/carol http://insurance.gonnect.ai/transfers http://insurance.gonnect.ai/alice
+      Step 4: [HYPOTHESIS] Hypothesis: http://insurance.gonnect.ai/alice http://insurance.gonnect.ai/suspectedCircularFraud http://insurance.gonnect.ai/payment-ring-001
+         Premises: event:72a8d24a-cc98-47f3-a698-45c36cbb40d2, event:4dbc5877-f57e-40a3-9bf4-9a773452b303, event:93fdfcb9-fdf9-404e-974d-c1accf6bb746
+      Step 5: [DATALOG-INFER] Derived: http://insurance.gonnect.ai/transfers(<http://insurance.gonnect.ai/alice>, <http://insurance.gonnect.ai/carol>)
+      Step 6: [DATALOG-INFER] Derived: http://insurance.gonnect.ai/transfers(<http://insurance.gonnect.ai/carol>, <http://insurance.gonnect.ai/bob>)
+      Step 7: [DATALOG-INFER] Derived: http://insurance.gonnect.ai/transfers(<http://insurance.gonnect.ai/bob>, <http://insurance.gonnect.ai/alice>)
+
+[6] RDF2Vec Embeddings...
+    EmbeddingService methods: countComposites, deleteVector, findSimilar, findSimilarComposite, findSimilarGraceful
+    EmbeddingService: Vector operations via native Rust HNSW
+
+[7] Reasoning statistics:
+    Events: 16
+    Facts: 32
+    Rules: 6
+    Proofs: 12
+    Contexts: 1
+    Actors: 1
+
+[8] Validating proofs...
+    Proof proof:6c96d9c1-44f4-...: VALID
+      Hash: 3832643263623032...
+      Confidence: 0.72
+    Proof proof:0257c3b5-559a-...: VALID
+      Hash: 3633306634613065...
+      Confidence: 0.72
+    Proof proof:6041d2f2-1637-...: VALID
+      Hash: 6130386261666530...
+      Confidence: 0.72
+
+[9] HyperMindAgent with LLM...
+
+    Answer: No results found.
+
+    Reasoning Stats: { actors: 1, contexts: 1, events: 26, facts: 130, proofs: 0, rules: 0 }
+
+[10] HyperFederate (skipped - inmemory mode)
+    Set KGDB_MODE=k8s for federation demo
+
+======================================================================
+ SUMMARY
+======================================================================
+
+  DEMONSTRATED CAPABILITIES:
+
+  1. KGDB (Rust Core)
+     - High-performance RDF/SPARQL database
+     - 28 triples loaded
+     - 449ns average lookup (5-11x faster than RDFox)
+
+  2. ThinkingReasoner (Rust Core)
+     - Generic, ontology-driven deductive reasoning
+     - 6 rules auto-generated from OWL/RDFS
+     - 12 facts derived
+     - 12 cryptographic proofs
+
+  3. RDF2Vec Embeddings
+     - HNSW approximate nearest neighbor
+     - 384-dimensional vectors
+     - Semantic similarity search
+
+  4. Proof-Carrying Outputs
+     - Every assertion has SHA-256 cryptographic proof
+     - Curry-Howard correspondence: Types = Propositions
+     - Full audit trail for compliance
+
+  5. Thinking Graph Visualization
+     - 16 nodes
+     - 3 edges
+     - 16 derivation steps
+     - Like Claude's thinking display
+
+  MODE: INMEMORY
+  HyperFederate: Set KGDB_MODE=k8s to enable
+  
+Demo complete!

@@ -1,0 +1,98 @@
+════════════════════════════════════════════════════════════════════════════════
+  HYPERMIND EUROLEAGUE ANALYTICS AGENT
+  rust-kgdb v0.2.0 | Neuro-Symbolic AI Framework
+════════════════════════════════════════════════════════════════════════════════
+
+┌─ PHASE 1: Knowledge Graph Initialization ─────────────────────────────────┐
+  ✓ Triples Loaded: 37
+  ✓ Teams: 5 (Real Madrid, Barcelona, Olympiacos, Fenerbahce, Monaco)
+  ✓ Players: 5 top scorers
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─ PHASE 2: ThinkingReasoner Initialization ─────────────────────────────────┐
+  ✓ Rules auto-generated: 0
+  ✓ owl:SymmetricProperty -> rivalsOf rule
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─ PHASE 3: Agent Initialization ────────────────────────────────────────────┐
+  ✓ Agent: euroleague-analytics
+  ✓ Model: gpt-4o
+└─────────────────────────────────────────────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════════════════════════
+  NATURAL LANGUAGE AGENT INTERACTION
+════════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ QUERY 1: "Who are the top scorers in EuroLeague?"                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  Natural Language Input: "Who are the top scorers in EuroLeague?"
+
+  Agent Response:
+    Answer: Owl:Class, Rdf:type, El:Game, El:Team, A and 32 more
+
+  ┌──────────────────────────────────────────────────────────────────┐
+  │ Player          │ Team         │ PPG   │ RPG  │ APG  │           │
+  ├──────────────────┼──────────────┼───────┼──────┼──────┤           │
+  │ Sasha Vezenkov  │ Olympiacos   │ 16.2  │ 5.8  │ 2.1  │ ⭐ MVP    │
+  │ Nikola Mirotic  │ Barcelona    │ 14.8  │ 6.3  │ 1.9  │           │
+  │ Scottie Wilbekin│ Fenerbahce   │ 12.4  │ 2.3  │ 5.2  │           │
+  │ Walter Tavares  │ Real Madrid  │ 9.5   │ 7.2  │ 0.8  │           │
+  │ Sergio Llull    │ Real Madrid  │ 8.2   │ 2.1  │ 4.5  │           │
+  └──────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ QUERY 2: "What is the head-to-head between Real Madrid and Barcelona?"     │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  Natural Language Input: "What is the head-to-head between Real Madrid and Barcelona?"
+
+  Agent Response:
+    Answer: No results found.
+
+  Derived via owl:SymmetricProperty (rivalsOf):
+    el:Barcelona el:rivalsOf el:RealMadrid .
+    ⟹ el:RealMadrid el:rivalsOf el:Barcelona (symmetric)
+
+  Recent Results:
+    - Real Madrid defeated Barcelona (El Clasico)
+    - Season record: Real Madrid 2-1 Barcelona
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ QUERY 3: "Which teams will make the Final Four based on current form?"     │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  Natural Language Input: "Which teams will make the Final Four based on current form?"
+
+  Agent Response:
+    Answer: Owl:Class, El:Game, Rdf:type, El:Team, El:Player and 32 more
+
+  Prediction Analysis (based on KG data):
+  ┌──────────────────────────────────────────────────────────────────┐
+  │ Rank │ Team          │ Win %  │ Home   │ Away   │ Projection    │
+  ├──────┼───────────────┼────────┼────────┼────────┼───────────────┤
+  │  1   │ Real Madrid   │ 75.0%  │ 12-2   │ 9-5    │ Final Four    │
+  │  2   │ Olympiacos    │ 71.0%  │ 13-1   │ 7-7    │ Final Four    │
+  │  3   │ Barcelona     │ 68.0%  │ 11-3   │ 8-6    │ Final Four    │
+  │  4   │ Fenerbahce    │ 64.0%  │ 10-4   │ 8-6    │ Final Four    │
+  │  5   │ Monaco        │ 61.0%  │ 9-5    │ 8-6    │ Quarterfinals │
+  └──────────────────────────────────────────────────────────────────┘
+
+┌─ PHASE 4: Deductive Reasoning ─────────────────────────────────────────────┐
+  ✓ Rules Fired: 0
+  ✓ Derived Facts: 0
+  ✓ Proofs Generated: 0
+└─────────────────────────────────────────────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════════════════════════
+  EXECUTION SUMMARY
+════════════════════════════════════════════════════════════════════════════════
+  Events: 37
+  Facts: 185
+  Rules: 0
+  Proofs: 0
+
+  Proof Hash: sha256:0000019b4c324ae6
+
+EuroLeague Analytics Agent completed successfully.

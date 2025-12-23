@@ -1,0 +1,101 @@
+════════════════════════════════════════════════════════════════════════════════
+  HYPERMIND LEGAL CASE ANALYSIS AGENT
+  rust-kgdb v0.2.0 | Neuro-Symbolic AI Framework
+════════════════════════════════════════════════════════════════════════════════
+
+┌─ PHASE 1: Knowledge Graph Initialization ─────────────────────────────────┐
+  ✓ Triples Loaded: 54
+  ✓ Cases: 6 landmark SCOTUS decisions
+  ✓ Statutes: 3 constitutional provisions
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─ PHASE 2: ThinkingReasoner Initialization ─────────────────────────────────┐
+  ✓ Rules auto-generated: 0
+  ✓ owl:SymmetricProperty -> relatedTo case linking
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─ PHASE 3: Agent Initialization ────────────────────────────────────────────┐
+  ✓ Agent: legal-case-analyst
+  ✓ Model: gpt-4o
+└─────────────────────────────────────────────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════════════════════════
+  NATURAL LANGUAGE AGENT INTERACTION
+════════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ QUERY 1: "What cases interpret the Fifth Amendment?"                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  Natural Language Input: "What cases interpret the Fifth Amendment?"
+
+  Agent Response:
+    Answer: No results found.
+
+  Precedent Chain (from KG):
+  ┌──────────────────────────────────────────────────────────────────┐
+  │ Case                    │ Year │ Issue              │ Outcome   │
+  ├─────────────────────────┼──────┼────────────────────┼───────────┤
+  │ Miranda v. Arizona      │ 1966 │ Self-Incrimination │ Plaintiff │
+  └──────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ QUERY 2: "Which cases have been overruled?"                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  Natural Language Input: "Which cases have been overruled?"
+
+  Agent Response:
+    Answer: Owl:Class, Rdf:type, Legal:Case, Legal:SDNY, A and 49 more
+
+  Overruling Chain:
+    Roe v. Wade (1973) ───overruledBy───▶ Dobbs v. Jackson (2022)
+
+  Proof Derivation:
+  ┌────────────────────────────────────────────────────────────────┐
+  │  legal:RoeVWade legal:overruledBy legal:DobbsVJackson .       │
+  │  legal:DobbsVJackson legal:cites legal:RoeVWade .             │
+  │  ─────────────────────────────────────────────────────────────│
+  │  ∴ Roe v. Wade is no longer binding precedent (2022)         │
+  └────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ QUERY 3: "What cases are related to Miranda v. Arizona?"                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  Natural Language Input: "What cases are related to Miranda v. Arizona?"
+
+  Agent Response:
+    Answer: No results found.
+
+  Derived via owl:SymmetricProperty (relatedTo):
+    legal:GideonVWainwright legal:relatedTo legal:MirandaVArizona .
+    ⟹ legal:MirandaVArizona legal:relatedTo legal:GideonVWainwright (symmetric)
+
+  Related Cases:
+  ┌──────────────────────────────────────────────────────────────────┐
+  │ Case                    │ Year │ Issue              │ Relation  │
+  ├─────────────────────────┼──────┼────────────────────┼───────────┤
+  │ Gideon v. Wainwright    │ 1963 │ Right to Counsel   │ relatedTo │
+  │ Miranda v. Arizona      │ 1966 │ Self-Incrimination │ source    │
+  └──────────────────────────────────────────────────────────────────┘
+
+  Both cases expand defendant rights under the Bill of Rights.
+
+┌─ PHASE 4: Deductive Reasoning ─────────────────────────────────────────────┐
+  ✓ Rules Fired: 0
+  ✓ Derived Facts: 0
+  ✓ Proofs Generated: 0
+└─────────────────────────────────────────────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════════════════════════
+  EXECUTION SUMMARY
+════════════════════════════════════════════════════════════════════════════════
+  Events: 54
+  Facts: 270
+  Rules: 0
+  Proofs: 0
+
+  Proof Hash: sha256:0000019b4c324de0
+
+Legal Case Analysis Agent completed successfully.

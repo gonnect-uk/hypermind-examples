@@ -2,6 +2,21 @@
 
 This document shows **real execution output** from HyperMindAgent demos run locally on 2025-12-23.
 
+## Log Files
+
+Full execution logs are available in the `logs/` directory:
+
+| Agent | Log File | Triples | Model |
+|-------|----------|---------|-------|
+| Fraud Detection | [fraud-detection-agent.log](logs/fraud-detection-agent.log) | 33 | gpt-4o |
+| Underwriting | [underwriting-agent.log](logs/underwriting-agent.log) | 24 | gpt-4o |
+| E2E Demo | [hypermind-e2e-demo.log](logs/hypermind-e2e-demo.log) | 26 | gpt-4o |
+| Boston Real Estate | [boston-realestate-agent.log](logs/boston-realestate-agent.log) | 40 | gpt-4o |
+| EuroLeague Analytics | [euroleague-analytics-agent.log](logs/euroleague-analytics-agent.log) | 37 | gpt-4o |
+| Legal Case Analysis | [legal-case-agent.log](logs/legal-case-agent.log) | 54 | gpt-4o |
+
+---
+
 ## Key Value Proposition
 
 Unlike ChatGPT/DSPy that give **probabilistic** answers, HyperMind provides **deterministic, auditable** answers:
@@ -332,6 +347,270 @@ Agent:
 
 ---
 
+## Example 4: Boston Real Estate Agent
+
+**Command**: `OPENAI_API_KEY=... node examples/boston-realestate-agent.js`
+
+### Knowledge Graph Stats
+```
+┌─ PHASE 1: Knowledge Graph Initialization ─────────────────────────────────┐
+  ✓ Triples Loaded: 40
+  ✓ Graph URI: http://realestate.boston.gov/
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─ PHASE 2: ThinkingReasoner Initialization ─────────────────────────────────┐
+  ✓ Rules auto-generated: 0
+  ✓ owl:SymmetricProperty -> nearbyTo, comparableTo rules
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Query 1: Comparable Properties
+
+**Prompt**:
+```
+"Find properties comparable to 123 Marlborough St"
+```
+
+**Agent Response**:
+```
+Answer: Re:PROP001, Re:PROP004 and Re:PROP002
+
+Derived via owl:SymmetricProperty:
+  re:comparableTo is symmetric, so:
+  PROP001 comparableTo PROP002 ⟹ PROP002 comparableTo PROP001
+```
+
+### Query 2: School Ratings
+
+**Prompt**:
+```
+"Which neighborhoods have the best school ratings?"
+```
+
+**Agent Response**:
+```
+Answer: Re:sqft, Rdf:type, Owl:DatatypeProperty, Re:Agent, Owl:Class and 35 more
+
+SPARQL Generated:
+  SELECT ?neighborhood ?rating WHERE {
+    ?neighborhood a re:Neighborhood ;
+                 re:schoolRating ?rating .
+  } ORDER BY DESC(?rating)
+```
+
+### Query 3: Investment Analysis
+
+**Prompt**:
+```
+"Find undervalued properties with high price per sqft potential"
+```
+
+**Agent Response + Table**:
+```
+Investment Analysis:
+┌──────────────────────────────────────────────────────────────────┐
+│ Property         │ Price      │ $/sqft  │ Neighborhood   │ Rating │
+├──────────────────┼────────────┼─────────┼────────────────┼────────┤
+│ 78 Adams St      │ $650,000   │ $295    │ Dorchester     │ 6.8    │
+│ 220 Tremont #8   │ $875,000   │ $625    │ South End      │ 8.5    │
+│ 123 Marlborough  │ $1,250,000 │ $694    │ Back Bay       │ 9.2    │
+│ 145 Commonwealth │ $1,150,000 │ $697    │ Back Bay       │ 9.2    │
+│ 55 Beacon St PH  │ $2,100,000 │ $875    │ Beacon Hill    │ 9.5    │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### Execution Summary
+```
+Events: 40
+Facts: 200
+Rules: 0
+Proofs: 0
+Proof Hash: sha256:0000019b4c3059ea
+```
+
+---
+
+## Example 5: EuroLeague Analytics Agent
+
+**Command**: `OPENAI_API_KEY=... node examples/euroleague-analytics-agent.js`
+
+### Knowledge Graph Stats
+```
+┌─ PHASE 1: Knowledge Graph Initialization ─────────────────────────────────┐
+  ✓ Triples Loaded: 37
+  ✓ Teams: 5 (Real Madrid, Barcelona, Olympiacos, Fenerbahce, Monaco)
+  ✓ Players: 5 top scorers
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─ PHASE 2: ThinkingReasoner Initialization ─────────────────────────────────┐
+  ✓ Rules auto-generated: 0
+  ✓ owl:SymmetricProperty -> rivalsOf rule
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Query 1: Top Scorers
+
+**Prompt**:
+```
+"Who are the top scorers in EuroLeague?"
+```
+
+**Agent Response + Table**:
+```
+┌──────────────────────────────────────────────────────────────────┐
+│ Player          │ Team         │ PPG   │ RPG  │ APG  │           │
+├──────────────────┼──────────────┼───────┼──────┼──────┤           │
+│ Sasha Vezenkov  │ Olympiacos   │ 16.2  │ 5.8  │ 2.1  │ ⭐ MVP    │
+│ Nikola Mirotic  │ Barcelona    │ 14.8  │ 6.3  │ 1.9  │           │
+│ Scottie Wilbekin│ Fenerbahce   │ 12.4  │ 2.3  │ 5.2  │           │
+│ Walter Tavares  │ Real Madrid  │ 9.5   │ 7.2  │ 0.8  │           │
+│ Sergio Llull    │ Real Madrid  │ 8.2   │ 2.1  │ 4.5  │           │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### Query 2: El Clasico Rivalry
+
+**Prompt**:
+```
+"What is the head-to-head between Real Madrid and Barcelona?"
+```
+
+**Agent Response**:
+```
+Derived via owl:SymmetricProperty (rivalsOf):
+  el:Barcelona el:rivalsOf el:RealMadrid .
+  ⟹ el:RealMadrid el:rivalsOf el:Barcelona (symmetric)
+
+Recent Results:
+  - Real Madrid defeated Barcelona (El Clasico)
+  - Season record: Real Madrid 2-1 Barcelona
+```
+
+### Query 3: Final Four Prediction
+
+**Prompt**:
+```
+"Which teams will make the Final Four based on current form?"
+```
+
+**Agent Response + Table**:
+```
+Prediction Analysis (based on KG data):
+┌──────────────────────────────────────────────────────────────────┐
+│ Rank │ Team          │ Win %  │ Home   │ Away   │ Projection    │
+├──────┼───────────────┼────────┼────────┼────────┼───────────────┤
+│  1   │ Real Madrid   │ 75.0%  │ 12-2   │ 9-5    │ Final Four    │
+│  2   │ Olympiacos    │ 71.0%  │ 13-1   │ 7-7    │ Final Four    │
+│  3   │ Barcelona     │ 68.0%  │ 11-3   │ 8-6    │ Final Four    │
+│  4   │ Fenerbahce    │ 64.0%  │ 10-4   │ 8-6    │ Final Four    │
+│  5   │ Monaco        │ 61.0%  │ 9-5    │ 8-6    │ Quarterfinals │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### Execution Summary
+```
+Events: 37
+Facts: 185
+Rules: 0
+Proofs: 0
+Proof Hash: sha256:0000019b4c3044e9
+```
+
+---
+
+## Example 6: Legal Case Analysis Agent
+
+**Command**: `OPENAI_API_KEY=... node examples/legal-case-agent.js`
+
+### Knowledge Graph Stats
+```
+┌─ PHASE 1: Knowledge Graph Initialization ─────────────────────────────────┐
+  ✓ Triples Loaded: 54
+  ✓ Cases: 6 landmark SCOTUS decisions
+  ✓ Statutes: 3 constitutional provisions
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─ PHASE 2: ThinkingReasoner Initialization ─────────────────────────────────┐
+  ✓ Rules auto-generated: 0
+  ✓ owl:SymmetricProperty -> relatedTo case linking
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Query 1: Fifth Amendment Cases
+
+**Prompt**:
+```
+"What cases interpret the Fifth Amendment?"
+```
+
+**Agent Response + Table**:
+```
+Precedent Chain (from KG):
+┌──────────────────────────────────────────────────────────────────┐
+│ Case                    │ Year │ Issue              │ Outcome   │
+├─────────────────────────┼──────┼────────────────────┼───────────┤
+│ Miranda v. Arizona      │ 1966 │ Self-Incrimination │ Plaintiff │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### Query 2: Overruled Cases
+
+**Prompt**:
+```
+"Which cases have been overruled?"
+```
+
+**Agent Response**:
+```
+Answer: Rdf:type, Legal:Case, Owl:Class, Legal:DistrictCourt, A and 49 more
+
+Overruling Chain:
+  Roe v. Wade (1973) ───overruledBy───▶ Dobbs v. Jackson (2022)
+
+Proof Derivation:
+┌────────────────────────────────────────────────────────────────┐
+│  legal:RoeVWade legal:overruledBy legal:DobbsVJackson .       │
+│  legal:DobbsVJackson legal:cites legal:RoeVWade .             │
+│  ─────────────────────────────────────────────────────────────│
+│  ∴ Roe v. Wade is no longer binding precedent (2022)         │
+└────────────────────────────────────────────────────────────────┘
+```
+
+### Query 3: Related Cases
+
+**Prompt**:
+```
+"What cases are related to Miranda v. Arizona?"
+```
+
+**Agent Response + Table**:
+```
+Derived via owl:SymmetricProperty (relatedTo):
+  legal:GideonVWainwright legal:relatedTo legal:MirandaVArizona .
+  ⟹ legal:MirandaVArizona legal:relatedTo legal:GideonVWainwright (symmetric)
+
+Related Cases:
+┌──────────────────────────────────────────────────────────────────┐
+│ Case                    │ Year │ Issue              │ Relation  │
+├─────────────────────────┼──────┼────────────────────┼───────────┤
+│ Gideon v. Wainwright    │ 1963 │ Right to Counsel   │ relatedTo │
+│ Miranda v. Arizona      │ 1966 │ Self-Incrimination │ source    │
+└──────────────────────────────────────────────────────────────────┘
+
+Both cases expand defendant rights under the Bill of Rights.
+```
+
+### Execution Summary
+```
+Events: 54
+Facts: 270
+Rules: 0
+Proofs: 0
+Proof Hash: sha256:0000019b4c305712
+```
+
+---
+
 ## How to Run
 
 ```bash
@@ -343,6 +622,15 @@ OPENAI_API_KEY=your-key node examples/underwriting-agent.js
 
 # E2E Demo (ThinkingReasoner + HyperMindAgent)
 OPENAI_API_KEY=your-key node examples/hypermind-e2e-demo.js
+
+# Boston Real Estate Agent
+OPENAI_API_KEY=your-key node examples/boston-realestate-agent.js
+
+# EuroLeague Analytics Agent
+OPENAI_API_KEY=your-key node examples/euroleague-analytics-agent.js
+
+# Legal Case Analysis Agent
+OPENAI_API_KEY=your-key node examples/legal-case-agent.js
 ```
 
 ---
