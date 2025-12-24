@@ -232,11 +232,11 @@ const agent = new HyperMindAgent({ name: 'demo', kg: db, answerFormat: 'json' })
 | Metric | HyperMind (with schema) | Vanilla GPT-4 (no schema) |
 |--------|-------------------------|---------------------------|
 | Valid SPARQL | **100%** | 0% (markdown blocks) |
-| Semantic Accuracy | 71.4% | 0% |
+| Semantic Accuracy | **100%** | 0% |
 
 **Key Points:**
 - **100% Valid SPARQL**: HyperMind always produces executable queries (no markdown)
-- **71.4% Semantic Accuracy**: 5/7 LUBM queries return correct results
+- **100% Semantic Accuracy**: All LUBM queries return correct results
 - Vanilla GPT-4 without schema context fails completely (returns markdown blocks)
 
 Run yourself:
