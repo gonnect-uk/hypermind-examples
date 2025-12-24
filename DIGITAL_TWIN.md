@@ -362,9 +362,9 @@ The HyperMindAgent provides natural language querying of the knowledge graph wit
 
 ### Interaction Table
 
-| User Query | LLM Answer | Knowledge Source | Reasoning |
-|------------|------------|------------------|-----------|
-| "What is the current status of the server room and should I be concerned?" | "The server room is a critical zone located on the 0th floor of the M5 Building, with a maximum occupancy of 2 people. Given its critical status, it may warrant concern depending on current conditions or activities within the room." | SPARQL query on `iot:criticalZone`, `iot:floor`, `iot:maxOccupancy` | Agent identified server room as critical zone from ontology, combined floor/occupancy metadata to provide context |
+| User Query | LLM Answer | Knowledge Source | Reasoning | Proof Hash |
+|------------|------------|------------------|-----------|------------|
+| "What is the current status of the server room and should I be concerned?" | "The server room is a critical zone located on the 0th floor of the M5 Building, with a maximum occupancy of 2 people. Given its critical status, it may warrant concern depending on current conditions or activities within the room." | SPARQL on `iot:criticalZone`, `iot:floor`, `iot:maxOccupancy` | Agent identified server room as critical zone, combined floor/occupancy metadata | SHA-256: `35228417f1f4fbdc...` |
 
 ### Sample Agent Output
 
