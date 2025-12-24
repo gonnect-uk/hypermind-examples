@@ -86,6 +86,7 @@ const agent = new HyperMindAgent({ name: 'demo', kg: db, answerFormat: 'json' })
 
 | Example | Description | Command |
 |---------|-------------|---------|
+| **BRAIN** | Fraud + Underwriting + HyperFederate | `npm run brain` |
 | **Euroleague** | Basketball KG + OWL + RDF2Vec | `npm run euroleague` |
 | **Boston** | Real estate + property valuation | `npm run boston` |
 | **Legal** | US case law + mentorship chains | `npm run legal` |
@@ -96,7 +97,8 @@ const agent = new HyperMindAgent({ name: 'demo', kg: db, answerFormat: 'json' })
 | **Pregel** | Bulk parallel processing | `npm run pregel` |
 
 **Detailed output:**
-- [Euroleague Analytics](EUROLEAGUE_ANALYTICS.md) - 17 assertions, 100% pass
+- [BRAIN Fraud & Underwriting](BRAIN_FRAUD_UNDERWRITING.md) - 5 scenarios, KGDB + Snowflake + BigQuery
+- [Euroleague Analytics](EUROLEAGUE_ANALYTICS.md) - 18 assertions, 100% pass
 - [Boston Real Estate](BOSTON_REALESTATE.md) - 19 assertions, 100% pass
 - [US Legal Case](LEGAL_CASE.md) - 20 assertions, 100% pass
 - [Federation Setup](FEDERATION_SETUP.md) - Cross-database guide
