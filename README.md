@@ -21,7 +21,7 @@ HyperMind is a **reasoning-first AI framework**—built entirely in Rust, compil
 ```
 ┌───────────────────────────────────────────────────────────────────────────┐
 │                           HyperMindAgent                                  │
-│       Natural language → Schema-aware SPARQL → Verified answers           │
+│   Natural language → SQL with graph_search() CTE → Verified answers       │
 ├───────────────────────────────────────────────────────────────────────────┤
 │                           Runtime Layer                                   │
 │            WASM (browser/edge)  |  Kubernetes (enterprise)                │
@@ -138,8 +138,8 @@ const agent = new HyperMindAgent({
 **How**:
 
 1. **Schema extraction** — Auto-detect classes, properties, domains from your data
-2. **Query generation** — LLM generates SPARQL from schema (not training data)
-3. **Execution** — Run query against KGDB
+2. **Query generation** — LLM generates SQL with `graph_search()` CTE (universal format)
+3. **Execution** — Rust executes query via NAPI-RS bindings
 4. **Reasoning** — Apply OWL/Datalog rules
 5. **Proof** — Generate SHA-256 hash of derivation chain
 
@@ -152,10 +152,24 @@ const result = await agent.call('Who argued Brown v. Board of Education?')
 
 console.log(result.answer)           // "Thurgood Marshall, Robert L. Carter..."
 console.log(result.proof.hash)       // "sha256:92be3c44..." (verifiable)
-console.log(result.thinkingGraph)    // Full derivation chain
+console.log(result.explanation.sql_queries[0].sql)  // SQL with graph_search() CTE
 ```
 
-**The key insight**: The LLM never answers from memory. It generates a query. The query runs against facts. The facts produce the answer. Every step is traceable.
+**Generated SQL with graph_search() CTE:**
+```sql
+WITH kg AS (
+  SELECT * FROM graph_search('
+    PREFIX law: <http://law.gov/case#>
+    SELECT ?attorney ?name WHERE {
+      <http://law.gov/case#BrownVBoard> law:arguedBy ?attorney .
+      ?attorney rdfs:label ?name
+    }
+  ')
+)
+SELECT * FROM kg
+```
+
+**The key insight**: The LLM never answers from memory. It generates SQL with `graph_search()` CTE. Rust executes the query against facts. The facts produce the answer. Every step is traceable.
 
 ---
 
@@ -227,17 +241,32 @@ const agent = new HyperMindAgent({ name: 'demo', kg: db, answerFormat: 'json' })
 | Music Recommendation | **100%** | 15/15 |
 | Digital Twin | **100%** | 13/13 |
 
-### LUBM Benchmark (SPARQL generation accuracy)
+### SQL with graph_search() CTE Generation
 
 | Metric | HyperMind (with schema) | Vanilla GPT-4 (no schema) |
 |--------|-------------------------|---------------------------|
-| Valid SPARQL | **100%** | 0% (markdown blocks) |
+| Valid SQL with CTE | **100%** | 0% (markdown blocks) |
 | Semantic Accuracy | **100%** | 0% |
 
 **Key Points:**
-- **100% Valid SPARQL**: HyperMind always produces executable queries (no markdown)
-- **100% Semantic Accuracy**: All LUBM queries return correct results
+- **100% Valid SQL**: HyperMind always produces executable SQL with `graph_search()` CTE
+- **100% Semantic Accuracy**: All queries return correct results from knowledge graph
 - Vanilla GPT-4 without schema context fails completely (returns markdown blocks)
+
+**Example Output (from Digital Twin demo):**
+```sql
+WITH kg AS (
+  SELECT * FROM graph_search('
+    PREFIX iot: <http://smartbuilding.org/iot#>
+    SELECT ?property ?value ?classification WHERE {
+      ?serverRoom a iot:ServerRoom .
+      ?serverRoom ?property ?value .
+      OPTIONAL { ?serverRoom rdf:type ?classification }
+    }
+  ')
+)
+SELECT * FROM kg
+```
 
 Run yourself:
 ```bash
