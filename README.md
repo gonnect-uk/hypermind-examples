@@ -19,19 +19,19 @@
 HyperMind is a **reasoning-first AI framework**—built entirely in Rust, compiled to WASM—that eliminates hallucinations by construction. Not by prompting. Not by fine-tuning. By fundamentally changing how AI generates answers.
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                         HyperMindAgent                                   │
-│         Natural language → Schema-aware SPARQL → Verified answers        │
-├─────────────────────────────────────────────────────────────────────────┤
-│                      Runtime Layer                                       │
-│              WASM (browser/edge)  |  Kubernetes (enterprise)            │
-├─────────────────────────────────────────────────────────────────────────┤
-│                   Query & Reasoning Layer                                │
-│    SPARQL 1.1  |  Datalog  |  OWL2  |  GraphFrame  |  Motif Detection   │
-├─────────────────────────────────────────────────────────────────────────┤
-│                          KGDB                                            │
-│     Rust-native knowledge graph  |  2.78µs lookups  |  24 bytes/triple  │
-└─────────────────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────────────────┐
+│                           HyperMindAgent                                  │
+│       Natural language → Schema-aware SPARQL → Verified answers           │
+├───────────────────────────────────────────────────────────────────────────┤
+│                           Runtime Layer                                   │
+│            WASM (browser/edge)  |  Kubernetes (enterprise)                │
+├───────────────────────────────────────────────────────────────────────────┤
+│                       Query & Reasoning Layer                             │
+│    SPARQL 1.1  |  Datalog  |  OWL2  |  GraphFrame  |  Motif Detection     │
+├───────────────────────────────────────────────────────────────────────────┤
+│                               KGDB                                        │
+│    Rust-native knowledge graph  |  2.78µs lookups  |  24 bytes/triple     │
+└───────────────────────────────────────────────────────────────────────────┘
 ```
 
 **5 minutes to your first AI agent with deductive reasoning:**
