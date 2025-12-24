@@ -264,7 +264,8 @@ async function runFraudDetectionScenario(db, reasoner) {
   // Step 3: Run deductive reasoning
   console.log('\n[3] Running deductive reasoning (ThinkingReasoner)...\n')
 
-  const deductionResult = JSON.parse(reasoner.deduce())
+  const rawDeduce = reasoner.deduce()
+  const deductionResult = typeof rawDeduce === 'string' ? JSON.parse(rawDeduce) : rawDeduce
 
   console.log(`    Rules fired: ${deductionResult.rules_fired}`)
   console.log(`    Iterations: ${deductionResult.iterations}`)
@@ -274,7 +275,8 @@ async function runFraudDetectionScenario(db, reasoner) {
   // Step 4: Show derivation chain (like Claude's thinking)
   console.log('\n[4] Thinking Graph (derivation chain)...\n')
 
-  const thinkingGraph = JSON.parse(reasoner.getThinkingGraph())
+  const rawGraph = reasoner.getThinkingGraph()
+  const thinkingGraph = typeof rawGraph === 'string' ? JSON.parse(rawGraph) : rawGraph
 
   if (thinkingGraph.derivation_chain.length > 0) {
     console.log('    Derivation Chain:')
@@ -406,8 +408,10 @@ async function runUnderwritingScenario(db, reasoner) {
   // Run deduction for underwriting
   console.log('\n[4] Generating underwriting recommendation...\n')
 
-  const deductionResult = JSON.parse(reasoner.deduce())
-  const stats = JSON.parse(reasoner.getStats())
+  const rawDeduce = reasoner.deduce()
+  const deductionResult = typeof rawDeduce === 'string' ? JSON.parse(rawDeduce) : rawDeduce
+  const rawStats = reasoner.getStats()
+  const stats = typeof rawStats === 'string' ? JSON.parse(rawStats) : rawStats
 
   console.log('    ' + '-'.repeat(70))
   console.log('    UNDERWRITING DECISION:')

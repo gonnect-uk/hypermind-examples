@@ -554,6 +554,8 @@ ORDER BY westlaw.citation_count DESC`
   // ============================================================================
   // 9. HyperMindAgent Natural Language (LLM-assisted)
   // ============================================================================
+  const llmResponses = []  // Collect responses for JSON output
+
   if (process.env.OPENAI_API_KEY) {
     console.log('[9] HyperMindAgent Natural Language Queries (LLM-assisted):')
     console.log()
@@ -569,6 +571,17 @@ ORDER BY westlaw.citation_count DESC`
 
       try {
         const result = await agent.call(q)
+
+        // Collect full response for JSON dump
+        llmResponses.push({
+          question: q,
+          answer: result.answer || result.response || result.text,
+          sparql: result.explanation?.sparql_queries?.[0]?.query || null,
+          raw_results: result.raw_results,
+          thinkingGraph: result.thinkingGraph,
+          proof: result.proof,
+          reasoningStats: result.reasoningStats
+        })
 
         if (result.explanation?.sparql_queries?.length > 0) {
           console.log('  Generated SPARQL:')
@@ -613,9 +626,23 @@ ORDER BY westlaw.citation_count DESC`
         }
       } catch (e) {
         console.log(`  Note: ${e.message}`)
+        llmResponses.push({ question: q, error: e.message })
       }
       console.log()
     }
+
+    // Dump JSON output
+    const outputPath = path.join(__dirname, '..', 'output', 'legal-case-output.json')
+    fs.mkdirSync(path.dirname(outputPath), { recursive: true })
+    fs.writeFileSync(outputPath, JSON.stringify({
+      timestamp: new Date().toISOString(),
+      example: 'legal-case-agent',
+      case: 'Brown v. Board of Education, 347 U.S. 483 (1954)',
+      queries: llmResponses,
+      testResults
+    }, null, 2))
+    console.log(`  JSON output saved to: output/legal-case-output.json`)
+    console.log()
   } else {
     console.log('[9] HyperMindAgent Natural Language: Skipped (no OPENAI_API_KEY)')
     console.log('    Set OPENAI_API_KEY environment variable to enable LLM-assisted queries.')
