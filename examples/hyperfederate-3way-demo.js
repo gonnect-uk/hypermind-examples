@@ -193,7 +193,8 @@ async function main() {
   const agent = new HyperMindAgent({
     name: 'federation-analyst',
     kg: db,
-    federate: federation,
+    federationProxy: federation,            // Enable SQL generation with CTEs
+    connectors: federation.connectors,      // Pass connectors for query type detection
     // LLM is optional - works without it via schema-based generation
     apiKey: process.env.OPENAI_API_KEY,
     model: 'gpt-4o'

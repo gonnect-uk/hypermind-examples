@@ -1,0 +1,343 @@
+
+> hypermind-examples@1.0.0 legal
+> node examples/legal-case-agent.js
+
+======================================================================
+  BROWN v. BOARD OF EDUCATION - LEGAL KNOWLEDGE GRAPH
+  HyperMindAgent with Deductive Reasoning + Assertions
+======================================================================
+
+Case: Brown v. Board of Education of Topeka, 347 U.S. 483 (1954)
+
+Sources:
+  - National Archives (archives.gov)
+  - Cornell Law (law.cornell.edu)
+  - Library of Congress (loc.gov)
+  - Oyez Project (oyez.org)
+
+[1] Loading Legal Case Knowledge Graph...
+    Source: National Archives, Cornell Law, Library of Congress, Oyez
+    Triples: 285
+
+[2] SPARQL Queries with Assertions:
+
+    [PASS] Cases in knowledge graph = 6 (Brown + Plessy + 4 consolidated)
+    [PASS] Attorneys count = 9 (NAACP Legal Defense Team)
+    [PASS] Justices count = 9 (Warren Court)
+    [PASS] Plaintiffs count = 7 (Named plaintiffs from 5 states)
+    [PASS] workedWith relationships (legal team collaborations)
+    [PASS] Mentorship relationships = 3 (Marshall mentored Greenberg and Motley)
+    [PASS] Thurgood Marshall data found
+    [PASS] 9-0 unanimous decision
+
+[3] Schema Extraction:
+    Classes: 6
+    Predicates: 0
+    Mode: Native Rust (NAPI-RS)
+    [PASS] Schema extracted from graph
+
+[4] Query Capabilities (Legal Research):
+
+  Mode: NAPI-RS (native binding)
+  Triples: 285
+  Classes: 6
+  Predicates: 0
+
+  LEGAL SCHEMA CONTEXT:
+    Classes: 6 (Case, Person, Attorney, Justice, Plaintiff, Organization)
+    Predicates: 0 (arguedBy, decidedBy, plaintiff, workedWith, mentored, etc.)
+    Namespace: http://law.gov/case#
+    [PASS] Graph has classes
+    [PASS] Graph has predicates
+
+[5] HyperFederate SQL Generation (graph_search UDF):
+
+  HyperFederate unifies SQL + Knowledge Graph queries via graph_search() UDF.
+  This enables cross-source joins between SPARQL results and SQL tables.
+
+  EXAMPLE: HyperFederate SQL with graph_search():
+  ```sql
+  -- HyperFederate SQL: Join Legal Knowledge Graph + Court Records
+  SELECT
+    kg.attorney_name,
+    kg.role,
+    kg.case_name,
+    westlaw.citation_count,
+    westlaw.career_wins,
+    lexis.bar_admission_year
+  FROM graph_search('
+    PREFIX law: <http://law.gov/case#>
+    SELECT ?attorney_name ?role ?case_name WHERE {
+      ?case a law:Case .
+      ?case rdfs:label ?case_name .
+      ?case law:arguedBy ?attorney .
+      ?attorney rdfs:label ?attorney_name .
+      ?attorney law:role ?role .
+    }
+  ') kg
+  LEFT JOIN westlaw_attorneys westlaw
+    ON kg.attorney_name = westlaw.full_name
+  LEFT JOIN lexis_bar_records lexis
+    ON kg.attorney_name = lexis.attorney_name
+  ORDER BY westlaw.citation_count DESC
+  ```
+
+  HONEST OUTPUT - graph_search() SPARQL executed standalone:
+
+  HONEST RESULTS (from graph_search):
+  | attorney_name                | role                                    |
+  |------------------------------|-----------------------------------------|
+  | Oliver Hill                  | NAACP Virginia Attorney                 |
+  | George E.C. Hayes            | Washington D.C. Attorney                |
+  | James Nabrit Jr.             | Howard University Law School Professor  |
+  | Louis L. Redding             | Delaware Attorney                       |
+  | Robert L. Carter             | NAACP Legal Defense Fund Attorney       |
+  | Jack Greenberg               | NAACP Legal Defense Fund Attorney       |
+
+    [PASS] HyperFederate SQL shows attorneys with roles
+
+[6] ThinkingReasoner with Deductive Reasoning:
+
+  Auto-reasoning complete (OWL auto-detected from TTL)...
+    Agent: legal-research-analyst
+    LLM: None (schema-based)
+    Observations: 0
+    Derived Facts: 21
+    Rules Applied: 2
+    [FAIL] Observations loaded: Expected observations, got 0
+    [PASS] Derived facts from OWL reasoning
+    [PASS] OWL rules detected from TTL data
+
+[7] Thinking Events (Real-time Reasoning Stream):
+
+  📝 THINKING EVENTS (auto-captured during reasoning):
+
+  ✅ REASONING COMPLETE:
+    - 0 observations (ground truth from KG)
+    - 21 derived facts (inferred via OWL rules)
+    - 2 rules applied (SymmetricProperty, TransitiveProperty)
+    - Every fact is traceable to source data (no hallucination)
+    - Cryptographic proof hashes for audit trails
+
+[8] Use Case Queries (SPARQL-first, deterministic):
+
+------------------------------------------------------------
+LAW STUDENT: "Who were the key attorneys in Brown v. Board of Education?"
+VALUE: Understand the NAACP Legal Defense Fund strategy
+------------------------------------------------------------
+
+SPARQL:
+```sparql
+SELECT ?attorney ?name ?role WHERE {
+        <http://law.gov/case#BrownVBoard> <http://law.gov/case#arguedBy> ?attorney .
+        ?attorney <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+        OPTIONAL { ?attorney <http://law.gov/case#role> ?role }
+      }
+```
+
+RESULTS: 9 bindings
+SAMPLE (first 5):
+  role=NAACP Virginia Attorney, name=Oliver Hill, attorney=OliverHill
+  role=Washington D.C. Attorney, attorney=GeorgeHayes, name=George E.C. Hayes
+  role=Howard University Law School Professor, attorney=JamesNabrit, name=James Nabrit Jr.
+  name=Louis L. Redding, role=Delaware Attorney, attorney=LouisRedding
+  name=Robert L. Carter, role=NAACP Legal Defense Fund Attorney, attorney=RobertCarter
+    [PASS] LAW STUDENT: Who were the key attorneys in Brown v. Board of Education?
+
+REASONING CONTEXT:
+  Observations: 0
+  Derived Facts: 21
+  Rules Applied: 2
+
+------------------------------------------------------------
+LEGAL HISTORIAN: "Which Supreme Court justices decided the case unanimously?"
+VALUE: Research how Chief Justice Warren achieved unanimity
+------------------------------------------------------------
+
+SPARQL:
+```sparql
+SELECT ?justice ?name ?role WHERE {
+        <http://law.gov/case#BrownVBoard> <http://law.gov/case#decidedBy> ?justice .
+        ?justice <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+        OPTIONAL { ?justice <http://law.gov/case#role> ?role }
+      }
+```
+
+RESULTS: 9 bindings
+SAMPLE (first 5):
+  justice=TomClark, name=Tom C. Clark, role=Associate Justice
+  role=Associate Justice, name=Hugo Black, justice=HugoBlack
+  name=Earl Warren, role=Chief Justice, justice=EarlWarren
+  name=Stanley Reed, role=Associate Justice, justice=StanleyReed
+  justice=HaroldBurton, role=Associate Justice, name=Harold Burton
+    [PASS] LEGAL HISTORIAN: Which Supreme Court justices decided the case unanimously?
+
+REASONING CONTEXT:
+  Observations: 0
+  Derived Facts: 21
+  Rules Applied: 2
+
+------------------------------------------------------------
+CIVIL RIGHTS RESEARCHER: "Who were the named plaintiffs in the consolidated cases?"
+VALUE: Document the personal stories behind the case
+------------------------------------------------------------
+
+SPARQL:
+```sparql
+SELECT ?plaintiff ?name ?role WHERE {
+        <http://law.gov/case#BrownVBoard> <http://law.gov/case#plaintiff> ?plaintiff .
+        ?plaintiff <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+        OPTIONAL { ?plaintiff <http://law.gov/case#role> ?role }
+      }
+```
+
+RESULTS: 7 bindings
+SAMPLE (first 5):
+  role=Student Plaintiff (Kansas), name=Linda Brown, plaintiff=LindaBrown
+  name=Ethel Louise Belton, plaintiff=EthelBelton, role=Student Plaintiff (Delaware)
+  name=Harry Briggs Jr., plaintiff=HarryBriggs, role=Student Plaintiff (South Carolina)
+  name=Oliver Brown, role=Lead Plaintiff (Kansas), plaintiff=OliverBrown
+  role=Student Organizer (Virginia), plaintiff=BarbaraJohns, name=Barbara Rose Johns
+    [PASS] CIVIL RIGHTS RESEARCHER: Who were the named plaintiffs in the consolidated cases?
+
+REASONING CONTEXT:
+  Observations: 0
+  Derived Facts: 21
+  Rules Applied: 2
+
+------------------------------------------------------------
+CONSTITUTIONAL SCHOLAR: "What case did Brown v. Board overrule?"
+VALUE: Analyze the rejection of "separate but equal" doctrine
+------------------------------------------------------------
+
+SPARQL:
+```sparql
+SELECT ?overruled ?label ?holding WHERE {
+        <http://law.gov/case#BrownVBoard> <http://law.gov/case#overruled> ?overruled .
+        ?overruled <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+        ?overruled <http://law.gov/case#holding> ?holding .
+      }
+```
+
+RESULTS: 1 bindings
+SAMPLE (first 5):
+  holding=Separate but equal doctrine, overruled=PlessyVFerguson, label=Plessy v. Ferguson
+    [PASS] CONSTITUTIONAL SCHOLAR: What case did Brown v. Board overrule?
+
+REASONING CONTEXT:
+  Observations: 0
+  Derived Facts: 21
+  Rules Applied: 2
+
+------------------------------------------------------------
+BIOGRAPHY WRITER: "Who did Thurgood Marshall collaborate with?"
+VALUE: Map the professional network of the future Supreme Court Justice
+------------------------------------------------------------
+
+SPARQL:
+```sparql
+SELECT ?colleague ?name WHERE {
+        <http://law.gov/case#ThurgoodMarshall> <http://law.gov/case#workedWith> ?colleague .
+        ?colleague <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+      }
+```
+
+RESULTS: 3 bindings
+SAMPLE (first 5):
+  colleague=RobertCarter, name=Robert L. Carter
+  colleague=JackGreenberg, name=Jack Greenberg
+  colleague=ConstanceBakerMotley, name=Constance Baker Motley
+    [PASS] BIOGRAPHY WRITER: Who did Thurgood Marshall collaborate with?
+
+REASONING CONTEXT:
+  Observations: 0
+  Derived Facts: 21
+  Rules Applied: 2
+
+------------------------------------------------------------
+ACADEMIC: "What was the mentorship chain at NAACP Legal Defense Fund?"
+VALUE: Trace the intellectual legacy and training relationships
+------------------------------------------------------------
+
+SPARQL:
+```sparql
+SELECT ?mentor ?mentee ?menteeName WHERE {
+        ?mentor <http://law.gov/case#mentored> ?mentee .
+        ?mentee <http://www.w3.org/2000/01/rdf-schema#label> ?menteeName .
+      }
+```
+
+RESULTS: 3 bindings
+SAMPLE (first 5):
+  menteeName=Jack Greenberg, mentee=JackGreenberg, mentor=ThurgoodMarshall
+  mentor=JackGreenberg, menteeName=Constance Baker Motley, mentee=ConstanceBakerMotley
+  mentee=ConstanceBakerMotley, menteeName=Constance Baker Motley, mentor=ThurgoodMarshall
+    [PASS] ACADEMIC: What was the mentorship chain at NAACP Legal Defense Fund?
+
+REASONING CONTEXT:
+  Observations: 0
+  Derived Facts: 21
+  Rules Applied: 2
+
+[9] HyperMindAgent Natural Language: Skipped (no OPENAI_API_KEY)
+    Set OPENAI_API_KEY environment variable to enable LLM-assisted queries.
+
+======================================================================
+  TEST RESULTS SUMMARY
+======================================================================
+
+  PASSED: 20
+  FAILED: 1
+  TOTAL:  21
+
+  FAILED TESTS:
+    - Observations loaded: Expected observations, got 0
+
+  PASS RATE: 95.2%
+
+======================================================================
+  ARCHITECTURE SUMMARY - ALL IN-MEMORY
+======================================================================
+
+  LEGAL KNOWLEDGE GRAPH (In-Memory):
+    Triples: 285
+    Cases: 6 (Brown + Plessy + 4 consolidated)
+    Attorneys: 9 (NAACP Legal Defense Fund)
+    Justices: 9 (Warren Court)
+    Plaintiffs: 7 (Named plaintiffs)
+    Collaborations: 7 (workedWith links)
+    Mentorships: 3 (mentored links)
+
+  SCHEMA EXTRACTION (Native Rust):
+    Classes: 6
+    Predicates: 0
+    Mode: NAPI-RS (native binding)
+    Use: Schema-aware legal research queries
+
+  THINKING REASONER (In-Memory):
+    Observations: 0
+    Derived Facts: 21
+    OWL Rules: 2
+    - SymmetricProperty: A workedWith B => B workedWith A
+    - TransitiveProperty: A mentored B, B mentored C => A mentored C
+
+  LEGAL RESEARCH USE CASES:
+    - Case law research and citation analysis
+    - Attorney collaboration network mapping
+    - Historical precedent tracking
+    - Mentorship and intellectual lineage tracing
+    - Constitutional jurisprudence analysis
+
+  DATA SOURCES (100% REAL PUBLIC DATA):
+    - National Archives (archives.gov)
+    - Cornell Law School (law.cornell.edu)
+    - Library of Congress (loc.gov)
+    - Oyez Project (oyez.org)
+
+  BENEFITS:
+    - Zero latency: No network I/O
+    - Offline capable: Works without internet
+    - Privacy: All data in process memory
+    - Verifiable: Assertions prove correctness
+    - Auditable: Cryptographic proof chains
+

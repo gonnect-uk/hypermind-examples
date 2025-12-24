@@ -1,0 +1,296 @@
+
+> hypermind-examples@1.0.0 boston
+> node examples/boston-realestate-agent.js
+
+======================================================================
+  BOSTON REAL ESTATE KNOWLEDGE GRAPH
+  HyperMindAgent with Deductive Reasoning + Assertions
+======================================================================
+
+Source: City of Boston Open Data (data.boston.gov)
+        Property Assessment Dataset (PDDL License)
+
+[1] Loading Boston Property Assessment Knowledge Graph...
+    Source: City of Boston Open Data (data.boston.gov)
+    Triples: 251
+
+[2] SPARQL Queries with Assertions:
+
+    [PASS] Neighborhoods count = 10
+    [PASS] Properties count = 18
+    [PASS] Property types count = 4 (SingleFamily, Condo, MultiFamily, Commercial)
+    [PASS] Back Bay properties count = 3
+    [PASS] Neighborhood adjacencies = 9 (symmetric creates 18 links)
+    [PASS] Price influence relationships found
+    [PASS] High-value properties (Back Bay + Beacon Hill) found
+    [PASS] Historic properties (Beacon Hill) found
+
+[3] Schema Extraction:
+    Classes: 3
+    Predicates: 0
+    Mode: Native Rust (NAPI-RS)
+    [PASS] Schema extracted from graph
+
+[4] Query Capabilities:
+
+  Mode: NAPI-RS (native binding)
+  Triples: 251
+  Classes: 3
+  Predicates: 0
+
+    [PASS] Graph has classes
+    [PASS] Graph has predicates
+
+[5] HyperFederate SQL Generation (graph_search UDF):
+
+  HyperFederate unifies SQL + Knowledge Graph queries via graph_search() UDF.
+  This enables cross-source joins between SPARQL results and SQL tables.
+
+  EXAMPLE: HyperFederate SQL with graph_search():
+  ```sql
+  -- HyperFederate SQL: Join Knowledge Graph + External Property Data
+  SELECT
+    kg.address,
+    kg.assessed_value,
+    kg.neighborhood,
+    mls.listing_price,
+    mls.days_on_market,
+    (mls.listing_price - kg.assessed_value) AS price_premium
+  FROM graph_search('
+    PREFIX prop: <http://boston.gov/property#>
+    SELECT ?address ?assessed_value ?neighborhood WHERE {
+      ?p a prop:Property .
+      ?p prop:address ?address .
+      ?p prop:assessedValue ?assessed_value .
+      ?p prop:locatedIn ?n .
+      ?n rdfs:label ?neighborhood .
+    }
+  ') kg
+  LEFT JOIN mls_listings mls
+    ON kg.address = mls.property_address
+  WHERE kg.assessed_value > 1000000
+  ORDER BY price_premium DESC
+  ```
+
+  HONEST OUTPUT - graph_search() SPARQL executed standalone:
+
+  HONEST RESULTS (from graph_search):
+  | address                           | assessed_value | neighborhood    |
+  |-----------------------------------|----------------|-----------------|
+  | 165 Marlborough Street            |     $2,850,000 | Back Bay        |
+  | 298 Commonwealth Avenue           |     $8,500,000 | Back Bay        |
+  | 45 Newbury Street                 |     $4,200,000 | Back Bay        |
+  | 72 Pinckney Street                |     $3,950,000 | Beacon Hill     |
+  | 15 Chestnut Street                |     $1,650,000 | Beacon Hill     |
+  | 45 Parsons Street                 |     $1,050,000 | Brighton        |
+
+    [PASS] HyperFederate SQL shows high-value properties
+
+[6] ThinkingReasoner with Deductive Reasoning:
+
+  Auto-reasoning complete (OWL auto-detected from TTL)...
+    Agent: boston-realestate-analyst
+    LLM: None (schema-based)
+    Observations: 0
+    Derived Facts: 14
+    Rules Applied: 2
+    [FAIL] Observations loaded: Expected observations, got 0
+    [PASS] Derived facts from OWL reasoning
+    [PASS] OWL rules detected from TTL data
+
+[7] Thinking Events (Real-time Reasoning Stream):
+
+  📝 THINKING EVENTS (auto-captured during reasoning):
+
+  ✅ REASONING COMPLETE:
+    - 0 observations (ground truth from KG)
+    - 14 derived facts (inferred via OWL rules)
+    - 2 rules applied (SymmetricProperty, TransitiveProperty)
+    - Every fact is traceable to source data (no hallucination)
+
+[8] Use Case Queries (SPARQL-first, deterministic):
+
+------------------------------------------------------------
+INVESTOR: "What are the highest-value properties in Back Bay?"
+VALUE: Identify premium investment opportunities in historic districts
+------------------------------------------------------------
+
+SPARQL:
+```sparql
+SELECT ?address ?value ?bedrooms WHERE {
+        ?property <http://boston.gov/property#locatedIn> <http://boston.gov/property#BackBay> .
+        ?property <http://boston.gov/property#address> ?address .
+        ?property <http://boston.gov/property#assessedValue> ?value .
+        OPTIONAL { ?property <http://boston.gov/property#bedrooms> ?bedrooms }
+      }
+```
+
+RESULTS: 2 bindings
+SAMPLE (first 5):
+  bedrooms=3, property=property_BB001, address=165 Marlborough Street, value=$2,850,000
+  property=property_BB002, address=298 Commonwealth Avenue, bedrooms=6, value=$8,500,000
+    [PASS] INVESTOR: What are the highest-value properties in Back Bay?
+
+REASONING CONTEXT:
+  Observations: 0
+  Derived Facts: 14
+  Rules Applied: 2
+
+------------------------------------------------------------
+HOME BUYER: "Which neighborhoods are adjacent to Back Bay?"
+VALUE: Discover walkable neighborhoods near target area
+------------------------------------------------------------
+
+SPARQL:
+```sparql
+SELECT ?neighbor ?label WHERE {
+        <http://boston.gov/property#BackBay> <http://boston.gov/property#adjacentTo> ?neighbor .
+        ?neighbor <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+      }
+```
+
+RESULTS: 2 bindings
+SAMPLE (first 5):
+  label=South End, neighbor=SouthEnd
+  label=Beacon Hill, neighbor=BeaconHill
+    [PASS] HOME BUYER: Which neighborhoods are adjacent to Back Bay?
+
+REASONING CONTEXT:
+  Observations: 0
+  Derived Facts: 14
+  Rules Applied: 2
+
+------------------------------------------------------------
+APPRAISER: "What properties influence pricing in the market?"
+VALUE: Understand comparable property relationships
+------------------------------------------------------------
+
+SPARQL:
+```sparql
+SELECT ?property ?influenced ?address WHERE {
+        ?property <http://boston.gov/property#priceInfluencedBy> ?influenced .
+        ?property <http://boston.gov/property#address> ?address .
+      }
+```
+
+RESULTS: 7 bindings
+SAMPLE (first 5):
+  property=property_BB001, address=165 Marlborough Street, influenced=property_BB002
+  property=property_BB002, address=298 Commonwealth Avenue, influenced=property_BH001
+  influenced=property_BH002, property=property_BH001, address=72 Pinckney Street
+  address=127 Savin Hill Avenue, influenced=property_DO002, property=property_DO001
+  address=42 Sedgwick Street, influenced=property_JP002, property=property_JP001
+    [PASS] APPRAISER: What properties influence pricing in the market?
+
+REASONING CONTEXT:
+  Observations: 0
+  Derived Facts: 14
+  Rules Applied: 2
+
+------------------------------------------------------------
+HISTORIAN: "What are the oldest properties in Beacon Hill?"
+VALUE: Research historic architecture and preservation
+------------------------------------------------------------
+
+SPARQL:
+```sparql
+SELECT ?address ?year WHERE {
+        ?property <http://boston.gov/property#yearBuilt> ?year .
+        ?property <http://boston.gov/property#address> ?address .
+        ?property <http://boston.gov/property#locatedIn> <http://boston.gov/property#BeaconHill> .
+      }
+```
+
+RESULTS: 2 bindings
+SAMPLE (first 5):
+  year=1830, property=property_BH001, address=72 Pinckney Street
+  year=1845, property=property_BH002, address=15 Chestnut Street
+    [PASS] HISTORIAN: What are the oldest properties in Beacon Hill?
+
+REASONING CONTEXT:
+  Observations: 0
+  Derived Facts: 14
+  Rules Applied: 2
+
+------------------------------------------------------------
+DEVELOPER: "What multi-family properties exist in emerging areas?"
+VALUE: Find development opportunities in residential zones
+------------------------------------------------------------
+
+SPARQL:
+```sparql
+SELECT ?address ?value ?bedrooms WHERE {
+        ?property <http://boston.gov/property#hasType> <http://boston.gov/property#MultiFamily> .
+        ?property <http://boston.gov/property#address> ?address .
+        ?property <http://boston.gov/property#assessedValue> ?value .
+        OPTIONAL { ?property <http://boston.gov/property#bedrooms> ?bedrooms }
+      }
+```
+
+RESULTS: 5 bindings
+SAMPLE (first 5):
+  value=$950,000, address=127 Savin Hill Avenue, bedrooms=6, property=property_DO001
+  address=156 Bennington Street, value=$875,000, property=property_EB001, bedrooms=6
+  value=$685,000, address=52 Warren Street, bedrooms=6, property=property_RX001
+  value=$1,850,000, address=512 East Broadway, property=property_SB002, bedrooms=7
+  property=property_SE001, address=534 Tremont Street, value=$2,400,000, bedrooms=8
+    [PASS] DEVELOPER: What multi-family properties exist in emerging areas?
+
+REASONING CONTEXT:
+  Observations: 0
+  Derived Facts: 14
+  Rules Applied: 2
+
+[9] HyperMindAgent Natural Language: Skipped (no OPENAI_API_KEY)
+    Set OPENAI_API_KEY environment variable to enable LLM-assisted queries.
+
+======================================================================
+  TEST RESULTS SUMMARY
+======================================================================
+
+  PASSED: 19
+  FAILED: 1
+  TOTAL:  20
+
+  FAILED TESTS:
+    - Observations loaded: Expected observations, got 0
+
+  PASS RATE: 95.0%
+
+======================================================================
+  ARCHITECTURE SUMMARY - ALL IN-MEMORY
+======================================================================
+
+  KNOWLEDGE GRAPH (In-Memory):
+    Triples: 251
+    Neighborhoods: 10
+    Properties: 18
+    Property Types: 4
+    Adjacency Links: 9
+    Price Influences: 7
+
+  SCHEMA EXTRACTION (Native Rust):
+    Classes: 3
+    Predicates: 0
+    Mode: NAPI-RS (native binding)
+
+  THINKING REASONER (In-Memory):
+    Observations: 0
+    Derived Facts: 14
+    OWL Rules: 2
+    - SymmetricProperty: A adjacentTo B => B adjacentTo A
+    - TransitiveProperty: A priceInfluencedBy B, B priceInfluencedBy C => A priceInfluencedBy C
+
+  REAL ESTATE USE CASES:
+    - Property valuation with comparable analysis
+    - Neighborhood discovery for home buyers
+    - Investment opportunity identification
+    - Historic preservation research
+    - Development site analysis
+
+  BENEFITS:
+    - Zero latency: No network I/O
+    - Offline capable: Works without internet
+    - Privacy: All data in process memory
+    - Verifiable: Assertions prove correctness
+

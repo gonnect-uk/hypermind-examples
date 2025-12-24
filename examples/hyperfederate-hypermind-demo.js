@@ -227,7 +227,9 @@ async function main() {
   const agent = new HyperMindAgent({
     name: 'brain-fraud-detector',
     kg: db,
-    apiKey: process.env.OPENAI_API_KEY,  // Optional: for LLM summarization
+    federationProxy: federation,          // Enable SQL generation with CTEs
+    connectors: federation.connectors,    // Pass connectors for query type detection
+    apiKey: process.env.OPENAI_API_KEY,   // Optional: for LLM summarization
     model: 'gpt-4o'
   })
 

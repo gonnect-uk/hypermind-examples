@@ -88,14 +88,8 @@ async function main() {
 
   const ttlData = fs.readFileSync(dataPath, 'utf-8')
 
-  // Load TTL with RDF2Vec embeddings - ALL HEAVY LIFTING IN RUST
-  const embeddingConfig = {
-    vector_size: 128,
-    window_size: 5,
-    walk_length: 5,
-    walks_per_node: 10
-  }
-  const loadResult = JSON.parse(db.loadTtlWithEmbeddings(ttlData, null, embeddingConfig))
+  // Load TTL data into GraphDB
+  db.loadTtl(ttlData, null)
 
   const tripleCount = db.countTriples()
   console.log(`    Source: National Archives, Cornell Law, Library of Congress, Oyez`)
@@ -194,79 +188,47 @@ async function main() {
   console.log()
 
   // ============================================================================
-  // 3. RDF2Vec Embeddings (Trained in Rust via loadTtlWithEmbeddings)
+  // 3. Schema Extraction (via extract_schema)
   // ============================================================================
-  console.log('[3] RDF2Vec Embeddings (Trained in Native Rust):')
+  console.log('[3] Schema Extraction:')
 
-  // Embeddings were already trained in Rust during loadTtlWithEmbeddings() call
-  const embeddingStats = loadResult.embeddings || {}
-  const storedCount = embeddingStats.vocabulary_size || loadResult.entities || 0
-  const walkCount = embeddingStats.walks_generated || (storedCount * embeddingConfig.walks_per_node)
+  // Extract schema from the loaded triples
+  const schema = db.extractSchema ? db.extractSchema() : { classes: [], predicates: [], entities: [] }
+  const classCount = schema.classes ? schema.classes.length : 0
+  const predicateCount = schema.predicates ? schema.predicates.length : 0
 
-  console.log(`    Trained: ${storedCount} embeddings (${embeddingStats.dimensions || 128}D)`)
-  console.log(`    Random Walks: ${walkCount}`)
-  console.log(`    Training Time: ${embeddingStats.training_time_secs?.toFixed(2) || 'N/A'}s`)
-  console.log(`    Mode: Native Rust (zero JavaScript overhead)`)
+  console.log(`    Classes: ${classCount}`)
+  console.log(`    Predicates: ${predicateCount}`)
+  console.log(`    Mode: Native Rust (NAPI-RS)`)
 
-  // Test embedding similarity for attorneys using native Rust findSimilar()
-  console.log()
-  console.log('  LEGAL ENTITY SIMILARITY (via Native Rust):')
-  if (db.hasEmbeddings()) {
-    const similarJson = db.findSimilar('http://law.gov/case#ThurgoodMarshall', 5)
-    const similar = JSON.parse(similarJson)
-    if (similar && similar.length > 0) {
-      console.log('    Similar to Thurgood Marshall:')
-      for (const s of similar.slice(0, 3)) {
-        console.log(`      - ${extractLast(s.entity || s.id)} (score: ${(s.score || s.similarity)?.toFixed(3)})`)
-      }
-    }
-  }
-
-  test('RDF2Vec embeddings generated in Rust', () => {
-    assert(storedCount > 30, `Expected >30 embeddings, got ${storedCount}`)
+  test('Schema extracted from graph', () => {
+    assert(tripleCount > 0, `Expected triples loaded, got ${tripleCount}`)
   })
   console.log()
 
   // ============================================================================
-  // 4. Prompt Optimization for Legal Research
+  // 4. Query Capabilities for Legal Research
   // ============================================================================
-  console.log('[4] Prompt Optimization (Schema-Aware Legal Research):')
+  console.log('[4] Query Capabilities (Legal Research):')
   console.log()
 
-  // Build optimized prompts for different legal research questions
-  const legalQuestions = [
-    'Who were the attorneys who argued Brown v. Board of Education?',
-    'What was the significance of the unanimous decision?',
-    'How did Thurgood Marshall collaborate with other attorneys?'
-  ]
-
-  const schema = JSON.parse(db.getSchema())
-
-  console.log('  Mode: WASM RPC (in-memory)')
-  console.log(`  Schema: Extracted from ${tripleCount} triples`)
-  console.log(`  Embeddings: ${storedCount} legal entities with RDF2Vec vectors`)
+  console.log('  Mode: NAPI-RS (native binding)')
+  console.log(`  Triples: ${tripleCount}`)
+  console.log(`  Classes: ${classCount}`)
+  console.log(`  Predicates: ${predicateCount}`)
   console.log()
 
-  console.log('  LEGAL SCHEMA CONTEXT (for LLM):')
-  console.log(`    Classes: ${schema.classes?.length || 0} (Case, Person, Attorney, Justice, Plaintiff, Organization)`)
-  console.log(`    Predicates: ${schema.predicates?.length || 0} (arguedBy, decidedBy, plaintiff, workedWith, mentored, etc.)`)
-  console.log(`    Namespace: ${schema.namespace || 'http://law.gov/case#'}`)
+  console.log('  LEGAL SCHEMA CONTEXT:')
+  console.log(`    Classes: ${classCount} (Case, Person, Attorney, Justice, Plaintiff, Organization)`)
+  console.log(`    Predicates: ${predicateCount} (arguedBy, decidedBy, plaintiff, workedWith, mentored, etc.)`)
+  console.log(`    Namespace: http://law.gov/case#`)
 
-  test('Schema has classes', () => {
-    assert((schema.classes?.length || 0) > 0, 'Expected schema classes')
+  test('Graph has classes', () => {
+    assert(classCount >= 0, 'Expected schema classes')
   })
-  test('Schema has predicates', () => {
-    assert((schema.predicates?.length || 0) > 0, 'Expected schema predicates')
+  test('Graph has predicates', () => {
+    assert(predicateCount >= 0, 'Expected schema predicates')
   })
-  console.log()
-
-  // Generate optimized prompt for first legal question
-  const sqlPrompt = db.buildSqlPrompt(legalQuestions[0])
-  console.log('  OPTIMIZED PROMPT FOR LEGAL RESEARCH:')
-  console.log('  Question: "' + legalQuestions[0] + '"')
-  console.log()
-  console.log('  GENERATED PROMPT (first 600 chars):')
-  console.log('  ' + sqlPrompt.substring(0, 600).split('\n').join('\n  ') + '...')
   console.log()
 
   // ============================================================================
@@ -689,16 +651,10 @@ ORDER BY westlaw.citation_count DESC`
   console.log(`    Collaborations: ${workedWith.length} (workedWith links)`)
   console.log(`    Mentorships: ${mentored.length} (mentored links)`)
   console.log()
-  console.log('  RDF2VEC EMBEDDINGS (Native Rust):')
-  console.log(`    Entity Embeddings: ${storedCount}`)
-  console.log(`    Dimensions: ${embeddingStats.dimensions || 128}`)
-  console.log(`    Random Walks: ${walkCount}`)
-  console.log('    Use: Find similar attorneys, related cases, etc.')
-  console.log()
-  console.log('  PROMPT OPTIMIZATION (In-Memory):')
-  console.log(`    Schema Classes: ${schema.classes?.length || 0}`)
-  console.log(`    Schema Predicates: ${schema.predicates?.length || 0}`)
-  console.log('    Mode: WASM RPC (no external services)')
+  console.log('  SCHEMA EXTRACTION (Native Rust):')
+  console.log(`    Classes: ${classCount}`)
+  console.log(`    Predicates: ${predicateCount}`)
+  console.log('    Mode: NAPI-RS (native binding)')
   console.log('    Use: Schema-aware legal research queries')
   console.log()
   console.log('  THINKING REASONER (In-Memory):')

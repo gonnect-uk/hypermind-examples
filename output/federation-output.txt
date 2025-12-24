@@ -1,0 +1,190 @@
+
+================================================================================
+  HYPERFEDERATE + HYPERMIND AGENT INTEGRATION
+  Neuro-Symbolic AI with Cross-Database Federation
+================================================================================
+
+  rust-kgdb Version: 0.1.8
+
++------------------------------------------------------------------------+
+|  STEP 1: Loading BRAIN Ontology into KGDB                              |
++------------------------------------------------------------------------+
+
+  Knowledge Graph: 63 triples loaded
+  OWL Properties:
+    - brain:transfers (TransitiveProperty) -> Fraud chain detection
+    - brain:relatedTo (SymmetricProperty) -> Network analysis
+    - brain:ordersFrom (TransitiveProperty) -> Supplier collusion
+
++------------------------------------------------------------------------+
+|  STEP 2: Configuring RpcFederationProxy (IN-MEMORY WASM MODE)          |
++------------------------------------------------------------------------+
+
+  Mode: inMemory (WASM - no external server)
+  In-Memory: true
+  GraphDB: 63 triples loaded
+  Snowflake: SNOWFLAKE_SAMPLE_DATA.TPCH_SF1
+
++------------------------------------------------------------------------+
+|  STEP 3: Creating HyperMindAgent with ThinkingReasoner                 |
++------------------------------------------------------------------------+
+
+  HyperMindAgent Created:
+    Name: brain-fraud-detector
+    Rules auto-generated: 4
+    Facts loaded: 14
+    ThinkingReasoner: Active
+
++------------------------------------------------------------------------+
+|  STEP 4: Executing Query with AUTOMATIC Deductive Reasoning           |
++------------------------------------------------------------------------+
+
+  QUERY: "Find circular payment patterns indicating fraud"
+
++------------------------------------------------------------------------+
+|  STEP 5: RESULTS (with Deductive Proofs)                               |
++------------------------------------------------------------------------+
+
+  ANSWER:
+  -------
+  There is a circular payment pattern indicating potential fraud involving three customers: cust001 transfers to cust003, cust003 transfers to cust002, and cust002 transfers back to cust001.
+
+  REASONING STATS:
+  ----------------
+    Events: 0
+    Facts: 14
+    Rules: 4
+    Proofs: 6
+
+  THINKING GRAPH (Derivation Chain):
+  ----------------------------------
+    Step 1: [owl:SymmetricProperty] http://brain.gonnect.ai/cust002 http://brain.gonnect.ai/relatedTo http://brain.gonnect.ai/cust001
+    Step 2: [owl:SymmetricProperty] http://brain.gonnect.ai/supp003 http://brain.gonnect.ai/relatedTo http://brain.gonnect.ai/supp002
+    Step 3: [owl:SymmetricProperty] http://brain.gonnect.ai/cust003 http://brain.gonnect.ai/connectedVia http://brain.gonnect.ai/cust002
+    Step 4: [owl:TransitiveProperty] http://brain.gonnect.ai/cust001 http://brain.gonnect.ai/transfers http://brain.gonnect.ai/cust003
+    Step 5: [owl:TransitiveProperty] http://brain.gonnect.ai/cust002 http://brain.gonnect.ai/transfers http://brain.gonnect.ai/cust001
+    Step 6: [owl:TransitiveProperty] http://brain.gonnect.ai/cust003 http://brain.gonnect.ai/transfers http://brain.gonnect.ai/cust002
+
+  CRYPTOGRAPHIC PROOFS:
+  ---------------------
+    Proof 99d2305d...
+      Confidence: 90.0%
+    Proof 96e2bd9d...
+      Confidence: 90.0%
+    Proof c023de6c...
+      Confidence: 90.0%
+    Proof c0e102f4...
+      Confidence: 90.0%
+    Proof 25e31ba6...
+      Confidence: 90.0%
+
+  DERIVED FACTS:
+  --------------
+    - undefined(undefined)
+    - undefined(undefined)
+    - undefined(undefined)
+
+  Observations recorded: 0
+
++------------------------------------------------------------------------+
+|  STEP 6: Federated Query (IN-MEMORY WASM via NAPI-RS)                  |
++------------------------------------------------------------------------+
+
+  Executing federated query via IN-MEMORY mode...
+  (NAPI-RS native binding - no external server required)
+
+  FEDERATION RESULT:
+  -----------------
+    Mode: inMemory
+    Sources: kgdb(inMemory), snowflake(inMemory)
+    Rows: 68
+    Duration: 1ms
+
+  COLUMNS: p, o, s
+  ROWS (sample):
+     [
+  'http://www.w3.org/2000/01/rdf-schema#subClassOf',
+  'http://brain.gonnect.ai/Transaction',
+  'http://brain.gonnect.ai/Claim'
+]
+     [
+  'http://www.w3.org/2000/01/rdf-schema#subClassOf',
+  'http://brain.gonnect.ai/Transaction',
+  'http://brain.gonnect.ai/Order'
+]
+     [
+  'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+  'http://www.w3.org/2002/07/owl#Class',
+  'http://brain.gonnect.ai/Entity'
+]
+     [
+  'http://brain.gonnect.ai/name',
+  'Customer#000000001',
+  'http://brain.gonnect.ai/cust001'
+]
+     [
+  'http://brain.gonnect.ai/segment',
+  'BUILDING',
+  'http://brain.gonnect.ai/cust001'
+]
+
+  DIRECT KG QUERY (all triples pattern):
+    Found 68 triples in KGDB (in-memory NAPI-RS)
+      http://brain.gonnect.ai/Claim http://www.w3.org/2000/01/rdf-schema#subClassOf http://brain.gonnect.ai/Transaction
+      http://brain.gonnect.ai/Order http://www.w3.org/2000/01/rdf-schema#subClassOf http://brain.gonnect.ai/Transaction
+      http://brain.gonnect.ai/Entity http://www.w3.org/1999/02/22-rdf-syntax-ns#type http://www.w3.org/2002/07/owl#Class
+      http://brain.gonnect.ai/cust001 http://brain.gonnect.ai/name Customer#000000001
+      http://brain.gonnect.ai/cust001 http://brain.gonnect.ai/segment BUILDING
+
++------------------------------------------------------------------------+
+|  STEP 7: ThinkingReasoner Direct API Demo                              |
++------------------------------------------------------------------------+
+
+  [1] Loading ontology...
+      Auto-generated 0 rules from OWL properties
+
+  [2] Recording observations (via observe)...
+      Recorded 3 transfer observations
+  [2b] Recording hypotheses (via hypothesize)...
+      Recorded 3 transfer hypotheses
+
+  [3] Running deductive reasoning...
+      Rules fired: 0
+      Derived facts: 0
+      Proofs generated: 0
+
+  [4] Getting thinking graph...
+      Nodes: 3
+      Edges: 0
+      Derivation steps: 3
+
+  DERIVATION CHAIN:
+    Step 1: [OBSERVATION] alice transfers bob
+    Step 2: [OBSERVATION] bob transfers carol
+    Step 3: [OBSERVATION] carol transfers alice
+
+  [5] Reasoning stats:
+      Events: 3
+      Facts: 1
+      Rules: 0
+      Proofs: 0
+
+================================================================================
+  DEMONSTRATION COMPLETE
+================================================================================
+
+  Summary:
+    - Loaded BRAIN ontology (63 triples)
+    - Auto-generated 4 Datalog rules from OWL properties
+    - HyperMindAgent with AUTOMATIC deductive reasoning
+    - Federated KGDB + Snowflake TPCH query
+    - Cryptographic proofs with derivation chain
+
+  Total Runtime: 5260ms
+
+  KEY INSIGHT:
+  ------------
+  HyperMindAgent + ThinkingReasoner = AI that PROVES its conclusions
+  OWL properties -> Datalog rules -> Cryptographic proofs
+
+================================================================================

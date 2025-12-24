@@ -1,0 +1,308 @@
+
+> hypermind-examples@1.0.0 euroleague
+> node examples/euroleague-basketball-agent.js
+
+======================================================================
+  EUROLEAGUE BASKETBALL KNOWLEDGE GRAPH
+  HyperMindAgent with Deductive Reasoning + Assertions
+======================================================================
+
+Source: https://medium.com/@skontopo2009/
+        representing-euroleague-play-by-play-data-as-a-knowledge-graph
+Data Model: https://github.com/andrewstellman/pbprdf
+
+[1] Loading Play-by-Play Knowledge Graph...
+    Source: euroleague-api (pip install euroleague-api)
+    Triples: 603
+
+[2] SPARQL Queries with Assertions:
+
+    [PASS] Teams count = 2 (BER, PAN)
+    [PASS] Players count = 22
+    [PASS] Steals count = 3 (Lessort, Mitoglou, Mattisseck)
+    [PASS] Steal players are correct
+    [PASS] Assist events count = 8
+    [PASS] Teammate links = 111
+    [FAIL] Scoring events found: Expected scoring events, got 0
+
+[3] Schema Extraction:
+    Classes: 11
+    Predicates: 0
+    Mode: Native Rust (NAPI-RS)
+    [PASS] Schema extracted from graph
+
+[4] Query Capabilities:
+
+  Mode: NAPI-RS (native binding)
+  Triples: 603
+  Classes: 11
+  Predicates: 0
+
+    [PASS] Graph has classes
+    [PASS] Graph has predicates
+
+[5] HyperFederate SQL Generation (graph_search UDF):
+
+  HyperFederate unifies SQL + Knowledge Graph queries via graph_search() UDF.
+  This enables cross-source joins between SPARQL results and SQL tables.
+
+  EXAMPLE: HyperFederate SQL with graph_search():
+  ```sql
+  -- HyperFederate SQL: Join Knowledge Graph + External Data
+  SELECT
+    kg.player,
+    kg.steal_count,
+    ext.player_salary,
+    ext.team_budget
+  FROM graph_search('
+    PREFIX euro: <http://euroleague.net/ontology#>
+    SELECT ?player (COUNT(?steal) AS ?steal_count) WHERE {
+      ?steal a euro:Steal .
+      ?steal euro:player ?player .
+    } GROUP BY ?player
+  ') kg
+  LEFT JOIN external_db.player_contracts ext
+    ON kg.player = ext.player_uri
+  ORDER BY kg.steal_count DESC
+  ```
+
+  HONEST OUTPUT - graph_search() SPARQL executed standalone:
+
+  SPARQL Query:
+  ```sparql
+  PREFIX euro: <http://euroleague.net/ontology#>
+  SELECT ?player (COUNT(?steal) AS ?steal_count) WHERE {
+    ?steal a euro:Steal .
+    ?steal euro:player ?player .
+  } GROUP BY ?player
+  ```
+
+  HONEST RESULTS (from graph_search):
+  | player                    | steal_count |
+  |---------------------------|-------------|
+  | lessort__mathias          |           1 |
+  | mitoglou__konstantinos    |           1 |
+  | mattisseck__jonas         |           1 |
+
+    [PASS] HyperFederate SQL shows 3 steal players
+
+[6] ThinkingReasoner with Deductive Reasoning:
+
+  Auto-reasoning complete (OWL auto-detected from TTL)...
+    Agent: euroleague-analyst
+    LLM: None (schema-based)
+    Observations: 0
+    Derived Facts: 7
+    Rules Applied: 2
+    [FAIL] Observations loaded: Expected observations, got 0
+    [PASS] Derived facts from OWL reasoning
+    [PASS] OWL rules detected from TTL data
+
+[7] Thinking Events (Real-time Reasoning Stream):
+
+  📝 THINKING EVENTS (auto-captured during reasoning):
+
+  ✅ REASONING COMPLETE:
+    - 0 observations (ground truth from KG)
+    - 7 derived facts (inferred via OWL rules)
+    - 2 rules applied (SymmetricProperty, TransitiveProperty)
+    - Every fact is traceable to source data (no hallucination)
+
+[8] Use Case Queries (SPARQL-first, deterministic):
+
+------------------------------------------------------------
+JOURNALIST: "Who made the defensive steals?"
+VALUE: Uncover storylines beyond surface-level stats
+------------------------------------------------------------
+
+SPARQL:
+```sparql
+SELECT ?player WHERE {
+    ?e <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Steal> .
+    ?e <http://euroleague.net/ontology#player> ?player .
+  }
+```
+
+RESULTS: 3 bindings
+SAMPLE (first 5):
+  e=e00011, player=lessort__mathias
+  e=e00028, player=mitoglou__konstantinos
+  e=e00030, player=mattisseck__jonas
+    [PASS] JOURNALIST: Who made the defensive steals?
+
+REASONING CONTEXT:
+  Observations: 0
+  Derived Facts: 7
+  Rules Applied: 2
+
+------------------------------------------------------------
+COACH: "Which players distributed the ball best with assists?"
+VALUE: Identify team chemistry for strategic planning
+------------------------------------------------------------
+
+SPARQL:
+```sparql
+SELECT ?player WHERE {
+    ?e <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Assist> .
+    ?e <http://euroleague.net/ontology#player> ?player .
+  }
+```
+
+RESULTS: 8 bindings
+SAMPLE (first 5):
+  e=e00007, player=nunn__kendrick
+  e=e00014, player=rapieque__elias
+  e=e00016, player=nunn__kendrick
+  e=e00032, player=hermannsson__martin
+  player=brown__lorenzo, e=e00051
+    [PASS] COACH: Which players distributed the ball best with assists?
+
+REASONING CONTEXT:
+  Observations: 0
+  Derived Facts: 7
+  Rules Applied: 2
+
+------------------------------------------------------------
+ANALYST: "Who made scoring plays (Two/Three Pointers)?"
+VALUE: Enriched interconnected data for modeling
+------------------------------------------------------------
+
+SPARQL:
+```sparql
+SELECT ?player ?label WHERE {
+    ?e <http://euroleague.net/ontology#player> ?player .
+    ?e <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+    ?e <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type .
+  }
+```
+
+RESULTS: 100 bindings
+SAMPLE (first 5):
+  type=Event, e=e00000, player=none, label=Begin Period
+  type=Event, player=none, label=Event, e=e00001
+  label=TV Time Out (1), type=Turnover, player=none, e=e00057
+  player=bean__justin, e=e00072, type=Event, label=In
+  player=grant__jerian, type=Event, e=e00091, label=In
+    [FAIL] ANALYST: Who made scoring plays (Two/Three Pointers)?: Expected 0, got 100
+
+100 !== 0
+
+
+REASONING CONTEXT:
+  Observations: 0
+  Derived Facts: 7
+  Rules Applied: 2
+
+------------------------------------------------------------
+FAN: "Who are the teammates of Lessort?"
+VALUE: Interactive exploration of team dynamics
+------------------------------------------------------------
+
+SPARQL:
+```sparql
+SELECT ?teammate WHERE {
+        <http://euroleague.net/player/lessort__mathias> <http://euroleague.net/ontology#teammateOf> ?teammate .
+      }
+```
+
+RESULTS: 8 bindings
+SAMPLE (first 5):
+  teammate=osman__cedi
+  teammate=grant__jerian
+  teammate=brown__lorenzo
+  teammate=sloukas__kostas
+  teammate=yurtseven__omer
+    [PASS] FAN: Who are the teammates of Lessort?
+
+REASONING CONTEXT:
+  Observations: 0
+  Derived Facts: 7
+  Rules Applied: 2
+
+[9] HyperMindAgent Natural Language: Skipped (no OPENAI_API_KEY)
+    Set OPENAI_API_KEY environment variable to enable LLM-assisted queries.
+
+  SPARQL-FIRST APPROACH (deterministic, no LLM needed):
+
+  USER PROMPT: "Who made defensive steals?"
+
+  GENERATED HYPERFEDERATE SQL:
+  ```sql
+  SELECT * FROM graph_search('
+    SELECT ?player WHERE {
+      ?event a <http://euroleague.net/ontology#Steal> .
+      ?event <http://euroleague.net/ontology#player> ?player
+    }
+  ')
+  ```
+
+  HONEST RESULTS (executed):
+    → lessort__mathias
+    → mitoglou__konstantinos
+    → mattisseck__jonas
+
+  RESPONSE STRUCTURE:
+  ```json
+  {
+    "answer": "Found 3 players who made steals: lessort__mathias, mitoglou__konstantinos, mattisseck__jonas",
+    "sparql": "SELECT ?player WHERE { ?event a <...#Steal> . ?event <...#player> ?player }",
+    "reasoning": {
+      "observations": 0,
+      "derivedFacts": 7,
+      "rulesApplied": 2
+    },
+    "thinkingGraph": {
+      "nodes": 0,
+      "derivationChain": 7
+    }
+  }
+  ```
+
+======================================================================
+  TEST RESULTS SUMMARY
+======================================================================
+
+  PASSED: 15
+  FAILED: 3
+  TOTAL:  18
+
+  FAILED TESTS:
+    - Scoring events found: Expected scoring events, got 0
+    - Observations loaded: Expected observations, got 0
+    - ANALYST: Who made scoring plays (Two/Three Pointers)?: Expected 0, got 100
+
+100 !== 0
+
+
+  PASS RATE: 83.3%
+
+======================================================================
+  ARCHITECTURE SUMMARY - ALL IN-MEMORY
+======================================================================
+
+  KNOWLEDGE GRAPH (In-Memory):
+    Triples: 603
+    Teams: 2
+    Players: 22
+    Steals: 3
+    Assists: 8
+    Teammate links: 111
+
+  SCHEMA EXTRACTION (Native Rust):
+    Classes: 11
+    Predicates: 0
+    Mode: NAPI-RS (native binding)
+
+  THINKING REASONER (In-Memory):
+    Observations: 0
+    Derived Facts: 7
+    OWL Rules: 2
+    - SymmetricProperty: A rel B => B rel A
+    - TransitiveProperty: A rel B, B rel C => A rel C
+
+  BENEFITS:
+    - Zero latency: No network I/O
+    - Offline capable: Works without internet
+    - Privacy: All data in process memory
+    - Verifiable: Assertions prove correctness
+

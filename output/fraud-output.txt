@@ -27,7 +27,7 @@
            - John Smith: risk score 0.85
            - Jane Doe: risk score 0.72
   [GraphFrame] Detected 2 fraud ring triangle(s)
-  [Memory] Stored Episode: episode:1766602257531-z6ry2debo
+  [Memory] Stored Episode: episode:1766606600918-9tn9w8wvg
            Linked to KG entities: ins:P001, ins:C001, ins:C002
 
 ┌─ PHASE 4: Second Investigation - Underwriting Decision ──────────────────┐
@@ -38,7 +38,7 @@
            - Time window: 8760h
            - Episodes found: 1
            - Estimated tokens: 41
-  [Memory] Stored Episode: episode:1766602257532-gofpas1si
+  [Memory] Stored Episode: episode:1766606600919-47yl8fu1q
            Decision: DENIED (based on prior investigation)
 
 ┌─ PHASE 5: Memory Recall - "What did we find last week?" ─────────────────┐
@@ -77,7 +77,9 @@
 
   [OpenAI Query with Context]
     User: "What should we do about Provider P001?"
-    Agent: Based on the findings, Provider P001 is linked to a fraud ring involving claimants C001 and C002, and there are multiple high-risk claimants and triangles detected. The underwriting review for new cla...
+    Agent: Based on the findings, Provider P001 is linked to a fraud ring involving multiple claimants. It is advisable to take the following actions:
+
+1. **Suspend Provider P001**: Temporarily suspend the provi...
     [Memory] Episode stored with AI response
 
 ┌─ PHASE 8: SPARQL Across Memory + KG ─────────────────────────────────────┐

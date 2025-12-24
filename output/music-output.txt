@@ -124,7 +124,7 @@
       2. Queen (Hard Rock, influenced by Beatles)
       3. Nirvana (influenced by Led Zeppelin)
 
-    PROOF HASH: 7d55749759cc43f9...
+    PROOF HASH: ea05b01445e4dfd1...
 
     [PASS] Personalized recommendations generated
 
@@ -145,10 +145,10 @@
 
     AGENT ANSWER:
     ------------------------------------------------------------
-    Similar artists to Metallica are Slayer and Megadeth, while Led Zeppelin is similar to Deep Purple.
+    Similar artists to Metallica are Slayer and Megadeth, while a similar artist to Led Zeppelin is Deep Purple.
     ------------------------------------------------------------
 
-    PROOF HASH: SHA-256 072cfc281c55b409...
+    PROOF HASH: SHA-256 3fb38fa457670090...
 
     [PASS] HyperMindAgent query successful
 
