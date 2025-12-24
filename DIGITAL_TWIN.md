@@ -360,11 +360,13 @@ SELECT ?meter ?total ?current WHERE {
 
 The HyperMindAgent provides natural language querying of the knowledge graph with GPT-4o or Claude. Below are real interactions from local execution:
 
-### Interaction Table
+### Interaction Table (from actual local run)
 
-| User Query | LLM Answer | Knowledge Source | Reasoning | Proof Hash |
-|------------|------------|------------------|-----------|------------|
-| "What is the current status of the server room and should I be concerned?" | "The server room is a critical zone located on the 0th floor of the M5 Building, with a maximum occupancy of 2 people. Given its critical status, it may warrant concern depending on current conditions or activities within the room." | SPARQL on `iot:criticalZone`, `iot:floor`, `iot:maxOccupancy` | Agent identified server room as critical zone, combined floor/occupancy metadata | SHA-256: `35228417f1f4fbdc...` |
+| User Query | LLM Answer | Knowledge Source | Reasoning | Proof |
+|------------|------------|------------------|-----------|-------|
+| "What is the current status of the server room and should I be concerned?" | "The server room is a critical zone located on the 0th floor of the M5 Building, with a maximum occupancy of 2 people. Given its critical status, it may warrant concern depending on current conditions or activities within the room." | SPARQL on `iot:criticalZone`, `iot:floor`, `iot:maxOccupancy` | Agent identified server room as critical zone, combined floor/occupancy metadata | ✓ Generated |
+
+**Note**: Real-Time Decision Engine (Test 12) proof: `SHA-256: 35228417f1f4fbdc...`
 
 ### Sample Agent Output
 
