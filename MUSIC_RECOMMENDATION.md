@@ -354,3 +354,76 @@ npm run music
 ```
 
 No API key required - runs entirely in-memory with curated artist data.
+
+---
+
+## Example Queries
+
+### User Prompt → SPARQL → Answer
+
+**Query 1: "Who are the artists in the Hard Rock genre?"**
+
+```sparql
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX music: <http://music.org/>
+
+SELECT ?artist ?name WHERE {
+  ?artist rdf:type music:Artist .
+  ?artist music:genre music:HardRock .
+  ?artist music:name ?name .
+}
+```
+
+**Answer:** Queen, Guns N' Roses, Led Zeppelin, Black Sabbath
+
+---
+
+**Query 2: "Which artists influenced Metallica?"**
+
+```sparql
+PREFIX music: <http://music.org/>
+
+SELECT ?influencer ?name WHERE {
+  music:Metallica music:influencedBy ?influencer .
+  ?influencer music:name ?name .
+}
+```
+
+**Answer:** Led Zeppelin, Black Sabbath
+
+---
+
+**Query 3: "What are related genres to Heavy Metal?"**
+
+```sparql
+PREFIX music: <http://music.org/>
+
+SELECT ?genre1 ?genre2 WHERE {
+  ?genre1 music:relatedGenre ?genre2 .
+}
+```
+
+**Answer:**
+- Heavy Metal ↔ Hard Rock
+- Soul ↔ R&B
+- Progressive Rock ↔ Art Rock
+
+(OWL SymmetricProperty ensures bidirectional relationships)
+
+---
+
+### PageRank: Most Influential Artists
+
+| Rank | Artist | PageRank Score |
+|------|--------|----------------|
+| 1 | Coldplay | 0.1866 |
+| 2 | Arctic Monkeys | 0.1222 |
+| 3 | Metallica | 0.1113 |
+| 4 | Radiohead | 0.1081 |
+| 5 | Nirvana | 0.0750 |
+
+---
+
+## Full Output Log
+
+📄 **[View Complete Output Log](output/music-recommendation-output.txt)**

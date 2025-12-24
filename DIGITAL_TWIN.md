@@ -289,3 +289,72 @@ npm run digital-twin
 ```
 
 No API key required - runs entirely in-memory with simulated sensor data.
+
+---
+
+## Example Queries
+
+### User Prompt → SPARQL → Answer
+
+**Query 1: "What is the temperature in the server room?"**
+
+```sparql
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX iot: <http://smartbuilding.org/iot#>
+
+SELECT ?zone ?temp WHERE {
+  ?reading rdf:type iot:SensorReading .
+  ?reading iot:fromSensor ?sensor .
+  ?sensor iot:installedIn ?zone .
+  ?zone iot:criticalZone "true"^^xsd:boolean .
+  ?reading iot:temperature ?temp .
+}
+```
+
+**Answer:** Server Room: 20.8°C (Critical zone monitored)
+
+---
+
+**Query 2: "Which zones are adjacent and might share heat?"**
+
+```sparql
+PREFIX iot: <http://smartbuilding.org/iot#>
+
+SELECT ?zone1 ?zone2 WHERE {
+  ?zone1 iot:adjacentTo ?zone2 .
+}
+```
+
+**Answer:**
+- MailRoom ↔ Kitchen
+- InterdisciplinaryLab ↔ ConferenceRoom
+
+(OWL SymmetricProperty automatically infers bidirectional relationships)
+
+---
+
+**Query 3: "What is the current energy consumption?"**
+
+```sparql
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX iot: <http://smartbuilding.org/iot#>
+
+SELECT ?meter ?total ?current WHERE {
+  ?meter rdf:type iot:EnergyMeter .
+  ?reading iot:fromMeter ?meter .
+  ?reading iot:totalEnergy ?total .
+  ?reading iot:currentPower ?current .
+}
+```
+
+**Answer:**
+- HVAC: 270.87 kWh (4178W current)
+- Microwave: 9.61 kWh (0W idle)
+- Coffee Machine: 13.62 kWh (0W idle)
+- **Total current power: 4178W**
+
+---
+
+## Full Output Log
+
+📄 **[View Complete Output Log](output/digital-twin-output.txt)**
