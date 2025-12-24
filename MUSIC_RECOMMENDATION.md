@@ -433,9 +433,9 @@ The HyperMindAgent provides natural language music discovery powered by GPT-4o o
 
 | User Query | LLM Answer | Knowledge Source | Reasoning | Proof |
 |------------|------------|------------------|-----------|-------|
-| "I love Led Zeppelin and Metallica. What similar artists should I listen to and why?" | "You might enjoy listening to Guns N' Roses, as they are influenced by The Beatles, who also influenced Metallica. Additionally, exploring genres like Progressive Rock and Art Rock, which are related to the music styles of Led Zeppelin, could introduce you to similar artists." | SPARQL on `music:influencedBy`, `music:relatedGenre` | Agent traversed influence network (Beatles → Metallica), used genre relationships (Progressive Rock ↔ Art Rock) | ✓ Generated |
+| "I love Led Zeppelin and Metallica. What similar artists should I listen to and why?" | "You might enjoy listening to Guns N' Roses, as they are influenced by The Beatles, similar to Metallica. Additionally, exploring genres like Progressive Rock and Art Rock, which are related to the styles of Led Zeppelin, could also be appealing." | SPARQL on `music:influencedBy`, `music:relatedGenre` | Agent traversed influence network (Beatles → Metallica), used genre relationships (Progressive Rock ↔ Art Rock) | ✓ Generated |
 
-**Note**: Recommendation Engine (Test 14) proof: `SHA-256: 9dff8fccd8c318ab...`
+**Note**: Recommendation Engine (Test 14) proof: `SHA-256: 5ead6b840bd57c88...`
 
 ### Sample Agent Output
 
@@ -450,12 +450,12 @@ The HyperMindAgent provides natural language music discovery powered by GPT-4o o
     AGENT ANSWER:
     ------------------------------------------------------------
     You might enjoy listening to Guns N' Roses, as they are influenced
-    by The Beatles, who also influenced Metallica. Additionally, exploring
-    genres like Progressive Rock and Art Rock, which are related to the
-    music styles of Led Zeppelin, could introduce you to similar artists.
+    by The Beatles, similar to Metallica. Additionally, exploring genres
+    like Progressive Rock and Art Rock, which are related to the styles
+    of Led Zeppelin, could also be appealing.
     ------------------------------------------------------------
 
-    PROOF HASH: [SHA-256 verification]
+    PROOF HASH: [object Object]...
 
     [PASS] HyperMindAgent query successful
 ```

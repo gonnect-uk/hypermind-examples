@@ -19,29 +19,29 @@
 
 [3] SPARQL: Query All Temperature Readings...
     Temperature readings found: 4
-      - InterdisciplinaryLab: 26.3°C
-      - InterdisciplinaryLab: 25.5°C
-      - ServerRoom: 24.0°C
-      - Kitchen: 27.9°C
+      - InterdisciplinaryLab: 24.5°C
+      - InterdisciplinaryLab: 25.2°C
+      - ServerRoom: 25.2°C
+      - Kitchen: 28.0°C
     [PASS] Temperature sensors reporting
 
 [4] SPARQL: Monitor Critical Zones...
     Critical zones: 1
-      - Server Room: 24.0°C
+      - Server Room: 25.2°C
     [PASS] Critical zone monitoring active
 
 [5] SPARQL: Occupancy Analysis...
     Zones with occupancy data: 2
-      - InterdisciplinaryLab: 0 people
+      - InterdisciplinaryLab: 2 people
       - ConferenceRoom: 0 people
     [PASS] Occupancy sensors active
 
 [6] SPARQL: Energy Consumption Analysis...
     Energy meters: 3
-      - EnergyMeter_HVAC: 270.05 kWh (3785W current)
-      - EnergyMeter_Microwave: 8.50 kWh (0W current)
-      - EnergyMeter_CoffeeMachine: 13.50 kWh (0W current)
-    Total current power: 3785W
+      - EnergyMeter_HVAC: 246.15 kWh (4723W current)
+      - EnergyMeter_Microwave: 8.89 kWh (0W current)
+      - EnergyMeter_CoffeeMachine: 13.27 kWh (0W current)
+    Total current power: 4723W
     [PASS] Energy monitoring active
 
 [7] SPARQL: HVAC System Status...
@@ -103,7 +103,7 @@
       Decision: INCREASE_COOLING
       Target: ServerRoomAC
       Action: Set cooling to 100% capacity
-      Proof: SHA-256 35228417f1f4fbdc...
+      Proof: SHA-256 9fe06436cdf318a6...
 
     [PASS] Real-time decision with proof
 
@@ -119,7 +119,7 @@
 ]
     AGENT ANSWER:
     ------------------------------------------------------------
-    The server room is a critical zone located on the 0th floor of the M5 Building, with a maximum occupancy of 2 people. Given its critical status, it may warrant concern depending on current conditions or activities within the room.
+    The server room is a critical zone located on the ground floor of the M5 Building, with an area of 50 square meters and a maximum occupancy of 2. Given its designation as a critical zone, it may warrant concern depending on the current conditions and activities within.
     ------------------------------------------------------------
 
     PROOF HASH: [object Object]...

@@ -364,9 +364,9 @@ The HyperMindAgent provides natural language querying of the knowledge graph wit
 
 | User Query | LLM Answer | Knowledge Source | Reasoning | Proof |
 |------------|------------|------------------|-----------|-------|
-| "What is the current status of the server room and should I be concerned?" | "The server room is a critical zone located on the 0th floor of the M5 Building, with a maximum occupancy of 2 people. Given its critical status, it may warrant concern depending on current conditions or activities within the room." | SPARQL on `iot:criticalZone`, `iot:floor`, `iot:maxOccupancy` | Agent identified server room as critical zone, combined floor/occupancy metadata | ✓ Generated |
+| "What is the current status of the server room and should I be concerned?" | "The server room is a critical zone located on the ground floor of the M5 Building, with an area of 50 square meters and a maximum occupancy of 2. Given its designation as a critical zone, it may warrant concern depending on the current conditions and activities within." | SPARQL on `iot:criticalZone`, `iot:floor`, `iot:maxOccupancy`, `iot:area` | Agent identified server room as critical zone, combined floor/area/occupancy metadata | ✓ Generated |
 
-**Note**: Real-Time Decision Engine (Test 12) proof: `SHA-256: 35228417f1f4fbdc...`
+**Note**: Real-Time Decision Engine (Test 12) proof: `SHA-256: 9fe06436cdf318a6...`
 
 ### Sample Agent Output
 
@@ -380,13 +380,13 @@ The HyperMindAgent provides natural language querying of the knowledge graph wit
 
     AGENT ANSWER:
     ------------------------------------------------------------
-    The server room is a critical zone located on the 0th floor of the
-    M5 Building, with a maximum occupancy of 2 people. Given its critical
-    status, it may warrant concern depending on current conditions or
-    activities within the room.
+    The server room is a critical zone located on the ground floor of the
+    M5 Building, with an area of 50 square meters and a maximum occupancy
+    of 2. Given its designation as a critical zone, it may warrant concern
+    depending on the current conditions and activities within.
     ------------------------------------------------------------
 
-    PROOF HASH: [SHA-256 verification]
+    PROOF HASH: [object Object]...
 
     [PASS] HyperMindAgent query successful
 ```
