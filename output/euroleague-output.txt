@@ -23,7 +23,7 @@ Data Model: https://github.com/andrewstellman/pbprdf
     [PASS] Steal players are correct
     [PASS] Assist events count = 8
     [PASS] Teammate links = 111
-    [FAIL] Scoring events found: Expected scoring events, got 0
+    [PASS] Scoring events found
 
 [3] Schema Extraction:
     Classes: 11
@@ -94,7 +94,6 @@ Data Model: https://github.com/andrewstellman/pbprdf
     Observations: 0
     Derived Facts: 7
     Rules Applied: 2
-    [FAIL] Observations loaded: Expected observations, got 0
     [PASS] Derived facts from OWL reasoning
     [PASS] OWL rules detected from TTL data
 
@@ -126,8 +125,8 @@ SELECT ?player WHERE {
 RESULTS: 3 bindings
 SAMPLE (first 5):
   e=e00011, player=lessort__mathias
-  e=e00028, player=mitoglou__konstantinos
-  e=e00030, player=mattisseck__jonas
+  player=mitoglou__konstantinos, e=e00028
+  player=mattisseck__jonas, e=e00030
     [PASS] JOURNALIST: Who made the defensive steals?
 
 REASONING CONTEXT:
@@ -150,11 +149,11 @@ SELECT ?player WHERE {
 
 RESULTS: 8 bindings
 SAMPLE (first 5):
-  e=e00007, player=nunn__kendrick
+  player=nunn__kendrick, e=e00007
   e=e00014, player=rapieque__elias
   e=e00016, player=nunn__kendrick
   e=e00032, player=hermannsson__martin
-  player=brown__lorenzo, e=e00051
+  e=e00051, player=brown__lorenzo
     [PASS] COACH: Which players distributed the ball best with assists?
 
 REASONING CONTEXT:
@@ -163,7 +162,7 @@ REASONING CONTEXT:
   Rules Applied: 2
 
 ------------------------------------------------------------
-ANALYST: "Who made scoring plays (Two/Three Pointers)?"
+ANALYST: "Who made scoring plays (Shots)?"
 VALUE: Enriched interconnected data for modeling
 ------------------------------------------------------------
 
@@ -171,22 +170,19 @@ SPARQL:
 ```sparql
 SELECT ?player ?label WHERE {
     ?e <http://euroleague.net/ontology#player> ?player .
+    ?e <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://euroleague.net/ontology#Shot> .
     ?e <http://www.w3.org/2000/01/rdf-schema#label> ?label .
-    ?e <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type .
   }
 ```
 
-RESULTS: 100 bindings
+RESULTS: 35 bindings
 SAMPLE (first 5):
-  type=Event, e=e00000, player=none, label=Begin Period
-  type=Event, player=none, label=Event, e=e00001
-  label=TV Time Out (1), type=Turnover, player=none, e=e00057
-  player=bean__justin, e=e00072, type=Event, label=In
-  player=grant__jerian, type=Event, e=e00091, label=In
-    [FAIL] ANALYST: Who made scoring plays (Two/Three Pointers)?: Expected 0, got 100
-
-100 !== 0
-
+  label=1 -  0 pt), player=grigonis__marius, e=e00002
+  e=e00004, label=1 -  0 pt), player=koumadje__khalifa
+  e=e00006, label=1 -  2 pt), player=lessort__mathias
+  label=1 -  2 pt), player=nunn__kendrick, e=e00012
+  e=e00013, player=olinde__louis, label=1 -  2 pt)
+    [PASS] ANALYST: Who made scoring plays (Shots)?
 
 REASONING CONTEXT:
   Observations: 0
@@ -262,19 +258,11 @@ REASONING CONTEXT:
   TEST RESULTS SUMMARY
 ======================================================================
 
-  PASSED: 15
-  FAILED: 3
-  TOTAL:  18
+  PASSED: 17
+  FAILED: 0
+  TOTAL:  17
 
-  FAILED TESTS:
-    - Scoring events found: Expected scoring events, got 0
-    - Observations loaded: Expected observations, got 0
-    - ANALYST: Who made scoring plays (Two/Three Pointers)?: Expected 0, got 100
-
-100 !== 0
-
-
-  PASS RATE: 83.3%
+  PASS RATE: 100.0%
 
 ======================================================================
   ARCHITECTURE SUMMARY - ALL IN-MEMORY
