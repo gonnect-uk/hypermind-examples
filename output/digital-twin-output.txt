@@ -19,10 +19,10 @@
 
 [3] SPARQL: Query All Temperature Readings...
     Temperature readings found: 4
-      - InterdisciplinaryLab: 23.7°C
+      - InterdisciplinaryLab: 25.9°C
       - InterdisciplinaryLab: 25.3°C
-      - ServerRoom: 20.6°C
-      - Kitchen: 25.3°C
+      - ServerRoom: 21.9°C
+      - Kitchen: 26.8°C
     [PASS] Temperature sensors reporting
 
 [4] SPARQL: Monitor Critical Zones...
@@ -32,16 +32,16 @@
 
 [5] SPARQL: Occupancy Analysis...
     Zones with occupancy data: 2
-      - InterdisciplinaryLab: 10 people
-      - ConferenceRoom: 14 people
+      - InterdisciplinaryLab: 5 people
+      - ConferenceRoom: 0 people
     [PASS] Occupancy sensors active
 
 [6] SPARQL: Energy Consumption Analysis...
     Energy meters: 3
-      - EnergyMeter_HVAC: 261.53 kWh (4384W current)
-      - EnergyMeter_Microwave: 9.11 kWh (1151W current)
-      - EnergyMeter_CoffeeMachine: 14.27 kWh (1141W current)
-    Total current power: 6676W
+      - EnergyMeter_HVAC: 264.18 kWh (4389W current)
+      - EnergyMeter_Microwave: 9.13 kWh (0W current)
+      - EnergyMeter_CoffeeMachine: 13.39 kWh (1169W current)
+    Total current power: 5558W
     [PASS] Energy monitoring active
 
 [7] SPARQL: HVAC System Status...
@@ -98,7 +98,7 @@
       Decision: INCREASE_COOLING
       Target: ServerRoomAC
       Action: Set cooling to 100% capacity
-      Proof: SHA-256 38cccece84f30b0d...
+      Proof: SHA-256 b0d14505b91e2d6f...
 
     [PASS] Contextual decision with proof
 
@@ -119,14 +119,14 @@
 
     AGENT ANSWER:
     ------------------------------------------------------------
-    The server room is classified as a secure area with properties including controlled access, climate control, and fire suppression systems.
+    The server room is classified as a secure area and is equipped with climate control and fire suppression systems.
     ------------------------------------------------------------
 
     NOTE: Answer derived from static building metadata (ontology),
     not live sensor telemetry. For real-time status, integrate
     with IoT event stream.
 
-    PROOF HASH: SHA-256 9d2fa0eb33740364...
+    PROOF HASH: SHA-256 ff27c8c274ac8a3e...
 
     [PASS] HyperMindAgent query successful
 
