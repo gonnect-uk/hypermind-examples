@@ -131,12 +131,28 @@
       2. Queen (Hard Rock, influenced by Beatles)
       3. Nirvana (influenced by Led Zeppelin)
 
-    PROOF HASH: 5b9bc7f0327f63dc...
+    PROOF HASH: 9dff8fccd8c318ab...
 
     [PASS] Personalized recommendations generated
 
+[15] HyperMindAgent: Natural Language Query with LLM...
+    Agent: music-advisor
+    Model: GPT-4o
+
+    USER QUESTION:
+    "I love Led Zeppelin and Metallica. What similar artists should I listen to and why?"
+
+    AGENT ANSWER:
+    ------------------------------------------------------------
+    You might enjoy listening to Guns N' Roses, as they are influenced by The Beatles, who also influenced Metallica. Additionally, exploring genres like Progressive Rock and Art Rock, which are related to the music styles of Led Zeppelin, could introduce you to similar artists.
+    ------------------------------------------------------------
+
+    PROOF HASH: [object Object]...
+
+    [PASS] HyperMindAgent query successful
+
 ================================================================================
-  TEST RESULTS: 13 PASSED, 1 FAILED - 92.9% PASS RATE
+  TEST RESULTS: 14 PASSED, 1 FAILED - 93.3% PASS RATE
 ================================================================================
 
   MUSIC RECOMMENDATION CAPABILITIES:

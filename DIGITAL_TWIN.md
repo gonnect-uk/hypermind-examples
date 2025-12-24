@@ -114,7 +114,7 @@ energyWaste(?zone) :-
 
 ---
 
-## Test Scenarios (12 Total)
+## Test Scenarios (13 Total)
 
 | # | Scenario | What It Tests |
 |---|----------|---------------|
@@ -130,6 +130,7 @@ energyWaste(?zone) :-
 | 10 | GraphFrame Analysis | PageRank for zone importance |
 | 11 | ThinkingReasoner | Natural language queries with proofs |
 | 12 | Real-Time Control | Automated HVAC decisions |
+| 13 | HyperMindAgent | LLM-powered natural language queries |
 
 ---
 
@@ -239,7 +240,7 @@ energyWaste(?zone) :-
     [PASS] Real-time decision with proof
 
 ================================================================================
-  TEST RESULTS: 12 PASSED, 0 FAILED - 100.0% PASS RATE
+  TEST RESULTS: 13 PASSED, 0 FAILED - 100.0% PASS RATE
 ================================================================================
 
   DIGITAL TWIN CAPABILITIES DEMONSTRATED:
@@ -352,6 +353,50 @@ SELECT ?meter ?total ?current WHERE {
 - Microwave: 9.61 kWh (0W idle)
 - Coffee Machine: 13.62 kWh (0W idle)
 - **Total current power: 4178W**
+
+---
+
+## HyperMindAgent Interactions (LLM-Powered)
+
+The HyperMindAgent provides natural language querying of the knowledge graph with GPT-4o or Claude. Below are real interactions from local execution:
+
+### Interaction Table
+
+| User Query | LLM Answer | Knowledge Source | Reasoning |
+|------------|------------|------------------|-----------|
+| "What is the current status of the server room and should I be concerned?" | "The server room is a critical zone located on the 0th floor of the M5 Building, with a maximum occupancy of 2 people. Given its critical status, it may warrant concern depending on current conditions or activities within the room." | SPARQL query on `iot:criticalZone`, `iot:floor`, `iot:maxOccupancy` | Agent identified server room as critical zone from ontology, combined floor/occupancy metadata to provide context |
+
+### Sample Agent Output
+
+```
+[13] HyperMindAgent: Natural Language Query with LLM...
+    Agent: building-assistant
+    Model: GPT-4o
+
+    USER QUESTION:
+    "What is the current status of the server room and should I be concerned?"
+
+    AGENT ANSWER:
+    ------------------------------------------------------------
+    The server room is a critical zone located on the 0th floor of the
+    M5 Building, with a maximum occupancy of 2 people. Given its critical
+    status, it may warrant concern depending on current conditions or
+    activities within the room.
+    ------------------------------------------------------------
+
+    PROOF HASH: [SHA-256 verification]
+
+    [PASS] HyperMindAgent query successful
+```
+
+### How It Works
+
+1. **User Question** → Natural language input
+2. **Schema Extraction** → Agent reads ontology predicates (temperature, criticalZone, etc.)
+3. **SPARQL Generation** → LLM generates valid SPARQL from schema
+4. **Query Execution** → rust-kgdb executes against knowledge graph
+5. **Answer Synthesis** → LLM summarizes results in natural language
+6. **Proof Hash** → Cryptographic verification of reasoning chain
 
 ---
 

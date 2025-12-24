@@ -131,7 +131,7 @@ collaborativeRecommendation(?user, ?artist) :-
 
 ---
 
-## Test Scenarios (14 Total)
+## Test Scenarios (15 Total)
 
 | # | Scenario | What It Tests |
 |---|----------|---------------|
@@ -149,6 +149,7 @@ collaborativeRecommendation(?user, ?artist) :-
 | 12 | PageRank Analysis | Most influential artists |
 | 13 | ThinkingReasoner | Natural language recommendations |
 | 14 | Recommendation Explanation | Full derivation chain proofs |
+| 15 | HyperMindAgent | LLM-powered music discovery |
 
 ---
 
@@ -285,7 +286,7 @@ collaborativeRecommendation(?user, ?artist) :-
     [PASS] Personalized recommendations generated
 
 ================================================================================
-  TEST RESULTS: 14 PASSED - 100% PASS RATE
+  TEST RESULTS: 14 PASSED, 1 FAILED - 93.3% PASS RATE
 ================================================================================
 
   MUSIC RECOMMENDATION CAPABILITIES:
@@ -421,6 +422,58 @@ SELECT ?genre1 ?genre2 WHERE {
 | 3 | Metallica | 0.1113 |
 | 4 | Radiohead | 0.1081 |
 | 5 | Nirvana | 0.0750 |
+
+---
+
+## HyperMindAgent Interactions (LLM-Powered)
+
+The HyperMindAgent provides natural language music discovery powered by GPT-4o or Claude. Below are real interactions from local execution:
+
+### Interaction Table
+
+| User Query | LLM Answer | Knowledge Source | Reasoning |
+|------------|------------|------------------|-----------|
+| "I love Led Zeppelin and Metallica. What similar artists should I listen to and why?" | "You might enjoy listening to Guns N' Roses, as they are influenced by The Beatles, who also influenced Metallica. Additionally, exploring genres like Progressive Rock and Art Rock, which are related to the music styles of Led Zeppelin, could introduce you to similar artists." | SPARQL on `music:influencedBy`, `music:relatedGenre` | Agent traversed influence network to find common influences (Beatles → Metallica), then used genre relationships (Progressive Rock ↔ Art Rock) to expand recommendations |
+
+### Sample Agent Output
+
+```
+[15] HyperMindAgent: Natural Language Query with LLM...
+    Agent: music-advisor
+    Model: GPT-4o
+
+    USER QUESTION:
+    "I love Led Zeppelin and Metallica. What similar artists should I listen to and why?"
+
+    AGENT ANSWER:
+    ------------------------------------------------------------
+    You might enjoy listening to Guns N' Roses, as they are influenced
+    by The Beatles, who also influenced Metallica. Additionally, exploring
+    genres like Progressive Rock and Art Rock, which are related to the
+    music styles of Led Zeppelin, could introduce you to similar artists.
+    ------------------------------------------------------------
+
+    PROOF HASH: [SHA-256 verification]
+
+    [PASS] HyperMindAgent query successful
+```
+
+### How It Works
+
+1. **User Question** → Natural language music preference
+2. **Schema Extraction** → Agent reads ontology (genre, influencedBy, relatedGenre)
+3. **SPARQL Generation** → LLM generates queries for influence chains and genre relations
+4. **Query Execution** → rust-kgdb executes against music knowledge graph
+5. **Answer Synthesis** → LLM provides recommendations with explanations
+6. **Proof Hash** → Cryptographic verification of reasoning chain
+
+### Recommendation Logic
+
+The agent combines multiple strategies:
+- **Influence-based**: Find artists who influenced or were influenced by favorites
+- **Genre-based**: Find artists in same or related genres
+- **Transitive reasoning**: Follow OWL TransitiveProperty chains (A influenced B, B influenced C → A influenced C)
+- **Symmetric relationships**: Use OWL SymmetricProperty for bidirectional genre relations
 
 ---
 

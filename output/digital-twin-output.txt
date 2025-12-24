@@ -19,29 +19,29 @@
 
 [3] SPARQL: Query All Temperature Readings...
     Temperature readings found: 4
-      - InterdisciplinaryLab: 25.9°C
-      - InterdisciplinaryLab: 24.3°C
-      - ServerRoom: 20.8°C
-      - Kitchen: 26.6°C
+      - InterdisciplinaryLab: 26.3°C
+      - InterdisciplinaryLab: 25.5°C
+      - ServerRoom: 24.0°C
+      - Kitchen: 27.9°C
     [PASS] Temperature sensors reporting
 
 [4] SPARQL: Monitor Critical Zones...
     Critical zones: 1
-      - Server Room: 20.8°C
+      - Server Room: 24.0°C
     [PASS] Critical zone monitoring active
 
 [5] SPARQL: Occupancy Analysis...
     Zones with occupancy data: 2
-      - InterdisciplinaryLab: 1 people
+      - InterdisciplinaryLab: 0 people
       - ConferenceRoom: 0 people
     [PASS] Occupancy sensors active
 
 [6] SPARQL: Energy Consumption Analysis...
     Energy meters: 3
-      - EnergyMeter_HVAC: 270.87 kWh (4178W current)
-      - EnergyMeter_Microwave: 9.61 kWh (0W current)
-      - EnergyMeter_CoffeeMachine: 13.62 kWh (0W current)
-    Total current power: 4178W
+      - EnergyMeter_HVAC: 270.05 kWh (3785W current)
+      - EnergyMeter_Microwave: 8.50 kWh (0W current)
+      - EnergyMeter_CoffeeMachine: 13.50 kWh (0W current)
+    Total current power: 3785W
     [PASS] Energy monitoring active
 
 [7] SPARQL: HVAC System Status...
@@ -103,12 +103,31 @@
       Decision: INCREASE_COOLING
       Target: ServerRoomAC
       Action: Set cooling to 100% capacity
-      Proof: SHA-256 a0f5318789900714...
+      Proof: SHA-256 35228417f1f4fbdc...
 
     [PASS] Real-time decision with proof
 
+[13] HyperMindAgent: Natural Language Query with LLM...
+    Agent: building-assistant
+    Model: GPT-4o
+
+    USER QUESTION:
+    "What is the current status of the server room and should I be concerned?"
+
+[HyperMindAgent] SPARQL validation: [
+  'Predicate not found in schema: http://smartbuilding.org/iot#ServerRoom'
+]
+    AGENT ANSWER:
+    ------------------------------------------------------------
+    The server room is a critical zone located on the 0th floor of the M5 Building, with a maximum occupancy of 2 people. Given its critical status, it may warrant concern depending on current conditions or activities within the room.
+    ------------------------------------------------------------
+
+    PROOF HASH: [object Object]...
+
+    [PASS] HyperMindAgent query successful
+
 ================================================================================
-  TEST RESULTS: 12 PASSED, 0 FAILED - 100.0% PASS RATE
+  TEST RESULTS: 13 PASSED, 0 FAILED - 100.0% PASS RATE
 ================================================================================
 
   DIGITAL TWIN CAPABILITIES DEMONSTRATED:
