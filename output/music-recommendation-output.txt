@@ -1,3 +1,7 @@
+
+> hypermind-examples@1.0.0 music
+> node examples/music-recommendation-agent.js
+
 ================================================================================
   MUSIC RECOMMENDATION AGENT
   Semantic Music Discovery with Knowledge Graphs
@@ -120,16 +124,36 @@
       2. Queen (Hard Rock, influenced by Beatles)
       3. Nirvana (influenced by Led Zeppelin)
 
-    PROOF HASH: cfeb5f62b2978d69...
+    PROOF HASH: 06b8c0750ca3272b...
 
     [PASS] Personalized recommendations generated
 
 [15] HyperMindAgent: Natural Language Query with LLM...
-    No API key found (set OPENAI_API_KEY or ANTHROPIC_API_KEY)
-    [SKIP] HyperMindAgent LLM test skipped
+    KG-grounded recommendations found: 5
+    Agent: music-advisor
+    Model: GPT-4o
+
+    USER QUESTION:
+    "Based on the music knowledge graph, who are similar artists to Led Zeppelin and Metallica?"
+
+    KG EVIDENCE (from SPARQL):
+      - Queen: undefined
+      - Deep Purple: undefined
+      - Guns N' Roses: undefined
+      - Black Sabbath: undefined
+      - Led Zeppelin IV: undefined
+
+    AGENT ANSWER:
+    ------------------------------------------------------------
+    Similar artists to Led Zeppelin include Deep Purple, while similar artists to Metallica include Slayer and Megadeth.
+    ------------------------------------------------------------
+
+    PROOF HASH: SHA-256 7ec669c6c17d01e6...
+
+    [PASS] HyperMindAgent query successful
 
 ================================================================================
-  TEST RESULTS: 14 PASSED, 0 FAILED - 100.0% PASS RATE
+  TEST RESULTS: 15 PASSED, 0 FAILED - 100.0% PASS RATE
 ================================================================================
 
   MUSIC RECOMMENDATION CAPABILITIES:

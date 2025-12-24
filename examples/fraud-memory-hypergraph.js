@@ -91,53 +91,49 @@ const FRAUD_ONTOLOGY = `
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-# Providers
-ins:P001 rdf:type ins:Provider ;
-         ins:name "Quick Care Clinic" ;
-         ins:riskScore "0.87"^^xsd:float ;
-         ins:claimVolume "847"^^xsd:integer .
+ins:P001 rdf:type ins:Provider .
+ins:P001 ins:name "Quick Care Clinic" .
+ins:P001 ins:riskScore 0.87 .
+ins:P001 ins:claimVolume 847 .
 
-ins:P002 rdf:type ins:Provider ;
-         ins:name "City Hospital" ;
-         ins:riskScore "0.35"^^xsd:float ;
-         ins:claimVolume "2341"^^xsd:integer .
+ins:P002 rdf:type ins:Provider .
+ins:P002 ins:name "City Hospital" .
+ins:P002 ins:riskScore 0.35 .
+ins:P002 ins:claimVolume 2341 .
 
-# Claimants
-ins:C001 rdf:type ins:Claimant ;
-         ins:name "John Smith" ;
-         ins:riskScore "0.85"^^xsd:float ;
-         ins:address ins:ADDR001 .
+ins:C001 rdf:type ins:Claimant .
+ins:C001 ins:name "John Smith" .
+ins:C001 ins:riskScore 0.85 .
+ins:C001 ins:address ins:ADDR001 .
 
-ins:C002 rdf:type ins:Claimant ;
-         ins:name "Jane Doe" ;
-         ins:riskScore "0.72"^^xsd:float ;
-         ins:address ins:ADDR001 .
+ins:C002 rdf:type ins:Claimant .
+ins:C002 ins:name "Jane Doe" .
+ins:C002 ins:riskScore 0.72 .
+ins:C002 ins:address ins:ADDR001 .
 
-ins:C003 rdf:type ins:Claimant ;
-         ins:name "Bob Wilson" ;
-         ins:riskScore "0.22"^^xsd:float ;
-         ins:address ins:ADDR002 .
+ins:C003 rdf:type ins:Claimant .
+ins:C003 ins:name "Bob Wilson" .
+ins:C003 ins:riskScore 0.22 .
+ins:C003 ins:address ins:ADDR002 .
 
-# Claims
-ins:CLM001 rdf:type ins:Claim ;
-           ins:claimant ins:C001 ;
-           ins:provider ins:P001 ;
-           ins:amount "18500"^^xsd:decimal ;
-           ins:type "bodily_injury" .
+ins:CLM001 rdf:type ins:Claim .
+ins:CLM001 ins:claimant ins:C001 .
+ins:CLM001 ins:provider ins:P001 .
+ins:CLM001 ins:amount 18500 .
+ins:CLM001 ins:type "bodily_injury" .
 
-ins:CLM002 rdf:type ins:Claim ;
-           ins:claimant ins:C002 ;
-           ins:provider ins:P001 ;
-           ins:amount "22300"^^xsd:decimal ;
-           ins:type "bodily_injury" .
+ins:CLM002 rdf:type ins:Claim .
+ins:CLM002 ins:claimant ins:C002 .
+ins:CLM002 ins:provider ins:P001 .
+ins:CLM002 ins:amount 22300 .
+ins:CLM002 ins:type "bodily_injury" .
 
-ins:CLM003 rdf:type ins:Claim ;
-           ins:claimant ins:C001 ;
-           ins:provider ins:P002 ;
-           ins:amount "8500"^^xsd:decimal ;
-           ins:type "collision" .
+ins:CLM003 rdf:type ins:Claim .
+ins:CLM003 ins:claimant ins:C001 .
+ins:CLM003 ins:provider ins:P002 .
+ins:CLM003 ins:amount 8500 .
+ins:CLM003 ins:type "collision" .
 
-# Fraud Ring Relationships
 ins:C001 ins:knows ins:C002 .
 ins:C002 ins:knows ins:C001 .
 `
@@ -419,20 +415,26 @@ async function main() {
   console.log('└─────────────────────────────────────────────────────────────────────────────┘')
   console.log()
 
-  // Query high-risk claimants
-  const highRiskQuery = `
-    PREFIX ins: <http://insurance.org/>
+  // Query all claimants with risk scores
+  const allClaimantsQuery = `
     SELECT ?claimant ?name ?score WHERE {
-      ?claimant a ins:Claimant ;
-                ins:name ?name ;
-                ins:riskScore ?score .
-      FILTER(?score > 0.7)
+      ?claimant <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://insurance.org/Claimant> .
+      ?claimant <http://insurance.org/name> ?name .
+      ?claimant <http://insurance.org/riskScore> ?score .
     }
   `
-  const highRiskResults = db.querySelect(highRiskQuery)
+  const allClaimants = db.querySelect(allClaimantsQuery)
+  // Filter high-risk claimants in JavaScript (score > 0.7)
+  const highRiskResults = allClaimants.filter(r => {
+    const score = parseFloat(r.bindings.score)
+    return !isNaN(score) && score > 0.7
+  })
   console.log(`  [SPARQL] Found ${highRiskResults.length} high-risk claimants`)
+  highRiskResults.forEach(r => {
+    console.log(`           - ${r.bindings.name}: risk score ${r.bindings.score}`)
+  })
 
-  // Detect triangles
+  // Detect triangles - fraud ring: C001 ↔ C002 both claim with P001
   const gf = new GraphFrame(
     JSON.stringify([
       { id: 'C001', type: 'claimant' },
@@ -440,9 +442,14 @@ async function main() {
       { id: 'P001', type: 'provider' }
     ]),
     JSON.stringify([
+      // C001 knows C002 (bidirectional)
       { src: 'C001', dst: 'C002', relationship: 'knows' },
+      { src: 'C002', dst: 'C001', relationship: 'knows' },
+      // Both claimants use same provider - forms triangle
       { src: 'C001', dst: 'P001', relationship: 'claims_with' },
-      { src: 'C002', dst: 'P001', relationship: 'claims_with' }
+      { src: 'P001', dst: 'C001', relationship: 'serves' },
+      { src: 'C002', dst: 'P001', relationship: 'claims_with' },
+      { src: 'P001', dst: 'C002', relationship: 'serves' }
     ])
   )
   const triangles = gf.triangleCount()

@@ -1,0 +1,129 @@
+
+> hypermind-examples@1.0.0 fraud
+> node examples/fraud-memory-hypergraph.js
+
+
+════════════════════════════════════════════════════════════════════════════════
+  MEMORY HYPERGRAPH DEMO - Fraud Detection with Persistent Memory
+  rust-kgdb v0.1.8 | Memory Hypergraph Architecture
+════════════════════════════════════════════════════════════════════════════════
+
+┌─ PHASE 1: Initialize Knowledge Graph ────────────────────────────────────┐
+  ✓ Knowledge Graph loaded: 37 triples
+  ✓ Graph URI: http://insurance.org/fraud-kb
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─ PHASE 2: Initialize Memory Hypergraph ──────────────────────────────────┐
+  ✓ Memory Hypergraph initialized
+  ✓ Temporal scoring: recency=0.3, relevance=0.5, importance=0.2
+  ✓ Rolling windows: 1h → 1d → 0mo → 12mo
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─ PHASE 3: First Investigation - Fraud Ring Detection ────────────────────┐
+│  Simulates: Monday, Dec 10 - Initial fraud analysis                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  [SPARQL] Found 2 high-risk claimants
+           - John Smith: risk score 0.85
+           - Jane Doe: risk score 0.72
+  [GraphFrame] Detected 2 fraud ring triangle(s)
+  [Memory] Stored Episode: episode:1766586211648-ite7lbgck
+           Linked to KG entities: ins:P001, ins:C001, ins:C002
+
+┌─ PHASE 4: Second Investigation - Underwriting Decision ──────────────────┐
+│  Simulates: Wednesday, Dec 12 - Claims review                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  [Memory] Rolling window search:
+           - Time window: 8760h
+           - Episodes found: 1
+           - Estimated tokens: 41
+  [Memory] Stored Episode: episode:1766586211649-m10czg5fe
+           Decision: DENIED (based on prior investigation)
+
+┌─ PHASE 5: Memory Recall - "What did we find last week?" ─────────────────┐
+│  Simulates: Friday, Dec 15 - Analyst asks about previous findings         │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  ┌─ WITHOUT Memory Hypergraph (LangChain approach) ─────────────────────────┐
+  │  Agent: "I don't have access to previous conversations."                 │
+  │  Cost: Re-run entire fraud detection pipeline ($5, 30s)                  │
+  └──────────────────────────────────────────────────────────────────────────┘
+
+  ┌─ WITH Memory Hypergraph (rust-kgdb approach) ────────────────────────────┐
+  │  Memories retrieved: 2                                            │
+  │    1. Score: 0.600 - "Investigate fraud patterns for Provider ..."
+  │    2. Score: 0.531 - "Underwriting review for new claim from P..."
+  └──────────────────────────────────────────────────────────────────────────┘
+
+┌─ PHASE 6: Idempotent Response Demo ──────────────────────────────────────┐
+│  Same question = Same answer (compliance requirement)                     │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  First call:  Computed fresh result
+               Hash: sha256:0000000051085eca
+  Second call: Returned cached result (idempotent)
+               Hash: sha256:0000000051085eca
+               Match: ✓
+
+┌─ PHASE 7: OpenAI Integration with Memory Context ────────────────────────┐
+│  LLM query augmented with Memory Hypergraph context                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  [Memory Context]
+    Time window: 8760h
+    Episodes: 2
+    Estimated tokens: 89
+
+  [OpenAI Query with Context]
+    User: "What should we do about Provider P001?"
+    Agent: Based on the findings, Provider P001 is linked to a fraud ring involving claimants C001 and C002, and there are multiple high-risk claimants and triangles detected. The appropriate action would be to:...
+    [Memory] Episode stored with AI response
+
+┌─ PHASE 8: SPARQL Across Memory + KG ─────────────────────────────────────┐
+│  Single query traverses BOTH memory graph AND knowledge graph            │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  Example SPARQL (conceptual - both graphs in same store):
+
+  PREFIX am: <https://gonnect.ai/ontology/agent-memory#>
+  PREFIX ins: <http://insurance.org/>
+
+  SELECT ?episode ?finding ?claimAmount WHERE {
+    # Search memory graph
+    GRAPH <https://gonnect.ai/memory/> {
+      ?episode a am:Episode ;
+               am:prompt ?finding .
+    }
+    # Join with knowledge graph
+    ?claim ins:provider <ins:P001> ;
+           ins:amount ?claimAmount .
+  }
+
+════════════════════════════════════════════════════════════════════════════════
+  MEMORY HYPERGRAPH SUMMARY
+════════════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────────────────────────────┐
+  │ ARCHITECTURE                                                          │
+  ├──────────────────────────────────────────────────────────────────────┤
+  │ • Memory stored in SAME quad store as knowledge graph                │
+  │ • HyperEdges connect episodes to KG entities (direct URIs)           │
+  │ • Single SPARQL query traverses both memory AND KG                   │
+  │ • Temporal scoring: Recency + Relevance + Importance                 │
+  │ • Rolling context window manages token limits                         │
+  │ • Idempotent responses for compliance                                 │
+  └──────────────────────────────────────────────────────────────────────┘
+
+  ┌──────────────────────────────────────────────────────────────────────┐
+  │ STATISTICS                                                            │
+  ├──────────────────────────────────────────────────────────────────────┤
+  │ Episodes stored:        3                                              │
+  │ Cached queries:         1                                              │
+  │ KG triples:             52                                             │
+  └──────────────────────────────────────────────────────────────────────┘
+
+  Run this demo:
+    node examples/fraud-memory-hypergraph.js
+
+════════════════════════════════════════════════════════════════════════════════

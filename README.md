@@ -130,12 +130,12 @@ See [docs/concepts](docs/concepts/README.md) for detailed explanation of:
 
 ## Benchmarks
 
-### Demo Pass Rates (from local execution)
+### Demo Pass Rates (from local execution with GPT-4o)
 
 | Demo | Pass Rate | Tests |
 |------|-----------|-------|
+| Music Recommendation | **100%** | 15/15 |
 | Digital Twin | **100%** | 13/13 |
-| Music Recommendation | **100%** | 14/14 |
 
 ### LUBM Benchmark (SPARQL generation accuracy)
 

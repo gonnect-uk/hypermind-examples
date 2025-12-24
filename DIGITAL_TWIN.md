@@ -307,7 +307,7 @@ SELECT ?zone ?temp WHERE {
   ?reading rdf:type iot:SensorReading .
   ?reading iot:fromSensor ?sensor .
   ?sensor iot:installedIn ?zone .
-  ?zone iot:criticalZone "true"^^xsd:boolean .
+  ?zone iot:criticalZone "true" .
   ?reading iot:temperature ?temp .
 }
 ```

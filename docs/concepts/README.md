@@ -172,12 +172,12 @@ ex:marshall a ex:Attorney ;
 
 ## Benchmark Results
 
-### Demo Pass Rates
+### Demo Pass Rates (with GPT-4o)
 
 | Demo | Pass Rate |
 |------|-----------|
+| Music Recommendation | **100%** (15/15) |
 | Digital Twin | **100%** (13/13) |
-| Music Recommendation | **100%** (14/14) |
 
 ### LUBM Benchmark (SPARQL generation)
 

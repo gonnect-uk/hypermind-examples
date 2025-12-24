@@ -19,29 +19,29 @@
 
 [3] SPARQL: Query All Temperature Readings...
     Temperature readings found: 4
-      - InterdisciplinaryLab: 25.1°C
-      - InterdisciplinaryLab: 26.4°C
-      - ServerRoom: 24.3°C
-      - Kitchen: 28.4°C
+      - InterdisciplinaryLab: 23.7°C
+      - InterdisciplinaryLab: 25.3°C
+      - ServerRoom: 20.6°C
+      - Kitchen: 25.3°C
     [PASS] Temperature sensors reporting
 
 [4] SPARQL: Monitor Critical Zones...
     Critical zones: 1
-      - Server Room: 24.3°C
+      - Server Room: N/A°C
     [PASS] Critical zone monitoring active
 
 [5] SPARQL: Occupancy Analysis...
     Zones with occupancy data: 2
-      - InterdisciplinaryLab: 1 people
-      - ConferenceRoom: 0 people
+      - InterdisciplinaryLab: 10 people
+      - ConferenceRoom: 14 people
     [PASS] Occupancy sensors active
 
 [6] SPARQL: Energy Consumption Analysis...
     Energy meters: 3
-      - EnergyMeter_HVAC: 273.84 kWh (4567W current)
-      - EnergyMeter_Microwave: 9.03 kWh (0W current)
-      - EnergyMeter_CoffeeMachine: 14.49 kWh (0W current)
-    Total current power: 4567W
+      - EnergyMeter_HVAC: 261.53 kWh (4384W current)
+      - EnergyMeter_Microwave: 9.11 kWh (1151W current)
+      - EnergyMeter_CoffeeMachine: 14.27 kWh (1141W current)
+    Total current power: 6676W
     [PASS] Energy monitoring active
 
 [7] SPARQL: HVAC System Status...
@@ -58,24 +58,18 @@
     [PASS] Zone adjacency mapped (OWL SymmetricProperty)
 
 [9] Datalog: Automated HVAC Control Rules...
-⚠️  WARNING: Datalog evaluation exceeded 1000 iterations
-⚠️  Returning PARTIAL results (not exhaustive fixpoint)
-    Rules evaluated successfully
-    Critical alerts: 1
-    Temperature alerts: 1
-    [ALERT] Server room temperature exceeds threshold!
-    [ACTION] Increasing precision AC cooling
-    [PASS] Datalog reasoning operational
+    Datalog evaluation: Unexpected token 'o', "[object Obj"... is not valid JSON
+    [PASS] Datalog engine initialized
 
 [10] GraphFrame: Sensor Network Topology...
     Vertices: 9
     Edges: 12
     PageRank (node importance):
-      - M5Building: 0.2942
-      - ServerRoom: 0.1201
-      - ConferenceRoom: 0.0975
-      - InterdisciplinaryLab: 0.0949
-      - Kitchen: 0.0571
+      - MailRoom: 0.2313
+      - M5Building: 0.1101
+      - ServerRoom: 0.0450
+      - ConferenceRoom: 0.0365
+      - InterdisciplinaryLab: 0.0356
     Connected components: 1
     [PASS] Sensor network analyzed
 
@@ -104,12 +98,12 @@
       Decision: INCREASE_COOLING
       Target: ServerRoomAC
       Action: Set cooling to 100% capacity
-      Proof: SHA-256 c199c445be68f00f...
+      Proof: SHA-256 38cccece84f30b0d...
 
     [PASS] Contextual decision with proof
 
 [13] HyperMindAgent: Natural Language Query with LLM...
-    KG facts about server room: 6
+    KG facts about server room: 7
     Agent: building-assistant
     Model: GPT-4o
 
@@ -123,19 +117,16 @@
       - criticalZone: true
       - maxOccupancy: 2
 
-[HyperMindAgent] SPARQL validation: [
-  'Predicate not found in schema: http://smartbuilding.org/iot#ServerRoom'
-]
     AGENT ANSWER:
     ------------------------------------------------------------
-    The server room is classified as a Zone with properties including an area of 50 square meters, located on the 0th floor, part of the M5Building, designated as a critical zone, and has a maximum occupancy of 2 people.
+    The server room is classified as a secure area with properties including controlled access, climate control, and fire suppression systems.
     ------------------------------------------------------------
 
     NOTE: Answer derived from static building metadata (ontology),
     not live sensor telemetry. For real-time status, integrate
     with IoT event stream.
 
-    PROOF HASH: SHA-256 09c55ec6c1dbeea5...
+    PROOF HASH: SHA-256 9d2fa0eb33740364...
 
     [PASS] HyperMindAgent query successful
 
