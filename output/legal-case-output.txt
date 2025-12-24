@@ -136,11 +136,11 @@ SELECT ?attorney ?name ?role WHERE {
 
 RESULTS: 9 bindings
 SAMPLE (first 5):
-  role=NAACP Virginia Attorney, name=Oliver Hill, attorney=OliverHill
-  attorney=GeorgeHayes, name=George E.C. Hayes, role=Washington D.C. Attorney
-  attorney=JamesNabrit, name=James Nabrit Jr., role=Howard University Law School Professor
-  name=Louis L. Redding, role=Delaware Attorney, attorney=LouisRedding
-  name=Robert L. Carter, attorney=RobertCarter, role=NAACP Legal Defense Fund Attorney
+  attorney=OliverHill, name=Oliver Hill, role=NAACP Virginia Attorney
+  role=Washington D.C. Attorney, name=George E.C. Hayes, attorney=GeorgeHayes
+  role=Howard University Law School Professor, name=James Nabrit Jr., attorney=JamesNabrit
+  attorney=LouisRedding, role=Delaware Attorney, name=Louis L. Redding
+  attorney=RobertCarter, name=Robert L. Carter, role=NAACP Legal Defense Fund Attorney
     [PASS] LAW STUDENT: Who were the key attorneys in Brown v. Board of Education?
 
 REASONING CONTEXT:
@@ -164,11 +164,11 @@ SELECT ?justice ?name ?role WHERE {
 
 RESULTS: 9 bindings
 SAMPLE (first 5):
-  justice=TomClark, name=Tom C. Clark, role=Associate Justice
+  name=Tom C. Clark, justice=TomClark, role=Associate Justice
   role=Associate Justice, name=Hugo Black, justice=HugoBlack
-  name=Earl Warren, justice=EarlWarren, role=Chief Justice
-  justice=StanleyReed, role=Associate Justice, name=Stanley Reed
-  role=Associate Justice, justice=HaroldBurton, name=Harold Burton
+  justice=EarlWarren, name=Earl Warren, role=Chief Justice
+  role=Associate Justice, justice=StanleyReed, name=Stanley Reed
+  name=Harold Burton, role=Associate Justice, justice=HaroldBurton
     [PASS] LEGAL HISTORIAN: Which Supreme Court justices decided the case unanimously?
 
 REASONING CONTEXT:
@@ -192,11 +192,11 @@ SELECT ?plaintiff ?name ?role WHERE {
 
 RESULTS: 7 bindings
 SAMPLE (first 5):
-  plaintiff=LindaBrown, role=Student Plaintiff (Kansas), name=Linda Brown
-  name=Ethel Louise Belton, role=Student Plaintiff (Delaware), plaintiff=EthelBelton
-  name=Harry Briggs Jr., plaintiff=HarryBriggs, role=Student Plaintiff (South Carolina)
-  name=Oliver Brown, plaintiff=OliverBrown, role=Lead Plaintiff (Kansas)
-  plaintiff=BarbaraJohns, role=Student Organizer (Virginia), name=Barbara Rose Johns
+  name=Linda Brown, plaintiff=LindaBrown, role=Student Plaintiff (Kansas)
+  plaintiff=EthelBelton, name=Ethel Louise Belton, role=Student Plaintiff (Delaware)
+  role=Student Plaintiff (South Carolina), plaintiff=HarryBriggs, name=Harry Briggs Jr.
+  plaintiff=OliverBrown, role=Lead Plaintiff (Kansas), name=Oliver Brown
+  plaintiff=BarbaraJohns, name=Barbara Rose Johns, role=Student Organizer (Virginia)
     [PASS] CIVIL RIGHTS RESEARCHER: Who were the named plaintiffs in the consolidated cases?
 
 REASONING CONTEXT:
@@ -244,8 +244,8 @@ SELECT ?colleague ?name WHERE {
 RESULTS: 3 bindings
 SAMPLE (first 5):
   name=Robert L. Carter, colleague=RobertCarter
-  colleague=JackGreenberg, name=Jack Greenberg
-  name=Constance Baker Motley, colleague=ConstanceBakerMotley
+  name=Jack Greenberg, colleague=JackGreenberg
+  colleague=ConstanceBakerMotley, name=Constance Baker Motley
     [PASS] BIOGRAPHY WRITER: Who did Thurgood Marshall collaborate with?
 
 REASONING CONTEXT:
@@ -268,8 +268,8 @@ SELECT ?mentor ?mentee ?menteeName WHERE {
 
 RESULTS: 3 bindings
 SAMPLE (first 5):
-  menteeName=Jack Greenberg, mentor=ThurgoodMarshall, mentee=JackGreenberg
-  mentor=JackGreenberg, mentee=ConstanceBakerMotley, menteeName=Constance Baker Motley
+  mentor=ThurgoodMarshall, mentee=JackGreenberg, menteeName=Jack Greenberg
+  menteeName=Constance Baker Motley, mentee=ConstanceBakerMotley, mentor=JackGreenberg
   mentee=ConstanceBakerMotley, menteeName=Constance Baker Motley, mentor=ThurgoodMarshall
     [PASS] ACADEMIC: What was the mentorship chain at NAACP Legal Defense Fund?
 
@@ -281,12 +281,17 @@ REASONING CONTEXT:
 [9] HyperMindAgent Natural Language Queries (LLM-assisted):
 
   Question: "Who was the lead attorney in Brown v. Board of Education?"
-  Generated SPARQL:
+  [InMemory] SPARQL error: SPARQL parse error: Pest(Error { variant: ParsingError { positives: [PathMod, GraphNodePath], negatives: [] }, location: Pos(71), line_col: Pos((1, 72)), path: None, line: "PREFIX law: <http://law.gov/case#> SELECT ?attorney WHERE { ?case law:caseNumber \"Brown v. Board of Education\" . ?case law:arguedBy ?attorney . }", continued_line: None, parse_attempts: None })
+  Generated SQL (with graph_search CTE):
+  ```sql
+  WITH kg AS (SELECT * FROM graph_search('PREFIX law: <http://law.gov/case#> SELECT ?attorney WHERE { ?case law:caseNumber "Brown v. Board of Education" . ?case law:arguedBy ?attorney . }')) SELECT * FROM kg;
+  ```
+  sparql_inside_cte:
   ```sparql
-  undefined
+  PREFIX law: <http://law.gov/case#> SELECT ?attorney WHERE { ?case law:caseNumber "Brown v. Board of Education" . ?case law:arguedBy ?attorney . }
   ```
   RESULTS (actual data):
-  ANSWER: The lead attorney in Brown v. Board of Education was Thurgood Marshall, as indicated by his collaboration with multiple key figures involved in the case.
+  ANSWER: The derived facts suggest that Thurgood Marshall was a key figure in the legal team for Brown v. Board of Education, as he worked with multiple attorneys involved in the case.
   REASONING: 0 observations -> 21 derived facts
   PROOF (first 3 steps):
     Step 1: [owl:SymmetricProperty] http://law.gov/case#GeorgeHayes http://law.gov/case#workedWith http://law.gov/case#JamesNabrit
@@ -294,12 +299,17 @@ REASONING CONTEXT:
     Step 3: [owl:SymmetricProperty] http://law.gov/case#JackGreenberg http://law.gov/case#workedWith http://law.gov/case#RobertCarter
 
   Question: "What was the significance of the 9-0 unanimous decision?"
-  Generated SPARQL:
+  [InMemory] SPARQL error: SPARQL parse error: Pest(Error { variant: ParsingError { positives: [PathMod, GraphNodePath], negatives: [] }, location: Pos(76), line_col: Pos((1, 77)), path: None, line: "PREFIX law: <http://law.gov/case#> SELECT ?case ?holding WHERE { ?case law:vote \"9-0\" . ?case law:holding ?holding . }", continued_line: None, parse_attempts: None })
+  Generated SQL (with graph_search CTE):
+  ```sql
+  WITH kg AS (SELECT * FROM graph_search('PREFIX law: <http://law.gov/case#> SELECT ?case ?holding WHERE { ?case law:vote "9-0" . ?case law:holding ?holding . }')) SELECT * FROM kg;
+  ```
+  sparql_inside_cte:
   ```sparql
-  undefined
+  PREFIX law: <http://law.gov/case#> SELECT ?case ?holding WHERE { ?case law:vote "9-0" . ?case law:holding ?holding . }
   ```
   RESULTS (actual data):
-  ANSWER: The derived facts do not directly address the significance of the 9-0 unanimous decision, but they highlight collaborations among key legal figures such as Thurgood Marshall, Robert Carter, and others, suggesting a strong team effort in a significant legal case.
+  ANSWER: The derived facts indicate collaboration among key legal figures such as Thurgood Marshall, Robert Carter, and others, suggesting a significant legal case context, but they do not directly address the significance of a 9-0 unanimous decision.
   REASONING: 0 observations -> 21 derived facts
   PROOF (first 3 steps):
     Step 1: [owl:SymmetricProperty] http://law.gov/case#GeorgeHayes http://law.gov/case#workedWith http://law.gov/case#JamesNabrit

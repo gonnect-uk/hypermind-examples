@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-12-24T20:52:21.571Z",
+  "timestamp": "2025-12-24T21:05:09.112Z",
   "example": "legal-case-agent",
   "case": "Brown v. Board of Education, 347 U.S. 483 (1954)",
   "queries": [
@@ -8,179 +8,6 @@
       "answer": "The derived facts suggest that Thurgood Marshall was a key figure in the legal team for Brown v. Board of Education, as he worked with multiple attorneys involved in the case.",
       "sql": "WITH kg AS (SELECT * FROM graph_search('PREFIX law: <http://law.gov/case#> SELECT ?attorney WHERE { ?case law:caseNumber \"Brown v. Board of Education\" . ?case law:arguedBy ?attorney . }')) SELECT * FROM kg;",
       "sparql_inside_cte": "PREFIX law: <http://law.gov/case#> SELECT ?attorney WHERE { ?case law:caseNumber \"Brown v. Board of Education\" . ?case law:arguedBy ?attorney . }",
-      "sparql": null,
-      "raw_results": [
-        {
-          "step": 1,
-          "tool": "federation.sql.query",
-          "result": {
-            "columns": [],
-            "rows": [],
-            "rowCount": 0,
-            "duration": 1,
-            "metadata": {
-              "mode": "inMemory",
-              "sources": [],
-              "cached": false
-            }
-          },
-          "success": true
-        }
-      ],
-      "thinkingGraph": {
-        "nodes": [],
-        "edges": [],
-        "derivationChain": [
-          {
-            "step": 1,
-            "rule": "owl:SymmetricProperty",
-            "conclusion": "http://law.gov/case#GeorgeHayes http://law.gov/case#workedWith http://law.gov/case#JamesNabrit",
-            "premises": [
-              "obs_150"
-            ]
-          },
-          {
-            "step": 2,
-            "rule": "owl:SymmetricProperty",
-            "conclusion": "http://law.gov/case#MamieClark http://law.gov/case#workedWith http://law.gov/case#KennethClark",
-            "premises": [
-              "obs_184"
-            ]
-          },
-          {
-            "step": 3,
-            "rule": "owl:SymmetricProperty",
-            "conclusion": "http://law.gov/case#JackGreenberg http://law.gov/case#workedWith http://law.gov/case#RobertCarter",
-            "premises": [
-              "obs_198"
-            ]
-          },
-          {
-            "step": 4,
-            "rule": "owl:SymmetricProperty",
-            "conclusion": "http://law.gov/case#RobertCarter http://law.gov/case#workedWith http://law.gov/case#ThurgoodMarshall",
-            "premises": [
-              "obs_261"
-            ]
-          },
-          {
-            "step": 5,
-            "rule": "owl:SymmetricProperty",
-            "conclusion": "http://law.gov/case#JackGreenberg http://law.gov/case#workedWith http://law.gov/case#ThurgoodMarshall",
-            "premises": [
-              "obs_262"
-            ]
-          },
-          {
-            "step": 6,
-            "rule": "owl:SymmetricProperty",
-            "conclusion": "http://law.gov/case#ConstanceBakerMotley http://law.gov/case#workedWith http://law.gov/case#ThurgoodMarshall",
-            "premises": [
-              "obs_263"
-            ]
-          },
-          {
-            "step": 7,
-            "rule": "owl:SymmetricProperty",
-            "conclusion": "http://law.gov/case#OliverHill http://law.gov/case#workedWith http://law.gov/case#SpotswoodRobinson",
-            "premises": [
-              "obs_269"
-            ]
-          }
-        ]
-      },
-      "proof": {
-        "id": "5eb37f8e-1b8e-4047-b5ab-981e3f655ebb",
-        "type": "inference",
-        "value": {
-          "plan": "plan_llm_1766609535161",
-          "intent": "general_query"
-        },
-        "justification": "Derived answer via 1 steps",
-        "children": [
-          {
-            "id": "bda073c8-aca6-4b06-bfa5-0fb9325de44c",
-            "type": "thinking_reasoner",
-            "value": {
-              "count": 7
-            },
-            "justification": "Deductive reasoning: 7 cryptographic proofs",
-            "children": [
-              {
-                "id": "e472e930-65a5-4d94-b98a-a7c781d5d8da",
-                "type": "cryptographic_proof",
-                "value": {
-                  "hash": "52a92aed",
-                  "confidence": 0.9
-                },
-                "justification": "Proof: 52a92aed... (confidence: 0.90)",
-                "children": [],
-                "timestamp": "2025-12-24T20:52:15.197Z"
-              },
-              {
-                "id": "8648c6ba-309c-45ce-8916-0cdbea0cf1ca",
-                "type": "cryptographic_proof",
-                "value": {
-                  "hash": "fc041a81",
-                  "confidence": 0.9
-                },
-                "justification": "Proof: fc041a81... (confidence: 0.90)",
-                "children": [],
-                "timestamp": "2025-12-24T20:52:15.197Z"
-              },
-              {
-                "id": "846f9727-c9c7-4932-b5e0-d140a217c6de",
-                "type": "cryptographic_proof",
-                "value": {
-                  "hash": "7265581c",
-                  "confidence": 0.9
-                },
-                "justification": "Proof: 7265581c... (confidence: 0.90)",
-                "children": [],
-                "timestamp": "2025-12-24T20:52:15.197Z"
-              },
-              {
-                "id": "244f4258-e6bf-41ec-adf7-4ed9a2c68563",
-                "type": "cryptographic_proof",
-                "value": {
-                  "hash": "9565a557",
-                  "confidence": 0.9
-                },
-                "justification": "Proof: 9565a557... (confidence: 0.90)",
-                "children": [],
-                "timestamp": "2025-12-24T20:52:15.197Z"
-              },
-              {
-                "id": "a8202734-6566-4347-a75a-cba62e1dcfde",
-                "type": "cryptographic_proof",
-                "value": {
-                  "hash": "416ae9d5",
-                  "confidence": 0.9
-                },
-                "justification": "Proof: 416ae9d5... (confidence: 0.90)",
-                "children": [],
-                "timestamp": "2025-12-24T20:52:15.197Z"
-              }
-            ],
-            "timestamp": "2025-12-24T20:52:15.197Z"
-          }
-        ],
-        "timestamp": "2025-12-24T20:52:15.197Z"
-      },
-      "reasoningStats": {
-        "events": 0,
-        "facts": 21,
-        "rules": 2,
-        "proofs": 7,
-        "contexts": 1,
-        "actors": 1
-      }
-    },
-    {
-      "question": "What was the significance of the 9-0 unanimous decision?",
-      "answer": "The derived facts indicate a network of collaboration among legal professionals and experts, such as Thurgood Marshall, Jack Greenberg, and others, suggesting a significant collective effort likely related to a landmark case that resulted in a 9-0 unanimous decision.",
-      "sql": "WITH kg AS (SELECT * FROM graph_search('PREFIX law: <http://law.gov/case#> SELECT ?case ?holding WHERE { ?case law:vote \"9-0\" . ?case law:holding ?holding . }')) SELECT * FROM kg;",
-      "sparql_inside_cte": "PREFIX law: <http://law.gov/case#> SELECT ?case ?holding WHERE { ?case law:vote \"9-0\" . ?case law:holding ?holding . }",
       "sparql": null,
       "raw_results": [
         {
@@ -263,16 +90,16 @@
         ]
       },
       "proof": {
-        "id": "c33ff1b6-6804-4a52-813b-4c97828eb9c4",
+        "id": "fb6a436f-a2f7-43d0-9633-dca2ac4cc940",
         "type": "inference",
         "value": {
-          "plan": "plan_llm_1766609538768",
-          "intent": "explain"
+          "plan": "plan_llm_1766610303176",
+          "intent": "general_query"
         },
         "justification": "Derived answer via 1 steps",
         "children": [
           {
-            "id": "84133563-bd21-4430-8b10-1d1ce8db2060",
+            "id": "05e89312-b257-4271-b028-1a86c18449d7",
             "type": "thinking_reasoner",
             "value": {
               "count": 7
@@ -280,65 +107,238 @@
             "justification": "Deductive reasoning: 7 cryptographic proofs",
             "children": [
               {
-                "id": "21acd0c6-9353-464a-8a24-14869af3c555",
+                "id": "a344b0bc-700d-4b32-92f8-4f28f44dd71c",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "52a92aed",
+                  "hash": "c9df7c3e",
                   "confidence": 0.9
                 },
-                "justification": "Proof: 52a92aed... (confidence: 0.90)",
+                "justification": "Proof: c9df7c3e... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T20:52:18.794Z"
+                "timestamp": "2025-12-24T21:05:03.206Z"
               },
               {
-                "id": "f2db57d5-d266-41cf-aa6e-2ca8936cdffc",
+                "id": "a0e0a1f0-6625-4ae3-990d-130bee5026e6",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "fc041a81",
+                  "hash": "ce72ba08",
                   "confidence": 0.9
                 },
-                "justification": "Proof: fc041a81... (confidence: 0.90)",
+                "justification": "Proof: ce72ba08... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T20:52:18.794Z"
+                "timestamp": "2025-12-24T21:05:03.206Z"
               },
               {
-                "id": "1bf07ab9-d76e-4dd9-9207-9d53218a1466",
+                "id": "a613e001-c012-4391-83e0-c2cf73f377a3",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "7265581c",
+                  "hash": "f394f55a",
                   "confidence": 0.9
                 },
-                "justification": "Proof: 7265581c... (confidence: 0.90)",
+                "justification": "Proof: f394f55a... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T20:52:18.794Z"
+                "timestamp": "2025-12-24T21:05:03.206Z"
               },
               {
-                "id": "c348bf19-936f-409b-8b7e-69ae6a7246fb",
+                "id": "8de387f4-451b-4471-84ef-973e7eb13ef7",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "9565a557",
+                  "hash": "c10f3d26",
                   "confidence": 0.9
                 },
-                "justification": "Proof: 9565a557... (confidence: 0.90)",
+                "justification": "Proof: c10f3d26... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T20:52:18.794Z"
+                "timestamp": "2025-12-24T21:05:03.206Z"
               },
               {
-                "id": "8d91559c-6762-43e3-9981-13d95fc8d9ca",
+                "id": "ab2da9e1-654a-4126-8a0b-f17a077c3342",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "416ae9d5",
+                  "hash": "2ded14e4",
                   "confidence": 0.9
                 },
-                "justification": "Proof: 416ae9d5... (confidence: 0.90)",
+                "justification": "Proof: 2ded14e4... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T20:52:18.794Z"
+                "timestamp": "2025-12-24T21:05:03.206Z"
               }
             ],
-            "timestamp": "2025-12-24T20:52:18.794Z"
+            "timestamp": "2025-12-24T21:05:03.206Z"
           }
         ],
-        "timestamp": "2025-12-24T20:52:18.794Z"
+        "timestamp": "2025-12-24T21:05:03.206Z"
+      },
+      "reasoningStats": {
+        "events": 0,
+        "facts": 21,
+        "rules": 2,
+        "proofs": 7,
+        "contexts": 1,
+        "actors": 1
+      }
+    },
+    {
+      "question": "What was the significance of the 9-0 unanimous decision?",
+      "answer": "The derived facts indicate collaboration among key legal figures such as Thurgood Marshall, Robert Carter, and others, suggesting a significant legal case context, but they do not directly address the significance of a 9-0 unanimous decision.",
+      "sql": "WITH kg AS (SELECT * FROM graph_search('PREFIX law: <http://law.gov/case#> SELECT ?case ?holding WHERE { ?case law:vote \"9-0\" . ?case law:holding ?holding . }')) SELECT * FROM kg;",
+      "sparql_inside_cte": "PREFIX law: <http://law.gov/case#> SELECT ?case ?holding WHERE { ?case law:vote \"9-0\" . ?case law:holding ?holding . }",
+      "sparql": null,
+      "raw_results": [
+        {
+          "step": 1,
+          "tool": "federation.sql.query",
+          "result": {
+            "columns": [],
+            "rows": [],
+            "rowCount": 0,
+            "duration": 1,
+            "metadata": {
+              "mode": "inMemory",
+              "sources": [],
+              "cached": false
+            }
+          },
+          "success": true
+        }
+      ],
+      "thinkingGraph": {
+        "nodes": [],
+        "edges": [],
+        "derivationChain": [
+          {
+            "step": 1,
+            "rule": "owl:SymmetricProperty",
+            "conclusion": "http://law.gov/case#GeorgeHayes http://law.gov/case#workedWith http://law.gov/case#JamesNabrit",
+            "premises": [
+              "obs_150"
+            ]
+          },
+          {
+            "step": 2,
+            "rule": "owl:SymmetricProperty",
+            "conclusion": "http://law.gov/case#MamieClark http://law.gov/case#workedWith http://law.gov/case#KennethClark",
+            "premises": [
+              "obs_184"
+            ]
+          },
+          {
+            "step": 3,
+            "rule": "owl:SymmetricProperty",
+            "conclusion": "http://law.gov/case#JackGreenberg http://law.gov/case#workedWith http://law.gov/case#RobertCarter",
+            "premises": [
+              "obs_198"
+            ]
+          },
+          {
+            "step": 4,
+            "rule": "owl:SymmetricProperty",
+            "conclusion": "http://law.gov/case#RobertCarter http://law.gov/case#workedWith http://law.gov/case#ThurgoodMarshall",
+            "premises": [
+              "obs_261"
+            ]
+          },
+          {
+            "step": 5,
+            "rule": "owl:SymmetricProperty",
+            "conclusion": "http://law.gov/case#JackGreenberg http://law.gov/case#workedWith http://law.gov/case#ThurgoodMarshall",
+            "premises": [
+              "obs_262"
+            ]
+          },
+          {
+            "step": 6,
+            "rule": "owl:SymmetricProperty",
+            "conclusion": "http://law.gov/case#ConstanceBakerMotley http://law.gov/case#workedWith http://law.gov/case#ThurgoodMarshall",
+            "premises": [
+              "obs_263"
+            ]
+          },
+          {
+            "step": 7,
+            "rule": "owl:SymmetricProperty",
+            "conclusion": "http://law.gov/case#OliverHill http://law.gov/case#workedWith http://law.gov/case#SpotswoodRobinson",
+            "premises": [
+              "obs_269"
+            ]
+          }
+        ]
+      },
+      "proof": {
+        "id": "015ed647-9173-48fd-a776-27bb05f58a7c",
+        "type": "inference",
+        "value": {
+          "plan": "plan_llm_1766610306623",
+          "intent": "general_query"
+        },
+        "justification": "Derived answer via 1 steps",
+        "children": [
+          {
+            "id": "60372493-f822-4c61-82d2-6d863ce89c13",
+            "type": "thinking_reasoner",
+            "value": {
+              "count": 7
+            },
+            "justification": "Deductive reasoning: 7 cryptographic proofs",
+            "children": [
+              {
+                "id": "e6f9e7eb-97f7-4c0d-9e05-3230cd49da7c",
+                "type": "cryptographic_proof",
+                "value": {
+                  "hash": "c9df7c3e",
+                  "confidence": 0.9
+                },
+                "justification": "Proof: c9df7c3e... (confidence: 0.90)",
+                "children": [],
+                "timestamp": "2025-12-24T21:05:06.649Z"
+              },
+              {
+                "id": "c242cbcd-37ec-40a6-b9e8-c07a562e024a",
+                "type": "cryptographic_proof",
+                "value": {
+                  "hash": "ce72ba08",
+                  "confidence": 0.9
+                },
+                "justification": "Proof: ce72ba08... (confidence: 0.90)",
+                "children": [],
+                "timestamp": "2025-12-24T21:05:06.649Z"
+              },
+              {
+                "id": "6f989559-54de-47c4-9a41-52de8e7059c0",
+                "type": "cryptographic_proof",
+                "value": {
+                  "hash": "f394f55a",
+                  "confidence": 0.9
+                },
+                "justification": "Proof: f394f55a... (confidence: 0.90)",
+                "children": [],
+                "timestamp": "2025-12-24T21:05:06.649Z"
+              },
+              {
+                "id": "0a102e00-8604-4c71-862b-384a7d7431d2",
+                "type": "cryptographic_proof",
+                "value": {
+                  "hash": "c10f3d26",
+                  "confidence": 0.9
+                },
+                "justification": "Proof: c10f3d26... (confidence: 0.90)",
+                "children": [],
+                "timestamp": "2025-12-24T21:05:06.649Z"
+              },
+              {
+                "id": "63a30b85-5cf6-48a8-87c5-4b59033b6f8c",
+                "type": "cryptographic_proof",
+                "value": {
+                  "hash": "2ded14e4",
+                  "confidence": 0.9
+                },
+                "justification": "Proof: 2ded14e4... (confidence: 0.90)",
+                "children": [],
+                "timestamp": "2025-12-24T21:05:06.649Z"
+              }
+            ],
+            "timestamp": "2025-12-24T21:05:06.649Z"
+          }
+        ],
+        "timestamp": "2025-12-24T21:05:06.649Z"
       },
       "reasoningStats": {
         "events": 0,
@@ -426,16 +426,16 @@
         ]
       },
       "proof": {
-        "id": "cb8a5072-69f1-4c32-aaba-5f727b5e1aaa",
+        "id": "3a0c7453-2f6c-4652-9a06-62e78c7d5f57",
         "type": "inference",
         "value": {
-          "plan": "plan_1766609540076",
+          "plan": "plan_1766610308020",
           "intent": "explain"
         },
         "justification": "Derived answer via 1 steps",
         "children": [
           {
-            "id": "1f0527a7-37cf-4947-a950-869a5bcad3f8",
+            "id": "6954cca2-10b1-4695-9326-2d33932b3050",
             "type": "thinking_reasoner",
             "value": {
               "count": 7
@@ -443,65 +443,65 @@
             "justification": "Deductive reasoning: 7 cryptographic proofs",
             "children": [
               {
-                "id": "c3693b5f-928c-4f72-86f6-24178cb82d73",
+                "id": "dc344010-32ac-4cff-bd71-a35d4d9f4fd6",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "52a92aed",
+                  "hash": "c9df7c3e",
                   "confidence": 0.9
                 },
-                "justification": "Proof: 52a92aed... (confidence: 0.90)",
+                "justification": "Proof: c9df7c3e... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T20:52:20.105Z"
+                "timestamp": "2025-12-24T21:05:08.044Z"
               },
               {
-                "id": "26607ad4-ffcf-4e2e-85c8-f3b10e63e627",
+                "id": "15f46b60-5cb1-48a9-81d4-9b0bb5d9fe98",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "fc041a81",
+                  "hash": "ce72ba08",
                   "confidence": 0.9
                 },
-                "justification": "Proof: fc041a81... (confidence: 0.90)",
+                "justification": "Proof: ce72ba08... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T20:52:20.105Z"
+                "timestamp": "2025-12-24T21:05:08.044Z"
               },
               {
-                "id": "0fff28e6-e29a-40b9-9daa-ce8c879b1a40",
+                "id": "7b41ee7e-0eaa-4908-a660-d07f6b30c532",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "7265581c",
+                  "hash": "f394f55a",
                   "confidence": 0.9
                 },
-                "justification": "Proof: 7265581c... (confidence: 0.90)",
+                "justification": "Proof: f394f55a... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T20:52:20.105Z"
+                "timestamp": "2025-12-24T21:05:08.044Z"
               },
               {
-                "id": "d138db90-2185-411b-bfbf-bcc4616a4673",
+                "id": "b41e7d1f-325e-4761-ad17-37ea0085238f",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "9565a557",
+                  "hash": "c10f3d26",
                   "confidence": 0.9
                 },
-                "justification": "Proof: 9565a557... (confidence: 0.90)",
+                "justification": "Proof: c10f3d26... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T20:52:20.105Z"
+                "timestamp": "2025-12-24T21:05:08.044Z"
               },
               {
-                "id": "920538fd-16ba-4d7c-809c-428d64f53252",
+                "id": "4ec54ea4-2717-46d4-bb68-60d86fab4d90",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "416ae9d5",
+                  "hash": "2ded14e4",
                   "confidence": 0.9
                 },
-                "justification": "Proof: 416ae9d5... (confidence: 0.90)",
+                "justification": "Proof: 2ded14e4... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T20:52:20.105Z"
+                "timestamp": "2025-12-24T21:05:08.044Z"
               }
             ],
-            "timestamp": "2025-12-24T20:52:20.105Z"
+            "timestamp": "2025-12-24T21:05:08.044Z"
           }
         ],
-        "timestamp": "2025-12-24T20:52:20.105Z"
+        "timestamp": "2025-12-24T21:05:08.044Z"
       },
       "reasoningStats": {
         "events": 0,

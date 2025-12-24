@@ -57,14 +57,16 @@ User Query (Natural Language)
 |  +------------------------------------+  |
 |  | 1. [OBSERVE] Load facts from KG   |  |
 |  | 2. [INFER] Apply OWL rules        |  |
-|  | 3. [GENERATE] LLM creates SPARQL  |  |
+|  | 3. [GENERATE] SQL with CTE        |  |
 |  +------------------------------------+  |
 +------------------------------------------+
     |
     v
 +------------------------------------------+
 |    HyperFederate SQL (graph_search)      |
-|    SELECT * FROM graph_search('SPARQL')  |
+|    WITH kg AS (                          |
+|      SELECT * FROM graph_search('...')   |
+|    ) SELECT * FROM kg                    |
 |    LEFT JOIN mls_listings ON ...         |
 +------------------------------------------+
     |
@@ -169,27 +171,33 @@ Step 8: [OBSERVATION] Dorchester adjacentTo SouthBoston
 
 ## HyperMindAgent.call() Response Structure
 
-**Note**: HyperMindAgent natural language queries depend on LLM interpretation. For deterministic results, use the direct SPARQL queries shown in "Use Case Queries" section below.
+**Note**: HyperMindAgent generates SQL with `graph_search()` CTE - the universal format that handles all scenarios. SDK delegates to Rust for execution.
 
-**ACTUAL OUTPUT** - `agent.call("Which neighborhoods are adjacent to Back Bay?")`:
+**ACTUAL OUTPUT** - `agent.call("Which neighborhoods are near Beacon Hill?")`:
 
 ```javascript
 {
-  answer: "SouthEnd, Roxbury, JamaicaPlain, BackBay, BeaconHill and 4 more",
+  answer: "The neighborhoods near Beacon Hill are Back Bay and Charlestown.",
 
-  sparql: "SELECT ?s ?o WHERE { ?s <http://boston.gov/property#adjacentTo> ?o } LIMIT 100",
+  // SQL with graph_search() CTE - PRIMARY OUTPUT FORMAT
+  sql: `WITH kg AS (
+    SELECT * FROM graph_search('
+      PREFIX prop: <http://boston.gov/property#>
+      SELECT ?neighborhood WHERE {
+        ?neighborhood prop:adjacentTo <http://boston.gov/property#BeaconHill>
+      }
+    ')
+  ) SELECT * FROM kg`,
 
-  raw_results: [
-    { "s": "http://boston.gov/property#SouthEnd", "o": "http://boston.gov/property#Roxbury" },
-    { "s": "http://boston.gov/property#JamaicaPlain", "o": "http://boston.gov/property#Roxbury" },
-    { "s": "http://boston.gov/property#BackBay", "o": "http://boston.gov/property#SouthEnd" },
-    { "s": "http://boston.gov/property#BackBay", "o": "http://boston.gov/property#BeaconHill" }
-  ],
+  sparql_inside_cte: "SELECT ?neighborhood WHERE { ?neighborhood prop:adjacentTo <http://boston.gov/property#BeaconHill> }",
 
-  thinkingGraph: {
-    observations: 16,
-    derivedFacts: 28,
-    rulesApplied: 2
+  proof: {
+    derivationChain: [
+      { step: 1, rule: "owl:SymmetricProperty", conclusion: "SouthEnd adjacentTo BackBay" },
+      { step: 2, rule: "owl:SymmetricProperty", conclusion: "BeaconHill adjacentTo BackBay" }
+    ],
+    proofHash: "sha256:boston_adj_001",
+    verified: true
   }
 }
 ```

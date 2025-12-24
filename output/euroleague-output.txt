@@ -124,9 +124,9 @@ SELECT ?player WHERE {
 
 RESULTS: 3 bindings
 SAMPLE (first 5):
-  e=e00011, player=lessort__mathias
-  e=e00028, player=mitoglou__konstantinos
-  player=mattisseck__jonas, e=e00030
+  player=lessort__mathias, e=e00011
+  player=mitoglou__konstantinos, e=e00028
+  e=e00030, player=mattisseck__jonas
     [PASS] JOURNALIST: Who made the defensive steals?
 
 REASONING CONTEXT:
@@ -149,10 +149,10 @@ SELECT ?player WHERE {
 
 RESULTS: 8 bindings
 SAMPLE (first 5):
-  player=nunn__kendrick, e=e00007
+  e=e00007, player=nunn__kendrick
   player=rapieque__elias, e=e00014
   e=e00016, player=nunn__kendrick
-  player=hermannsson__martin, e=e00032
+  e=e00032, player=hermannsson__martin
   e=e00051, player=brown__lorenzo
     [PASS] COACH: Which players distributed the ball best with assists?
 
@@ -178,10 +178,10 @@ SELECT ?player ?label WHERE {
 RESULTS: 35 bindings
 SAMPLE (first 5):
   e=e00002, label=1 -  0 pt), player=grigonis__marius
-  label=1 -  0 pt), e=e00004, player=koumadje__khalifa
-  e=e00006, label=1 -  2 pt), player=lessort__mathias
-  e=e00012, label=1 -  2 pt), player=nunn__kendrick
-  label=1 -  2 pt), e=e00013, player=olinde__louis
+  player=koumadje__khalifa, e=e00004, label=1 -  0 pt)
+  label=1 -  2 pt), e=e00006, player=lessort__mathias
+  player=nunn__kendrick, e=e00012, label=1 -  2 pt)
+  player=olinde__louis, label=1 -  2 pt), e=e00013
     [PASS] ANALYST: Who made scoring plays (Shots)?
 
 REASONING CONTEXT:
@@ -220,15 +220,49 @@ REASONING CONTEXT:
 ------------------------------------------------------------
   USER PROMPT: "Who made the defensive steals in this game?"
 ------------------------------------------------------------
-  Note: {"type":"NoMatchError","message":"No schema predicates match prompt: \"Who made the defensive steals in this game?\"","keywords":["made","defensive","steals","this","game"],"availablePredicates":["http://www.w3.org/2000/01/rdf-schema#label","http://www.w3.org/1999/02/22-rdf-syntax-ns#type","http://euroleague.net/ontology#playsFor","http://euroleague.net/ontology#teammateOf","http://euroleague.net/ontology#team","http://euroleague.net/ontology#player","http://www.w3.org/2000/01/rdf-schema#subClassOf"],"suggestion":"Rephrase query using predicates from schema.","recoverable":true}
+  [InMemory] SPARQL error: SPARQL parse error: Pest(Error { variant: ParsingError { positives: [PathMod, GraphNodePath], negatives: [] }, location: Pos(84), line_col: Pos((1, 85)), path: None, line: "PREFIX euro: <http://euroleague.net/ontology#> SELECT ?player WHERE { ?player euro:madeDefensiveSteal ?game . ?game euro:gameId \"current_game_id\" }", continued_line: None, parse_attempts: None })
+
+  HONEST OUTPUT (HyperMindAgent.call() - SQL with CTE):
+
+  sql (with graph_search CTE):
+    ```sql
+    WITH kg AS (SELECT * FROM graph_search('PREFIX euro: <http://euroleague.net/ontology#> SELECT ?player WHERE { ?player euro:madeDefensiveSteal ?game . ?game euro:gameId "current_game_id" }')) SELECT * FROM kg
+    ```
+  sparql_inside_cte:
+    ```sparql
+    PREFIX euro: <http://euroleague.net/ontology#> SELECT ?player WHERE { ?player euro:madeDefensiveSteal ?game . ?game euro:gameId "current_game_id" }
+    ```
+
+  results (actual data):
+
+  answer:
+    "The derived facts do not provide information about who made the defensive steals in the game."
+
+  thinking:
+    predicatesIdentified: auto-detected
+    schemaMatches: 11 classes, 0 predicates
+
+  reasoning:
+    observations: 0
+    derivedFacts: 7
+    rulesApplied: 2
+
+  proof:
+    derivationChain:
+      - step: 1, rule: "owl:SymmetricProperty", conclusion: "http://euroleague.net/player/osman__cedi http://euroleague.net/ontology#teammateOf http://euroleague.net/player/none"
+      - step: 2, rule: "owl:SymmetricProperty", conclusion: "http://euroleague.net/player/grant__jerian http://euroleague.net/ontology#teammateOf http://euroleague.net/player/none"
+      - step: 3, rule: "owl:SymmetricProperty", conclusion: "http://euroleague.net/player/brown__lorenzo http://euroleague.net/ontology#teammateOf http://euroleague.net/player/none"
+      - step: 4, rule: "owl:SymmetricProperty", conclusion: "http://euroleague.net/player/nunn__kendrick http://euroleague.net/ontology#teammateOf http://euroleague.net/player/none"
+    proofHash: "sha256:19b522d2a2f"
+    verified: true
 
 ------------------------------------------------------------
   USER PROMPT: "Who are the teammates of Lessort?"
 ------------------------------------------------------------
 
-  HONEST OUTPUT (HyperMindAgent.call() response):
+  HONEST OUTPUT (HyperMindAgent.call() - SQL with CTE):
 
-  sparql:
+  sparql (legacy):
     ```sparql
     SELECT ?subject ?object WHERE { ?subject <http://euroleague.net/ontology#teammateOf> ?object } LIMIT 100
     ```
@@ -259,7 +293,7 @@ REASONING CONTEXT:
       - step: 2, rule: "owl:SymmetricProperty", conclusion: "http://euroleague.net/player/grant__jerian http://euroleague.net/ontology#teammateOf http://euroleague.net/player/none"
       - step: 3, rule: "owl:SymmetricProperty", conclusion: "http://euroleague.net/player/brown__lorenzo http://euroleague.net/ontology#teammateOf http://euroleague.net/player/none"
       - step: 4, rule: "owl:SymmetricProperty", conclusion: "http://euroleague.net/player/nunn__kendrick http://euroleague.net/ontology#teammateOf http://euroleague.net/player/none"
-    proofHash: "sha256:19b52001cfc"
+    proofHash: "sha256:19b522d2dbc"
     verified: true
 
 ======================================================================

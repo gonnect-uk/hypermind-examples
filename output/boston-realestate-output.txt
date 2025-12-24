@@ -126,8 +126,8 @@ SELECT ?address ?value ?bedrooms WHERE {
 
 RESULTS: 2 bindings
 SAMPLE (first 5):
-  property=property_BB001, address=165 Marlborough Street, value=$2,850,000, bedrooms=3
-  bedrooms=6, property=property_BB002, value=$8,500,000, address=298 Commonwealth Avenue
+  value=$2,850,000, bedrooms=3, property=property_BB001, address=165 Marlborough Street
+  property=property_BB002, address=298 Commonwealth Avenue, bedrooms=6, value=$8,500,000
     [PASS] INVESTOR: What are the highest-value properties in Back Bay?
 
 REASONING CONTEXT:
@@ -150,7 +150,7 @@ SELECT ?neighbor ?label WHERE {
 
 RESULTS: 2 bindings
 SAMPLE (first 5):
-  neighbor=SouthEnd, label=South End
+  label=South End, neighbor=SouthEnd
   neighbor=BeaconHill, label=Beacon Hill
     [PASS] HOME BUYER: Which neighborhoods are adjacent to Back Bay?
 
@@ -174,10 +174,10 @@ SELECT ?property ?influenced ?address WHERE {
 
 RESULTS: 7 bindings
 SAMPLE (first 5):
-  influenced=property_BB002, property=property_BB001, address=165 Marlborough Street
-  property=property_BB002, address=298 Commonwealth Avenue, influenced=property_BH001
-  influenced=property_BH002, property=property_BH001, address=72 Pinckney Street
-  address=127 Savin Hill Avenue, influenced=property_DO002, property=property_DO001
+  address=165 Marlborough Street, property=property_BB001, influenced=property_BB002
+  address=298 Commonwealth Avenue, property=property_BB002, influenced=property_BH001
+  address=72 Pinckney Street, property=property_BH001, influenced=property_BH002
+  influenced=property_DO002, address=127 Savin Hill Avenue, property=property_DO001
   property=property_JP001, address=42 Sedgwick Street, influenced=property_JP002
     [PASS] APPRAISER: What properties influence pricing in the market?
 
@@ -202,8 +202,8 @@ SELECT ?address ?year WHERE {
 
 RESULTS: 2 bindings
 SAMPLE (first 5):
-  year=1830, address=72 Pinckney Street, property=property_BH001
-  address=15 Chestnut Street, property=property_BH002, year=1845
+  address=72 Pinckney Street, year=1830, property=property_BH001
+  year=1845, address=15 Chestnut Street, property=property_BH002
     [PASS] HISTORIAN: What are the oldest properties in Beacon Hill?
 
 REASONING CONTEXT:
@@ -228,11 +228,11 @@ SELECT ?address ?value ?bedrooms WHERE {
 
 RESULTS: 5 bindings
 SAMPLE (first 5):
-  address=127 Savin Hill Avenue, property=property_DO001, bedrooms=6, value=$950,000
-  property=property_EB001, address=156 Bennington Street, value=$875,000, bedrooms=6
-  address=52 Warren Street, value=$685,000, property=property_RX001, bedrooms=6
-  address=512 East Broadway, bedrooms=7, property=property_SB002, value=$1,850,000
-  bedrooms=8, address=534 Tremont Street, value=$2,400,000, property=property_SE001
+  property=property_DO001, value=$950,000, bedrooms=6, address=127 Savin Hill Avenue
+  bedrooms=6, property=property_EB001, value=$875,000, address=156 Bennington Street
+  bedrooms=6, value=$685,000, property=property_RX001, address=52 Warren Street
+  address=512 East Broadway, property=property_SB002, value=$1,850,000, bedrooms=7
+  bedrooms=8, property=property_SE001, value=$2,400,000, address=534 Tremont Street
     [PASS] DEVELOPER: What multi-family properties exist in emerging areas?
 
 REASONING CONTEXT:
@@ -243,16 +243,16 @@ REASONING CONTEXT:
 [9] HyperMindAgent Natural Language Queries (LLM-assisted):
 
   Question: "What are the most expensive properties in Boston?"
-  Generated SPARQL:
+  Generated SPARQL (legacy):
   ```sparql
   SELECT ?subject ?object WHERE { ?subject <http://boston.gov/property#adjacentTo> ?object } LIMIT 100
   ```
   RESULTS (actual data):
     -> object=Roxbury, subject=SouthEnd
     -> object=Roxbury, subject=JamaicaPlain
-    -> object=SouthEnd, subject=BackBay
+    -> subject=BackBay, object=SouthEnd
     -> subject=BackBay, object=BeaconHill
-    -> subject=SouthEnd, object=Dorchester
+    -> object=Dorchester, subject=SouthEnd
     ... and 4 more
   ANSWER: The most expensive properties in Boston are likely located in Back Bay and Beacon Hill, as properties in Back Bay are influenced by those in Beacon Hill.
   REASONING: 0 observations -> 14 derived facts
@@ -262,9 +262,14 @@ REASONING CONTEXT:
     Step 3: [owl:SymmetricProperty] http://boston.gov/property#JamaicaPlain http://boston.gov/property#adjacentTo http://boston.gov/property#Brighton
 
   Question: "Which neighborhoods are near Beacon Hill?"
-  Generated SPARQL:
+  [InMemory] SPARQL error: SPARQL parse error: Pest(Error { variant: ParsingError { positives: [PathMod, GraphNodePath], negatives: [] }, location: Pos(92), line_col: Pos((1, 93)), path: None, line: "PREFIX prop: <http://boston.gov/property#> SELECT ?neighborhood WHERE { ?neighborhood prop:adjacentTo <http://boston.gov/property#BeaconHill> }", continued_line: None, parse_attempts: None })
+  Generated SQL (with graph_search CTE):
+  ```sql
+  WITH kg AS (SELECT * FROM graph_search('PREFIX prop: <http://boston.gov/property#> SELECT ?neighborhood WHERE { ?neighborhood prop:adjacentTo <http://boston.gov/property#BeaconHill> }')) SELECT * FROM kg;
+  ```
+  sparql_inside_cte:
   ```sparql
-  undefined
+  PREFIX prop: <http://boston.gov/property#> SELECT ?neighborhood WHERE { ?neighborhood prop:adjacentTo <http://boston.gov/property#BeaconHill> }
   ```
   RESULTS (actual data):
   ANSWER: The neighborhoods near Beacon Hill are Back Bay and Charlestown.

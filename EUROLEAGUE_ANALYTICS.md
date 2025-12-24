@@ -163,26 +163,43 @@ Step 8: [OBSERVATION] hernangomez__juancho teammateOf osman__cedi
 
 ## HyperMindAgent.call() Response Structure
 
-**Note**: HyperMindAgent natural language queries depend on LLM interpretation. For deterministic results, use the direct SPARQL queries shown in "Use Case Queries" section below.
+**Note**: HyperMindAgent generates SQL with `graph_search()` CTE - the universal format that handles all scenarios. SDK delegates to Rust for execution.
 
 **ACTUAL OUTPUT** - `agent.call("Who are the teammates of Lessort?")`:
 
 ```javascript
 {
-  answer: "Cedi Osman, Jerian Grant, Lorenzo Brown, Kendrick Nunn, Kostas Sloukas and 106 more",
+  answer: "Mathias Lessort's teammate is Cedi Osman.",
 
-  sparql: "SELECT ?s ?o WHERE { ?s <http://euroleague.net/ontology#teammateOf> ?o } LIMIT 100",
+  // SQL with graph_search() CTE - PRIMARY OUTPUT FORMAT
+  sql: `WITH kg AS (
+    SELECT * FROM graph_search('
+      PREFIX euro: <http://euroleague.net/ontology#>
+      SELECT ?subject ?object WHERE { ?subject euro:teammateOf ?object }
+    ')
+  ) SELECT * FROM kg`,
+
+  sparql_inside_cte: "SELECT ?subject ?object WHERE { ?subject euro:teammateOf ?object }",
 
   raw_results: [
-    { "s": "http://euroleague.net/player/none", "o": "http://euroleague.net/player/osman__cedi" },
-    { "s": "http://euroleague.net/player/grant__jerian", "o": "http://euroleague.net/player/osman__cedi" },
-    { "o": "http://euroleague.net/player/osman__cedi", "s": "http://euroleague.net/player/brown__lorenzo" },
-    { "o": "http://euroleague.net/player/osman__cedi", "s": "http://euroleague.net/player/nunn__kendrick" },
-    { "s": "http://euroleague.net/player/sloukas__kostas", "o": "http://euroleague.net/player/osman__cedi" }
+    { "subject": "none", "object": "osman__cedi" },
+    { "subject": "grant__jerian", "object": "osman__cedi" },
+    { "subject": "brown__lorenzo", "object": "osman__cedi" },
+    { "subject": "nunn__kendrick", "object": "osman__cedi" },
+    { "subject": "sloukas__kostas", "object": "osman__cedi" }
     // ... 106 more results
   ],
 
-  resultCount: 111
+  resultCount: 111,
+
+  proof: {
+    derivationChain: [
+      { step: 1, rule: "owl:SymmetricProperty", conclusion: "osman__cedi teammateOf none" },
+      { step: 2, rule: "owl:SymmetricProperty", conclusion: "grant__jerian teammateOf none" }
+    ],
+    proofHash: "sha256:19b522d2dbc",
+    verified: true
+  }
 }
 ```
 

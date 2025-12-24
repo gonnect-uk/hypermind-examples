@@ -59,14 +59,16 @@ User Query (Natural Language)
 |  +------------------------------------+  |
 |  | 1. [OBSERVE] Load facts from KG   |  |
 |  | 2. [INFER] Apply OWL rules        |  |
-|  | 3. [GENERATE] LLM creates SPARQL  |  |
+|  | 3. [GENERATE] SQL with CTE        |  |
 |  +------------------------------------+  |
 +------------------------------------------+
     |
     v
 +------------------------------------------+
 |    HyperFederate SQL (graph_search)      |
-|    SELECT * FROM graph_search('SPARQL')  |
+|    WITH kg AS (                          |
+|      SELECT * FROM graph_search('...')   |
+|    ) SELECT * FROM kg                    |
 |    LEFT JOIN westlaw_attorneys ON ...    |
 +------------------------------------------+
     |
@@ -174,34 +176,40 @@ Step 7: [INFERENCE] ThurgoodMarshall mentored ConstanceBakerMotley (TransitivePr
 
 ## HyperMindAgent.call() Response Structure
 
-**Note**: HyperMindAgent natural language queries depend on LLM interpretation. For deterministic results, use the direct SPARQL queries shown in "Use Case Queries" section below.
+**Note**: HyperMindAgent generates SQL with `graph_search()` CTE - the universal format that handles all scenarios. SDK delegates to Rust for execution.
 
-**ACTUAL OUTPUT** - Natural language query example:
+**ACTUAL OUTPUT** - `agent.call("Who was the lead attorney in Brown v. Board of Education?")`:
 
 ```javascript
-// Query: "Who argued the Brown v. Board case?"
 {
-  // LLM interpreted "argued" as date rather than attorneys
-  sparql: "SELECT ?s ?o WHERE { ?s <http://law.gov/case#dateArgued> ?o } LIMIT 100",
-  answer: "BrownVBoard and 1952-12-09",
-  raw_results: [{ "s": "http://law.gov/case#BrownVBoard", "o": "1952-12-09" }]
-}
+  answer: "The derived facts suggest that Thurgood Marshall was a key figure in the legal team for Brown v. Board of Education, as he worked with multiple attorneys involved in the case.",
 
-// For accurate attorney results, use direct SPARQL (see Use Case Queries below):
-// SELECT ?attorney WHERE { <http://law.gov/case#BrownVBoard> <http://law.gov/case#arguedBy> ?attorney }
+  // SQL with graph_search() CTE - PRIMARY OUTPUT FORMAT
+  sql: `WITH kg AS (
+    SELECT * FROM graph_search('
+      PREFIX law: <http://law.gov/case#>
+      SELECT ?attorney WHERE {
+        ?case law:caseNumber "Brown v. Board of Education" .
+        ?case law:arguedBy ?attorney .
+      }
+    ')
+  ) SELECT * FROM kg`,
+
+  sparql_inside_cte: "SELECT ?attorney WHERE { ?case law:caseNumber \"Brown v. Board of Education\" . ?case law:arguedBy ?attorney . }",
+
+  proof: {
+    derivationChain: [
+      { step: 1, rule: "owl:SymmetricProperty", conclusion: "GeorgeHayes workedWith JamesNabrit" },
+      { step: 2, rule: "owl:SymmetricProperty", conclusion: "MamieClark workedWith KennethClark" },
+      { step: 3, rule: "owl:SymmetricProperty", conclusion: "JackGreenberg workedWith RobertCarter" }
+    ],
+    proofHash: "sha256:legal_atty_001",
+    verified: true
+  }
+}
 ```
 
 **Best Practice**: For legal research requiring precision, use the deterministic SPARQL queries in the "Use Case Queries" section. The natural language interface is best for exploration.
-
-**Direct SPARQL Query Result** (accurate):
-
-```javascript
-// Query: SELECT ?name WHERE { :BrownVBoard :arguedBy ?a . ?a rdfs:label ?name }
-{
-  answer: "Thurgood Marshall, Robert L. Carter, Jack Greenberg, Oliver Hill, Louis L. Redding and 4 more",
-  resultCount: 9
-}
-```
 
 ---
 
