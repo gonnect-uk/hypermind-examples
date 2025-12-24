@@ -155,42 +155,150 @@ collaborativeRecommendation(?user, ?artist) :-
 ## Sample Output
 
 ```
-=== Music Recommendation Agent Demo ===
-Using MusicBrainz/Wikidata artist patterns
+================================================================================
+  MUSIC RECOMMENDATION AGENT
+  Semantic Music Discovery with Knowledge Graphs
+  rust-kgdb v0.8.18 | Data: MusicBrainz + Wikidata Patterns
+================================================================================
 
-✓ Artist ontology loaded: 312 triples
-✓ Genre taxonomy: 24 genres with hierarchy
-✓ User profiles: 5 users with listening history
+[1] Loading Music Ontology...
+    Triples loaded: 291
+    [PASS] Music ontology loaded
 
---- Recommendations for Alice ---
+[2] SPARQL: Query Artists by Genre...
+    Artists found: 12
+      Rock: U2, Queen, The Beatles, Nirvana, Arctic Monkeys
+      ArtRock: U2, Coldplay, Pink Floyd, Radiohead
+      HardRock: Queen, Guns N' Roses, Led Zeppelin, Black Sabbath
+      Pop: The Beatles, Coldplay
+      Grunge: Nirvana
+    [PASS] Artist catalog loaded
 
-Genre-Based (Progressive Rock):
-  1. Genesis - "Not listened, matches preferred genre"
-  2. Yes - "Not listened, matches preferred genre"
-  Proof: sha256:4a7b...
+[3] SPARQL: Artist Influence Network...
+    Influence relationships: 8
+      U2 -> Coldplay
+      Led Zeppelin -> Metallica
+      Black Sabbath -> Metallica
+      The Beatles -> Pink Floyd
+      The Beatles -> Radiohead
+    [PASS] Influence network mapped
 
-Influence-Based (from Pink Floyd):
-  1. Radiohead - "Influenced by Pink Floyd"
-  2. Muse - "Influenced by Pink Floyd (via Radiohead)"
-  Proof: sha256:8c2d...
+[4] SPARQL: Genre Taxonomy...
+    Genres: 8
+      Pop (parent: PopularMusic)
+      Rock (parent: PopularMusic)
+      Grunge (parent: Rock)
+      Art Rock (parent: Rock)
+      Hard Rock (parent: Rock)
+      Heavy Metal (parent: Rock)
+    [PASS] Genre hierarchy loaded
 
-Collaborative (similar to Bob):
-  1. Tool - "Bob also likes Pink Floyd and Tool"
-  Proof: sha256:f3e1...
+[5] SPARQL: Top Selling Albums...
+    Albums: 7
+      Abbey Road by The Beatles: 31M copies
+      Nevermind by Nirvana: 30M copies
+      OK Computer by Radiohead: 4.5M copies
+      Led Zeppelin IV by Led Zeppelin: 37M copies
+      Master of Puppets by Metallica: 6M copies
+      A Night at the Opera by Queen: 6M copies
+      The Dark Side of the Moon by Pink Floyd: 45M copies
+    [PASS] Album catalog loaded
 
---- GraphFrame Insights ---
+[6] SPARQL: User Listening History...
+    User listening records: 12
+      Bob: Coldplay, Pink Floyd, Radiohead
+      Alice: Metallica, Led Zeppelin, Black Sabbath
+      Diana: Nirvana, Radiohead, Arctic Monkeys
+      Charlie: U2, Queen, The Beatles
+    [PASS] User profiles loaded
 
-Most Influential Artists (PageRank):
-  1. The Beatles (0.412)
-  2. Led Zeppelin (0.356)
-  3. Pink Floyd (0.298)
-  4. Black Sabbath (0.267)
-  5. Jimi Hendrix (0.234)
+[7] SPARQL: Find Artists Similar to Led Zeppelin...
+    Artists sharing genres with Led Zeppelin: 4
+      - Queen
+      - Guns N' Roses
+      - Black Sabbath
+      - Led Zeppelin IV
+    [PASS] Genre-based similarity works
 
-Influence Path: Beatles → Radiohead
-  Beatles → Pink Floyd → Radiohead (2 hops)
+[8] SPARQL: Influence Chain from The Beatles...
+    Artists influenced by The Beatles: 3
+      - Pink Floyd
+      - Radiohead
+      - Led Zeppelin
+    [PASS] Influence traversal works
 
-=== 14/14 SCENARIOS PASSED ===
+[9] SPARQL: Related Genres (OWL SymmetricProperty)...
+    Related genre pairs: 5
+      Soul <-> R&B
+      R&B <-> Soul
+      Progressive Rock <-> Art Rock
+      Heavy Metal <-> Hard Rock
+      Hard Rock <-> Heavy Metal
+    [PASS] Symmetric genre relationships
+
+[10] Datalog: Recommendation Rules...
+    Recommendation rules evaluated
+    Genre-based recommendations: 2
+    Influence-based recommendations: 1
+    Sample recommendations for Alice:
+      - GunsNRoses (genre match)
+      - Queen (genre match)
+    [PASS] Datalog reasoning works
+
+[11] GraphFrame: Artist Influence Network...
+    Vertices: 12 artists
+    Edges: 14 influence relationships
+    Most Influential Artists (PageRank):
+      1. Coldplay: 0.1866
+      2. ArcticMonkeys: 0.1222
+      3. Metallica: 0.1113
+      4. Radiohead: 0.1081
+      5. Nirvana: 0.0750
+    Connected components: 1
+    [PASS] Influence network analyzed
+
+[12] GraphFrame: Musical Distance (Shortest Paths)...
+    [PASS] Graph traversal operational
+
+[13] ThinkingReasoner: OWL Property Inference...
+    [PASS] Reasoning available
+
+[14] Generate Recommendations for Alice...
+    User Profile:
+      Listened to: Led Zeppelin, Black Sabbath, Metallica
+      Favorite genres: Heavy Metal, Hard Rock
+
+    RECOMMENDATION ENGINE:
+      Step 1: [PROFILE] Extract genre preferences
+      Step 2: [GRAPH] Find artists in same genres
+      Step 3: [INFLUENCE] Find influencers of favorites
+      Step 4: [FILTER] Remove already listened
+      Step 5: [RANK] Sort by relevance
+
+    RECOMMENDATIONS FOR ALICE:
+      1. Guns N' Roses (Hard Rock, influenced by Led Zeppelin)
+      2. Queen (Hard Rock, influenced by Beatles)
+      3. Nirvana (influenced by Led Zeppelin)
+
+    PROOF HASH: b1aaea954edbdf24...
+
+    [PASS] Personalized recommendations generated
+
+================================================================================
+  TEST RESULTS: 14 PASSED - 100% PASS RATE
+================================================================================
+
+  MUSIC RECOMMENDATION CAPABILITIES:
+    - Artist ontology with genres, albums, influence
+    - Genre taxonomy with parent/related relationships
+    - User listening history and preferences
+    - GraphFrame influence network analysis
+    - PageRank for artist importance
+    - Datalog rules for recommendations
+    - OWL reasoning (Symmetric, Transitive properties)
+    - Cryptographic proof per recommendation
+
+  DATA SOURCES: MusicBrainz, Wikidata patterns
 ```
 
 ---

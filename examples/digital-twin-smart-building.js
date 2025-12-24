@@ -21,8 +21,6 @@ const {
   DatalogProgram,
   evaluateDatalog,
   GraphFrame,
-  pageRank,
-  connectedComponents,
   HyperMindAgent,
   ThinkingReasoner
 } = require('rust-kgdb');
@@ -226,6 +224,7 @@ function generateRealisticSensorReadings() {
   const isWeekend = [0, 6].includes(new Date().getDay());
 
   return `
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
     @prefix iot: <http://smartbuilding.org/iot#> .
     @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
@@ -459,6 +458,7 @@ async function runDigitalTwinDemo() {
   // -------------------------------------------------------------------------
   console.log('[3] SPARQL: Query All Temperature Readings...');
   const tempQuery = `
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX iot: <http://smartbuilding.org/iot#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -525,6 +525,7 @@ async function runDigitalTwinDemo() {
   // -------------------------------------------------------------------------
   console.log('[5] SPARQL: Occupancy Analysis...');
   const occupancyQuery = `
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX iot: <http://smartbuilding.org/iot#>
 
     SELECT ?zone ?occupancy WHERE {
@@ -555,6 +556,7 @@ async function runDigitalTwinDemo() {
   // -------------------------------------------------------------------------
   console.log('[6] SPARQL: Energy Consumption Analysis...');
   const energyQuery = `
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX iot: <http://smartbuilding.org/iot#>
 
     SELECT ?sensor ?kWh ?watts WHERE {
@@ -589,6 +591,7 @@ async function runDigitalTwinDemo() {
   // -------------------------------------------------------------------------
   console.log('[7] SPARQL: HVAC System Status...');
   const hvacQuery = `
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX iot: <http://smartbuilding.org/iot#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -701,12 +704,14 @@ async function runDigitalTwinDemo() {
     { src: 'Kitchen', dst: 'MailRoom', rel: 'adjacentTo' }
   ];
 
-  const gf = new GraphFrame(vertices, edges);
+  const gf = new GraphFrame(JSON.stringify(vertices), JSON.stringify(edges));
   console.log(`    Vertices: ${vertices.length}`);
   console.log(`    Edges: ${edges.length}`);
 
-  // PageRank to find critical nodes
-  const pr = pageRank(gf, { maxIterations: 20, dampingFactor: 0.85 });
+  // PageRank to find critical nodes (resetProb=0.15, maxIter=20)
+  const prResult = gf.pageRank(0.15, 20);
+  const prParsed = JSON.parse(prResult);
+  const pr = prParsed.ranks || prParsed;
   console.log('    PageRank (node importance):');
   const sortedPR = Object.entries(pr).sort((a, b) => b[1] - a[1]).slice(0, 5);
   sortedPR.forEach(([node, score]) => {
@@ -714,7 +719,9 @@ async function runDigitalTwinDemo() {
   });
 
   // Connected components
-  const cc = connectedComponents(gf);
+  const ccResult = gf.connectedComponents();
+  const ccParsed = JSON.parse(ccResult);
+  const cc = ccParsed.components || ccParsed;
   const uniqueComponents = new Set(Object.values(cc));
   console.log(`    Connected components: ${uniqueComponents.size}`);
 

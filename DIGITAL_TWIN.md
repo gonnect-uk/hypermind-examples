@@ -136,33 +136,121 @@ energyWaste(?zone) :-
 ## Sample Output
 
 ```
-=== Smart Building Digital Twin Demo ===
-Using University of Sharjah Smart Campus 2024 dataset patterns
+================================================================================
+  DIGITAL TWIN: Smart Building IoT Example
+  University of Sharjah Smart Campus 2024
+  rust-kgdb v0.8.18 | Real-Time IoT + Datalog Reasoning
+================================================================================
 
-✓ Building ontology loaded: 156 triples
-✓ Real-time sensor data: 48 readings ingested
+[1] Loading Smart Building Digital Twin Ontology...
+    Triples loaded: 123
+    [PASS] Building ontology loaded successfully
 
---- Temperature Analysis ---
-Zone: Lecture Hall 1
-  Current: 28.5°C (HIGH)
-  Humidity: 65.2%
-  Status: COOLING ACTIVATED
-  Proof: sha256:7f3a...
+[2] Ingesting Real-Time IoT Sensor Readings...
+    New triples after sensor ingestion: 179
+    Sensor readings added: 56
+    [PASS] Real-time sensor data ingested
 
---- Energy Optimization ---
-Zone: Office Wing A
-  Status: ENERGY WASTE DETECTED
-  Reason: Cooling active, zone unoccupied
-  Recommendation: Reduce HVAC to 50%
-  Proof: sha256:9b2c...
+[3] SPARQL: Query All Temperature Readings...
+    Temperature readings found: 4
+      - InterdisciplinaryLab: 25.1°C
+      - InterdisciplinaryLab: 25.5°C
+      - ServerRoom: 22.5°C
+      - Kitchen: 26.1°C
+    [PASS] Temperature sensors reporting
 
---- GraphFrame Insights ---
-Most Critical Zones (PageRank):
-  1. Lecture Hall 1 (0.342)
-  2. Lab Computer (0.287)
-  3. Office Wing A (0.198)
+[4] SPARQL: Monitor Critical Zones...
+    Critical zones: 1
+      - Server Room: 22.5°C
+    [PASS] Critical zone monitoring active
 
-=== 12/12 SCENARIOS PASSED ===
+[5] SPARQL: Occupancy Analysis...
+    Zones with occupancy data: 2
+      - InterdisciplinaryLab: 0 people
+      - ConferenceRoom: 0 people
+    [PASS] Occupancy sensors active
+
+[6] SPARQL: Energy Consumption Analysis...
+    Energy meters: 3
+      - EnergyMeter_HVAC: 259.24 kWh (3955W current)
+      - EnergyMeter_Microwave: 9.71 kWh (0W current)
+      - EnergyMeter_CoffeeMachine: 14.48 kWh (0W current)
+    Total current power: 3955W
+    [PASS] Energy monitoring active
+
+[7] SPARQL: HVAC System Status...
+    HVAC systems: 3
+    Zones controlled: Kitchen, ConferenceRoom, InterdisciplinaryLab
+    [PASS] HVAC system mapped
+
+[8] SPARQL: Zone Adjacency (Heat Propagation)...
+    Adjacent zone pairs: 4
+      - MailRoom <-> Kitchen
+      - Kitchen <-> MailRoom
+      - InterdisciplinaryLab <-> ConferenceRoom
+      - ConferenceRoom <-> InterdisciplinaryLab
+    [PASS] Zone adjacency mapped (OWL SymmetricProperty)
+
+[9] Datalog: Automated HVAC Control Rules...
+    Rules evaluated successfully
+    Critical alerts: 1
+    Temperature alerts: 1
+    [ALERT] Server room temperature exceeds threshold!
+    [ACTION] Increasing precision AC cooling
+    [PASS] Datalog reasoning operational
+
+[10] GraphFrame: Sensor Network Topology...
+    Vertices: 9
+    Edges: 12
+    PageRank (node importance):
+      - M5Building: 0.2942
+      - ServerRoom: 0.1201
+      - ConferenceRoom: 0.0975
+      - InterdisciplinaryLab: 0.0949
+      - Kitchen: 0.0571
+    Connected components: 1
+    [PASS] Sensor network analyzed
+
+[11] ThinkingReasoner: Deductive Reasoning...
+    [PASS] Reasoning engine available
+
+[12] Real-Time Decision Engine...
+    Scenario: Server room temperature spike detected
+
+    INPUT:
+      Sensor: TempSensor_Server
+      Reading: 25.2°C
+      Threshold: 24.0°C
+      Status: EXCEEDED
+
+    REASONING CHAIN:
+      Step 1: [OBSERVATION] temp(ServerRoom) = 25.2
+      Step 2: [RULE] criticalZone(ServerRoom) = true
+      Step 3: [INFERENCE] temperatureAlert(ServerRoom, high)
+      Step 4: [INFERENCE] criticalAlert(ServerRoom, serverOverheat)
+      Step 5: [ACTION] increaseACPower(ServerRoomAC, +20%)
+
+    OUTPUT:
+      Decision: INCREASE_COOLING
+      Target: ServerRoomAC
+      Action: Set cooling to 100% capacity
+      Proof: SHA-256 c14c1cfe549be335...
+
+    [PASS] Real-time decision with proof
+
+================================================================================
+  TEST RESULTS: 12 PASSED, 0 FAILED - 100.0% PASS RATE
+================================================================================
+
+  DIGITAL TWIN CAPABILITIES DEMONSTRATED:
+    - Real-time IoT sensor data ingestion
+    - SPARQL queries for temperature, occupancy, energy
+    - Datalog rules for automated HVAC control
+    - OWL reasoning (SymmetricProperty, TransitiveProperty)
+    - GraphFrame network analysis (PageRank, components)
+    - Cryptographic proof per decision
+
+  DATA SOURCE: University of Sharjah Smart Campus 2024
 ```
 
 ---
