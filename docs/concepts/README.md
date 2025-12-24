@@ -172,11 +172,15 @@ ex:marshall a ex:Attorney ;
 
 ## Benchmark Results
 
-| Metric | HyperMind | Vanilla GPT-4 |
-|--------|-----------|---------------|
-| Accuracy (LUBM) | 86.4% | 0% |
-| Valid SPARQL | 100% | 12% |
-| Latency | 1.2s | 3.8s |
+**LUBM Benchmark** (verified from real API calls):
+
+| Metric | HyperMind (with schema) | Vanilla GPT-4 (no schema) |
+|--------|-------------------------|---------------------------|
+| Accuracy (LUBM) | 71.4% | 0% |
+| Valid SPARQL | 100% | 0% (markdown blocks) |
+| Latency | ~1.5s | ~1.2s |
+
+**Key Insight**: Without schema context, GPT-4 returns markdown code blocks that aren't executable SPARQL. HyperMind provides schema + output cleaning for valid queries.
 
 ---
 

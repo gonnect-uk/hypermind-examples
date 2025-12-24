@@ -130,15 +130,23 @@ See [docs/concepts](docs/concepts/README.md) for detailed explanation of:
 
 ## Benchmarks
 
-| Metric | HyperMind | Vanilla GPT-4 |
-|--------|-----------|---------------|
-| Accuracy (LUBM) | 86.4% | 0% |
-| Valid SPARQL | 100% | 12% |
+**LUBM Benchmark Results** (verified from real API calls):
+
+| Metric | HyperMind (with schema) | Vanilla GPT-4 (no schema) |
+|--------|-------------------------|---------------------------|
+| Accuracy (LUBM) | 71.4% | 0% |
+| Valid SPARQL | 100% | 0% (markdown blocks) |
+
+**Why the difference?**
+- Vanilla GPT-4 without schema returns markdown code blocks (`\`\`\`sparql`) which aren't executable
+- HyperMind provides schema context + cleans output = valid, accurate SPARQL
 
 Run yourself:
 ```bash
 OPENAI_API_KEY=your-key npm run bench:hypermind
 ```
+
+*Results from `verified_benchmark_results.json` - December 2025*
 
 ---
 
