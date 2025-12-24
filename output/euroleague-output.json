@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-12-23T23:54:33.061Z",
+  "timestamp": "2025-12-24T20:51:38.270Z",
   "example": "euroleague-basketball-agent",
   "passRate": "100.0%",
   "stats": {
@@ -9,7 +9,7 @@
     "steals": 3
   },
   "testResults": {
-    "passed": 18,
+    "passed": 17,
     "failed": 0,
     "assertions": [
       {
@@ -41,23 +41,19 @@
         "status": "PASS"
       },
       {
-        "name": "RDF2Vec embeddings generated in Rust",
+        "name": "Schema extracted from graph",
         "status": "PASS"
       },
       {
-        "name": "Schema has classes",
+        "name": "Graph has classes",
         "status": "PASS"
       },
       {
-        "name": "Schema has predicates",
+        "name": "Graph has predicates",
         "status": "PASS"
       },
       {
         "name": "HyperFederate SQL shows 3 steal players",
-        "status": "PASS"
-      },
-      {
-        "name": "Observations loaded",
         "status": "PASS"
       },
       {
@@ -77,7 +73,7 @@
         "status": "PASS"
       },
       {
-        "name": "ANALYST: Who made scoring plays (Two/Three Pointers)?",
+        "name": "ANALYST: Who made scoring plays (Shots)?",
         "status": "PASS"
       },
       {

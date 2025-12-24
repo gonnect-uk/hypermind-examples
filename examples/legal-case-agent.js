@@ -20,7 +20,7 @@
  * Run: node examples/legal-case-agent.js
  */
 
-const { GraphDB, HyperMindAgent } = require('rust-kgdb')
+const { GraphDB, HyperMindAgent, RpcFederationProxy } = require('rust-kgdb')
 const assert = require('assert')
 
 // ============================================================================
@@ -307,9 +307,28 @@ ORDER BY westlaw.citation_count DESC`
   // 2. Auto-observes all triples that use OWL properties
   // 3. Runs deductive reasoning to derive new facts
   // NO manual loadOntology(), observe(), or deduce() calls needed!
+
+  // Configure RpcFederationProxy for SQL CTE generation with graph_search()
+  // Using inMemory mode - KG queries run via NAPI-RS, no external DB connection
+  const federation = new RpcFederationProxy({
+    mode: 'inMemory',
+    kg: db,
+    connectors: {
+      // Connector type triggers hybrid SQL+SPARQL mode with graph_search() CTEs
+      // In inMemory mode, this defines the SQL dialect for generated queries
+      postgres: {
+        host: '(demo)',
+        database: 'legal_cases',
+        schema: 'public'
+      }
+    }
+  })
+
   const agent = new HyperMindAgent({
     name: 'legal-research-analyst',
     kg: db,
+    federationProxy: federation,          // Enable SQL CTE generation with graph_search()
+    connectors: federation.connectors,    // Pass connectors for query type detection
     apiKey: process.env.OPENAI_API_KEY,
     model: 'gpt-4o'
   })
@@ -533,10 +552,15 @@ ORDER BY westlaw.citation_count DESC`
       try {
         const result = await agent.call(q)
 
+        // Get SQL with CTE (PRIMARY OUTPUT)
+        const sqlQueries = result.explanation?.sql_queries || []
+
         // Collect full response for JSON dump
         llmResponses.push({
           question: q,
           answer: result.answer || result.response || result.text,
+          sql: sqlQueries[0]?.sql || null,
+          sparql_inside_cte: sqlQueries[0]?.sparql_inside || null,
           sparql: result.explanation?.sparql_queries?.[0]?.query || null,
           raw_results: result.raw_results,
           thinkingGraph: result.thinkingGraph,
@@ -544,8 +568,21 @@ ORDER BY westlaw.citation_count DESC`
           reasoningStats: result.reasoningStats
         })
 
-        if (result.explanation?.sparql_queries?.length > 0) {
-          console.log('  Generated SPARQL:')
+        // 1. Generated SQL with graph_search() CTE (PRIMARY OUTPUT)
+        if (sqlQueries.length > 0) {
+          console.log('  Generated SQL (with graph_search CTE):')
+          console.log('  ```sql')
+          console.log('  ' + sqlQueries[0].sql.split('\n').join('\n  '))
+          console.log('  ```')
+          if (sqlQueries[0].sparql_inside) {
+            console.log('  sparql_inside_cte:')
+            console.log('  ```sparql')
+            console.log('  ' + sqlQueries[0].sparql_inside.split('\n').join('\n  '))
+            console.log('  ```')
+          }
+        } else if (result.explanation?.sparql_queries?.length > 0) {
+          // Fallback for legacy SPARQL output
+          console.log('  Generated SPARQL (legacy):')
           console.log('  ```sparql')
           console.log('  ' + result.explanation.sparql_queries[0].query)
           console.log('  ```')

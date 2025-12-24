@@ -15,7 +15,7 @@
  * Run: node examples/euroleague-basketball-agent.js
  */
 
-const { GraphDB, HyperMindAgent } = require('rust-kgdb')
+const { GraphDB, HyperMindAgent, RpcFederationProxy } = require('rust-kgdb')
 const assert = require('assert')
 
 // ============================================================================
@@ -286,9 +286,28 @@ SELECT ?player (COUNT(?steal) AS ?steal_count) WHERE {
   // 2. Auto-observes all triples that use OWL properties
   // 3. Runs deductive reasoning to derive new facts
   // NO manual loadOntology(), observe(), or deduce() calls needed!
+
+  // Configure RpcFederationProxy for SQL CTE generation with graph_search()
+  // Using inMemory mode - KG queries run via NAPI-RS, no external DB connection
+  const federation = new RpcFederationProxy({
+    mode: 'inMemory',
+    kg: db,
+    connectors: {
+      // Connector type triggers hybrid SQL+SPARQL mode with graph_search() CTEs
+      // In inMemory mode, this defines the SQL dialect for generated queries
+      postgres: {
+        host: '(demo)',
+        database: 'euroleague_stats',
+        schema: 'public'
+      }
+    }
+  })
+
   const agent = new HyperMindAgent({
     name: 'euroleague-analyst',
     kg: db,
+    federationProxy: federation,          // Enable SQL CTE generation with graph_search()
+    connectors: federation.connectors,    // Pass connectors for query type detection
     apiKey: process.env.OPENAI_API_KEY,
     model: 'gpt-4o'
   })
@@ -473,14 +492,28 @@ SELECT ?player (COUNT(?steal) AS ?steal_count) WHERE {
       try {
         const result = await agent.call(q)
 
-        // HONEST OUTPUT - Full agent.call() response structure
+        // HONEST OUTPUT - SQL with graph_search() CTE (universal format)
         console.log()
-        console.log('  HONEST OUTPUT (HyperMindAgent.call() response):')
+        console.log('  HONEST OUTPUT (HyperMindAgent.call() - SQL with CTE):')
         console.log()
 
-        // 1. Generated SPARQL (show first)
-        if (result.explanation?.sparql_queries?.length > 0) {
-          console.log('  sparql:')
+        // 1. Generated SQL with graph_search() CTE (PRIMARY OUTPUT)
+        const sqlQueries = result.explanation?.sql_queries || []
+        if (sqlQueries.length > 0) {
+          console.log('  sql (with graph_search CTE):')
+          console.log('    ```sql')
+          console.log('    ' + sqlQueries[0].sql.split('\n').join('\n    '))
+          console.log('    ```')
+          if (sqlQueries[0].sparql_inside) {
+            console.log('  sparql_inside_cte:')
+            console.log('    ```sparql')
+            console.log('    ' + sqlQueries[0].sparql_inside.split('\n').join('\n    '))
+            console.log('    ```')
+          }
+          console.log()
+        } else if (result.explanation?.sparql_queries?.length > 0) {
+          // Fallback for legacy SPARQL output
+          console.log('  sparql (legacy):')
           console.log('    ```sparql')
           console.log('    ' + result.explanation.sparql_queries[0].query.split('\n').join('\n    '))
           console.log('    ```')

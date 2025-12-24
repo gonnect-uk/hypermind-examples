@@ -90,7 +90,7 @@ Source: City of Boston Open Data (data.boston.gov)
 
   Auto-reasoning complete (OWL auto-detected from TTL)...
     Agent: boston-realestate-analyst
-    LLM: None (schema-based)
+    LLM: OpenAI
     Observations: 0
     Derived Facts: 14
     Rules Applied: 2
@@ -126,8 +126,8 @@ SELECT ?address ?value ?bedrooms WHERE {
 
 RESULTS: 2 bindings
 SAMPLE (first 5):
-  address=165 Marlborough Street, property=property_BB001, value=$2,850,000, bedrooms=3
-  property=property_BB002, value=$8,500,000, bedrooms=6, address=298 Commonwealth Avenue
+  property=property_BB001, address=165 Marlborough Street, value=$2,850,000, bedrooms=3
+  bedrooms=6, property=property_BB002, value=$8,500,000, address=298 Commonwealth Avenue
     [PASS] INVESTOR: What are the highest-value properties in Back Bay?
 
 REASONING CONTEXT:
@@ -151,7 +151,7 @@ SELECT ?neighbor ?label WHERE {
 RESULTS: 2 bindings
 SAMPLE (first 5):
   neighbor=SouthEnd, label=South End
-  label=Beacon Hill, neighbor=BeaconHill
+  neighbor=BeaconHill, label=Beacon Hill
     [PASS] HOME BUYER: Which neighborhoods are adjacent to Back Bay?
 
 REASONING CONTEXT:
@@ -174,11 +174,11 @@ SELECT ?property ?influenced ?address WHERE {
 
 RESULTS: 7 bindings
 SAMPLE (first 5):
-  property=property_BB001, influenced=property_BB002, address=165 Marlborough Street
-  address=298 Commonwealth Avenue, influenced=property_BH001, property=property_BB002
-  address=72 Pinckney Street, property=property_BH001, influenced=property_BH002
-  influenced=property_DO002, property=property_DO001, address=127 Savin Hill Avenue
-  address=42 Sedgwick Street, influenced=property_JP002, property=property_JP001
+  influenced=property_BB002, property=property_BB001, address=165 Marlborough Street
+  property=property_BB002, address=298 Commonwealth Avenue, influenced=property_BH001
+  influenced=property_BH002, property=property_BH001, address=72 Pinckney Street
+  address=127 Savin Hill Avenue, influenced=property_DO002, property=property_DO001
+  property=property_JP001, address=42 Sedgwick Street, influenced=property_JP002
     [PASS] APPRAISER: What properties influence pricing in the market?
 
 REASONING CONTEXT:
@@ -202,8 +202,8 @@ SELECT ?address ?year WHERE {
 
 RESULTS: 2 bindings
 SAMPLE (first 5):
-  address=72 Pinckney Street, year=1830, property=property_BH001
-  year=1845, address=15 Chestnut Street, property=property_BH002
+  year=1830, address=72 Pinckney Street, property=property_BH001
+  address=15 Chestnut Street, property=property_BH002, year=1845
     [PASS] HISTORIAN: What are the oldest properties in Beacon Hill?
 
 REASONING CONTEXT:
@@ -228,11 +228,11 @@ SELECT ?address ?value ?bedrooms WHERE {
 
 RESULTS: 5 bindings
 SAMPLE (first 5):
-  property=property_DO001, address=127 Savin Hill Avenue, value=$950,000, bedrooms=6
-  value=$875,000, property=property_EB001, bedrooms=6, address=156 Bennington Street
-  property=property_RX001, address=52 Warren Street, bedrooms=6, value=$685,000
-  address=512 East Broadway, value=$1,850,000, property=property_SB002, bedrooms=7
-  address=534 Tremont Street, bedrooms=8, property=property_SE001, value=$2,400,000
+  address=127 Savin Hill Avenue, property=property_DO001, bedrooms=6, value=$950,000
+  property=property_EB001, address=156 Bennington Street, value=$875,000, bedrooms=6
+  address=52 Warren Street, value=$685,000, property=property_RX001, bedrooms=6
+  address=512 East Broadway, bedrooms=7, property=property_SB002, value=$1,850,000
+  bedrooms=8, address=534 Tremont Street, value=$2,400,000, property=property_SE001
     [PASS] DEVELOPER: What multi-family properties exist in emerging areas?
 
 REASONING CONTEXT:
@@ -240,8 +240,39 @@ REASONING CONTEXT:
   Derived Facts: 14
   Rules Applied: 2
 
-[9] HyperMindAgent Natural Language: Skipped (no OPENAI_API_KEY)
-    Set OPENAI_API_KEY environment variable to enable LLM-assisted queries.
+[9] HyperMindAgent Natural Language Queries (LLM-assisted):
+
+  Question: "What are the most expensive properties in Boston?"
+  Generated SPARQL:
+  ```sparql
+  SELECT ?subject ?object WHERE { ?subject <http://boston.gov/property#adjacentTo> ?object } LIMIT 100
+  ```
+  RESULTS (actual data):
+    -> object=Roxbury, subject=SouthEnd
+    -> object=Roxbury, subject=JamaicaPlain
+    -> object=SouthEnd, subject=BackBay
+    -> subject=BackBay, object=BeaconHill
+    -> subject=SouthEnd, object=Dorchester
+    ... and 4 more
+  ANSWER: The most expensive properties in Boston are likely located in Back Bay and Beacon Hill, as properties in Back Bay are influenced by those in Beacon Hill.
+  REASONING: 0 observations -> 14 derived facts
+  PROOF (first 3 steps):
+    Step 1: [owl:SymmetricProperty] http://boston.gov/property#SouthEnd http://boston.gov/property#adjacentTo http://boston.gov/property#BackBay
+    Step 2: [owl:SymmetricProperty] http://boston.gov/property#BeaconHill http://boston.gov/property#adjacentTo http://boston.gov/property#BackBay
+    Step 3: [owl:SymmetricProperty] http://boston.gov/property#JamaicaPlain http://boston.gov/property#adjacentTo http://boston.gov/property#Brighton
+
+  Question: "Which neighborhoods are near Beacon Hill?"
+  Generated SPARQL:
+  ```sparql
+  undefined
+  ```
+  RESULTS (actual data):
+  ANSWER: The neighborhoods near Beacon Hill are Back Bay and Charlestown.
+  REASONING: 0 observations -> 14 derived facts
+  PROOF (first 3 steps):
+    Step 1: [owl:SymmetricProperty] http://boston.gov/property#SouthEnd http://boston.gov/property#adjacentTo http://boston.gov/property#BackBay
+    Step 2: [owl:SymmetricProperty] http://boston.gov/property#BeaconHill http://boston.gov/property#adjacentTo http://boston.gov/property#BackBay
+    Step 3: [owl:SymmetricProperty] http://boston.gov/property#JamaicaPlain http://boston.gov/property#adjacentTo http://boston.gov/property#Brighton
 
 ======================================================================
   TEST RESULTS SUMMARY
@@ -289,4 +320,6 @@ REASONING CONTEXT:
     - Offline capable: Works without internet
     - Privacy: All data in process memory
     - Verifiable: Assertions prove correctness
+
+  JSON output saved to: output/boston-realestate-output.json
 

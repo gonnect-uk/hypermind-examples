@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-12-23T23:46:56.320Z",
+  "timestamp": "2025-12-24T20:51:57.299Z",
   "example": "boston-realestate-agent",
   "passRate": "100.0%",
   "stats": {
@@ -8,7 +8,7 @@
     "properties": 18
   },
   "testResults": {
-    "passed": 20,
+    "passed": 19,
     "failed": 0,
     "assertions": [
       {
@@ -44,23 +44,19 @@
         "status": "PASS"
       },
       {
-        "name": "RDF2Vec embeddings generated in Rust",
+        "name": "Schema extracted from graph",
         "status": "PASS"
       },
       {
-        "name": "Schema has classes",
+        "name": "Graph has classes",
         "status": "PASS"
       },
       {
-        "name": "Schema has predicates",
+        "name": "Graph has predicates",
         "status": "PASS"
       },
       {
         "name": "HyperFederate SQL shows high-value properties",
-        "status": "PASS"
-      },
-      {
-        "name": "Observations loaded",
         "status": "PASS"
       },
       {
@@ -84,7 +80,7 @@
         "status": "PASS"
       },
       {
-        "name": "HISTORIAN: What are the oldest properties in the dataset?",
+        "name": "HISTORIAN: What are the oldest properties in Beacon Hill?",
         "status": "PASS"
       },
       {

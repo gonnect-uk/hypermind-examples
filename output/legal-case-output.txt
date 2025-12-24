@@ -100,7 +100,7 @@ Sources:
 
   Auto-reasoning complete (OWL auto-detected from TTL)...
     Agent: legal-research-analyst
-    LLM: None (schema-based)
+    LLM: OpenAI
     Observations: 0
     Derived Facts: 21
     Rules Applied: 2
@@ -136,11 +136,11 @@ SELECT ?attorney ?name ?role WHERE {
 
 RESULTS: 9 bindings
 SAMPLE (first 5):
-  role=NAACP Virginia Attorney, attorney=OliverHill, name=Oliver Hill
+  role=NAACP Virginia Attorney, name=Oliver Hill, attorney=OliverHill
   attorney=GeorgeHayes, name=George E.C. Hayes, role=Washington D.C. Attorney
-  name=James Nabrit Jr., attorney=JamesNabrit, role=Howard University Law School Professor
-  name=Louis L. Redding, attorney=LouisRedding, role=Delaware Attorney
-  role=NAACP Legal Defense Fund Attorney, name=Robert L. Carter, attorney=RobertCarter
+  attorney=JamesNabrit, name=James Nabrit Jr., role=Howard University Law School Professor
+  name=Louis L. Redding, role=Delaware Attorney, attorney=LouisRedding
+  name=Robert L. Carter, attorney=RobertCarter, role=NAACP Legal Defense Fund Attorney
     [PASS] LAW STUDENT: Who were the key attorneys in Brown v. Board of Education?
 
 REASONING CONTEXT:
@@ -164,11 +164,11 @@ SELECT ?justice ?name ?role WHERE {
 
 RESULTS: 9 bindings
 SAMPLE (first 5):
-  role=Associate Justice, name=Tom C. Clark, justice=TomClark
-  role=Associate Justice, justice=HugoBlack, name=Hugo Black
-  justice=EarlWarren, role=Chief Justice, name=Earl Warren
-  justice=StanleyReed, name=Stanley Reed, role=Associate Justice
-  name=Harold Burton, justice=HaroldBurton, role=Associate Justice
+  justice=TomClark, name=Tom C. Clark, role=Associate Justice
+  role=Associate Justice, name=Hugo Black, justice=HugoBlack
+  name=Earl Warren, justice=EarlWarren, role=Chief Justice
+  justice=StanleyReed, role=Associate Justice, name=Stanley Reed
+  role=Associate Justice, justice=HaroldBurton, name=Harold Burton
     [PASS] LEGAL HISTORIAN: Which Supreme Court justices decided the case unanimously?
 
 REASONING CONTEXT:
@@ -192,11 +192,11 @@ SELECT ?plaintiff ?name ?role WHERE {
 
 RESULTS: 7 bindings
 SAMPLE (first 5):
-  name=Linda Brown, plaintiff=LindaBrown, role=Student Plaintiff (Kansas)
-  name=Ethel Louise Belton, plaintiff=EthelBelton, role=Student Plaintiff (Delaware)
-  role=Student Plaintiff (South Carolina), name=Harry Briggs Jr., plaintiff=HarryBriggs
-  plaintiff=OliverBrown, name=Oliver Brown, role=Lead Plaintiff (Kansas)
-  name=Barbara Rose Johns, plaintiff=BarbaraJohns, role=Student Organizer (Virginia)
+  plaintiff=LindaBrown, role=Student Plaintiff (Kansas), name=Linda Brown
+  name=Ethel Louise Belton, role=Student Plaintiff (Delaware), plaintiff=EthelBelton
+  name=Harry Briggs Jr., plaintiff=HarryBriggs, role=Student Plaintiff (South Carolina)
+  name=Oliver Brown, plaintiff=OliverBrown, role=Lead Plaintiff (Kansas)
+  plaintiff=BarbaraJohns, role=Student Organizer (Virginia), name=Barbara Rose Johns
     [PASS] CIVIL RIGHTS RESEARCHER: Who were the named plaintiffs in the consolidated cases?
 
 REASONING CONTEXT:
@@ -220,7 +220,7 @@ SELECT ?overruled ?label ?holding WHERE {
 
 RESULTS: 1 bindings
 SAMPLE (first 5):
-  overruled=PlessyVFerguson, label=Plessy v. Ferguson, holding=Separate but equal doctrine
+  overruled=PlessyVFerguson, holding=Separate but equal doctrine, label=Plessy v. Ferguson
     [PASS] CONSTITUTIONAL SCHOLAR: What case did Brown v. Board overrule?
 
 REASONING CONTEXT:
@@ -243,9 +243,9 @@ SELECT ?colleague ?name WHERE {
 
 RESULTS: 3 bindings
 SAMPLE (first 5):
-  colleague=RobertCarter, name=Robert L. Carter
-  name=Jack Greenberg, colleague=JackGreenberg
-  colleague=ConstanceBakerMotley, name=Constance Baker Motley
+  name=Robert L. Carter, colleague=RobertCarter
+  colleague=JackGreenberg, name=Jack Greenberg
+  name=Constance Baker Motley, colleague=ConstanceBakerMotley
     [PASS] BIOGRAPHY WRITER: Who did Thurgood Marshall collaborate with?
 
 REASONING CONTEXT:
@@ -268,9 +268,9 @@ SELECT ?mentor ?mentee ?menteeName WHERE {
 
 RESULTS: 3 bindings
 SAMPLE (first 5):
-  mentor=ThurgoodMarshall, mentee=JackGreenberg, menteeName=Jack Greenberg
-  mentee=ConstanceBakerMotley, menteeName=Constance Baker Motley, mentor=JackGreenberg
-  menteeName=Constance Baker Motley, mentee=ConstanceBakerMotley, mentor=ThurgoodMarshall
+  menteeName=Jack Greenberg, mentor=ThurgoodMarshall, mentee=JackGreenberg
+  mentor=JackGreenberg, mentee=ConstanceBakerMotley, menteeName=Constance Baker Motley
+  mentee=ConstanceBakerMotley, menteeName=Constance Baker Motley, mentor=ThurgoodMarshall
     [PASS] ACADEMIC: What was the mentorship chain at NAACP Legal Defense Fund?
 
 REASONING CONTEXT:
@@ -278,8 +278,44 @@ REASONING CONTEXT:
   Derived Facts: 21
   Rules Applied: 2
 
-[9] HyperMindAgent Natural Language: Skipped (no OPENAI_API_KEY)
-    Set OPENAI_API_KEY environment variable to enable LLM-assisted queries.
+[9] HyperMindAgent Natural Language Queries (LLM-assisted):
+
+  Question: "Who was the lead attorney in Brown v. Board of Education?"
+  Generated SPARQL:
+  ```sparql
+  undefined
+  ```
+  RESULTS (actual data):
+  ANSWER: The lead attorney in Brown v. Board of Education was Thurgood Marshall, as indicated by his collaboration with multiple key figures involved in the case.
+  REASONING: 0 observations -> 21 derived facts
+  PROOF (first 3 steps):
+    Step 1: [owl:SymmetricProperty] http://law.gov/case#GeorgeHayes http://law.gov/case#workedWith http://law.gov/case#JamesNabrit
+    Step 2: [owl:SymmetricProperty] http://law.gov/case#MamieClark http://law.gov/case#workedWith http://law.gov/case#KennethClark
+    Step 3: [owl:SymmetricProperty] http://law.gov/case#JackGreenberg http://law.gov/case#workedWith http://law.gov/case#RobertCarter
+
+  Question: "What was the significance of the 9-0 unanimous decision?"
+  Generated SPARQL:
+  ```sparql
+  undefined
+  ```
+  RESULTS (actual data):
+  ANSWER: The derived facts do not directly address the significance of the 9-0 unanimous decision, but they highlight collaborations among key legal figures such as Thurgood Marshall, Robert Carter, and others, suggesting a strong team effort in a significant legal case.
+  REASONING: 0 observations -> 21 derived facts
+  PROOF (first 3 steps):
+    Step 1: [owl:SymmetricProperty] http://law.gov/case#GeorgeHayes http://law.gov/case#workedWith http://law.gov/case#JamesNabrit
+    Step 2: [owl:SymmetricProperty] http://law.gov/case#MamieClark http://law.gov/case#workedWith http://law.gov/case#KennethClark
+    Step 3: [owl:SymmetricProperty] http://law.gov/case#JackGreenberg http://law.gov/case#workedWith http://law.gov/case#RobertCarter
+
+  Question: "How did the Warren Court achieve consensus?"
+  RESULTS (actual data):
+  ANSWER: The Warren Court achieved consensus through collaboration among key legal figures, such as Thurgood Marshall working with Robert Carter, Jack Greenberg, and Constance Baker Motley, as well as partnerships like George Hayes with James Nabrit and Mamie Clark with Kenneth Clark.
+  REASONING: 0 observations -> 21 derived facts
+  PROOF (first 3 steps):
+    Step 1: [owl:SymmetricProperty] http://law.gov/case#GeorgeHayes http://law.gov/case#workedWith http://law.gov/case#JamesNabrit
+    Step 2: [owl:SymmetricProperty] http://law.gov/case#MamieClark http://law.gov/case#workedWith http://law.gov/case#KennethClark
+    Step 3: [owl:SymmetricProperty] http://law.gov/case#JackGreenberg http://law.gov/case#workedWith http://law.gov/case#RobertCarter
+
+  JSON output saved to: output/legal-case-output.json
 
 ======================================================================
   TEST RESULTS SUMMARY
