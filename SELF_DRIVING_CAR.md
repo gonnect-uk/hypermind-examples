@@ -2,6 +2,28 @@
 
 **Interactive 3D Demo: SPARQL + Datalog + Hypergraph Reasoning**
 
+---
+
+## Demo Video
+
+https://github.com/user-attachments/assets/self-driving-car-demo
+
+https://github.com/gonnect-uk/hypermind-examples/raw/main/examples/self-driving-car/demo-video.mp4
+
+<video src="examples/self-driving-car/demo-video.mp4" controls width="100%">
+  Your browser does not support the video tag.
+</video>
+
+**Watch the car make real-time decisions based on:**
+- SPARQL queries detecting obstacles
+- Datalog rules enforcing safety standards
+- Hypergraph relationships capturing multi-entity context
+- Cryptographic proofs for every decision
+
+---
+
+## Quick Start
+
 ```bash
 npm run self-driving-car
 # Then open: examples/self-driving-car/DEMO_RUST_KGDB.html
