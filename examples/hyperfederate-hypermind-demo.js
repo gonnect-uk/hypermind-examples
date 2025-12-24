@@ -376,10 +376,10 @@ async function main() {
   console.log(`      Auto-generated ${ruleCount} rules from OWL properties`)
   console.log()
 
-  console.log('  [2] Recording observations (via appendEvent)...')
-  reasoner.appendEvent('Observation', 'Alice transfers $10K to Bob', 'fraud-agent', 'session-1')
-  reasoner.appendEvent('Observation', 'Bob transfers $9.5K to Carol', 'fraud-agent', 'session-1')
-  reasoner.appendEvent('Observation', 'Carol transfers $9K to Alice', 'fraud-agent', 'session-1')
+  console.log('  [2] Recording observations (via observe)...')
+  reasoner.observe('Alice transfers $10K to Bob', { subject: 'alice', predicate: 'transfers', object: 'bob' })
+  reasoner.observe('Bob transfers $9.5K to Carol', { subject: 'bob', predicate: 'transfers', object: 'carol' })
+  reasoner.observe('Carol transfers $9K to Alice', { subject: 'carol', predicate: 'transfers', object: 'alice' })
   console.log('      Recorded 3 transfer observations')
 
   console.log('  [2b] Recording hypotheses (via hypothesize)...')
@@ -390,11 +390,17 @@ async function main() {
   console.log()
 
   console.log('  [3] Running deductive reasoning...')
-  const deductionJson = reasoner.deduce()
-  const deduction = JSON.parse(deductionJson)
-  console.log(`      Rules fired: ${deduction.rules_fired || 0}`)
-  console.log(`      Derived facts: ${deduction.derived_facts?.length || 0}`)
-  console.log(`      Proofs generated: ${deduction.proofs?.length || 0}`)
+  const rawDeduce = reasoner.deduce()
+  const parsed = typeof rawDeduce === 'string' ? JSON.parse(rawDeduce) : rawDeduce
+  // Normalize to handle both snake_case (Rust) and camelCase (JS)
+  const deduction = {
+    rules_fired: parsed.rules_fired || parsed.rulesFired || 0,
+    derived_facts: parsed.derived_facts || parsed.derivedFacts || [],
+    proofs: parsed.proofs || []
+  }
+  console.log(`      Rules fired: ${deduction.rules_fired}`)
+  console.log(`      Derived facts: ${deduction.derived_facts.length}`)
+  console.log(`      Proofs generated: ${deduction.proofs.length}`)
   console.log()
 
   if (deduction.derived_facts?.length > 0) {
@@ -414,11 +420,17 @@ async function main() {
   }
 
   console.log('  [4] Getting thinking graph...')
-  const graphJson = reasoner.getThinkingGraph()
-  const graph = JSON.parse(graphJson)
-  console.log(`      Nodes: ${graph.nodes?.length || 0}`)
-  console.log(`      Edges: ${graph.edges?.length || 0}`)
-  console.log(`      Derivation steps: ${graph.derivation_chain?.length || 0}`)
+  const rawGraph = reasoner.getThinkingGraph()
+  const parsedGraph = typeof rawGraph === 'string' ? JSON.parse(rawGraph) : rawGraph
+  // Normalize to handle both snake_case and camelCase
+  const graph = {
+    nodes: parsedGraph.nodes || [],
+    edges: parsedGraph.edges || [],
+    derivation_chain: parsedGraph.derivation_chain || parsedGraph.derivationChain || []
+  }
+  console.log(`      Nodes: ${graph.nodes.length}`)
+  console.log(`      Edges: ${graph.edges.length}`)
+  console.log(`      Derivation steps: ${graph.derivation_chain.length}`)
   console.log()
 
   if (graph.derivation_chain?.length > 0) {
@@ -430,12 +442,12 @@ async function main() {
   }
 
   console.log('  [5] Reasoning stats:')
-  const reasonerStatsJson = reasoner.getStats()
-  const reasonerStats = JSON.parse(reasonerStatsJson)
-  console.log(`      Events: ${reasonerStats.events}`)
-  console.log(`      Facts: ${reasonerStats.facts}`)
-  console.log(`      Rules: ${reasonerStats.rules}`)
-  console.log(`      Proofs: ${reasonerStats.proofs}`)
+  const rawStats = reasoner.getStats()
+  const reasonerStats = typeof rawStats === 'string' ? JSON.parse(rawStats) : rawStats
+  console.log(`      Events: ${reasonerStats.events || 0}`)
+  console.log(`      Facts: ${reasonerStats.facts || 0}`)
+  console.log(`      Rules: ${reasonerStats.rules || 0}`)
+  console.log(`      Proofs: ${reasonerStats.proofs || 0}`)
   console.log()
 
   // =========================================================================

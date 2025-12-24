@@ -265,7 +265,15 @@ async function runFraudDetectionScenario(db, reasoner) {
   console.log('\n[3] Running deductive reasoning (ThinkingReasoner)...\n')
 
   const rawDeduce = reasoner.deduce()
-  const deductionResult = typeof rawDeduce === 'string' ? JSON.parse(rawDeduce) : rawDeduce
+  const parsed = typeof rawDeduce === 'string' ? JSON.parse(rawDeduce) : rawDeduce
+
+  // Normalize to handle both snake_case (Rust native) and camelCase (JS fallback)
+  const deductionResult = {
+    rules_fired: parsed.rules_fired || parsed.rulesFired || 0,
+    iterations: parsed.iterations || 0,
+    derived_facts: parsed.derived_facts || parsed.derivedFacts || [],
+    proofs: parsed.proofs || []
+  }
 
   console.log(`    Rules fired: ${deductionResult.rules_fired}`)
   console.log(`    Iterations: ${deductionResult.iterations}`)
@@ -276,14 +284,19 @@ async function runFraudDetectionScenario(db, reasoner) {
   console.log('\n[4] Thinking Graph (derivation chain)...\n')
 
   const rawGraph = reasoner.getThinkingGraph()
-  const thinkingGraph = typeof rawGraph === 'string' ? JSON.parse(rawGraph) : rawGraph
+  const parsedGraph = typeof rawGraph === 'string' ? JSON.parse(rawGraph) : rawGraph
+
+  // Normalize to handle both snake_case (Rust native) and camelCase (JS fallback)
+  const thinkingGraph = {
+    derivation_chain: parsedGraph.derivation_chain || parsedGraph.derivationChain || []
+  }
 
   if (thinkingGraph.derivation_chain.length > 0) {
     console.log('    Derivation Chain:')
     console.log('    ' + '-'.repeat(70))
     for (const step of thinkingGraph.derivation_chain) {
-      const rule = step.rule.padEnd(20)
-      console.log(`    Step ${step.step}: [${rule}] ${step.conclusion}`)
+      const rule = (step.rule || '').padEnd(20)
+      console.log(`    Step ${step.step}: [${rule}] ${step.conclusion || ''}`)
       if (step.premises && step.premises.length > 0) {
         console.log(`             Premises: ${step.premises.slice(0, 3).join(', ')}`)
       }
@@ -303,11 +316,13 @@ async function runFraudDetectionScenario(db, reasoner) {
   if (deductionResult.proofs.length > 0) {
     console.log('\n[6] Cryptographic Proofs (Curry-Howard correspondence)...\n')
     for (const proof of deductionResult.proofs.slice(0, 3)) {
-      const isValid = reasoner.validateProof(proof.id)
-      console.log(`    Proof ID: ${proof.id.substring(0, 24)}...`)
-      console.log(`    Hash:     ${proof.hash.substring(0, 32)}...`)
+      const proofId = proof.id || 'unknown'
+      const proofHash = proof.hash || 'N/A'
+      const isValid = proof.id ? reasoner.validateProof(proof.id) : false
+      console.log(`    Proof ID: ${proofId.substring(0, 24)}...`)
+      console.log(`    Hash:     ${proofHash.substring(0, 32)}...`)
       console.log(`    Valid:    ${isValid ? 'YES (cryptographically verified)' : 'NO'}`)
-      console.log(`    Confidence: ${proof.confidence.toFixed(2)}`)
+      console.log(`    Confidence: ${(proof.confidence || 0).toFixed(2)}`)
       console.log()
     }
   }
