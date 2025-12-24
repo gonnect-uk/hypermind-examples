@@ -135,7 +135,7 @@ See [docs/concepts](docs/concepts/README.md) for detailed explanation of:
 | Demo | Pass Rate | Tests |
 |------|-----------|-------|
 | Digital Twin | **100%** | 13/13 |
-| Music Recommendation | **93.3%** | 14/15 |
+| Music Recommendation | **100%** | 14/14 |
 
 ### LUBM Benchmark (SPARQL generation accuracy)
 

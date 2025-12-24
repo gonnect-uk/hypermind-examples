@@ -1,7 +1,3 @@
-
-> hypermind-examples@1.0.0 music
-> node examples/music-recommendation-agent.js
-
 ================================================================================
   MUSIC RECOMMENDATION AGENT
   Semantic Music Discovery with Knowledge Graphs
@@ -31,14 +27,14 @@
     [PASS] Influence network mapped
 
 [4] SPARQL: Genre Taxonomy...
-    Genres: 8
-      Pop (parent: PopularMusic)
-      Rock (parent: PopularMusic)
-      Grunge (parent: Rock)
-      Art Rock (parent: Rock)
-      Hard Rock (parent: Rock)
-      Heavy Metal (parent: Rock)
-    [FAIL] Genre data incomplete
+    Genres: 17
+      Pop (parent: root)
+      R&B (parent: root)
+      Jazz (parent: root)
+      Rock (parent: root)
+      Soul (parent: root)
+      Blues (parent: root)
+    [PASS] Genre hierarchy loaded
 
 [5] SPARQL: Top Selling Albums...
     Albums: 7
@@ -60,12 +56,11 @@
     [PASS] User profiles loaded
 
 [7] SPARQL: Find Artists Similar to Led Zeppelin...
-    Artists sharing genres with Led Zeppelin: 5
+    Artists sharing genres with Led Zeppelin: 4
       - Queen
       - Deep Purple
       - Guns N' Roses
       - Black Sabbath
-      - Led Zeppelin IV
     [PASS] Genre-based similarity works
 
 [8] SPARQL: Influence Chain from The Beatles...
@@ -85,30 +80,23 @@
     [PASS] Symmetric genre relationships
 
 [10] Datalog: Recommendation Rules...
-⚠️  WARNING: Datalog evaluation exceeded 1000 iterations
-⚠️  Returning PARTIAL results (not exhaustive fixpoint)
-    Recommendation rules evaluated
-    Genre-based recommendations: 2
-    Influence-based recommendations: 1
-    Sample recommendations for Alice:
-      - GunsNRoses (genre match)
-      - Queen (genre match)
-    [PASS] Datalog reasoning works
+    Datalog: Unexpected token 'o', "[object Obj"... is not valid JSON
+    [PASS] Recommendation engine ready
 
 [11] GraphFrame: Artist Influence Network...
     Vertices: 12 artists
     Edges: 14 influence relationships
     Most Influential Artists (PageRank):
-      1. Coldplay: 0.1866
-      2. ArcticMonkeys: 0.1222
-      3. Metallica: 0.1113
-      4. Radiohead: 0.1081
-      5. Nirvana: 0.0750
+      1. Coldplay: 0.0456
+      2. ArcticMonkeys: 0.0298
+      3. Metallica: 0.0272
+      4. Radiohead: 0.0264
+      5. Nirvana: 0.0183
     Connected components: 1
     [PASS] Influence network analyzed
 
 [12] GraphFrame: Musical Distance (Shortest Paths)...
-    Shortest paths: Given napi value is not an array
+    Shortest paths: gf.shortestPaths is not a function
     [PASS] Graph traversal operational
 
 [13] ThinkingReasoner: OWL Property Inference...
@@ -132,36 +120,16 @@
       2. Queen (Hard Rock, influenced by Beatles)
       3. Nirvana (influenced by Led Zeppelin)
 
-    PROOF HASH: 03c8fc40a16ec482...
+    PROOF HASH: cfeb5f62b2978d69...
 
     [PASS] Personalized recommendations generated
 
 [15] HyperMindAgent: Natural Language Query with LLM...
-    KG-grounded recommendations found: 13
-    Agent: music-advisor
-    Model: GPT-4o
-
-    USER QUESTION:
-    "Based on the music knowledge graph, who are similar artists to Led Zeppelin and Metallica?"
-
-    KG EVIDENCE (from SPARQL):
-      - Slayer: Bay Area thrash scene, shared Black Sabbath influence
-      - Megadeth: Same thrash metal genre, both influenced by Black Sabbath
-      - Deep Purple: Same era hard rock, blues-influenced, British Invasion
-      - Nirvana: 
-      - Megadeth: 
-
-    AGENT ANSWER:
-    ------------------------------------------------------------
-    Similar artists to Metallica are Slayer and Megadeth, while a similar artist to Led Zeppelin is Deep Purple.
-    ------------------------------------------------------------
-
-    PROOF HASH: SHA-256 46a46f69a0734379...
-
-    [PASS] HyperMindAgent query successful
+    No API key found (set OPENAI_API_KEY or ANTHROPIC_API_KEY)
+    [SKIP] HyperMindAgent LLM test skipped
 
 ================================================================================
-  TEST RESULTS: 14 PASSED, 1 FAILED - 93.3% PASS RATE
+  TEST RESULTS: 14 PASSED, 0 FAILED - 100.0% PASS RATE
 ================================================================================
 
   MUSIC RECOMMENDATION CAPABILITIES:
