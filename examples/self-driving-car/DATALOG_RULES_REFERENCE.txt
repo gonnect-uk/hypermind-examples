@@ -1,0 +1,69 @@
+════════════════════════════════════════════════════════════════
+DATALOG RULES - QUICK REFERENCE CARD
+════════════════════════════════════════════════════════════════
+
+📍 FILE: DEMO_RUST_KGDB.html (lines 1213-1403)
+📍 ENGINE: ../crates/datalog/ (parent rust-kgdb repo)
+
+────────────────────────────────────────────────────────────────
+SCENARIO 1: RED TRAFFIC LIGHT
+────────────────────────────────────────────────────────────────
+critical(V) :- trafficLight(TL), state(TL, red), 
+               distance(V, TL, D), stoppingDistance(V, SD), 
+               D < SD + 10.
+
+action(V, emergencyBrake) :- critical(V).
+
+────────────────────────────────────────────────────────────────
+SCENARIO 2: PEDESTRIAN IN CROSSWALK
+────────────────────────────────────────────────────────────────
+critical(V) :- pedestrian(P), inCrosswalk(P), 
+               confidence(P, C), C > 0.9.
+
+rightOfWay(P) :- pedestrian(P), inCrosswalk(P).
+
+action(V, emergencyBrake) :- critical(V), rightOfWay(P).
+
+────────────────────────────────────────────────────────────────
+SCENARIO 3: SCHOOL ZONE SPEED VIOLATION
+────────────────────────────────────────────────────────────────
+violation(V, Z) :- vehicle(V), zone(Z), 
+                   speed(V, S), limit(Z, L), S > L.
+
+highPriority(V) :- violation(V, Z), schoolZone(Z).
+
+action(V, brake60) :- highPriority(V), excess(V, E), E > 10.
+
+════════════════════════════════════════════════════════════════
+DATALOG SYNTAX EXPLAINED
+════════════════════════════════════════════════════════════════
+
+Head :- Body.
+
+Head      = Conclusion (what is inferred if body is true)
+Body      = Conditions (facts that must be true)
+:-        = "IF" (reads as "is true if")
+,         = AND (all conditions must be true)
+Variables = Uppercase letters (V, P, TL, Z, S, L, etc.)
+
+Example:
+   critical(V) :- pedestrian(P), inCrosswalk(P), confidence(P, C), C > 0.9.
+   
+   Reads as:
+   "Vehicle V is in a critical situation IF
+    there exists a pedestrian P AND
+    P is in a crosswalk AND
+    detection confidence C is greater than 90%"
+
+════════════════════════════════════════════════════════════════
+FORWARD CHAINING EXECUTION
+════════════════════════════════════════════════════════════════
+
+1. Start with sensor facts (from RDF triples)
+2. Match rules against current facts
+3. When rule matches → infer new fact
+4. Add inferred fact to knowledge base
+5. Repeat steps 2-4 until no new facts (fixpoint reached)
+6. Return final action decision
+
+════════════════════════════════════════════════════════════════

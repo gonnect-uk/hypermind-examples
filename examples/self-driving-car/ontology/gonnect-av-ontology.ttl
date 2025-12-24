@@ -1,0 +1,322 @@
+@prefix : <http://gonnect.com/ontology/av#> .
+@prefix av: <http://gonnect.com/ontology/av#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+# ===== ONTOLOGY METADATA =====
+
+<http://gonnect.com/ontology/av#> a owl:Ontology ;
+    dcterms:title "Gonnect Autonomous Vehicle Ontology"@en ;
+    dcterms:description """
+    A professional OWL ontology for modeling autonomous vehicle scenarios,
+    including vehicle dynamics, environmental perception, decision-making,
+    and compliance with ISO 26262 and SAE J3016 standards.
+    """@en ;
+    dcterms:creator "Gonnect Technologies" ;
+    dcterms:created "2025-11-30"^^xsd:date ;
+    dcterms:modified "2025-11-30"^^xsd:date ;
+    owl:versionInfo "1.0.0" ;
+    rdfs:label "Autonomous Vehicle Ontology"@en .
+
+# ===== CORE ENTITY CLASSES =====
+
+## Vehicle and Agent Classes
+
+av:Vehicle a owl:Class ;
+    rdfs:label "Vehicle"@en ;
+    skos:definition "An autonomous or semi-autonomous vehicle capable of sensing its environment and operating with reduced human input."@en ;
+    rdfs:subClassOf av:PhysicalEntity .
+
+av:EgoVehicle a owl:Class ;
+    rdfs:label "Ego Vehicle"@en ;
+    skos:definition "The primary autonomous vehicle whose perspective is being modeled in the scenario."@en ;
+    rdfs:subClassOf av:Vehicle .
+
+av:Pedestrian a owl:Class ;
+    rdfs:label "Pedestrian"@en ;
+    skos:definition "A person traveling on foot in the vehicle's operating domain."@en ;
+    rdfs:subClassOf av:DynamicEntity, av:VulnerableRoadUser .
+
+av:Cyclist a owl:Class ;
+    rdfs:label "Cyclist"@en ;
+    skos:definition "A person operating a bicycle in the vehicle's operating domain."@en ;
+    rdfs:subClassOf av:DynamicEntity, av:VulnerableRoadUser .
+
+## Infrastructure Classes
+
+av:TrafficLight a owl:Class ;
+    rdfs:label "Traffic Light"@en ;
+    skos:definition "A signaling device positioned at road intersections to control traffic flow."@en ;
+    rdfs:subClassOf av:TrafficControlDevice .
+
+av:StopSign a owl:Class ;
+    rdfs:label "Stop Sign"@en ;
+    rdfs:subClassOf av:TrafficControlDevice .
+
+av:Crosswalk a owl:Class ;
+    rdfs:label "Crosswalk"@en ;
+    skos:definition "A marked part of a road where pedestrians have right of way to cross."@en ;
+    rdfs:subClassOf av:RoadFeature .
+
+av:SchoolZone a owl:Class ;
+    rdfs:label "School Zone"@en ;
+    skos:definition "A designated area near schools with reduced speed limits and enhanced safety requirements."@en ;
+    rdfs:subClassOf av:RegulatoryZone .
+
+av:ResidentialZone a owl:Class ;
+    rdfs:label "Residential Zone"@en ;
+    rdfs:subClassOf av:RegulatoryZone .
+
+## Abstract Classes
+
+av:PhysicalEntity a owl:Class ;
+    rdfs:label "Physical Entity"@en ;
+    skos:definition "Any physical object in the autonomous vehicle's operating domain."@en .
+
+av:DynamicEntity a owl:Class ;
+    rdfs:label "Dynamic Entity"@en ;
+    skos:definition "An entity capable of movement and changing position over time."@en ;
+    rdfs:subClassOf av:PhysicalEntity .
+
+av:StaticEntity a owl:Class ;
+    rdfs:label "Static Entity"@en ;
+    rdfs:subClassOf av:PhysicalEntity .
+
+av:VulnerableRoadUser a owl:Class ;
+    rdfs:label "Vulnerable Road User"@en ;
+    skos:definition "Road users at higher risk of injury in traffic (pedestrians, cyclists, motorcyclists)."@en .
+
+av:TrafficControlDevice a owl:Class ;
+    rdfs:label "Traffic Control Device"@en ;
+    rdfs:subClassOf av:StaticEntity .
+
+av:RoadFeature a owl:Class ;
+    rdfs:label "Road Feature"@en ;
+    rdfs:subClassOf av:StaticEntity .
+
+av:RegulatoryZone a owl:Class ;
+    rdfs:label "Regulatory Zone"@en ;
+    skos:definition "A geographic area with specific traffic regulations and speed limits."@en .
+
+# ===== EVENT CLASSES =====
+
+av:Event a owl:Class ;
+    rdfs:label "Event"@en ;
+    skos:definition "A temporal occurrence in the autonomous vehicle scenario."@en .
+
+av:PerceptionEvent a owl:Class ;
+    rdfs:label "Perception Event"@en ;
+    skos:definition "An event where the vehicle's sensors detect an entity or condition."@en ;
+    rdfs:subClassOf av:Event .
+
+av:DecisionEvent a owl:Class ;
+    rdfs:label "Decision Event"@en ;
+    skos:definition "An event where the vehicle's planning system makes a control decision."@en ;
+    rdfs:subClassOf av:Event .
+
+av:ActuationEvent a owl:Class ;
+    rdfs:label "Actuation Event"@en ;
+    skos:definition "An event where the vehicle executes a physical action (brake, steer, accelerate)."@en ;
+    rdfs:subClassOf av:Event .
+
+av:ViolationEvent a owl:Class ;
+    rdfs:label "Violation Event"@en ;
+    skos:definition "An event where a traffic rule or safety constraint is violated."@en ;
+    rdfs:subClassOf av:Event .
+
+# ===== DECISION CLASSES =====
+
+av:Decision a owl:Class ;
+    rdfs:label "Decision"@en ;
+    skos:definition "A control action determined by the vehicle's reasoning system."@en .
+
+av:EmergencyBrake a owl:Class ;
+    rdfs:label "Emergency Brake"@en ;
+    skos:definition "Maximum deceleration to avoid collision (100% brake force)."@en ;
+    rdfs:subClassOf av:Decision .
+
+av:ModerateBrake a owl:Class ;
+    rdfs:label "Moderate Brake"@en ;
+    skos:definition "Controlled deceleration to comply with regulations (40-80% brake force)."@en ;
+    rdfs:subClassOf av:Decision .
+
+av:SafeProceed a owl:Class ;
+    rdfs:label "Safe Proceed"@en ;
+    skos:definition "Continue at current speed - no hazards detected."@en ;
+    rdfs:subClassOf av:Decision .
+
+# ===== PROPERTIES =====
+
+## Physical Properties
+
+av:hasVelocity a owl:DatatypeProperty ;
+    rdfs:label "has velocity"@en ;
+    skos:definition "The speed of an entity in meters per second."@en ;
+    rdfs:domain av:DynamicEntity ;
+    rdfs:range xsd:float .
+
+av:hasAcceleration a owl:DatatypeProperty ;
+    rdfs:label "has acceleration"@en ;
+    rdfs:domain av:DynamicEntity ;
+    rdfs:range xsd:float .
+
+av:positionX a owl:DatatypeProperty ;
+    rdfs:label "position X"@en ;
+    skos:definition "X-coordinate position in meters (lateral/longitudinal)."@en ;
+    rdfs:domain av:PhysicalEntity ;
+    rdfs:range xsd:float .
+
+av:positionY a owl:DatatypeProperty ;
+    rdfs:label "position Y"@en ;
+    rdfs:domain av:PhysicalEntity ;
+    rdfs:range xsd:float .
+
+av:positionZ a owl:DatatypeProperty ;
+    rdfs:label "position Z"@en ;
+    rdfs:domain av:PhysicalEntity ;
+    rdfs:range xsd:float .
+
+av:heading a owl:DatatypeProperty ;
+    rdfs:label "heading"@en ;
+    skos:definition "Orientation angle in degrees (0-360)."@en ;
+    rdfs:domain av:DynamicEntity ;
+    rdfs:range xsd:float .
+
+av:carLength a owl:DatatypeProperty ;
+    rdfs:label "car length"@en ;
+    rdfs:domain av:Vehicle ;
+    rdfs:range xsd:float .
+
+av:carWidth a owl:DatatypeProperty ;
+    rdfs:label "car width"@en ;
+    rdfs:domain av:Vehicle ;
+    rdfs:range xsd:float .
+
+## State Properties
+
+av:state a owl:DatatypeProperty ;
+    rdfs:label "state"@en ;
+    skos:definition "Current operational state of an entity."@en ;
+    rdfs:range xsd:string .
+
+av:trafficLightState a owl:ObjectProperty ;
+    rdfs:label "traffic light state"@en ;
+    rdfs:domain av:TrafficLight ;
+    rdfs:range av:TrafficLightState .
+
+av:TrafficLightState a owl:Class ;
+    rdfs:label "Traffic Light State"@en .
+
+av:RedLight a av:TrafficLightState ;
+    rdfs:label "Red Light"@en .
+
+av:YellowLight a av:TrafficLightState ;
+    rdfs:label "Yellow Light"@en .
+
+av:GreenLight a av:TrafficLightState ;
+    rdfs:label "Green Light"@en .
+
+## Regulatory Properties
+
+av:speedLimit a owl:DatatypeProperty ;
+    rdfs:label "speed limit"@en ;
+    skos:definition "Maximum allowable velocity in meters per second."@en ;
+    rdfs:domain av:RegulatoryZone ;
+    rdfs:range xsd:float .
+
+av:priority a owl:DatatypeProperty ;
+    rdfs:label "priority"@en ;
+    skos:definition "Decision urgency level (low, medium, high, critical)."@en ;
+    rdfs:range xsd:string .
+
+## Relational Properties
+
+av:detects a owl:ObjectProperty ;
+    rdfs:label "detects"@en ;
+    skos:definition "Sensor perception relationship."@en ;
+    rdfs:domain av:Vehicle ;
+    rdfs:range av:PhysicalEntity .
+
+av:inCrosswalk a owl:ObjectProperty ;
+    rdfs:label "in crosswalk"@en ;
+    skos:definition "Indicates a pedestrian is located within a crosswalk."@en ;
+    rdfs:domain av:Pedestrian ;
+    rdfs:range av:Crosswalk .
+
+av:approaches a owl:ObjectProperty ;
+    rdfs:label "approaches"@en ;
+    rdfs:domain av:Vehicle ;
+    rdfs:range av:PhysicalEntity .
+
+av:causedBy a owl:ObjectProperty ;
+    rdfs:label "caused by"@en ;
+    skos:definition "Causal relationship between decision and trigger event."@en ;
+    rdfs:domain av:Decision ;
+    rdfs:range av:Event .
+
+## Temporal Properties
+
+av:timestamp a owl:DatatypeProperty ;
+    rdfs:label "timestamp"@en ;
+    rdfs:domain av:Event ;
+    rdfs:range xsd:dateTime .
+
+av:duration a owl:DatatypeProperty ;
+    rdfs:label "duration"@en ;
+    rdfs:range xsd:float .
+
+## Decision Properties
+
+av:brakeIntensity a owl:DatatypeProperty ;
+    rdfs:label "brake intensity"@en ;
+    skos:definition "Braking force as percentage (0-100%)."@en ;
+    rdfs:domain av:Decision ;
+    rdfs:range xsd:float .
+
+av:decisionReason a owl:DatatypeProperty ;
+    rdfs:label "decision reason"@en ;
+    rdfs:domain av:Decision ;
+    rdfs:range xsd:string .
+
+av:complianceStandard a owl:DatatypeProperty ;
+    rdfs:label "compliance standard"@en ;
+    skos:definition "Reference to safety standard (ISO 26262, SAE J3016, UL 4600)."@en ;
+    rdfs:range xsd:string .
+
+# ===== SAFETY CONSTRAINTS (RULES AS CLASSES) =====
+
+av:SafetyConstraint a owl:Class ;
+    rdfs:label "Safety Constraint"@en ;
+    skos:definition "A formal safety requirement from ISO 26262 or SAE J3016."@en .
+
+av:RedLightConstraint a av:SafetyConstraint ;
+    rdfs:label "Red Light Constraint"@en ;
+    skos:definition "Vehicle MUST stop before intersection when traffic light is red."@en .
+
+av:PedestrianYieldConstraint a av:SafetyConstraint ;
+    rdfs:label "Pedestrian Yield Constraint"@en ;
+    skos:definition "Vehicle MUST yield to pedestrians in crosswalks."@en .
+
+av:SpeedLimitConstraint a av:SafetyConstraint ;
+    rdfs:label "Speed Limit Constraint"@en ;
+    skos:definition "Vehicle MUST not exceed posted speed limit in any zone."@en .
+
+# ===== COMPLIANCE STANDARDS =====
+
+av:ISO26262 a owl:NamedIndividual ;
+    rdfs:label "ISO 26262"@en ;
+    skos:definition "Road vehicles - Functional safety (2018)."@en .
+
+av:SAEJ3016 a owl:NamedIndividual ;
+    rdfs:label "SAE J3016"@en ;
+    skos:definition "Taxonomy and Definitions for Terms Related to Driving Automation Systems for On-Road Motor Vehicles."@en .
+
+av:UL4600 a owl:NamedIndividual ;
+    rdfs:label "UL 4600"@en ;
+    skos:definition "Safety Evaluation of Autonomous Products."@en .
+
+# ===== END OF ONTOLOGY =====

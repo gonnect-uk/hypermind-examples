@@ -86,6 +86,7 @@ const agent = new HyperMindAgent({ name: 'demo', kg: db, answerFormat: 'json' })
 
 | Example | Description | Command |
 |---------|-------------|---------|
+| **Self-Driving Car** | Explainable AI for autonomous vehicles | `npm run self-driving-car` |
 | **BRAIN** | Fraud + Underwriting + HyperFederate | `npm run brain` |
 | **Euroleague** | Basketball KG + OWL + RDF2Vec | `npm run euroleague` |
 | **Boston** | Real estate + property valuation | `npm run boston` |
@@ -97,6 +98,7 @@ const agent = new HyperMindAgent({ name: 'demo', kg: db, answerFormat: 'json' })
 | **Pregel** | Bulk parallel processing | `npm run pregel` |
 
 **Detailed output:**
+- [Self-Driving Car](SELF_DRIVING_CAR.md) - 3D demo, SPARQL + Datalog + Hypergraph
 - [BRAIN Fraud & Underwriting](BRAIN_FRAUD_UNDERWRITING.md) - 5 scenarios, KGDB + Snowflake + BigQuery
 - [Euroleague Analytics](EUROLEAGUE_ANALYTICS.md) - 18 assertions, 100% pass
 - [Boston Real Estate](BOSTON_REALESTATE.md) - 19 assertions, 100% pass
