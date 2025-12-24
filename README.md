@@ -1,7 +1,7 @@
 # HyperMind Examples
 
 <p align="center">
-  <img src="docs/assets/hypermind-architecture.png" alt="HyperMind Architecture" width="800"/>
+  <img src="docs/assets/hypermind-architecture.jpeg" alt="HyperMind Architecture" width="800"/>
 </p>
 
 > **The Problem**: LLMs hallucinate. They generate confident, plausible-sounding answers with no connection to reality. In enterprise contexts—fraud detection, legal research, medical diagnosis—this isn't a quirk. It's a liability.
