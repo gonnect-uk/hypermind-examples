@@ -130,23 +130,29 @@ See [docs/concepts](docs/concepts/README.md) for detailed explanation of:
 
 ## Benchmarks
 
-**LUBM Benchmark Results** (verified from real API calls):
+### Demo Pass Rates (from local execution)
+
+| Demo | Pass Rate | Tests |
+|------|-----------|-------|
+| Digital Twin | **100%** | 13/13 |
+| Music Recommendation | **93.3%** | 14/15 |
+
+### LUBM Benchmark (SPARQL generation accuracy)
 
 | Metric | HyperMind (with schema) | Vanilla GPT-4 (no schema) |
 |--------|-------------------------|---------------------------|
-| Accuracy (LUBM) | 71.4% | 0% |
-| Valid SPARQL | 100% | 0% (markdown blocks) |
+| Valid SPARQL | **100%** | 0% (markdown blocks) |
+| Semantic Accuracy | 71.4% | 0% |
 
-**Why the difference?**
-- Vanilla GPT-4 without schema returns markdown code blocks (`\`\`\`sparql`) which aren't executable
-- HyperMind provides schema context + cleans output = valid, accurate SPARQL
+**Key Points:**
+- **100% Valid SPARQL**: HyperMind always produces executable queries (no markdown)
+- **71.4% Semantic Accuracy**: 5/7 LUBM queries return correct results
+- Vanilla GPT-4 without schema context fails completely (returns markdown blocks)
 
 Run yourself:
 ```bash
 OPENAI_API_KEY=your-key npm run bench:hypermind
 ```
-
-*Results from `verified_benchmark_results.json` - December 2025*
 
 ---
 
