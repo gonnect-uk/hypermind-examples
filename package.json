@@ -8,6 +8,8 @@
     "fraud": "node examples/fraud-memory-hypergraph.js",
     "brain": "KGDB_MODE=inmemory node examples/fraud-underwriting-reallife-demo.js",
     "self-driving-car": "cd examples/self-driving-car && npm start",
+    "digital-twin": "node examples/digital-twin-smart-building.js",
+    "music": "node examples/music-recommendation-agent.js",
     "federation": "node examples/hyperfederate-hypermind-demo.js",
     "federation:3way": "node examples/hyperfederate-3way-demo.js",
     "euroleague": "node examples/euroleague-basketball-agent.js",
