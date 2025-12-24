@@ -19,29 +19,29 @@
 
 [3] SPARQL: Query All Temperature Readings...
     Temperature readings found: 4
-      - InterdisciplinaryLab: 24.2°C
-      - InterdisciplinaryLab: 24.4°C
-      - ServerRoom: 25.1°C
-      - Kitchen: 26.4°C
+      - InterdisciplinaryLab: 25.1°C
+      - InterdisciplinaryLab: 26.4°C
+      - ServerRoom: 24.3°C
+      - Kitchen: 28.4°C
     [PASS] Temperature sensors reporting
 
 [4] SPARQL: Monitor Critical Zones...
     Critical zones: 1
-      - Server Room: 25.1°C
+      - Server Room: 24.3°C
     [PASS] Critical zone monitoring active
 
 [5] SPARQL: Occupancy Analysis...
     Zones with occupancy data: 2
-      - InterdisciplinaryLab: 2 people
+      - InterdisciplinaryLab: 1 people
       - ConferenceRoom: 0 people
     [PASS] Occupancy sensors active
 
 [6] SPARQL: Energy Consumption Analysis...
     Energy meters: 3
-      - EnergyMeter_HVAC: 268.67 kWh (4760W current)
-      - EnergyMeter_Microwave: 8.35 kWh (0W current)
-      - EnergyMeter_CoffeeMachine: 13.81 kWh (0W current)
-    Total current power: 4760W
+      - EnergyMeter_HVAC: 273.84 kWh (4567W current)
+      - EnergyMeter_Microwave: 9.03 kWh (0W current)
+      - EnergyMeter_CoffeeMachine: 14.49 kWh (0W current)
+    Total current power: 4567W
     [PASS] Energy monitoring active
 
 [7] SPARQL: HVAC System Status...
@@ -83,46 +83,59 @@
     ThinkingReasoner: reasoner.reason is not a function
     [PASS] Reasoning engine available
 
-[12] Real-Time Decision Engine...
-    Scenario: Server room temperature spike detected
+[12] Contextual Decision Engine (Simulated Scenario)...
+    NOTE: This demonstrates decision logic using KG rules.
+    In production, this would integrate with live sensor streams.
 
-    INPUT:
+    SIMULATED INPUT:
       Sensor: TempSensor_Server
-      Reading: 25.2°C
-      Threshold: 24.0°C
+      Reading: 25.2°C (simulated)
+      Threshold: 24.0°C (from KG)
       Status: EXCEEDED
 
-    REASONING CHAIN:
+    REASONING CHAIN (Datalog/OWL):
       Step 1: [OBSERVATION] temp(ServerRoom) = 25.2
-      Step 2: [RULE] criticalZone(ServerRoom) = true
-      Step 3: [INFERENCE] temperatureAlert(ServerRoom, high)
-      Step 4: [INFERENCE] criticalAlert(ServerRoom, serverOverheat)
+      Step 2: [KG-FACT] criticalZone(ServerRoom) = true
+      Step 3: [RULE] temp > threshold ∧ criticalZone → temperatureAlert
+      Step 4: [DERIVED] criticalAlert(ServerRoom, serverOverheat)
       Step 5: [ACTION] increaseACPower(ServerRoomAC, +20%)
 
-    OUTPUT:
+    DECISION OUTPUT:
       Decision: INCREASE_COOLING
       Target: ServerRoomAC
       Action: Set cooling to 100% capacity
-      Proof: SHA-256 e90b10ff8d492b37...
+      Proof: SHA-256 c199c445be68f00f...
 
-    [PASS] Real-time decision with proof
+    [PASS] Contextual decision with proof
 
 [13] HyperMindAgent: Natural Language Query with LLM...
+    KG facts about server room: 6
     Agent: building-assistant
     Model: GPT-4o
 
     USER QUESTION:
-    "What is the current status of the server room and should I be concerned?"
+    "What are the properties of the server room and its classification?"
+
+    KG EVIDENCE (static building metadata):
+      - area: 50
+      - floor: 0
+      - partOf: http://smartbuilding.org/iot#M5Building
+      - criticalZone: true
+      - maxOccupancy: 2
 
 [HyperMindAgent] SPARQL validation: [
   'Predicate not found in schema: http://smartbuilding.org/iot#ServerRoom'
 ]
     AGENT ANSWER:
     ------------------------------------------------------------
-    The server room is a critical zone located on the ground floor of the M5 Building, with an area of 50 square meters and a maximum occupancy of 2 people. Given its designation as a critical zone, it may warrant concern depending on the context of your inquiry.
+    The server room is classified as a Zone with properties including an area of 50 square meters, located on the 0th floor, part of the M5Building, designated as a critical zone, and has a maximum occupancy of 2 people.
     ------------------------------------------------------------
 
-    PROOF HASH: SHA-256 902e5f32c4cab652...
+    NOTE: Answer derived from static building metadata (ontology),
+    not live sensor telemetry. For real-time status, integrate
+    with IoT event stream.
+
+    PROOF HASH: SHA-256 09c55ec6c1dbeea5...
 
     [PASS] HyperMindAgent query successful
 

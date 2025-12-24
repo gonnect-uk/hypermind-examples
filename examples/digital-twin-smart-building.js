@@ -762,33 +762,44 @@ async function runDigitalTwinDemo() {
   console.log();
 
   // -------------------------------------------------------------------------
-  // Test 12: Real-Time Decision Making
+  // Test 12: Contextual Decision Making (Simulated Scenario)
   // -------------------------------------------------------------------------
-  console.log('[12] Real-Time Decision Engine...');
-  console.log('    Scenario: Server room temperature spike detected');
+  console.log('[12] Contextual Decision Engine (Simulated Scenario)...');
+  console.log('    NOTE: This demonstrates decision logic using KG rules.');
+  console.log('    In production, this would integrate with live sensor streams.');
   console.log();
-  console.log('    INPUT:');
+  console.log('    SIMULATED INPUT:');
   console.log('      Sensor: TempSensor_Server');
-  console.log('      Reading: 25.2°C');
-  console.log('      Threshold: 24.0°C');
+  console.log('      Reading: 25.2°C (simulated)');
+  console.log('      Threshold: 24.0°C (from KG)');
   console.log('      Status: EXCEEDED');
   console.log();
-  console.log('    REASONING CHAIN:');
+  console.log('    REASONING CHAIN (Datalog/OWL):');
   console.log('      Step 1: [OBSERVATION] temp(ServerRoom) = 25.2');
-  console.log('      Step 2: [RULE] criticalZone(ServerRoom) = true');
-  console.log('      Step 3: [INFERENCE] temperatureAlert(ServerRoom, high)');
-  console.log('      Step 4: [INFERENCE] criticalAlert(ServerRoom, serverOverheat)');
+  console.log('      Step 2: [KG-FACT] criticalZone(ServerRoom) = true');
+  console.log('      Step 3: [RULE] temp > threshold ∧ criticalZone → temperatureAlert');
+  console.log('      Step 4: [DERIVED] criticalAlert(ServerRoom, serverOverheat)');
   console.log('      Step 5: [ACTION] increaseACPower(ServerRoomAC, +20%)');
   console.log();
-  console.log('    OUTPUT:');
+  console.log('    DECISION OUTPUT:');
   console.log('      Decision: INCREASE_COOLING');
   console.log('      Target: ServerRoomAC');
   console.log('      Action: Set cooling to 100% capacity');
-  console.log('      Proof: SHA-256 ' + require('crypto').createHash('sha256')
-    .update('criticalAlert:ServerRoom:serverOverheat:' + Date.now())
-    .digest('hex').substring(0, 16) + '...');
+
+  // Proper proof payload
+  const decisionProofPayload = JSON.stringify({
+    scenario: 'simulated_temperature_spike',
+    input: { sensor: 'TempSensor_Server', reading: 25.2, threshold: 24.0 },
+    kgFacts: ['criticalZone(ServerRoom)=true', 'threshold(ServerRoom)=24.0'],
+    decision: 'INCREASE_COOLING',
+    timestamp: Date.now()
+  });
+  const decisionProofHash = require('crypto').createHash('sha256')
+    .update(decisionProofPayload)
+    .digest('hex').substring(0, 16);
+  console.log('      Proof: SHA-256 ' + decisionProofHash + '...');
   console.log();
-  console.log('    [PASS] Real-time decision with proof');
+  console.log('    [PASS] Contextual decision with proof');
   passed++;
   console.log();
 
@@ -801,6 +812,19 @@ async function runDigitalTwinDemo() {
 
   if (apiKey) {
     try {
+      // First, get KG-grounded facts about the server room
+      const serverRoomQuery = `
+        PREFIX iot: <http://smartbuilding.org/iot#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+        SELECT ?property ?value WHERE {
+          iot:ServerRoom ?property ?value .
+          FILTER(?property != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>)
+        }
+      `;
+      const kgFacts = db.querySelect(serverRoomQuery);
+      console.log(`    KG facts about server room: ${kgFacts.length}`);
+
       const agent = new HyperMindAgent({
         name: 'building-assistant',
         kg: db,
@@ -812,36 +836,58 @@ async function runDigitalTwinDemo() {
       console.log('    Model: ' + (process.env.OPENAI_API_KEY ? 'GPT-4o' : 'Claude Sonnet 4'));
       console.log();
 
-      // User question
-      const userQuestion = 'What is the current status of the server room and should I be concerned?';
+      // More precise question that clarifies we want static metadata
+      const userQuestion = 'What are the properties of the server room and its classification?';
       console.log('    USER QUESTION:');
       console.log('    "' + userQuestion + '"');
+      console.log();
+
+      // Show KG evidence first
+      console.log('    KG EVIDENCE (static building metadata):');
+      kgFacts.slice(0, 5).forEach(r => {
+        const prop = r.bindings.property?.split('#').pop() || r.bindings.property;
+        console.log(`      - ${prop}: ${r.bindings.value}`);
+      });
       console.log();
 
       const result = await agent.call(userQuestion);
 
       console.log('    AGENT ANSWER:');
       console.log('    ' + '-'.repeat(60));
-      if (result.answer) {
-        result.answer.split('\n').forEach(line => {
-          console.log('    ' + line);
-        });
-      } else {
-        console.log('    ' + (result.response || result.text || JSON.stringify(result).substring(0, 200)));
-      }
+      const answerText = result.answer || result.response || result.text ||
+        (typeof result === 'string' ? result : JSON.stringify(result).substring(0, 300));
+      answerText.split('\n').forEach(line => {
+        console.log('    ' + line);
+      });
       console.log('    ' + '-'.repeat(60));
       console.log();
 
-      // Show SPARQL generated
+      // Disclaimer about data scope
+      console.log('    NOTE: Answer derived from static building metadata (ontology),');
+      console.log('    not live sensor telemetry. For real-time status, integrate');
+      console.log('    with IoT event stream.');
+      console.log();
+
+      // Show SPARQL generated (if available)
       if (result.sparql || result.query) {
-        console.log('    SPARQL GENERATED:');
+        console.log('    SPARQL GENERATED BY AGENT:');
         console.log('    ' + (result.sparql || result.query));
         console.log();
       }
 
-      // Show proof - generate SHA-256 hash from answer
+      // Show proof - generate SHA-256 hash from answer + KG evidence
+      const proofPayload = JSON.stringify({
+        question: userQuestion,
+        dataScope: 'static_building_metadata',
+        kgEvidence: kgFacts.slice(0, 5).map(r => ({
+          property: r.bindings.property?.split('#').pop(),
+          value: r.bindings.value
+        })),
+        answer: answerText,
+        timestamp: Date.now()
+      });
       const proofHash = require('crypto').createHash('sha256')
-        .update((result.answer || result.response || result.text || JSON.stringify(result)) + Date.now())
+        .update(proofPayload)
         .digest('hex').substring(0, 16);
       console.log('    PROOF HASH: SHA-256 ' + proofHash + '...');
       console.log();

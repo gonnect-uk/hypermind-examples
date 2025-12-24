@@ -246,9 +246,51 @@ music:ArcticMonkeys rdf:type mo:MusicArtist, music:Band ;
     music:influencedBy music:Nirvana ;
     owl:sameAs mb:ada7a83c-e3e1-40f1-93f9-3e73dbc9298a .
 
+# Additional Thrash Metal artists for better Metallica recommendations
+music:Megadeth rdf:type mo:MusicArtist, music:Band ;
+    rdfs:label "Megadeth" ;
+    foaf:name "Megadeth" ;
+    music:genre music:ThrashMetal ;
+    music:genre music:HeavyMetal ;
+    music:formedIn "1983"^^xsd:gYear ;
+    music:origin "Los Angeles, USA" ;
+    music:influencedBy music:LedZeppelin ;
+    music:influencedBy music:BlackSabbath ;
+    music:similarTo music:Metallica ;
+    music:similarityReason "Same thrash metal genre, both influenced by Black Sabbath" ;
+    owl:sameAs mb:a9044915-8be3-4c7e-b11f-9e2d2ea0a91e .
+
+music:Slayer rdf:type mo:MusicArtist, music:Band ;
+    rdfs:label "Slayer" ;
+    foaf:name "Slayer" ;
+    music:genre music:ThrashMetal ;
+    music:genre music:HeavyMetal ;
+    music:formedIn "1981"^^xsd:gYear ;
+    music:origin "Huntington Park, USA" ;
+    music:influencedBy music:BlackSabbath ;
+    music:similarTo music:Metallica ;
+    music:similarityReason "Bay Area thrash scene, shared Black Sabbath influence" ;
+    owl:sameAs mb:934e8731-0cf9-4e09-8d76-3e63d99e0a49 .
+
+music:DeepPurple rdf:type mo:MusicArtist, music:Band ;
+    rdfs:label "Deep Purple" ;
+    foaf:name "Deep Purple" ;
+    music:genre music:HardRock ;
+    music:genre music:HeavyMetal ;
+    music:formedIn "1968"^^xsd:gYear ;
+    music:origin "Hertford, UK" ;
+    music:similarTo music:LedZeppelin ;
+    music:similarityReason "Same era hard rock, blues-influenced, British Invasion" ;
+    owl:sameAs mb:79491354-3d83-40e3-9d8e-7592d58d790a .
+
 music:Grunge rdf:type music:Genre ;
     rdfs:label "Grunge" ;
     music:parentGenre music:Rock .
+
+# Explicit similarity relationships (SymmetricProperty)
+music:similarTo rdf:type owl:ObjectProperty, owl:SymmetricProperty ;
+    rdfs:domain mo:MusicArtist ;
+    rdfs:range mo:MusicArtist .
 
 # =============================================================================
 # ALBUMS (Sample albums with real data)
@@ -918,6 +960,51 @@ async function runMusicRecommendationDemo() {
 
   if (apiKey) {
     try {
+      // First, get KG-grounded recommendations via SPARQL
+      const similarArtistsQuery = `
+        PREFIX music: <http://music.gonnect.ai/>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+        SELECT DISTINCT ?artist ?name ?reason WHERE {
+          {
+            # Similar to Metallica by explicit similarTo relationship
+            ?artist music:similarTo music:Metallica .
+            ?artist rdfs:label ?name .
+            ?artist music:similarityReason ?reason .
+          } UNION {
+            # Similar to Led Zeppelin by explicit similarTo relationship
+            ?artist music:similarTo music:LedZeppelin .
+            ?artist rdfs:label ?name .
+            ?artist music:similarityReason ?reason .
+          } UNION {
+            # Artists influenced by same source as Metallica (short path)
+            music:Metallica music:influencedBy ?influencer .
+            ?artist music:influencedBy ?influencer .
+            ?artist rdfs:label ?name .
+            ?influencer rdfs:label ?influencerName .
+            BIND(CONCAT("Shared influence from ", ?influencerName) AS ?reason)
+            FILTER(?artist != music:Metallica)
+          } UNION {
+            # Artists in same genre as Led Zeppelin (HardRock)
+            music:LedZeppelin music:genre ?genre .
+            ?artist music:genre ?genre .
+            ?artist rdfs:label ?name .
+            ?genre rdfs:label ?genreName .
+            BIND(CONCAT("Same genre: ", ?genreName) AS ?reason)
+            FILTER(?artist != music:LedZeppelin)
+          }
+        }
+        LIMIT 10
+      `;
+
+      const kgResults = db.querySelect(similarArtistsQuery);
+      console.log(`    KG-grounded recommendations found: ${kgResults.length}`);
+
+      // Build context for LLM from KG results
+      const kgContext = kgResults.map(r =>
+        `- ${r.bindings.name}: ${r.bindings.reason}`
+      ).join('\n');
+
       const agent = new HyperMindAgent({
         name: 'music-advisor',
         kg: db,
@@ -929,36 +1016,46 @@ async function runMusicRecommendationDemo() {
       console.log('    Model: ' + (process.env.OPENAI_API_KEY ? 'GPT-4o' : 'Claude Sonnet 4'));
       console.log();
 
-      // User question
-      const userQuestion = 'I love Led Zeppelin and Metallica. What similar artists should I listen to and why?';
+      // More specific question that grounds the LLM in KG facts
+      const userQuestion = 'Based on the music knowledge graph, who are similar artists to Led Zeppelin and Metallica?';
       console.log('    USER QUESTION:');
       console.log('    "' + userQuestion + '"');
+      console.log();
+
+      console.log('    KG EVIDENCE (from SPARQL):');
+      kgResults.slice(0, 5).forEach(r => {
+        console.log(`      - ${r.bindings.name}: ${r.bindings.reason}`);
+      });
       console.log();
 
       const result = await agent.call(userQuestion);
 
       console.log('    AGENT ANSWER:');
       console.log('    ' + '-'.repeat(60));
-      if (result.answer) {
-        result.answer.split('\n').forEach(line => {
-          console.log('    ' + line);
-        });
-      } else {
-        console.log('    ' + (result.response || result.text || JSON.stringify(result).substring(0, 200)));
-      }
+      const answerText = result.answer || result.response || result.text ||
+        (typeof result === 'string' ? result : JSON.stringify(result).substring(0, 300));
+      answerText.split('\n').forEach(line => {
+        console.log('    ' + line);
+      });
       console.log('    ' + '-'.repeat(60));
       console.log();
 
-      // Show SPARQL generated
+      // Show SPARQL generated (if available)
       if (result.sparql || result.query) {
-        console.log('    SPARQL GENERATED:');
+        console.log('    SPARQL GENERATED BY AGENT:');
         console.log('    ' + (result.sparql || result.query));
         console.log();
       }
 
-      // Show proof - generate SHA-256 hash from answer
+      // Show proof - generate SHA-256 hash from answer + KG evidence
+      const proofPayload = JSON.stringify({
+        question: userQuestion,
+        kgEvidence: kgResults.slice(0, 5).map(r => ({ artist: r.bindings.name, reason: r.bindings.reason })),
+        answer: answerText,
+        timestamp: Date.now()
+      });
       const proofHash = require('crypto').createHash('sha256')
-        .update((result.answer || result.response || result.text || JSON.stringify(result)) + Date.now())
+        .update(proofPayload)
         .digest('hex').substring(0, 16);
       console.log('    PROOF HASH: SHA-256 ' + proofHash + '...');
       console.log();

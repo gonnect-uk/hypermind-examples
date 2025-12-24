@@ -9,16 +9,16 @@
 ================================================================================
 
 [1] Loading Music Ontology...
-    Triples loaded: 291
+    Triples loaded: 331
     [PASS] Music ontology loaded
 
 [2] SPARQL: Query Artists by Genre...
-    Artists found: 12
+    Artists found: 15
       Rock: U2, Queen, The Beatles, Nirvana, Arctic Monkeys
       ArtRock: U2, Coldplay, Pink Floyd, Radiohead
-      HardRock: Queen, Guns N' Roses, Led Zeppelin, Black Sabbath
-      Pop: The Beatles, Coldplay
-      Grunge: Nirvana
+      HardRock: Queen, Deep Purple, Guns N' Roses, Led Zeppelin, Black Sabbath
+      HeavyMetal: Slayer, Megadeth, Metallica, Deep Purple, Black Sabbath
+      ThrashMetal: Slayer, Megadeth, Metallica
     [PASS] Artist catalog loaded
 
 [3] SPARQL: Artist Influence Network...
@@ -60,8 +60,9 @@
     [PASS] User profiles loaded
 
 [7] SPARQL: Find Artists Similar to Led Zeppelin...
-    Artists sharing genres with Led Zeppelin: 4
+    Artists sharing genres with Led Zeppelin: 5
       - Queen
+      - Deep Purple
       - Guns N' Roses
       - Black Sabbath
       - Led Zeppelin IV
@@ -131,23 +132,31 @@
       2. Queen (Hard Rock, influenced by Beatles)
       3. Nirvana (influenced by Led Zeppelin)
 
-    PROOF HASH: 2f5851b0597c8f22...
+    PROOF HASH: 03c8fc40a16ec482...
 
     [PASS] Personalized recommendations generated
 
 [15] HyperMindAgent: Natural Language Query with LLM...
+    KG-grounded recommendations found: 13
     Agent: music-advisor
     Model: GPT-4o
 
     USER QUESTION:
-    "I love Led Zeppelin and Metallica. What similar artists should I listen to and why?"
+    "Based on the music knowledge graph, who are similar artists to Led Zeppelin and Metallica?"
+
+    KG EVIDENCE (from SPARQL):
+      - Slayer: Bay Area thrash scene, shared Black Sabbath influence
+      - Megadeth: Same thrash metal genre, both influenced by Black Sabbath
+      - Deep Purple: Same era hard rock, blues-influenced, British Invasion
+      - Nirvana: 
+      - Megadeth: 
 
     AGENT ANSWER:
     ------------------------------------------------------------
-    You might enjoy listening to Guns N' Roses, as they are influenced by The Beatles, who also influenced Metallica. Additionally, exploring genres like Progressive Rock and Art Rock, which are related to the styles of Led Zeppelin, could introduce you to similar music.
+    Similar artists to Metallica are Slayer and Megadeth, while a similar artist to Led Zeppelin is Deep Purple.
     ------------------------------------------------------------
 
-    PROOF HASH: SHA-256 9fd0c13ec3032021...
+    PROOF HASH: SHA-256 46a46f69a0734379...
 
     [PASS] HyperMindAgent query successful
 
