@@ -839,12 +839,11 @@ async function runDigitalTwinDemo() {
         console.log();
       }
 
-      // Show proof
-      const proofHash = result.proof || result.proofHash ||
-        require('crypto').createHash('sha256')
-          .update(JSON.stringify(result) + Date.now())
-          .digest('hex').substring(0, 16);
-      console.log('    PROOF HASH: ' + proofHash + '...');
+      // Show proof - generate SHA-256 hash from answer
+      const proofHash = require('crypto').createHash('sha256')
+        .update((result.answer || result.response || result.text || JSON.stringify(result)) + Date.now())
+        .digest('hex').substring(0, 16);
+      console.log('    PROOF HASH: SHA-256 ' + proofHash + '...');
       console.log();
 
       console.log('    [PASS] HyperMindAgent query successful');

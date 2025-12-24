@@ -19,15 +19,15 @@
 
 [3] SPARQL: Query All Temperature Readings...
     Temperature readings found: 4
-      - InterdisciplinaryLab: 24.5°C
-      - InterdisciplinaryLab: 25.2°C
-      - ServerRoom: 25.2°C
-      - Kitchen: 28.0°C
+      - InterdisciplinaryLab: 24.2°C
+      - InterdisciplinaryLab: 24.4°C
+      - ServerRoom: 25.1°C
+      - Kitchen: 26.4°C
     [PASS] Temperature sensors reporting
 
 [4] SPARQL: Monitor Critical Zones...
     Critical zones: 1
-      - Server Room: 25.2°C
+      - Server Room: 25.1°C
     [PASS] Critical zone monitoring active
 
 [5] SPARQL: Occupancy Analysis...
@@ -38,10 +38,10 @@
 
 [6] SPARQL: Energy Consumption Analysis...
     Energy meters: 3
-      - EnergyMeter_HVAC: 246.15 kWh (4723W current)
-      - EnergyMeter_Microwave: 8.89 kWh (0W current)
-      - EnergyMeter_CoffeeMachine: 13.27 kWh (0W current)
-    Total current power: 4723W
+      - EnergyMeter_HVAC: 268.67 kWh (4760W current)
+      - EnergyMeter_Microwave: 8.35 kWh (0W current)
+      - EnergyMeter_CoffeeMachine: 13.81 kWh (0W current)
+    Total current power: 4760W
     [PASS] Energy monitoring active
 
 [7] SPARQL: HVAC System Status...
@@ -103,7 +103,7 @@
       Decision: INCREASE_COOLING
       Target: ServerRoomAC
       Action: Set cooling to 100% capacity
-      Proof: SHA-256 9fe06436cdf318a6...
+      Proof: SHA-256 e90b10ff8d492b37...
 
     [PASS] Real-time decision with proof
 
@@ -119,10 +119,10 @@
 ]
     AGENT ANSWER:
     ------------------------------------------------------------
-    The server room is a critical zone located on the ground floor of the M5 Building, with an area of 50 square meters and a maximum occupancy of 2. Given its designation as a critical zone, it may warrant concern depending on the current conditions and activities within.
+    The server room is a critical zone located on the ground floor of the M5 Building, with an area of 50 square meters and a maximum occupancy of 2 people. Given its designation as a critical zone, it may warrant concern depending on the context of your inquiry.
     ------------------------------------------------------------
 
-    PROOF HASH: [object Object]...
+    PROOF HASH: SHA-256 902e5f32c4cab652...
 
     [PASS] HyperMindAgent query successful
 
