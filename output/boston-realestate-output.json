@@ -1,14 +1,14 @@
 {
-  "timestamp": "2025-12-24T21:04:45.193Z",
+  "timestamp": "2025-12-25T20:16:02.060Z",
   "example": "boston-realestate-agent",
   "passRate": "100.0%",
   "stats": {
-    "tripleCount": 251,
+    "tripleCount": 287,
     "neighborhoods": 10,
     "properties": 18
   },
   "testResults": {
-    "passed": 19,
+    "passed": 20,
     "failed": 0,
     "assertions": [
       {
@@ -85,6 +85,10 @@
       },
       {
         "name": "DEVELOPER: What multi-family properties exist in emerging areas?",
+        "status": "PASS"
+      },
+      {
+        "name": "Properties have geographic coordinates",
         "status": "PASS"
       }
     ]

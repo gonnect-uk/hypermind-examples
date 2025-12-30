@@ -47,46 +47,66 @@
 <http://boston.gov/property#Commercial> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#PropertyType> .
 <http://boston.gov/property#Commercial> <http://www.w3.org/2000/01/rdf-schema#label> "Commercial" .
 
-# Boston Neighborhoods (Real)
+# Boston Neighborhoods (Real) with Geographic Coordinates
 <http://boston.gov/property#BackBay> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Neighborhood> .
 <http://boston.gov/property#BackBay> <http://www.w3.org/2000/01/rdf-schema#label> "Back Bay" .
 <http://boston.gov/property#BackBay> <http://boston.gov/property#zipcode> "02116" .
+<http://boston.gov/property#BackBay> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "42.3503"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#BackBay> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-71.0810"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 
 <http://boston.gov/property#BeaconHill> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Neighborhood> .
 <http://boston.gov/property#BeaconHill> <http://www.w3.org/2000/01/rdf-schema#label> "Beacon Hill" .
 <http://boston.gov/property#BeaconHill> <http://boston.gov/property#zipcode> "02108" .
+<http://boston.gov/property#BeaconHill> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "42.3588"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#BeaconHill> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-71.0707"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 
 <http://boston.gov/property#SouthEnd> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Neighborhood> .
 <http://boston.gov/property#SouthEnd> <http://www.w3.org/2000/01/rdf-schema#label> "South End" .
 <http://boston.gov/property#SouthEnd> <http://boston.gov/property#zipcode> "02118" .
+<http://boston.gov/property#SouthEnd> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "42.3411"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#SouthEnd> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-71.0724"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 
 <http://boston.gov/property#JamaicaPlain> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Neighborhood> .
 <http://boston.gov/property#JamaicaPlain> <http://www.w3.org/2000/01/rdf-schema#label> "Jamaica Plain" .
 <http://boston.gov/property#JamaicaPlain> <http://boston.gov/property#zipcode> "02130" .
+<http://boston.gov/property#JamaicaPlain> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "42.3097"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#JamaicaPlain> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-71.1151"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 
 <http://boston.gov/property#Dorchester> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Neighborhood> .
 <http://boston.gov/property#Dorchester> <http://www.w3.org/2000/01/rdf-schema#label> "Dorchester" .
 <http://boston.gov/property#Dorchester> <http://boston.gov/property#zipcode> "02125" .
+<http://boston.gov/property#Dorchester> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "42.2987"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#Dorchester> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-71.0544"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 
 <http://boston.gov/property#Charlestown> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Neighborhood> .
 <http://boston.gov/property#Charlestown> <http://www.w3.org/2000/01/rdf-schema#label> "Charlestown" .
 <http://boston.gov/property#Charlestown> <http://boston.gov/property#zipcode> "02129" .
+<http://boston.gov/property#Charlestown> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "42.3782"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#Charlestown> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-71.0602"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 
 <http://boston.gov/property#SouthBoston> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Neighborhood> .
 <http://boston.gov/property#SouthBoston> <http://www.w3.org/2000/01/rdf-schema#label> "South Boston" .
 <http://boston.gov/property#SouthBoston> <http://boston.gov/property#zipcode> "02127" .
+<http://boston.gov/property#SouthBoston> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "42.3381"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#SouthBoston> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-71.0476"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 
 <http://boston.gov/property#Roxbury> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Neighborhood> .
 <http://boston.gov/property#Roxbury> <http://www.w3.org/2000/01/rdf-schema#label> "Roxbury" .
 <http://boston.gov/property#Roxbury> <http://boston.gov/property#zipcode> "02119" .
+<http://boston.gov/property#Roxbury> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "42.3118"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#Roxbury> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-71.0912"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 
 <http://boston.gov/property#EastBoston> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Neighborhood> .
 <http://boston.gov/property#EastBoston> <http://www.w3.org/2000/01/rdf-schema#label> "East Boston" .
 <http://boston.gov/property#EastBoston> <http://boston.gov/property#zipcode> "02128" .
+<http://boston.gov/property#EastBoston> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "42.3702"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#EastBoston> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-71.0389"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 
 <http://boston.gov/property#Brighton> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Neighborhood> .
 <http://boston.gov/property#Brighton> <http://www.w3.org/2000/01/rdf-schema#label> "Brighton" .
 <http://boston.gov/property#Brighton> <http://boston.gov/property#zipcode> "02135" .
+<http://boston.gov/property#Brighton> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "42.3509"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#Brighton> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-71.1619"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 
 # Neighborhood Adjacencies (Real geographic relationships)
 <http://boston.gov/property#BackBay> <http://boston.gov/property#adjacentTo> <http://boston.gov/property#BeaconHill> .
@@ -115,6 +135,8 @@
 <http://boston.gov/property#property_BB001> <http://boston.gov/property#yearBuilt> "1875"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://boston.gov/property#property_BB001> <http://boston.gov/property#bedrooms> "3"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://boston.gov/property#property_BB001> <http://boston.gov/property#bathrooms> "2.5"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_BB001> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "42.3512"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_BB001> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-71.0842"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 
 <http://boston.gov/property#property_BB002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
 <http://boston.gov/property#property_BB002> <http://www.w3.org/2000/01/rdf-schema#label> "298 Commonwealth Avenue" .
@@ -126,6 +148,8 @@
 <http://boston.gov/property#property_BB002> <http://boston.gov/property#yearBuilt> "1882"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://boston.gov/property#property_BB002> <http://boston.gov/property#bedrooms> "6"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://boston.gov/property#property_BB002> <http://boston.gov/property#bathrooms> "5.5"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_BB002> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "42.3498"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_BB002> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-71.0867"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 
 <http://boston.gov/property#property_BB003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
 <http://boston.gov/property#property_BB003> <http://www.w3.org/2000/01/rdf-schema#label> "45 Newbury Street" .
@@ -135,6 +159,8 @@
 <http://boston.gov/property#property_BB003> <http://boston.gov/property#assessedValue> "4200000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 <http://boston.gov/property#property_BB003> <http://boston.gov/property#livingArea> "4800"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://boston.gov/property#property_BB003> <http://boston.gov/property#yearBuilt> "1890"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_BB003> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "42.3525"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_BB003> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-71.0760"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 
 # Beacon Hill Properties (Historic, high-value)
 <http://boston.gov/property#property_BH001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
@@ -147,6 +173,8 @@
 <http://boston.gov/property#property_BH001> <http://boston.gov/property#yearBuilt> "1830"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://boston.gov/property#property_BH001> <http://boston.gov/property#bedrooms> "4"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://boston.gov/property#property_BH001> <http://boston.gov/property#bathrooms> "3.5"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_BH001> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "42.3593"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_BH001> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-71.0684"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 
 <http://boston.gov/property#property_BH002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
 <http://boston.gov/property#property_BH002> <http://www.w3.org/2000/01/rdf-schema#label> "15 Chestnut Street" .
@@ -158,6 +186,8 @@
 <http://boston.gov/property#property_BH002> <http://boston.gov/property#yearBuilt> "1845"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://boston.gov/property#property_BH002> <http://boston.gov/property#bedrooms> "2"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://boston.gov/property#property_BH002> <http://boston.gov/property#bathrooms> "2"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_BH002> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "42.3587"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_BH002> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-71.0718"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 
 # South End Properties (Victorian, diverse)
 <http://boston.gov/property#property_SE001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
@@ -170,6 +200,8 @@
 <http://boston.gov/property#property_SE001> <http://boston.gov/property#yearBuilt> "1870"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://boston.gov/property#property_SE001> <http://boston.gov/property#bedrooms> "8"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://boston.gov/property#property_SE001> <http://boston.gov/property#bathrooms> "4"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_SE001> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "42.3405"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_SE001> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-71.0732"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 
 <http://boston.gov/property#property_SE002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
 <http://boston.gov/property#property_SE002> <http://www.w3.org/2000/01/rdf-schema#label> "88 Waltham Street" .
@@ -181,6 +213,8 @@
 <http://boston.gov/property#property_SE002> <http://boston.gov/property#yearBuilt> "1885"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://boston.gov/property#property_SE002> <http://boston.gov/property#bedrooms> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://boston.gov/property#property_SE002> <http://boston.gov/property#bathrooms> "1"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_SE002> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "42.3418"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_SE002> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-71.0715"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 
 # Jamaica Plain Properties (Diverse, family-oriented)
 <http://boston.gov/property#property_JP001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
@@ -191,6 +225,8 @@
 <http://boston.gov/property#property_JP001> <http://boston.gov/property#assessedValue> "1250000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 <http://boston.gov/property#property_JP001> <http://boston.gov/property#livingArea> "2400"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://boston.gov/property#property_JP001> <http://boston.gov/property#yearBuilt> "1920"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://boston.gov/property#property_JP001> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> "42.3089"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://boston.gov/property#property_JP001> <http://www.w3.org/2003/01/geo/wgs84_pos#long> "-71.1168"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 <http://boston.gov/property#property_JP001> <http://boston.gov/property#bedrooms> "4"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://boston.gov/property#property_JP001> <http://boston.gov/property#bathrooms> "2.5"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 

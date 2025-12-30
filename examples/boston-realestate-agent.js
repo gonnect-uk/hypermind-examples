@@ -610,7 +610,77 @@ ORDER BY price_premium DESC`
   }
 
   // ============================================================================
-  // 10. Test Results Summary
+  // 10. Geographic Map Visualization
+  // ============================================================================
+  console.log('[10] Geographic Map Visualization:')
+  console.log()
+  console.log('  Properties with geographic coordinates for Leaflet/OpenStreetMap display.')
+  console.log('  WGS84 coordinates enable real-time property mapping.')
+  console.log()
+
+  // Query properties with geographic coordinates
+  const geoPropsQ = `SELECT ?address ?lat ?lng ?value ?neighborhood ?type WHERE {
+    ?p <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://boston.gov/property#Property> .
+    ?p <http://boston.gov/property#address> ?address .
+    ?p <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat .
+    ?p <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?lng .
+    ?p <http://boston.gov/property#assessedValue> ?value .
+    ?p <http://boston.gov/property#locatedIn> ?n .
+    ?n <http://www.w3.org/2000/01/rdf-schema#label> ?neighborhood .
+    OPTIONAL { ?p <http://boston.gov/property#hasType> ?t . ?t <http://www.w3.org/2000/01/rdf-schema#label> ?type }
+  }`
+  const geoProps = db.querySelect(geoPropsQ)
+
+  console.log('  PROPERTY LOCATIONS (for Leaflet/OpenStreetMap):')
+  console.log('  ┌───────────────────────────────────────────────────────────────────────────┐')
+  console.log('  │ Address                     │   Lat    │   Long   │  Value      │ Area   │')
+  console.log('  ├───────────────────────────────────────────────────────────────────────────┤')
+  for (const r of geoProps.slice(0, 8)) {
+    const addr = extractLast(r.bindings?.address || r.address || '').slice(0, 25).padEnd(27)
+    const lat = parseFloat(r.bindings?.lat || r.lat || 0).toFixed(4).padStart(8)
+    const lng = parseFloat(r.bindings?.lng || r.lng || 0).toFixed(4).padStart(9)
+    const val = parseInt(r.bindings?.value || r.value || 0)
+    const valStr = `$${(val / 1000000).toFixed(1)}M`.padStart(11)
+    const hood = extractLast(r.bindings?.neighborhood || r.neighborhood || '').slice(0, 6).padEnd(6)
+    console.log(`  │ ${addr} │ ${lat} │ ${lng} │ ${valStr} │ ${hood} │`)
+  }
+  console.log('  └───────────────────────────────────────────────────────────────────────────┘')
+  console.log()
+
+  // Calculate map bounds for auto-zoom
+  const lats = geoProps.map(r => parseFloat(r.bindings?.lat || r.lat || 0)).filter(l => l !== 0)
+  const lngs = geoProps.map(r => parseFloat(r.bindings?.lng || r.lng || 0)).filter(l => l !== 0)
+
+  if (lats.length > 0 && lngs.length > 0) {
+    const bounds = {
+      sw: { lat: Math.min(...lats), lng: Math.min(...lngs) },
+      ne: { lat: Math.max(...lats), lng: Math.max(...lngs) },
+      center: {
+        lat: (Math.min(...lats) + Math.max(...lats)) / 2,
+        lng: (Math.min(...lngs) + Math.max(...lngs)) / 2
+      }
+    }
+    console.log('  MAP BOUNDS (for auto-zoom):')
+    console.log(`    Center: [${bounds.center.lat.toFixed(4)}, ${bounds.center.lng.toFixed(4)}]`)
+    console.log(`    SW Corner: [${bounds.sw.lat.toFixed(4)}, ${bounds.sw.lng.toFixed(4)}]`)
+    console.log(`    NE Corner: [${bounds.ne.lat.toFixed(4)}, ${bounds.ne.lng.toFixed(4)}]`)
+    console.log()
+  }
+
+  console.log('  HyperCoder ComponentFactory.createMap() generates:')
+  console.log('  - Leaflet/OpenStreetMap integration')
+  console.log('  - Property markers with popup details')
+  console.log('  - Auto-fit bounds to all properties')
+  console.log('  - Click marker -> property details')
+  console.log()
+
+  test('Properties have geographic coordinates', () => {
+    assert(geoProps.length >= 5, `Expected >= 5 geo properties, got ${geoProps.length}`)
+  })
+  console.log()
+
+  // ============================================================================
+  // 11. Test Results Summary
   // ============================================================================
   console.log('='.repeat(70))
   console.log('  TEST RESULTS SUMMARY')

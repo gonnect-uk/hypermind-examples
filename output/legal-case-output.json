@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-12-24T21:05:09.112Z",
+  "timestamp": "2025-12-24T21:11:52.674Z",
   "example": "legal-case-agent",
   "case": "Brown v. Board of Education, 347 U.S. 483 (1954)",
   "queries": [
@@ -90,16 +90,16 @@
         ]
       },
       "proof": {
-        "id": "fb6a436f-a2f7-43d0-9633-dca2ac4cc940",
+        "id": "a452bf4d-d4f2-45f6-8c92-17c4bb232010",
         "type": "inference",
         "value": {
-          "plan": "plan_llm_1766610303176",
+          "plan": "plan_llm_1766610706489",
           "intent": "general_query"
         },
         "justification": "Derived answer via 1 steps",
         "children": [
           {
-            "id": "05e89312-b257-4271-b028-1a86c18449d7",
+            "id": "18bd41af-a72d-441f-9ad6-087dbf95aa7e",
             "type": "thinking_reasoner",
             "value": {
               "count": 7
@@ -107,65 +107,65 @@
             "justification": "Deductive reasoning: 7 cryptographic proofs",
             "children": [
               {
-                "id": "a344b0bc-700d-4b32-92f8-4f28f44dd71c",
+                "id": "e41f9b75-d9bb-48a6-adae-4a8bc551193d",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "c9df7c3e",
+                  "hash": "cc8c7843",
                   "confidence": 0.9
                 },
-                "justification": "Proof: c9df7c3e... (confidence: 0.90)",
+                "justification": "Proof: cc8c7843... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T21:05:03.206Z"
+                "timestamp": "2025-12-24T21:11:46.525Z"
               },
               {
-                "id": "a0e0a1f0-6625-4ae3-990d-130bee5026e6",
+                "id": "10fce49e-25a2-4232-974f-a5beba55c320",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "ce72ba08",
+                  "hash": "061709b1",
                   "confidence": 0.9
                 },
-                "justification": "Proof: ce72ba08... (confidence: 0.90)",
+                "justification": "Proof: 061709b1... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T21:05:03.206Z"
+                "timestamp": "2025-12-24T21:11:46.525Z"
               },
               {
-                "id": "a613e001-c012-4391-83e0-c2cf73f377a3",
+                "id": "4a5c7839-3649-41ab-93c9-424248dd2c38",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "f394f55a",
+                  "hash": "09f24dc9",
                   "confidence": 0.9
                 },
-                "justification": "Proof: f394f55a... (confidence: 0.90)",
+                "justification": "Proof: 09f24dc9... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T21:05:03.206Z"
+                "timestamp": "2025-12-24T21:11:46.525Z"
               },
               {
-                "id": "8de387f4-451b-4471-84ef-973e7eb13ef7",
+                "id": "6fdaffb6-c462-4cfd-9cf7-827e89ff9f2e",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "c10f3d26",
+                  "hash": "6c27a8a7",
                   "confidence": 0.9
                 },
-                "justification": "Proof: c10f3d26... (confidence: 0.90)",
+                "justification": "Proof: 6c27a8a7... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T21:05:03.206Z"
+                "timestamp": "2025-12-24T21:11:46.525Z"
               },
               {
-                "id": "ab2da9e1-654a-4126-8a0b-f17a077c3342",
+                "id": "908d1683-71c4-4734-8b93-9c78338be286",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "2ded14e4",
+                  "hash": "6af5f21e",
                   "confidence": 0.9
                 },
-                "justification": "Proof: 2ded14e4... (confidence: 0.90)",
+                "justification": "Proof: 6af5f21e... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T21:05:03.206Z"
+                "timestamp": "2025-12-24T21:11:46.525Z"
               }
             ],
-            "timestamp": "2025-12-24T21:05:03.206Z"
+            "timestamp": "2025-12-24T21:11:46.525Z"
           }
         ],
-        "timestamp": "2025-12-24T21:05:03.206Z"
+        "timestamp": "2025-12-24T21:11:46.525Z"
       },
       "reasoningStats": {
         "events": 0,
@@ -178,7 +178,7 @@
     },
     {
       "question": "What was the significance of the 9-0 unanimous decision?",
-      "answer": "The derived facts indicate collaboration among key legal figures such as Thurgood Marshall, Robert Carter, and others, suggesting a significant legal case context, but they do not directly address the significance of a 9-0 unanimous decision.",
+      "answer": "The derived facts indicate collaboration among key legal figures such as Thurgood Marshall, Robert Carter, and others, suggesting a significant legal case context, but they do not directly address the significance of the 9-0 unanimous decision.",
       "sql": "WITH kg AS (SELECT * FROM graph_search('PREFIX law: <http://law.gov/case#> SELECT ?case ?holding WHERE { ?case law:vote \"9-0\" . ?case law:holding ?holding . }')) SELECT * FROM kg;",
       "sparql_inside_cte": "PREFIX law: <http://law.gov/case#> SELECT ?case ?holding WHERE { ?case law:vote \"9-0\" . ?case law:holding ?holding . }",
       "sparql": null,
@@ -190,7 +190,7 @@
             "columns": [],
             "rows": [],
             "rowCount": 0,
-            "duration": 1,
+            "duration": 0,
             "metadata": {
               "mode": "inMemory",
               "sources": [],
@@ -263,16 +263,16 @@
         ]
       },
       "proof": {
-        "id": "015ed647-9173-48fd-a776-27bb05f58a7c",
+        "id": "9d8b370f-3cd9-4847-bf33-7741fd83ee3c",
         "type": "inference",
         "value": {
-          "plan": "plan_llm_1766610306623",
+          "plan": "plan_llm_1766610710209",
           "intent": "general_query"
         },
         "justification": "Derived answer via 1 steps",
         "children": [
           {
-            "id": "60372493-f822-4c61-82d2-6d863ce89c13",
+            "id": "2c12cbe4-4251-4a78-83dd-1bf46980f3bd",
             "type": "thinking_reasoner",
             "value": {
               "count": 7
@@ -280,65 +280,65 @@
             "justification": "Deductive reasoning: 7 cryptographic proofs",
             "children": [
               {
-                "id": "e6f9e7eb-97f7-4c0d-9e05-3230cd49da7c",
+                "id": "a3cb8f8c-e6eb-47d0-b53f-24e1680f43ad",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "c9df7c3e",
+                  "hash": "cc8c7843",
                   "confidence": 0.9
                 },
-                "justification": "Proof: c9df7c3e... (confidence: 0.90)",
+                "justification": "Proof: cc8c7843... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T21:05:06.649Z"
+                "timestamp": "2025-12-24T21:11:50.242Z"
               },
               {
-                "id": "c242cbcd-37ec-40a6-b9e8-c07a562e024a",
+                "id": "3e8bcd46-ea29-4257-9718-9b9d55a1d330",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "ce72ba08",
+                  "hash": "061709b1",
                   "confidence": 0.9
                 },
-                "justification": "Proof: ce72ba08... (confidence: 0.90)",
+                "justification": "Proof: 061709b1... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T21:05:06.649Z"
+                "timestamp": "2025-12-24T21:11:50.242Z"
               },
               {
-                "id": "6f989559-54de-47c4-9a41-52de8e7059c0",
+                "id": "528df140-dd8c-46a4-80fd-598f556ce4e9",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "f394f55a",
+                  "hash": "09f24dc9",
                   "confidence": 0.9
                 },
-                "justification": "Proof: f394f55a... (confidence: 0.90)",
+                "justification": "Proof: 09f24dc9... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T21:05:06.649Z"
+                "timestamp": "2025-12-24T21:11:50.242Z"
               },
               {
-                "id": "0a102e00-8604-4c71-862b-384a7d7431d2",
+                "id": "a68de539-93ea-48cf-979a-ce9dcf9400a2",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "c10f3d26",
+                  "hash": "6c27a8a7",
                   "confidence": 0.9
                 },
-                "justification": "Proof: c10f3d26... (confidence: 0.90)",
+                "justification": "Proof: 6c27a8a7... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T21:05:06.649Z"
+                "timestamp": "2025-12-24T21:11:50.242Z"
               },
               {
-                "id": "63a30b85-5cf6-48a8-87c5-4b59033b6f8c",
+                "id": "00db8596-fb7e-4bda-91f1-5d1358603399",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "2ded14e4",
+                  "hash": "6af5f21e",
                   "confidence": 0.9
                 },
-                "justification": "Proof: 2ded14e4... (confidence: 0.90)",
+                "justification": "Proof: 6af5f21e... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T21:05:06.649Z"
+                "timestamp": "2025-12-24T21:11:50.242Z"
               }
             ],
-            "timestamp": "2025-12-24T21:05:06.649Z"
+            "timestamp": "2025-12-24T21:11:50.242Z"
           }
         ],
-        "timestamp": "2025-12-24T21:05:06.649Z"
+        "timestamp": "2025-12-24T21:11:50.242Z"
       },
       "reasoningStats": {
         "events": 0,
@@ -426,16 +426,16 @@
         ]
       },
       "proof": {
-        "id": "3a0c7453-2f6c-4652-9a06-62e78c7d5f57",
+        "id": "6b16684e-4e3e-43b7-a408-436ade6ae70e",
         "type": "inference",
         "value": {
-          "plan": "plan_1766610308020",
+          "plan": "plan_1766610711098",
           "intent": "explain"
         },
         "justification": "Derived answer via 1 steps",
         "children": [
           {
-            "id": "6954cca2-10b1-4695-9326-2d33932b3050",
+            "id": "abc3fc23-bec7-427a-a780-96c4de392045",
             "type": "thinking_reasoner",
             "value": {
               "count": 7
@@ -443,65 +443,65 @@
             "justification": "Deductive reasoning: 7 cryptographic proofs",
             "children": [
               {
-                "id": "dc344010-32ac-4cff-bd71-a35d4d9f4fd6",
+                "id": "c184ff1e-7058-4aa8-a451-d9959b71dee0",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "c9df7c3e",
+                  "hash": "cc8c7843",
                   "confidence": 0.9
                 },
-                "justification": "Proof: c9df7c3e... (confidence: 0.90)",
+                "justification": "Proof: cc8c7843... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T21:05:08.044Z"
+                "timestamp": "2025-12-24T21:11:51.134Z"
               },
               {
-                "id": "15f46b60-5cb1-48a9-81d4-9b0bb5d9fe98",
+                "id": "40b007ca-e12c-44a2-9a10-524f37fdf80b",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "ce72ba08",
+                  "hash": "061709b1",
                   "confidence": 0.9
                 },
-                "justification": "Proof: ce72ba08... (confidence: 0.90)",
+                "justification": "Proof: 061709b1... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T21:05:08.044Z"
+                "timestamp": "2025-12-24T21:11:51.134Z"
               },
               {
-                "id": "7b41ee7e-0eaa-4908-a660-d07f6b30c532",
+                "id": "3162d67a-9562-4c9f-9061-90edf5260fa5",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "f394f55a",
+                  "hash": "09f24dc9",
                   "confidence": 0.9
                 },
-                "justification": "Proof: f394f55a... (confidence: 0.90)",
+                "justification": "Proof: 09f24dc9... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T21:05:08.044Z"
+                "timestamp": "2025-12-24T21:11:51.134Z"
               },
               {
-                "id": "b41e7d1f-325e-4761-ad17-37ea0085238f",
+                "id": "912f01d7-331d-4888-9913-d0155b304ff6",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "c10f3d26",
+                  "hash": "6c27a8a7",
                   "confidence": 0.9
                 },
-                "justification": "Proof: c10f3d26... (confidence: 0.90)",
+                "justification": "Proof: 6c27a8a7... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T21:05:08.044Z"
+                "timestamp": "2025-12-24T21:11:51.134Z"
               },
               {
-                "id": "4ec54ea4-2717-46d4-bb68-60d86fab4d90",
+                "id": "52f49a1a-e7da-499d-8a5b-a3d530c92e03",
                 "type": "cryptographic_proof",
                 "value": {
-                  "hash": "2ded14e4",
+                  "hash": "6af5f21e",
                   "confidence": 0.9
                 },
-                "justification": "Proof: 2ded14e4... (confidence: 0.90)",
+                "justification": "Proof: 6af5f21e... (confidence: 0.90)",
                 "children": [],
-                "timestamp": "2025-12-24T21:05:08.044Z"
+                "timestamp": "2025-12-24T21:11:51.134Z"
               }
             ],
-            "timestamp": "2025-12-24T21:05:08.044Z"
+            "timestamp": "2025-12-24T21:11:51.134Z"
           }
         ],
-        "timestamp": "2025-12-24T21:05:08.044Z"
+        "timestamp": "2025-12-24T21:11:51.134Z"
       },
       "reasoningStats": {
         "events": 0,
