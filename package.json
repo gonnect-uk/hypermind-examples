@@ -62,8 +62,5 @@
   },
   "engines": {
     "node": ">=14.0.0"
-  },
-  "dependencies": {
-    "rust-kgdb": "^0.8.26"
   }
 }

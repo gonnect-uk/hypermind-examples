@@ -1,0 +1,88 @@
+
+> hypermind-examples@1.0.0 integration-test
+> node examples/integration-test-full-stack.js
+
+
+================================================================================
+  HYPERMIND INTEGRATION TEST SUITE
+  Full Stack Verification for 100% Trust
+================================================================================
+
+  rust-kgdb Version: 0.1.8
+
+  Setup complete:
+    - KGDB: 79 triples loaded
+    - Federation: inMemory mode
+    - Agent: integration-test-agent
+
++------------------------------------------------------------------------+
+|  RUNNING INTEGRATION TESTS                                             |
++------------------------------------------------------------------------+
+
+  [TEST 1] KGDB Triple Store Verification
+    Triples: 79 (threshold: 50)
+    Status: ✅ PASS
+
+  [TEST 2] SPARQL Query Execution
+    List all customers: 5 results, 1ms - ✅
+    List all suppliers: 2 results, 0ms - ✅
+    High-value customers: 5 results, 1ms - ✅
+    Supply chain relationships: 3 results, 0ms - ✅
+
+  [TEST 3] Virtual Table Catalog
+    Virtual Tables Found: 4
+      - snowflake.TPCH_SF1.ORDERS
+      - bigquery.github_repos.commits
+      - snowflake.TPCH_SF1.CUSTOMER
+      - snowflake.TPCH_SF1.SUPPLIER
+    Status: ✅ PASS
+
+  [TEST 4] Deductive Reasoning
+    Rules auto-generated: 3
+    Derived Facts: 0
+    Proofs: 0
+    Status: ✅ PASS
+
+  [TEST 5] SQL + CTE + graph_search() Federation
+    HIGH_VALUE_CUSTOMERS: 4 rows, 2ms - ✅
+    SUPPLY_CHAIN_ANALYSIS: 3 rows, 2ms - ✅
+    VIRTUAL_TABLE_CATALOG: 4 rows, 1ms - ✅
+
+  [TEST 6] HyperMindAgent Natural Language Query
+    "Find high-value customers with account b..."
+      Confidence: 0.90, Duration: 2928ms - ✅
+    "Show supply chain relationships between ..."
+      Confidence: 0.90, Duration: 3777ms - ✅
+    "Analyze customer segments by market..."
+      Confidence: 0.90, Duration: 3053ms - ✅
+
+  [TEST 7] Proof Verification
+    Proofs Generated: 3
+    Average Confidence: 0.90
+    Status: ✅ PASS
+
+  [TEST 8] Schema-Aware Code Generation Simulation
+    DataTable for SF.TPCH_SF1.CUSTOMER: ✅
+    Chart for SF.TPCH_SF1.ORDERS: ✅
+    Form for SF.TPCH_SF1.CUSTOMER: ✅
+    Passed: 3/3
+
+
+================================================================================
+  INTEGRATION TEST REPORT
+================================================================================
+
+  PASS RATE: 100.0%
+  Tests Passed: 17/17
+
+  ✅ 100% TRUST ACHIEVED - READY FOR RELEASE
+
+  TRAINING FEEDBACK (for prompt optimization):
+  ---------------------------------------------
+    All tests passed - no training adjustments needed
+
+  OPTIMIZATION SUGGESTIONS:
+  -------------------------
+    System performing optimally
+
+================================================================================

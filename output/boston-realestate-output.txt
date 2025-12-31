@@ -12,7 +12,7 @@ Source: City of Boston Open Data (data.boston.gov)
 
 [1] Loading Boston Property Assessment Knowledge Graph...
     Source: City of Boston Open Data (data.boston.gov)
-    Triples: 251
+    Triples: 287
 
 [2] SPARQL Queries with Assertions:
 
@@ -26,7 +26,7 @@ Source: City of Boston Open Data (data.boston.gov)
     [PASS] Historic properties (Beacon Hill) found
 
 [3] Schema Extraction:
-    Classes: 3
+    Classes: 0
     Predicates: 0
     Mode: Native Rust (NAPI-RS)
     [PASS] Schema extracted from graph
@@ -34,8 +34,8 @@ Source: City of Boston Open Data (data.boston.gov)
 [4] Query Capabilities:
 
   Mode: NAPI-RS (native binding)
-  Triples: 251
-  Classes: 3
+  Triples: 287
+  Classes: 0
   Predicates: 0
 
     [PASS] Graph has classes
@@ -92,7 +92,7 @@ Source: City of Boston Open Data (data.boston.gov)
     Agent: boston-realestate-analyst
     LLM: OpenAI
     Observations: 0
-    Derived Facts: 14
+    Derived Facts: 16
     Rules Applied: 2
     [PASS] Derived facts from OWL reasoning
     [PASS] OWL rules detected from TTL data
@@ -103,7 +103,7 @@ Source: City of Boston Open Data (data.boston.gov)
 
   ✅ REASONING COMPLETE:
     - 0 observations (ground truth from KG)
-    - 14 derived facts (inferred via OWL rules)
+    - 16 derived facts (inferred via OWL rules)
     - 2 rules applied (SymmetricProperty, TransitiveProperty)
     - Every fact is traceable to source data (no hallucination)
 
@@ -126,13 +126,13 @@ SELECT ?address ?value ?bedrooms WHERE {
 
 RESULTS: 2 bindings
 SAMPLE (first 5):
-  value=$2,850,000, bedrooms=3, property=property_BB001, address=165 Marlborough Street
-  property=property_BB002, address=298 Commonwealth Avenue, bedrooms=6, value=$8,500,000
+  property=property_BB001, address=165 Marlborough Street, bedrooms=3, value=$2,850,000
+  address=298 Commonwealth Avenue, bedrooms=6, value=$8,500,000, property=property_BB002
     [PASS] INVESTOR: What are the highest-value properties in Back Bay?
 
 REASONING CONTEXT:
   Observations: 0
-  Derived Facts: 14
+  Derived Facts: 16
   Rules Applied: 2
 
 ------------------------------------------------------------
@@ -156,7 +156,7 @@ SAMPLE (first 5):
 
 REASONING CONTEXT:
   Observations: 0
-  Derived Facts: 14
+  Derived Facts: 16
   Rules Applied: 2
 
 ------------------------------------------------------------
@@ -174,16 +174,16 @@ SELECT ?property ?influenced ?address WHERE {
 
 RESULTS: 7 bindings
 SAMPLE (first 5):
-  address=165 Marlborough Street, property=property_BB001, influenced=property_BB002
-  address=298 Commonwealth Avenue, property=property_BB002, influenced=property_BH001
-  address=72 Pinckney Street, property=property_BH001, influenced=property_BH002
-  influenced=property_DO002, address=127 Savin Hill Avenue, property=property_DO001
-  property=property_JP001, address=42 Sedgwick Street, influenced=property_JP002
+  property=property_BB001, address=165 Marlborough Street, influenced=property_BB002
+  influenced=property_BH001, address=298 Commonwealth Avenue, property=property_BB002
+  property=property_BH001, address=72 Pinckney Street, influenced=property_BH002
+  property=property_DO001, address=127 Savin Hill Avenue, influenced=property_DO002
+  influenced=property_JP002, address=42 Sedgwick Street, property=property_JP001
     [PASS] APPRAISER: What properties influence pricing in the market?
 
 REASONING CONTEXT:
   Observations: 0
-  Derived Facts: 14
+  Derived Facts: 16
   Rules Applied: 2
 
 ------------------------------------------------------------
@@ -202,13 +202,13 @@ SELECT ?address ?year WHERE {
 
 RESULTS: 2 bindings
 SAMPLE (first 5):
-  address=72 Pinckney Street, year=1830, property=property_BH001
-  year=1845, address=15 Chestnut Street, property=property_BH002
+  property=property_BH001, year=1830, address=72 Pinckney Street
+  address=15 Chestnut Street, property=property_BH002, year=1845
     [PASS] HISTORIAN: What are the oldest properties in Beacon Hill?
 
 REASONING CONTEXT:
   Observations: 0
-  Derived Facts: 14
+  Derived Facts: 16
   Rules Applied: 2
 
 ------------------------------------------------------------
@@ -228,41 +228,38 @@ SELECT ?address ?value ?bedrooms WHERE {
 
 RESULTS: 5 bindings
 SAMPLE (first 5):
-  property=property_DO001, value=$950,000, bedrooms=6, address=127 Savin Hill Avenue
-  bedrooms=6, property=property_EB001, value=$875,000, address=156 Bennington Street
-  bedrooms=6, value=$685,000, property=property_RX001, address=52 Warren Street
-  address=512 East Broadway, property=property_SB002, value=$1,850,000, bedrooms=7
-  bedrooms=8, property=property_SE001, value=$2,400,000, address=534 Tremont Street
+  bedrooms=6, property=property_DO001, address=127 Savin Hill Avenue, value=$950,000
+  address=156 Bennington Street, property=property_EB001, value=$875,000, bedrooms=6
+  address=52 Warren Street, bedrooms=6, property=property_RX001, value=$685,000
+  address=512 East Broadway, value=$1,850,000, bedrooms=7, property=property_SB002
+  value=$2,400,000, address=534 Tremont Street, property=property_SE001, bedrooms=8
     [PASS] DEVELOPER: What multi-family properties exist in emerging areas?
 
 REASONING CONTEXT:
   Observations: 0
-  Derived Facts: 14
+  Derived Facts: 16
   Rules Applied: 2
 
 [9] HyperMindAgent Natural Language Queries (LLM-assisted):
 
   Question: "What are the most expensive properties in Boston?"
-  Generated SPARQL (legacy):
+  Generated SQL (with graph_search CTE):
+  ```sql
+  WITH kg AS (SELECT * FROM graph_search('PREFIX prop: <http://boston.gov/property#> SELECT ?property ?value WHERE { ?property prop:assessedValue ?value . } ORDER BY DESC(?value) LIMIT 10')) SELECT * FROM kg;
+  ```
+  sparql_inside_cte:
   ```sparql
-  SELECT ?subject ?object WHERE { ?subject <http://boston.gov/property#adjacentTo> ?object } LIMIT 100
+  PREFIX prop: <http://boston.gov/property#> SELECT ?property ?value WHERE { ?property prop:assessedValue ?value . } ORDER BY DESC(?value) LIMIT 10
   ```
   RESULTS (actual data):
-    -> object=Roxbury, subject=SouthEnd
-    -> object=Roxbury, subject=JamaicaPlain
-    -> subject=BackBay, object=SouthEnd
-    -> subject=BackBay, object=BeaconHill
-    -> object=Dorchester, subject=SouthEnd
-    ... and 4 more
-  ANSWER: The most expensive properties in Boston are likely located in Back Bay and Beacon Hill, as properties in Back Bay are influenced by those in Beacon Hill.
-  REASONING: 0 observations -> 14 derived facts
+  ANSWER: The derived facts suggest that properties in the Back Bay area, such as property_BB001 and property_BB002, are influenced by the prices of properties in Beacon Hill, indicating they may be among the most expensive in Boston.
+  REASONING: 0 observations -> 16 derived facts
   PROOF (first 3 steps):
     Step 1: [owl:SymmetricProperty] http://boston.gov/property#SouthEnd http://boston.gov/property#adjacentTo http://boston.gov/property#BackBay
     Step 2: [owl:SymmetricProperty] http://boston.gov/property#BeaconHill http://boston.gov/property#adjacentTo http://boston.gov/property#BackBay
     Step 3: [owl:SymmetricProperty] http://boston.gov/property#JamaicaPlain http://boston.gov/property#adjacentTo http://boston.gov/property#Brighton
 
   Question: "Which neighborhoods are near Beacon Hill?"
-  [InMemory] SPARQL error: SPARQL parse error: Pest(Error { variant: ParsingError { positives: [PathMod, GraphNodePath], negatives: [] }, location: Pos(92), line_col: Pos((1, 93)), path: None, line: "PREFIX prop: <http://boston.gov/property#> SELECT ?neighborhood WHERE { ?neighborhood prop:adjacentTo <http://boston.gov/property#BeaconHill> }", continued_line: None, parse_attempts: None })
   Generated SQL (with graph_search CTE):
   ```sql
   WITH kg AS (SELECT * FROM graph_search('PREFIX prop: <http://boston.gov/property#> SELECT ?neighborhood WHERE { ?neighborhood prop:adjacentTo <http://boston.gov/property#BeaconHill> }')) SELECT * FROM kg;
@@ -272,20 +269,52 @@ REASONING CONTEXT:
   PREFIX prop: <http://boston.gov/property#> SELECT ?neighborhood WHERE { ?neighborhood prop:adjacentTo <http://boston.gov/property#BeaconHill> }
   ```
   RESULTS (actual data):
-  ANSWER: The neighborhoods near Beacon Hill are Back Bay and Charlestown.
-  REASONING: 0 observations -> 14 derived facts
+  ANSWER: Beacon Hill is adjacent to Back Bay and Charlestown.
+  REASONING: 0 observations -> 16 derived facts
   PROOF (first 3 steps):
     Step 1: [owl:SymmetricProperty] http://boston.gov/property#SouthEnd http://boston.gov/property#adjacentTo http://boston.gov/property#BackBay
     Step 2: [owl:SymmetricProperty] http://boston.gov/property#BeaconHill http://boston.gov/property#adjacentTo http://boston.gov/property#BackBay
     Step 3: [owl:SymmetricProperty] http://boston.gov/property#JamaicaPlain http://boston.gov/property#adjacentTo http://boston.gov/property#Brighton
 
+[10] Geographic Map Visualization:
+
+  Properties with geographic coordinates for Leaflet/OpenStreetMap display.
+  WGS84 coordinates enable real-time property mapping.
+
+  PROPERTY LOCATIONS (for Leaflet/OpenStreetMap):
+  ┌───────────────────────────────────────────────────────────────────────────┐
+  │ Address                     │   Lat    │   Long   │  Value      │ Area   │
+  ├───────────────────────────────────────────────────────────────────────────┤
+  │ 165 Marlborough Street      │  42.3512 │  -71.0842 │       $2.9M │ Back B │
+  │ 298 Commonwealth Avenue     │  42.3498 │  -71.0867 │       $8.5M │ Back B │
+  │ 45 Newbury Street           │  42.3525 │  -71.0760 │       $4.2M │ Back B │
+  │ 72 Pinckney Street          │  42.3593 │  -71.0684 │       $4.0M │ Beacon │
+  │ 15 Chestnut Street          │  42.3587 │  -71.0718 │       $1.6M │ Beacon │
+  │ 42 Sedgwick Street          │  42.3089 │  -71.1168 │       $1.3M │ Jamaic │
+  │ 534 Tremont Street          │  42.3405 │  -71.0732 │       $2.4M │ South  │
+  │ 88 Waltham Street           │  42.3418 │  -71.0715 │       $0.9M │ South  │
+  └───────────────────────────────────────────────────────────────────────────┘
+
+  MAP BOUNDS (for auto-zoom):
+    Center: [42.3341, -71.0926]
+    SW Corner: [42.3089, -71.1168]
+    NE Corner: [42.3593, -71.0684]
+
+  HyperCoder ComponentFactory.createMap() generates:
+  - Leaflet/OpenStreetMap integration
+  - Property markers with popup details
+  - Auto-fit bounds to all properties
+  - Click marker -> property details
+
+    [PASS] Properties have geographic coordinates
+
 ======================================================================
   TEST RESULTS SUMMARY
 ======================================================================
 
-  PASSED: 19
+  PASSED: 20
   FAILED: 0
-  TOTAL:  19
+  TOTAL:  20
 
   PASS RATE: 100.0%
 
@@ -294,7 +323,7 @@ REASONING CONTEXT:
 ======================================================================
 
   KNOWLEDGE GRAPH (In-Memory):
-    Triples: 251
+    Triples: 287
     Neighborhoods: 10
     Properties: 18
     Property Types: 4
@@ -302,13 +331,13 @@ REASONING CONTEXT:
     Price Influences: 7
 
   SCHEMA EXTRACTION (Native Rust):
-    Classes: 3
+    Classes: 0
     Predicates: 0
     Mode: NAPI-RS (native binding)
 
   THINKING REASONER (In-Memory):
     Observations: 0
-    Derived Facts: 14
+    Derived Facts: 16
     OWL Rules: 2
     - SymmetricProperty: A adjacentTo B => B adjacentTo A
     - TransitiveProperty: A priceInfluencedBy B, B priceInfluencedBy C => A priceInfluencedBy C

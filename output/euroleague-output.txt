@@ -26,7 +26,7 @@ Data Model: https://github.com/andrewstellman/pbprdf
     [PASS] Scoring events found
 
 [3] Schema Extraction:
-    Classes: 11
+    Classes: 0
     Predicates: 0
     Mode: Native Rust (NAPI-RS)
     [PASS] Schema extracted from graph
@@ -35,7 +35,7 @@ Data Model: https://github.com/andrewstellman/pbprdf
 
   Mode: NAPI-RS (native binding)
   Triples: 603
-  Classes: 11
+  Classes: 0
   Predicates: 0
 
     [PASS] Graph has classes
@@ -149,11 +149,11 @@ SELECT ?player WHERE {
 
 RESULTS: 8 bindings
 SAMPLE (first 5):
-  e=e00007, player=nunn__kendrick
+  player=nunn__kendrick, e=e00007
   player=rapieque__elias, e=e00014
   e=e00016, player=nunn__kendrick
-  e=e00032, player=hermannsson__martin
-  e=e00051, player=brown__lorenzo
+  player=hermannsson__martin, e=e00032
+  player=brown__lorenzo, e=e00051
     [PASS] COACH: Which players distributed the ball best with assists?
 
 REASONING CONTEXT:
@@ -177,11 +177,11 @@ SELECT ?player ?label WHERE {
 
 RESULTS: 35 bindings
 SAMPLE (first 5):
-  e=e00002, label=1 -  0 pt), player=grigonis__marius
-  player=koumadje__khalifa, e=e00004, label=1 -  0 pt)
-  label=1 -  2 pt), e=e00006, player=lessort__mathias
-  player=nunn__kendrick, e=e00012, label=1 -  2 pt)
-  player=olinde__louis, label=1 -  2 pt), e=e00013
+  label=1 -  0 pt), e=e00002, player=grigonis__marius
+  player=koumadje__khalifa, label=1 -  0 pt), e=e00004
+  player=lessort__mathias, e=e00006, label=1 -  2 pt)
+  player=nunn__kendrick, label=1 -  2 pt), e=e00012
+  e=e00013, label=1 -  2 pt), player=olinde__louis
     [PASS] ANALYST: Who made scoring plays (Shots)?
 
 REASONING CONTEXT:
@@ -220,17 +220,16 @@ REASONING CONTEXT:
 ------------------------------------------------------------
   USER PROMPT: "Who made the defensive steals in this game?"
 ------------------------------------------------------------
-  [InMemory] SPARQL error: SPARQL parse error: Pest(Error { variant: ParsingError { positives: [PathMod, GraphNodePath], negatives: [] }, location: Pos(84), line_col: Pos((1, 85)), path: None, line: "PREFIX euro: <http://euroleague.net/ontology#> SELECT ?player WHERE { ?player euro:madeDefensiveSteal ?game . ?game euro:gameId \"current_game_id\" }", continued_line: None, parse_attempts: None })
 
   HONEST OUTPUT (HyperMindAgent.call() - SQL with CTE):
 
   sql (with graph_search CTE):
     ```sql
-    WITH kg AS (SELECT * FROM graph_search('PREFIX euro: <http://euroleague.net/ontology#> SELECT ?player WHERE { ?player euro:madeDefensiveSteal ?game . ?game euro:gameId "current_game_id" }')) SELECT * FROM kg
+    WITH kg AS (SELECT * FROM graph_search('PREFIX euro: <http://euroleague.net/ontology#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?player WHERE { ?steal rdf:type euro:Steal . ?steal euro:player ?player . ?steal euro:game <http://euroleague.net/game/2024_1> }')) SELECT * FROM kg
     ```
   sparql_inside_cte:
     ```sparql
-    PREFIX euro: <http://euroleague.net/ontology#> SELECT ?player WHERE { ?player euro:madeDefensiveSteal ?game . ?game euro:gameId "current_game_id" }
+    PREFIX euro: <http://euroleague.net/ontology#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?player WHERE { ?steal rdf:type euro:Steal . ?steal euro:player ?player . ?steal euro:game <http://euroleague.net/game/2024_1> }
     ```
 
   results (actual data):
@@ -240,7 +239,7 @@ REASONING CONTEXT:
 
   thinking:
     predicatesIdentified: auto-detected
-    schemaMatches: 11 classes, 0 predicates
+    schemaMatches: 0 classes, 0 predicates
 
   reasoning:
     observations: 0
@@ -253,7 +252,7 @@ REASONING CONTEXT:
       - step: 2, rule: "owl:SymmetricProperty", conclusion: "http://euroleague.net/player/grant__jerian http://euroleague.net/ontology#teammateOf http://euroleague.net/player/none"
       - step: 3, rule: "owl:SymmetricProperty", conclusion: "http://euroleague.net/player/brown__lorenzo http://euroleague.net/ontology#teammateOf http://euroleague.net/player/none"
       - step: 4, rule: "owl:SymmetricProperty", conclusion: "http://euroleague.net/player/nunn__kendrick http://euroleague.net/ontology#teammateOf http://euroleague.net/player/none"
-    proofHash: "sha256:19b522d2a2f"
+    proofHash: "sha256:19b72855dfb"
     verified: true
 
 ------------------------------------------------------------
@@ -262,25 +261,23 @@ REASONING CONTEXT:
 
   HONEST OUTPUT (HyperMindAgent.call() - SQL with CTE):
 
-  sparql (legacy):
+  sql (with graph_search CTE):
+    ```sql
+    WITH kg AS (SELECT * FROM graph_search('PREFIX euro: <http://euroleague.net/ontology#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?teammate WHERE { ?player rdf:type euro:Player . ?player euro:teammateOf ?teammate . FILTER(?player = <http://euroleague.net/player/lessort>) }')) SELECT * FROM kg
+    ```
+  sparql_inside_cte:
     ```sparql
-    SELECT ?subject ?object WHERE { ?subject <http://euroleague.net/ontology#teammateOf> ?object } LIMIT 100
+    PREFIX euro: <http://euroleague.net/ontology#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?teammate WHERE { ?player rdf:type euro:Player . ?player euro:teammateOf ?teammate . FILTER(?player = <http://euroleague.net/player/lessort>) }
     ```
 
   results (actual data):
-    -> object=osman__cedi, subject=none
-    -> object=osman__cedi, subject=grant__jerian
-    -> object=osman__cedi, subject=brown__lorenzo
-    -> subject=nunn__kendrick, object=osman__cedi
-    -> subject=sloukas__kostas, object=osman__cedi
-    ... and 106 more
 
   answer:
-    "Mathias Lessort's teammate is Cedi Osman."
+    "Mathias Lessort does not have any recorded teammates according to the derived facts."
 
   thinking:
     predicatesIdentified: auto-detected
-    schemaMatches: 11 classes, 0 predicates
+    schemaMatches: 0 classes, 0 predicates
 
   reasoning:
     observations: 0
@@ -293,7 +290,7 @@ REASONING CONTEXT:
       - step: 2, rule: "owl:SymmetricProperty", conclusion: "http://euroleague.net/player/grant__jerian http://euroleague.net/ontology#teammateOf http://euroleague.net/player/none"
       - step: 3, rule: "owl:SymmetricProperty", conclusion: "http://euroleague.net/player/brown__lorenzo http://euroleague.net/ontology#teammateOf http://euroleague.net/player/none"
       - step: 4, rule: "owl:SymmetricProperty", conclusion: "http://euroleague.net/player/nunn__kendrick http://euroleague.net/ontology#teammateOf http://euroleague.net/player/none"
-    proofHash: "sha256:19b522d2dbc"
+    proofHash: "sha256:19b72856b07"
     verified: true
 
 ======================================================================
@@ -319,7 +316,7 @@ REASONING CONTEXT:
     Teammate links: 111
 
   SCHEMA EXTRACTION (Native Rust):
-    Classes: 11
+    Classes: 0
     Predicates: 0
     Mode: NAPI-RS (native binding)
 

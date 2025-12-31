@@ -238,8 +238,13 @@ const agent = new HyperMindAgent({ name: 'demo', kg: db, answerFormat: 'json' })
 
 | Demo | Pass Rate | Tests |
 |------|-----------|-------|
+| Integration Test | **100%** | 17/17 |
 | Music Recommendation | **100%** | 15/15 |
 | Digital Twin | **100%** | 13/13 |
+| Boston Real Estate | **100%** | 20/20 |
+| Euroleague Basketball | **100%** | 17/17 |
+| US Legal Case | **100%** | 20/20 |
+| **TOTAL** | **100%** | **102/102** |
 
 ### SQL with graph_search() CTE Generation
 
