@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-12-31T03:48:24.967Z",
+  "timestamp": "2026-01-01T13:37:51.793Z",
   "example": "euroleague-basketball-agent",
   "passRate": "100.0%",
   "stats": {
@@ -9,7 +9,7 @@
     "steals": 3
   },
   "testResults": {
-    "passed": 17,
+    "passed": 18,
     "failed": 0,
     "assertions": [
       {
@@ -78,6 +78,10 @@
       },
       {
         "name": "FAN: Who are the teammates of Lessort?",
+        "status": "PASS"
+      },
+      {
+        "name": "ask() returns grounded answer",
         "status": "PASS"
       }
     ]

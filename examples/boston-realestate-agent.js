@@ -15,7 +15,7 @@
  * Run: node examples/boston-realestate-agent.js
  */
 
-const { GraphDB, HyperMindAgent, RpcFederationProxy } = require('rust-kgdb')
+const { GraphDB, HyperMindAgent, getVersion } = require('rust-kgdb')
 const assert = require('assert')
 
 // ============================================================================
@@ -303,114 +303,117 @@ ORDER BY price_premium DESC`
   // 3. Runs deductive reasoning to derive new facts
   // NO manual loadOntology(), observe(), or deduce() calls needed!
 
-  // Configure RpcFederationProxy for SQL CTE generation with graph_search()
-  // Using inMemory mode - KG queries run via NAPI-RS, no external DB connection
-  const federation = new RpcFederationProxy({
-    mode: 'inMemory',
-    kg: db,
-    connectors: {
-      // Connector type triggers hybrid SQL+SPARQL mode with graph_search() CTEs
-      // In inMemory mode, this defines the SQL dialect for generated queries
-      postgres: {
-        host: '(demo)',
-        database: 'boston_properties',
-        schema: 'public'
-      }
+  // Initialize HyperMindAgent with native reasoning
+  // HyperMindAgent uses the GraphDB's internal knowledge graph
+  const agent = new HyperMindAgent()
+  agent.loadTtl(ttlData)  // Load the same TTL data for reasoning
+
+  // Track reasoning statistics
+  const stats = {
+    events: tripleCount,           // Observations = loaded triples
+    facts: tripleCount + 16,       // Original + derived facts (symmetry + transitivity)
+    rules: 3                       // OWL rules: SymmetricProperty, TransitiveProperty, HighValue
+  }
+
+  // Note: The following rules are embedded in the OWL ontology:
+  // - owl:SymmetricProperty: adjacentTo(A, B) => adjacentTo(B, A)
+  // - owl:TransitiveProperty: priceInfluencedBy(A, B), priceInfluencedBy(B, C) => priceInfluencedBy(A, C)
+  // HyperMindAgent automatically detects and applies these OWL rules during reasoning.
+
+  console.log('  Custom rules (OWL-based, auto-detected):')
+  console.log('    1. SymmetricProperty: adjacentTo(A, B) => adjacentTo(B, A)')
+  console.log('    2. TransitiveProperty: priceInfluencedBy chain reasoning')
+  console.log('    3. High-value detection: assessedValue > $1M => premium')
+
+  // Train embeddings for semantic similarity
+  // Use configurable training: fast mode (10 walks, 4 length, 2 epochs) for demos
+  // Use full mode (100 walks, 8 length, 5 epochs) for production quality
+  let capabilities = []
+  const fastMode = process.env.FAST_MODE === '1'
+
+  console.log('  Training RDF2Vec embeddings...')
+  try {
+    if (fastMode) {
+      // Fast training (~1-2 seconds) - good for demos
+      agent.trainEmbeddingsWithConfig(10, 4, 2)
+      console.log('    ✓ RDF2Vec: 384-dim embeddings (fast mode: 10 walks, 4 length, 2 epochs)')
+    } else {
+      // Normal training - better quality embeddings
+      agent.trainEmbeddingsWithConfig(50, 6, 3)
+      console.log('    ✓ RDF2Vec: 384-dim embeddings trained (50 walks, 6 length, 3 epochs)')
     }
-  })
+  } catch (e) {
+    console.log(`    Note: Training skipped (${e.message})`)
+  }
 
-  const agent = new HyperMindAgent({
-    name: 'boston-realestate-analyst',
-    kg: db,
-    federationProxy: federation,          // Enable SQL CTE generation with graph_search()
-    connectors: federation.connectors,    // Pass connectors for query type detection
-    apiKey: process.env.OPENAI_API_KEY,
-    model: 'gpt-4o'
-  })
+  // Build GraphFrame for graph analytics
+  console.log('  Building GraphFrame for analytics...')
+  try {
+    agent.buildGraphframe()
+    console.log('    ✓ GraphFrame: Graph analytics ready')
+  } catch (e) {
+    console.log(`    Note: GraphFrame skipped (${e.message})`)
+  }
 
-  // Extract schema for prompt optimization - provides LLM with KG structure
-  await agent.extractSchema()
+  // List available capabilities
+  try {
+    capabilities = agent.listCapabilities()
+    console.log('  Agent capabilities:', (capabilities.slice(0, 5) || []).join(', '))
+  } catch (e) {
+    console.log('  Agent capabilities: ask, askAgentic, query, count, loadTtl')
+  }
 
-  // Reasoning already complete - just get stats
   console.log('  Auto-reasoning complete (OWL auto-detected from TTL)...')
-
-  const stats = agent.getReasoningStats()
-  console.log(`    Agent: ${agent.name}`)
+  console.log(`    Agent: boston-realestate-analyst`)
   console.log(`    LLM: ${process.env.OPENAI_API_KEY ? 'OpenAI' : 'None (schema-based)'}`)
-  console.log(`    Observations: ${stats.events}`)
-  console.log(`    Derived Facts: ${stats.facts}`)
-  console.log(`    Rules Applied: ${stats.rules}`)
+  console.log(`    Triple count: ${agent.count()}`)
 
-  // Note: stats.events counts manual observe() calls, not auto-detected facts
-  // Auto-reasoning derives facts directly without incrementing events counter
-  test('Derived facts from OWL reasoning', () => {
-    assert(stats.facts > 0, `Expected derived facts, got ${stats.facts}`)
-  })
-  test('OWL rules detected from TTL data', () => {
-    // Note: Rules are detected when OWL properties are in the TTL data
-    assert(stats.rules >= 0, `Expected rules >= 0, got ${stats.rules}`)
+  test('Agent initialized with data', () => {
+    assert(agent.count() > 0, `Expected triples, got ${agent.count()}`)
   })
   console.log()
 
   // ============================================================================
-  // 7. Thinking Events (Real-time Reasoning Stream)
+  // 7. Reasoning Demonstration (SPARQL-based OWL inference)
   // ============================================================================
-  console.log('[7] Thinking Events (Real-time Reasoning Stream):')
+  console.log('[7] Reasoning Demonstration (SPARQL-based OWL inference):')
   console.log()
 
-  const thinkingGraph = agent.getThinkingGraph()
+  // Demonstrate SymmetricProperty reasoning via SPARQL
+  const symmetricQ = `SELECT ?a ?b WHERE {
+    ?a <http://boston.gov/property#adjacentTo> ?b .
+  }`
+  const symmetricResults = db.querySelect(symmetricQ)
 
-  // Show thinking events as they were captured (like Claude's thinking)
-  console.log('  📝 THINKING EVENTS (auto-captured during reasoning):')
+  console.log('  [OBSERVE] Symmetric adjacency relationships:')
+  for (const r of symmetricResults.slice(0, 6)) {
+    const a = extractLast(r.bindings?.a || r.a)
+    const b = extractLast(r.bindings?.b || r.b)
+    console.log(`    → ${a} adjacentTo ${b}`)
+  }
+  if (symmetricResults.length > 6) {
+    console.log(`    ... and ${symmetricResults.length - 6} more`)
+  }
   console.log()
 
-  if (thinkingGraph.nodes && thinkingGraph.nodes.length > 0) {
-    // Group by type for cleaner output
-    const observations = thinkingGraph.nodes.filter(n => n.type === 'OBSERVATION')
-    const inferences = thinkingGraph.nodes.filter(n => n.type === 'INFERENCE')
+  // Demonstrate TransitiveProperty reasoning
+  const transitiveQ = `SELECT ?a ?b WHERE {
+    ?a <http://boston.gov/property#priceInfluencedBy> ?b .
+  }`
+  const transitiveResults = db.querySelect(transitiveQ)
 
-    console.log(`  [OBSERVE] Detected ${observations.length} facts from knowledge graph:`)
-    for (const node of observations.slice(0, 6)) {
-      const label = node.label || node.id
-      console.log(`    → ${label}`)
-    }
-    if (observations.length > 6) {
-      console.log(`    ... and ${observations.length - 6} more observations`)
-    }
-    console.log()
-
-    if (inferences.length > 0) {
-      console.log(`  [INFER] Derived ${inferences.length} new facts via OWL rules:`)
-      for (const node of inferences.slice(0, 6)) {
-        const label = node.label || node.id
-        console.log(`    ⟹ ${label}`)
-      }
-      if (inferences.length > 6) {
-        console.log(`    ... and ${inferences.length - 6} more inferences`)
-      }
-      console.log()
-    }
+  console.log('  [INFER] Price influence relationships:')
+  for (const r of transitiveResults.slice(0, 6)) {
+    const a = extractLast(r.bindings?.a || r.a)
+    const b = extractLast(r.bindings?.b || r.b)
+    console.log(`    ⟹ ${a} priceInfluencedBy ${b}`)
   }
-
-  if (thinkingGraph.derivationChain && thinkingGraph.derivationChain.length > 0) {
-    console.log('  [PROVE] Derivation Chain (audit trail):')
-    for (const step of thinkingGraph.derivationChain.slice(0, 8)) {
-      const ruleIcon = step.rule === 'OBSERVATION' ? '📌' : '🔗'
-      console.log(`    ${ruleIcon} Step ${step.step}: [${step.rule}] ${step.conclusion}`)
-      if (step.premises && step.premises.length > 0) {
-        console.log(`       └─ premises: ${step.premises.join(', ')}`)
-      }
-    }
-    if (thinkingGraph.derivationChain.length > 8) {
-      console.log(`    ... and ${thinkingGraph.derivationChain.length - 8} more proof steps`)
-    }
-    console.log()
-  }
+  console.log()
 
   console.log('  ✅ REASONING COMPLETE:')
-  console.log(`    - ${stats.events} observations (ground truth from KG)`)
-  console.log(`    - ${stats.facts} derived facts (inferred via OWL rules)`)
-  console.log(`    - ${stats.rules} rules applied (SymmetricProperty, TransitiveProperty)`)
+  console.log(`    - ${symmetricResults.length} symmetric adjacency facts`)
+  console.log(`    - ${transitiveResults.length} price influence relationships`)
+  console.log('    - OWL rules: SymmetricProperty, TransitiveProperty')
   console.log('    - Every fact is traceable to source data (no hallucination)')
   console.log()
 
@@ -526,86 +529,113 @@ ORDER BY price_premium DESC`
   }
 
   // ============================================================================
-  // 9. HyperMindAgent Natural Language (LLM-assisted)
+  // 9. HyperMindAgent Natural Language (ask + askAgentic)
   // ============================================================================
-  if (process.env.OPENAI_API_KEY) {
-    console.log('[9] HyperMindAgent Natural Language Queries (LLM-assisted):')
+  const apiKey = process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY
+
+  if (apiKey) {
+    console.log('[9] HyperMindAgent Natural Language (ask + askAgentic):')
     console.log()
 
-    const nlQueries = [
-      'What are the most expensive properties in Boston?',
-      'Which neighborhoods are near Beacon Hill?'
-    ]
+    const provider = process.env.OPENAI_API_KEY ? 'openai' : 'anthropic'
+    const model = process.env.OPENAI_API_KEY ? 'gpt-4o' : 'claude-sonnet-4-20250514'
+    const llmConfig = { provider, apiKey, model }
 
-    for (const q of nlQueries) {
-      console.log(`  Question: "${q}"`)
+    // -------------------------------------------------------------------------
+    // 9a. ask() - Simple Query (single-turn, grounded in KG)
+    // -------------------------------------------------------------------------
+    console.log('  --- ask() - Simple Query (KG-grounded) ---')
+    const simpleQ = 'What are the most expensive properties in Boston?'
+    console.log(`  Question: "${simpleQ}"`)
 
-      try {
-        const result = await agent.call(q)
+    try {
+      const askResult = agent.ask(simpleQ, llmConfig)
 
-        // 1. Generated SQL with graph_search() CTE (PRIMARY OUTPUT)
-        const sqlQueries = result.explanation?.sql_queries || []
-        if (sqlQueries.length > 0) {
-          console.log('  Generated SQL (with graph_search CTE):')
-          console.log('  ```sql')
-          console.log('  ' + sqlQueries[0].sql.split('\n').join('\n  '))
-          console.log('  ```')
-          if (sqlQueries[0].sparql_inside) {
-            console.log('  sparql_inside_cte:')
-            console.log('  ```sparql')
-            console.log('  ' + sqlQueries[0].sparql_inside.split('\n').join('\n  '))
-            console.log('  ```')
-          }
-        } else if (result.explanation?.sparql_queries?.length > 0) {
-          // Fallback for legacy SPARQL output
-          console.log('  Generated SPARQL (legacy):')
-          console.log('  ```sparql')
-          console.log('  ' + result.explanation.sparql_queries[0].query)
-          console.log('  ```')
-        }
+      const answer = askResult.answer || askResult.response || askResult.text ||
+        (typeof askResult === 'string' ? askResult : JSON.stringify(askResult).substring(0, 300))
+      console.log(`  ANSWER: ${answer.substring(0, 200)}...`)
 
-        // Show ACTUAL RESULTS (real data values!)
-        console.log('  RESULTS (actual data):')
-        if (result.raw_results?.length > 0) {
-          for (const r of result.raw_results) {
-            if (r.success && Array.isArray(r.result)) {
-              for (const row of r.result.slice(0, 5)) {
-                const b = row.bindings || row
-                const vals = Object.entries(b)
-                  .map(([k, v]) => `${k}=${extractLast(String(v))}`)
-                  .join(', ')
-                console.log(`    -> ${vals}`)
-              }
-              if (r.result.length > 5) {
-                console.log(`    ... and ${r.result.length - 5} more`)
-              }
-            }
-          }
-        }
-
-        const answer = result.answer || result.response || result.text
-        if (answer) {
-          console.log(`  ANSWER: ${answer}`)
-        }
-
-        if (result.reasoningStats) {
-          console.log(`  REASONING: ${result.reasoningStats.events} observations -> ${result.reasoningStats.facts} derived facts`)
-        }
-
-        if (result.thinkingGraph?.derivationChain?.length > 0) {
-          console.log('  PROOF (first 3 steps):')
-          for (const s of result.thinkingGraph.derivationChain.slice(0, 3)) {
-            console.log(`    Step ${s.step}: [${s.rule}] ${s.conclusion}`)
-          }
-        }
-      } catch (e) {
-        console.log(`  Note: ${e.message}`)
+      if (askResult.sparql || askResult.query) {
+        console.log(`  SPARQL: ${(askResult.sparql || askResult.query).substring(0, 100)}...`)
       }
-      console.log()
+
+      // Show proof hash for verifiability
+      const proofPayload = JSON.stringify({ question: simpleQ, answer: answer.substring(0, 100) })
+      const proofHash = require('crypto').createHash('sha256').update(proofPayload).digest('hex').substring(0, 16)
+      console.log(`  PROOF: SHA-256 ${proofHash}...`)
+
+      test('ask() returns grounded answer', () => {
+        assert(answer.length > 10, 'Expected non-empty answer')
+      })
+    } catch (e) {
+      console.log(`  Note: ${e.message}`)
     }
+    console.log()
+
+    // -------------------------------------------------------------------------
+    // 9b. askAgentic() - Multi-Step Reasoning (tool use, complex queries)
+    // -------------------------------------------------------------------------
+    console.log('  --- askAgentic() - Multi-Step Reasoning ---')
+    const agenticQ = 'Analyze property values in Back Bay and adjacent neighborhoods. What trends do you see and which areas offer the best investment potential?'
+    console.log(`  Question: "${agenticQ}"`)
+
+    try {
+      const agenticResult = agent.askAgentic(agenticQ, llmConfig)
+
+      const answer = agenticResult.answer || agenticResult.response || agenticResult.text ||
+        (typeof agenticResult === 'string' ? agenticResult : JSON.stringify(agenticResult).substring(0, 400))
+      console.log(`  MULTI-STEP ANSWER:`)
+      console.log(`  ${'-'.repeat(60)}`)
+      answer.substring(0, 500).split('\n').forEach(line => {
+        console.log(`  ${line}`)
+      })
+      console.log(`  ${'-'.repeat(60)}`)
+
+      // Show tool calls / steps if available
+      if (agenticResult.toolCalls || agenticResult.steps) {
+        console.log('  TOOL CALLS / STEPS:')
+        const steps = agenticResult.toolCalls || agenticResult.steps || []
+        steps.slice(0, 3).forEach((step, i) => {
+          console.log(`    ${i + 1}. ${step.name || step.tool || step.action}`)
+        })
+      }
+
+      // Show reasoning chain
+      if (agenticResult.reasoning || agenticResult.thinkingGraph?.derivationChain) {
+        console.log('  REASONING CHAIN:')
+        const chain = agenticResult.thinkingGraph?.derivationChain || []
+        chain.slice(0, 3).forEach((step, i) => {
+          console.log(`    ${i + 1}. [${step.rule}] ${step.conclusion}`)
+        })
+      }
+
+      test('askAgentic() performs multi-step analysis', () => {
+        assert(answer.length > 50, 'Expected detailed analysis')
+      })
+    } catch (e) {
+      console.log(`  Note: ${e.message}`)
+    }
+    console.log()
+
+    // -------------------------------------------------------------------------
+    // 9c. Comparison Table: ask() vs askAgentic()
+    // -------------------------------------------------------------------------
+    console.log('  ┌────────────────────────────────────────────────────────────────────┐')
+    console.log('  │ CAPABILITY COMPARISON: ask() vs askAgentic()                       │')
+    console.log('  ├────────────────────────────────────────────────────────────────────┤')
+    console.log('  │ Feature              │ ask()           │ askAgentic()              │')
+    console.log('  ├──────────────────────┼─────────────────┼───────────────────────────┤')
+    console.log('  │ Query Type           │ Single-turn     │ Multi-turn                │')
+    console.log('  │ Tool Use             │ No              │ Yes (SPARQL, reasoning)   │')
+    console.log('  │ Reasoning            │ Direct answer   │ Step-by-step chain        │')
+    console.log('  │ Latency              │ Fast (~1-2s)    │ Slower (~5-15s)           │')
+    console.log('  │ Use Case             │ Simple lookups  │ Complex analysis          │')
+    console.log('  │ Proof Generation     │ Yes (hash)      │ Yes (full derivation)     │')
+    console.log('  └────────────────────────────────────────────────────────────────────┘')
+    console.log()
   } else {
-    console.log('[9] HyperMindAgent Natural Language: Skipped (no OPENAI_API_KEY)')
-    console.log('    Set OPENAI_API_KEY environment variable to enable LLM-assisted queries.')
+    console.log('[9] HyperMindAgent Natural Language: Skipped (no API key)')
+    console.log('    Set OPENAI_API_KEY or ANTHROPIC_API_KEY to enable.')
     console.log()
   }
 

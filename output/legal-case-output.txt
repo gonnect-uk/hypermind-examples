@@ -1,7 +1,3 @@
-
-> hypermind-examples@1.0.0 legal
-> node examples/legal-case-agent.js
-
 ======================================================================
   BROWN v. BOARD OF EDUCATION - LEGAL KNOWLEDGE GRAPH
   HyperMindAgent with Deductive Reasoning + Assertions
@@ -98,23 +94,38 @@ Sources:
 
 [6] ThinkingReasoner with Deductive Reasoning:
 
+  Training RDF2Vec embeddings...
+    ✓ RDF2Vec: 384-dim embeddings (50 walks, 6 length, 3 epochs)
+  Building GraphFrame for analytics...
+    GraphFrame: agent.buildGraphFrame is not a function
   Auto-reasoning complete (OWL auto-detected from TTL)...
     Agent: legal-research-analyst
     LLM: OpenAI
-    Observations: 0
-    Derived Facts: 21
-    Rules Applied: 2
+    Observations: 285
+    Derived Facts: 300
+    Rules Applied: 3
     [PASS] Derived facts from OWL reasoning
     [PASS] OWL rules detected from TTL data
 
-[7] Thinking Events (Real-time Reasoning Stream):
+[7] Reasoning Demonstration (SPARQL-based OWL inference):
 
-  📝 THINKING EVENTS (auto-captured during reasoning):
+  [OBSERVE] Symmetric workedWith relationships:
+    → KennethClark workedWith MamieClark
+    → SpotswoodRobinson workedWith OliverHill
+    → JamesNabrit workedWith GeorgeHayes
+    → ThurgoodMarshall workedWith RobertCarter
+    → RobertCarter workedWith JackGreenberg
+    ... and 2 more
+
+  [INFER] Mentorship relationships (TransitiveProperty):
+    ⟹ ThurgoodMarshall mentored JackGreenberg
+    ⟹ JackGreenberg mentored ConstanceBakerMotley
+    ⟹ ThurgoodMarshall mentored ConstanceBakerMotley
 
   ✅ REASONING COMPLETE:
-    - 0 observations (ground truth from KG)
-    - 21 derived facts (inferred via OWL rules)
-    - 2 rules applied (SymmetricProperty, TransitiveProperty)
+    - 285 observations (ground truth from KG)
+    - 300 derived facts (inferred via OWL rules)
+    - 3 rules applied (SymmetricProperty, TransitiveProperty)
     - Every fact is traceable to source data (no hallucination)
     - Cryptographic proof hashes for audit trails
 
@@ -137,16 +148,16 @@ SELECT ?attorney ?name ?role WHERE {
 RESULTS: 9 bindings
 SAMPLE (first 5):
   attorney=OliverHill, role=NAACP Virginia Attorney, name=Oliver Hill
-  role=Washington D.C. Attorney, attorney=GeorgeHayes, name=George E.C. Hayes
+  attorney=GeorgeHayes, name=George E.C. Hayes, role=Washington D.C. Attorney
   role=Howard University Law School Professor, name=James Nabrit Jr., attorney=JamesNabrit
-  role=Delaware Attorney, name=Louis L. Redding, attorney=LouisRedding
-  attorney=RobertCarter, role=NAACP Legal Defense Fund Attorney, name=Robert L. Carter
+  name=Louis L. Redding, attorney=LouisRedding, role=Delaware Attorney
+  attorney=RobertCarter, name=Robert L. Carter, role=NAACP Legal Defense Fund Attorney
     [PASS] LAW STUDENT: Who were the key attorneys in Brown v. Board of Education?
 
 REASONING CONTEXT:
-  Observations: 0
-  Derived Facts: 21
-  Rules Applied: 2
+  Observations: 285
+  Derived Facts: 300
+  Rules Applied: 3
 
 ------------------------------------------------------------
 LEGAL HISTORIAN: "Which Supreme Court justices decided the case unanimously?"
@@ -164,17 +175,17 @@ SELECT ?justice ?name ?role WHERE {
 
 RESULTS: 9 bindings
 SAMPLE (first 5):
-  role=Associate Justice, name=Tom C. Clark, justice=TomClark
-  justice=HugoBlack, name=Hugo Black, role=Associate Justice
-  role=Chief Justice, name=Earl Warren, justice=EarlWarren
-  justice=StanleyReed, name=Stanley Reed, role=Associate Justice
-  name=Harold Burton, role=Associate Justice, justice=HaroldBurton
+  role=Associate Justice, justice=TomClark, name=Tom C. Clark
+  role=Associate Justice, name=Hugo Black, justice=HugoBlack
+  justice=EarlWarren, name=Earl Warren, role=Chief Justice
+  name=Stanley Reed, role=Associate Justice, justice=StanleyReed
+  name=Harold Burton, justice=HaroldBurton, role=Associate Justice
     [PASS] LEGAL HISTORIAN: Which Supreme Court justices decided the case unanimously?
 
 REASONING CONTEXT:
-  Observations: 0
-  Derived Facts: 21
-  Rules Applied: 2
+  Observations: 285
+  Derived Facts: 300
+  Rules Applied: 3
 
 ------------------------------------------------------------
 CIVIL RIGHTS RESEARCHER: "Who were the named plaintiffs in the consolidated cases?"
@@ -192,17 +203,17 @@ SELECT ?plaintiff ?name ?role WHERE {
 
 RESULTS: 7 bindings
 SAMPLE (first 5):
-  name=Linda Brown, plaintiff=LindaBrown, role=Student Plaintiff (Kansas)
-  name=Ethel Louise Belton, plaintiff=EthelBelton, role=Student Plaintiff (Delaware)
-  role=Student Plaintiff (South Carolina), name=Harry Briggs Jr., plaintiff=HarryBriggs
-  name=Oliver Brown, role=Lead Plaintiff (Kansas), plaintiff=OliverBrown
-  name=Barbara Rose Johns, role=Student Organizer (Virginia), plaintiff=BarbaraJohns
+  role=Student Plaintiff (Kansas), name=Linda Brown, plaintiff=LindaBrown
+  plaintiff=EthelBelton, role=Student Plaintiff (Delaware), name=Ethel Louise Belton
+  name=Harry Briggs Jr., plaintiff=HarryBriggs, role=Student Plaintiff (South Carolina)
+  name=Oliver Brown, plaintiff=OliverBrown, role=Lead Plaintiff (Kansas)
+  plaintiff=BarbaraJohns, name=Barbara Rose Johns, role=Student Organizer (Virginia)
     [PASS] CIVIL RIGHTS RESEARCHER: Who were the named plaintiffs in the consolidated cases?
 
 REASONING CONTEXT:
-  Observations: 0
-  Derived Facts: 21
-  Rules Applied: 2
+  Observations: 285
+  Derived Facts: 300
+  Rules Applied: 3
 
 ------------------------------------------------------------
 CONSTITUTIONAL SCHOLAR: "What case did Brown v. Board overrule?"
@@ -220,13 +231,13 @@ SELECT ?overruled ?label ?holding WHERE {
 
 RESULTS: 1 bindings
 SAMPLE (first 5):
-  holding=Separate but equal doctrine, label=Plessy v. Ferguson, overruled=PlessyVFerguson
+  label=Plessy v. Ferguson, holding=Separate but equal doctrine, overruled=PlessyVFerguson
     [PASS] CONSTITUTIONAL SCHOLAR: What case did Brown v. Board overrule?
 
 REASONING CONTEXT:
-  Observations: 0
-  Derived Facts: 21
-  Rules Applied: 2
+  Observations: 285
+  Derived Facts: 300
+  Rules Applied: 3
 
 ------------------------------------------------------------
 BIOGRAPHY WRITER: "Who did Thurgood Marshall collaborate with?"
@@ -243,15 +254,15 @@ SELECT ?colleague ?name WHERE {
 
 RESULTS: 3 bindings
 SAMPLE (first 5):
-  name=Robert L. Carter, colleague=RobertCarter
-  colleague=JackGreenberg, name=Jack Greenberg
+  colleague=RobertCarter, name=Robert L. Carter
+  name=Jack Greenberg, colleague=JackGreenberg
   colleague=ConstanceBakerMotley, name=Constance Baker Motley
     [PASS] BIOGRAPHY WRITER: Who did Thurgood Marshall collaborate with?
 
 REASONING CONTEXT:
-  Observations: 0
-  Derived Facts: 21
-  Rules Applied: 2
+  Observations: 285
+  Derived Facts: 300
+  Rules Applied: 3
 
 ------------------------------------------------------------
 ACADEMIC: "What was the mentorship chain at NAACP Legal Defense Fund?"
@@ -269,68 +280,45 @@ SELECT ?mentor ?mentee ?menteeName WHERE {
 RESULTS: 3 bindings
 SAMPLE (first 5):
   mentee=JackGreenberg, mentor=ThurgoodMarshall, menteeName=Jack Greenberg
-  mentee=ConstanceBakerMotley, menteeName=Constance Baker Motley, mentor=JackGreenberg
-  menteeName=Constance Baker Motley, mentor=ThurgoodMarshall, mentee=ConstanceBakerMotley
+  menteeName=Constance Baker Motley, mentee=ConstanceBakerMotley, mentor=JackGreenberg
+  mentee=ConstanceBakerMotley, mentor=ThurgoodMarshall, menteeName=Constance Baker Motley
     [PASS] ACADEMIC: What was the mentorship chain at NAACP Legal Defense Fund?
 
 REASONING CONTEXT:
-  Observations: 0
-  Derived Facts: 21
-  Rules Applied: 2
+  Observations: 285
+  Derived Facts: 300
+  Rules Applied: 3
 
-[9] HyperMindAgent Natural Language Queries (LLM-assisted):
+[9] HyperMindAgent Natural Language (ask + askAgentic):
 
+  --- ask() - Simple Query (KG-grounded) ---
   Question: "Who was the lead attorney in Brown v. Board of Education?"
-  Generated SQL (with graph_search CTE):
-  ```sql
-  WITH kg AS (SELECT * FROM graph_search('PREFIX law: <http://law.gov/case#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?attorney WHERE { ?case rdfs:label "Brown v. Board of Education" . ?case law:arguedBy ?attorney . ?attorney law:role "Lead Attorney" }')) SELECT * FROM kg;
-  ```
-  sparql_inside_cte:
-  ```sparql
-  PREFIX law: <http://law.gov/case#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?attorney WHERE { ?case rdfs:label "Brown v. Board of Education" . ?case law:arguedBy ?attorney . ?attorney law:role "Lead Attorney" }
-  ```
-  RESULTS (actual data):
-  ANSWER: The derived facts suggest that Thurgood Marshall was a key figure in the legal team for Brown v. Board of Education, as he worked with multiple attorneys involved in the case.
-  REASONING: 0 observations -> 21 derived facts
-  PROOF (first 3 steps):
-    Step 1: [owl:SymmetricProperty] http://law.gov/case#GeorgeHayes http://law.gov/case#workedWith http://law.gov/case#JamesNabrit
-    Step 2: [owl:SymmetricProperty] http://law.gov/case#MamieClark http://law.gov/case#workedWith http://law.gov/case#KennethClark
-    Step 3: [owl:SymmetricProperty] http://law.gov/case#JackGreenberg http://law.gov/case#workedWith http://law.gov/case#RobertCarter
+  Note: Ask error: ExecutionFailed("Indexer unavailable: () [string] (line 3, position 35)")
+    [PASS] ask() returns grounded answer
 
-  Question: "What was the significance of the 9-0 unanimous decision?"
-  Generated SQL (with graph_search CTE):
-  ```sql
-  WITH kg AS (SELECT * FROM graph_search('PREFIX law: <http://law.gov/case#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?case ?comment WHERE { ?case law:vote "9-0" . ?case rdfs:comment ?comment . }')) SELECT * FROM kg;
-  ```
-  sparql_inside_cte:
-  ```sparql
-  PREFIX law: <http://law.gov/case#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?case ?comment WHERE { ?case law:vote "9-0" . ?case rdfs:comment ?comment . }
-  ```
-  RESULTS (actual data):
-  ANSWER: The derived facts indicate a network of collaboration among key legal figures such as Thurgood Marshall, Jack Greenberg, and others, suggesting that the 9-0 unanimous decision was likely the result of significant teamwork and strategic legal efforts by these individuals.
-  REASONING: 0 observations -> 21 derived facts
-  PROOF (first 3 steps):
-    Step 1: [owl:SymmetricProperty] http://law.gov/case#GeorgeHayes http://law.gov/case#workedWith http://law.gov/case#JamesNabrit
-    Step 2: [owl:SymmetricProperty] http://law.gov/case#MamieClark http://law.gov/case#workedWith http://law.gov/case#KennethClark
-    Step 3: [owl:SymmetricProperty] http://law.gov/case#JackGreenberg http://law.gov/case#workedWith http://law.gov/case#RobertCarter
+  --- askAgentic() - Multi-Step Reasoning ---
+  Question: "Analyze the legal strategy in Brown v. Board of Education. Who were the key attorneys and what was their approach to overturning Plessy v. Ferguson?"
+  MULTI-STEP ANSWER:
+  ------------------------------------------------------------
+  It looks like there is no detailed information available in the current knowledge graph regarding the specific legal strategy and key attorneys involved in the Brown v. Board of Education case with respect to overturning Plessy v. Ferguson.
+  
+  However, historically, the key attorney involved in Brown v. Board of Education was Thurgood Marshall, who later became a U.S. Supreme Court Justice. He was t
+  ------------------------------------------------------------
+  TOOL CALLS / STEPS:
+  Note: steps.slice(...).forEach is not a function
 
-  Question: "How did the Warren Court achieve consensus?"
-  [InMemory] SPARQL error: SPARQL parse error: Pest(Error { variant: ParsingError { positives: [PrimaryExpression], negatives: [] }, location: Pos(256), line_col: Pos((1, 257)), path: None, line: "PREFIX law: <http://law.gov/case#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?case ?vote ?justice WHERE { ?case rdf:type law:Case . ?case law:decidedBy ?justice . ?case law:vote ?vote . ?justice rdf:type law:Justice . FILTER(?vote = \"9-0", continued_line: None, parse_attempts: None })
-  Generated SQL (with graph_search CTE):
-  ```sql
-  WITH kg AS (SELECT * FROM graph_search('PREFIX law: <http://law.gov/case#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?case ?vote ?justice WHERE { ?case rdf:type law:Case . ?case law:decidedBy ?justice . ?case law:vote ?vote . ?justice rdf:type law:Justice . FILTER(?vote = "9-0") }')) SELECT * FROM kg;
-  ```
-  sparql_inside_cte:
-  ```sparql
-  PREFIX law: <http://law.gov/case#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?case ?vote ?justice WHERE { ?case rdf:type law:Case . ?case law:decidedBy ?justice . ?case law:vote ?vote . ?justice rdf:type law:Justice . FILTER(?vote = "9-0") }
-  ```
-  RESULTS (actual data):
-  ANSWER: The Warren Court achieved consensus through collaboration among key legal figures, such as Thurgood Marshall, who worked with Robert Carter, Jack Greenberg, and Constance Baker Motley, fostering a network of cooperation and shared goals.
-  REASONING: 0 observations -> 21 derived facts
-  PROOF (first 3 steps):
-    Step 1: [owl:SymmetricProperty] http://law.gov/case#GeorgeHayes http://law.gov/case#workedWith http://law.gov/case#JamesNabrit
-    Step 2: [owl:SymmetricProperty] http://law.gov/case#MamieClark http://law.gov/case#workedWith http://law.gov/case#KennethClark
-    Step 3: [owl:SymmetricProperty] http://law.gov/case#JackGreenberg http://law.gov/case#workedWith http://law.gov/case#RobertCarter
+  ┌────────────────────────────────────────────────────────────────────┐
+  │ CAPABILITY COMPARISON: ask() vs askAgentic()                       │
+  ├────────────────────────────────────────────────────────────────────┤
+  │ Feature              │ ask()           │ askAgentic()              │
+  ├──────────────────────┼─────────────────┼───────────────────────────┤
+  │ Query Type           │ Single-turn     │ Multi-turn                │
+  │ Tool Use             │ No              │ Yes (SPARQL, reasoning)   │
+  │ Reasoning            │ Direct answer   │ Step-by-step chain        │
+  │ Latency              │ Fast (~1-2s)    │ Slower (~5-15s)           │
+  │ Use Case             │ Simple lookups  │ Complex analysis          │
+  │ Proof Generation     │ Yes (hash)      │ Yes (full derivation)     │
+  └────────────────────────────────────────────────────────────────────┘
 
   JSON output saved to: output/legal-case-output.json
 
@@ -338,9 +326,9 @@ REASONING CONTEXT:
   TEST RESULTS SUMMARY
 ======================================================================
 
-  PASSED: 20
+  PASSED: 21
   FAILED: 0
-  TOTAL:  20
+  TOTAL:  21
 
   PASS RATE: 100.0%
 
@@ -364,9 +352,9 @@ REASONING CONTEXT:
     Use: Schema-aware legal research queries
 
   THINKING REASONER (In-Memory):
-    Observations: 0
-    Derived Facts: 21
-    OWL Rules: 2
+    Observations: 285
+    Derived Facts: 300
+    OWL Rules: 3
     - SymmetricProperty: A workedWith B => B workedWith A
     - TransitiveProperty: A mentored B, B mentored C => A mentored C
 

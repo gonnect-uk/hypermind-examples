@@ -1,7 +1,3 @@
-
-> hypermind-examples@1.0.0 euroleague
-> node examples/euroleague-basketball-agent.js
-
 ======================================================================
   EUROLEAGUE BASKETBALL KNOWLEDGE GRAPH
   HyperMindAgent with Deductive Reasoning + Assertions
@@ -88,23 +84,39 @@ Data Model: https://github.com/andrewstellman/pbprdf
 
 [6] ThinkingReasoner with Deductive Reasoning:
 
+  Training RDF2Vec embeddings...
+    ✓ RDF2Vec: 384-dim embeddings (50 walks, 6 length, 3 epochs)
+  Building GraphFrame for analytics...
+    GraphFrame: agent.buildGraphFrame is not a function
   Auto-reasoning complete (OWL auto-detected from TTL)...
     Agent: euroleague-analyst
     LLM: OpenAI
-    Observations: 0
-    Derived Facts: 7
-    Rules Applied: 2
+    Observations: 603
+    Derived Facts: 615
+    Rules Applied: 3
     [PASS] Derived facts from OWL reasoning
     [PASS] OWL rules detected from TTL data
 
-[7] Thinking Events (Real-time Reasoning Stream):
+[7] Reasoning Demonstration (SPARQL-based OWL inference):
 
-  📝 THINKING EVENTS (auto-captured during reasoning):
+  [OBSERVE] Symmetric teammate relationships:
+    → none teammateOf osman__cedi
+    → grant__jerian teammateOf osman__cedi
+    → brown__lorenzo teammateOf osman__cedi
+    → nunn__kendrick teammateOf osman__cedi
+    → sloukas__kostas teammateOf osman__cedi
+    → grigonis__marius teammateOf osman__cedi
+    ... and 6 more
+
+  [INFER] Steal events (player performance):
+    ⟹ lessort__mathias made steal (e00011)
+    ⟹ mitoglou__konstantinos made steal (e00028)
+    ⟹ mattisseck__jonas made steal (e00030)
 
   ✅ REASONING COMPLETE:
-    - 0 observations (ground truth from KG)
-    - 7 derived facts (inferred via OWL rules)
-    - 2 rules applied (SymmetricProperty, TransitiveProperty)
+    - 603 observations (ground truth from KG)
+    - 615 derived facts (inferred via OWL rules)
+    - 3 rules applied (SymmetricProperty, TransitiveProperty)
     - Every fact is traceable to source data (no hallucination)
 
 [8] Use Case Queries (SPARQL-first, deterministic):
@@ -124,15 +136,15 @@ SELECT ?player WHERE {
 
 RESULTS: 3 bindings
 SAMPLE (first 5):
-  player=lessort__mathias, e=e00011
+  e=e00011, player=lessort__mathias
   player=mitoglou__konstantinos, e=e00028
-  e=e00030, player=mattisseck__jonas
+  player=mattisseck__jonas, e=e00030
     [PASS] JOURNALIST: Who made the defensive steals?
 
 REASONING CONTEXT:
-  Observations: 0
-  Derived Facts: 7
-  Rules Applied: 2
+  Observations: 603
+  Derived Facts: 615
+  Rules Applied: 3
 
 ------------------------------------------------------------
 COACH: "Which players distributed the ball best with assists?"
@@ -149,17 +161,17 @@ SELECT ?player WHERE {
 
 RESULTS: 8 bindings
 SAMPLE (first 5):
-  player=nunn__kendrick, e=e00007
-  player=rapieque__elias, e=e00014
+  e=e00007, player=nunn__kendrick
+  e=e00014, player=rapieque__elias
   e=e00016, player=nunn__kendrick
   player=hermannsson__martin, e=e00032
   player=brown__lorenzo, e=e00051
     [PASS] COACH: Which players distributed the ball best with assists?
 
 REASONING CONTEXT:
-  Observations: 0
-  Derived Facts: 7
-  Rules Applied: 2
+  Observations: 603
+  Derived Facts: 615
+  Rules Applied: 3
 
 ------------------------------------------------------------
 ANALYST: "Who made scoring plays (Shots)?"
@@ -177,17 +189,17 @@ SELECT ?player ?label WHERE {
 
 RESULTS: 35 bindings
 SAMPLE (first 5):
-  label=1 -  0 pt), e=e00002, player=grigonis__marius
-  player=koumadje__khalifa, label=1 -  0 pt), e=e00004
-  player=lessort__mathias, e=e00006, label=1 -  2 pt)
-  player=nunn__kendrick, label=1 -  2 pt), e=e00012
-  e=e00013, label=1 -  2 pt), player=olinde__louis
+  player=grigonis__marius, e=e00002, label=1 -  0 pt)
+  player=koumadje__khalifa, e=e00004, label=1 -  0 pt)
+  e=e00006, label=1 -  2 pt), player=lessort__mathias
+  label=1 -  2 pt), player=nunn__kendrick, e=e00012
+  label=1 -  2 pt), player=olinde__louis, e=e00013
     [PASS] ANALYST: Who made scoring plays (Shots)?
 
 REASONING CONTEXT:
-  Observations: 0
-  Derived Facts: 7
-  Rules Applied: 2
+  Observations: 603
+  Derived Facts: 615
+  Rules Applied: 3
 
 ------------------------------------------------------------
 FAN: "Who are the teammates of Lessort?"
@@ -211,95 +223,53 @@ SAMPLE (first 5):
     [PASS] FAN: Who are the teammates of Lessort?
 
 REASONING CONTEXT:
-  Observations: 0
-  Derived Facts: 7
-  Rules Applied: 2
+  Observations: 603
+  Derived Facts: 615
+  Rules Applied: 3
 
-[9] HyperMindAgent Natural Language Queries (LLM-assisted):
+[9] HyperMindAgent Natural Language (ask + askAgentic):
 
-------------------------------------------------------------
-  USER PROMPT: "Who made the defensive steals in this game?"
-------------------------------------------------------------
+  --- ask() - Simple Query (KG-grounded) ---
+  Question: "Who are the players with steals in this game?"
+  ANSWER: No results found....
+  PROOF: SHA-256 6641dc5d09af8872...
+    [PASS] ask() returns grounded answer
 
-  HONEST OUTPUT (HyperMindAgent.call() - SQL with CTE):
+  --- askAgentic() - Multi-Step Reasoning ---
+  Question: "Analyze the defensive performance in this game. Who made steals and which team had better defense?"
+  MULTI-STEP ANSWER:
+  ------------------------------------------------------------
+  During the game, the following players made steals:
+  
+  1. **Lessort Mathias** from Panathinaikos made a steal.
+  2. **Mitoglou Konstantinos** from Panathinaikos made a steal.
+  3. **Mattisseck Jonas** from Alba Berlin made a steal.
+  
+  Regarding the defensive performance, the team Panathinaikos had better defense in terms of steals, recording a total of 2 steals, while Alba Berlin had 1 steal.
+  ------------------------------------------------------------
+  TOOL CALLS / STEPS:
+  Note: steps.slice(...).forEach is not a function
 
-  sql (with graph_search CTE):
-    ```sql
-    WITH kg AS (SELECT * FROM graph_search('PREFIX euro: <http://euroleague.net/ontology#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?player WHERE { ?steal rdf:type euro:Steal . ?steal euro:player ?player . ?steal euro:game <http://euroleague.net/game/2024_1> }')) SELECT * FROM kg
-    ```
-  sparql_inside_cte:
-    ```sparql
-    PREFIX euro: <http://euroleague.net/ontology#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?player WHERE { ?steal rdf:type euro:Steal . ?steal euro:player ?player . ?steal euro:game <http://euroleague.net/game/2024_1> }
-    ```
-
-  results (actual data):
-
-  answer:
-    "The derived facts do not provide information about who made the defensive steals in the game."
-
-  thinking:
-    predicatesIdentified: auto-detected
-    schemaMatches: 0 classes, 0 predicates
-
-  reasoning:
-    observations: 0
-    derivedFacts: 7
-    rulesApplied: 2
-
-  proof:
-    derivationChain:
-      - step: 1, rule: "owl:SymmetricProperty", conclusion: "http://euroleague.net/player/osman__cedi http://euroleague.net/ontology#teammateOf http://euroleague.net/player/none"
-      - step: 2, rule: "owl:SymmetricProperty", conclusion: "http://euroleague.net/player/grant__jerian http://euroleague.net/ontology#teammateOf http://euroleague.net/player/none"
-      - step: 3, rule: "owl:SymmetricProperty", conclusion: "http://euroleague.net/player/brown__lorenzo http://euroleague.net/ontology#teammateOf http://euroleague.net/player/none"
-      - step: 4, rule: "owl:SymmetricProperty", conclusion: "http://euroleague.net/player/nunn__kendrick http://euroleague.net/ontology#teammateOf http://euroleague.net/player/none"
-    proofHash: "sha256:19b72855dfb"
-    verified: true
-
-------------------------------------------------------------
-  USER PROMPT: "Who are the teammates of Lessort?"
-------------------------------------------------------------
-
-  HONEST OUTPUT (HyperMindAgent.call() - SQL with CTE):
-
-  sql (with graph_search CTE):
-    ```sql
-    WITH kg AS (SELECT * FROM graph_search('PREFIX euro: <http://euroleague.net/ontology#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?teammate WHERE { ?player rdf:type euro:Player . ?player euro:teammateOf ?teammate . FILTER(?player = <http://euroleague.net/player/lessort>) }')) SELECT * FROM kg
-    ```
-  sparql_inside_cte:
-    ```sparql
-    PREFIX euro: <http://euroleague.net/ontology#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?teammate WHERE { ?player rdf:type euro:Player . ?player euro:teammateOf ?teammate . FILTER(?player = <http://euroleague.net/player/lessort>) }
-    ```
-
-  results (actual data):
-
-  answer:
-    "Mathias Lessort does not have any recorded teammates according to the derived facts."
-
-  thinking:
-    predicatesIdentified: auto-detected
-    schemaMatches: 0 classes, 0 predicates
-
-  reasoning:
-    observations: 0
-    derivedFacts: 7
-    rulesApplied: 2
-
-  proof:
-    derivationChain:
-      - step: 1, rule: "owl:SymmetricProperty", conclusion: "http://euroleague.net/player/osman__cedi http://euroleague.net/ontology#teammateOf http://euroleague.net/player/none"
-      - step: 2, rule: "owl:SymmetricProperty", conclusion: "http://euroleague.net/player/grant__jerian http://euroleague.net/ontology#teammateOf http://euroleague.net/player/none"
-      - step: 3, rule: "owl:SymmetricProperty", conclusion: "http://euroleague.net/player/brown__lorenzo http://euroleague.net/ontology#teammateOf http://euroleague.net/player/none"
-      - step: 4, rule: "owl:SymmetricProperty", conclusion: "http://euroleague.net/player/nunn__kendrick http://euroleague.net/ontology#teammateOf http://euroleague.net/player/none"
-    proofHash: "sha256:19b72856b07"
-    verified: true
+  ┌────────────────────────────────────────────────────────────────────┐
+  │ CAPABILITY COMPARISON: ask() vs askAgentic()                       │
+  ├────────────────────────────────────────────────────────────────────┤
+  │ Feature              │ ask()           │ askAgentic()              │
+  ├──────────────────────┼─────────────────┼───────────────────────────┤
+  │ Query Type           │ Single-turn     │ Multi-turn                │
+  │ Tool Use             │ No              │ Yes (SPARQL, reasoning)   │
+  │ Reasoning            │ Direct answer   │ Step-by-step chain        │
+  │ Latency              │ Fast (~1-2s)    │ Slower (~5-15s)           │
+  │ Use Case             │ Simple lookups  │ Complex analysis          │
+  │ Proof Generation     │ Yes (hash)      │ Yes (full derivation)     │
+  └────────────────────────────────────────────────────────────────────┘
 
 ======================================================================
   TEST RESULTS SUMMARY
 ======================================================================
 
-  PASSED: 17
+  PASSED: 18
   FAILED: 0
-  TOTAL:  17
+  TOTAL:  18
 
   PASS RATE: 100.0%
 
@@ -321,9 +291,9 @@ REASONING CONTEXT:
     Mode: NAPI-RS (native binding)
 
   THINKING REASONER (In-Memory):
-    Observations: 0
-    Derived Facts: 7
-    OWL Rules: 2
+    Observations: 603
+    Derived Facts: 615
+    OWL Rules: 3
     - SymmetricProperty: A rel B => B rel A
     - TransitiveProperty: A rel B, B rel C => A rel C
 

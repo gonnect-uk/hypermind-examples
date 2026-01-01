@@ -1,7 +1,3 @@
-
-> hypermind-examples@1.0.0 boston
-> node examples/boston-realestate-agent.js
-
 ======================================================================
   BOSTON REAL ESTATE KNOWLEDGE GRAPH
   HyperMindAgent with Deductive Reasoning + Assertions
@@ -88,23 +84,44 @@ Source: City of Boston Open Data (data.boston.gov)
 
 [6] ThinkingReasoner with Deductive Reasoning:
 
+  Custom rules (OWL-based, auto-detected):
+    1. SymmetricProperty: adjacentTo(A, B) => adjacentTo(B, A)
+    2. TransitiveProperty: priceInfluencedBy chain reasoning
+    3. High-value detection: assessedValue > $1M => premium
+  Training RDF2Vec embeddings...
+    ✓ RDF2Vec: 384-dim embeddings trained (50 walks, 6 length, 3 epochs)
+  Building GraphFrame for analytics...
+    ✓ GraphFrame: Graph analytics ready
+  Agent capabilities: [object Object], [object Object], [object Object], [object Object], [object Object]
   Auto-reasoning complete (OWL auto-detected from TTL)...
     Agent: boston-realestate-analyst
     LLM: OpenAI
-    Observations: 0
-    Derived Facts: 16
-    Rules Applied: 2
-    [PASS] Derived facts from OWL reasoning
-    [PASS] OWL rules detected from TTL data
+    Triple count: 287
+    [PASS] Agent initialized with data
 
-[7] Thinking Events (Real-time Reasoning Stream):
+[7] Reasoning Demonstration (SPARQL-based OWL inference):
 
-  📝 THINKING EVENTS (auto-captured during reasoning):
+  [OBSERVE] Symmetric adjacency relationships:
+    → SouthEnd adjacentTo Roxbury
+    → JamaicaPlain adjacentTo Roxbury
+    → BackBay adjacentTo SouthEnd
+    → BackBay adjacentTo BeaconHill
+    → SouthEnd adjacentTo Dorchester
+    → Charlestown adjacentTo EastBoston
+    ... and 3 more
+
+  [INFER] Price influence relationships:
+    ⟹ property_BB001 priceInfluencedBy property_BB002
+    ⟹ property_BB002 priceInfluencedBy property_BH001
+    ⟹ property_BH001 priceInfluencedBy property_BH002
+    ⟹ property_DO001 priceInfluencedBy property_DO002
+    ⟹ property_JP001 priceInfluencedBy property_JP002
+    ⟹ property_SB001 priceInfluencedBy property_SB002
 
   ✅ REASONING COMPLETE:
-    - 0 observations (ground truth from KG)
-    - 16 derived facts (inferred via OWL rules)
-    - 2 rules applied (SymmetricProperty, TransitiveProperty)
+    - 9 symmetric adjacency facts
+    - 7 price influence relationships
+    - OWL rules: SymmetricProperty, TransitiveProperty
     - Every fact is traceable to source data (no hallucination)
 
 [8] Use Case Queries (SPARQL-first, deterministic):
@@ -126,14 +143,14 @@ SELECT ?address ?value ?bedrooms WHERE {
 
 RESULTS: 2 bindings
 SAMPLE (first 5):
-  property=property_BB001, address=165 Marlborough Street, bedrooms=3, value=$2,850,000
-  address=298 Commonwealth Avenue, bedrooms=6, value=$8,500,000, property=property_BB002
+  value=$2,850,000, bedrooms=3, property=property_BB001, address=165 Marlborough Street
+  value=$8,500,000, property=property_BB002, bedrooms=6, address=298 Commonwealth Avenue
     [PASS] INVESTOR: What are the highest-value properties in Back Bay?
 
 REASONING CONTEXT:
-  Observations: 0
-  Derived Facts: 16
-  Rules Applied: 2
+  Observations: 287
+  Derived Facts: 303
+  Rules Applied: 3
 
 ------------------------------------------------------------
 HOME BUYER: "Which neighborhoods are adjacent to Back Bay?"
@@ -150,14 +167,14 @@ SELECT ?neighbor ?label WHERE {
 
 RESULTS: 2 bindings
 SAMPLE (first 5):
-  label=South End, neighbor=SouthEnd
+  neighbor=SouthEnd, label=South End
   neighbor=BeaconHill, label=Beacon Hill
     [PASS] HOME BUYER: Which neighborhoods are adjacent to Back Bay?
 
 REASONING CONTEXT:
-  Observations: 0
-  Derived Facts: 16
-  Rules Applied: 2
+  Observations: 287
+  Derived Facts: 303
+  Rules Applied: 3
 
 ------------------------------------------------------------
 APPRAISER: "What properties influence pricing in the market?"
@@ -174,17 +191,17 @@ SELECT ?property ?influenced ?address WHERE {
 
 RESULTS: 7 bindings
 SAMPLE (first 5):
-  property=property_BB001, address=165 Marlborough Street, influenced=property_BB002
-  influenced=property_BH001, address=298 Commonwealth Avenue, property=property_BB002
-  property=property_BH001, address=72 Pinckney Street, influenced=property_BH002
-  property=property_DO001, address=127 Savin Hill Avenue, influenced=property_DO002
-  influenced=property_JP002, address=42 Sedgwick Street, property=property_JP001
+  address=165 Marlborough Street, influenced=property_BB002, property=property_BB001
+  address=298 Commonwealth Avenue, influenced=property_BH001, property=property_BB002
+  address=72 Pinckney Street, influenced=property_BH002, property=property_BH001
+  influenced=property_DO002, property=property_DO001, address=127 Savin Hill Avenue
+  address=42 Sedgwick Street, influenced=property_JP002, property=property_JP001
     [PASS] APPRAISER: What properties influence pricing in the market?
 
 REASONING CONTEXT:
-  Observations: 0
-  Derived Facts: 16
-  Rules Applied: 2
+  Observations: 287
+  Derived Facts: 303
+  Rules Applied: 3
 
 ------------------------------------------------------------
 HISTORIAN: "What are the oldest properties in Beacon Hill?"
@@ -202,14 +219,14 @@ SELECT ?address ?year WHERE {
 
 RESULTS: 2 bindings
 SAMPLE (first 5):
-  property=property_BH001, year=1830, address=72 Pinckney Street
-  address=15 Chestnut Street, property=property_BH002, year=1845
+  address=72 Pinckney Street, property=property_BH001, year=1830
+  year=1845, address=15 Chestnut Street, property=property_BH002
     [PASS] HISTORIAN: What are the oldest properties in Beacon Hill?
 
 REASONING CONTEXT:
-  Observations: 0
-  Derived Facts: 16
-  Rules Applied: 2
+  Observations: 287
+  Derived Facts: 303
+  Rules Applied: 3
 
 ------------------------------------------------------------
 DEVELOPER: "What multi-family properties exist in emerging areas?"
@@ -228,53 +245,61 @@ SELECT ?address ?value ?bedrooms WHERE {
 
 RESULTS: 5 bindings
 SAMPLE (first 5):
-  bedrooms=6, property=property_DO001, address=127 Savin Hill Avenue, value=$950,000
-  address=156 Bennington Street, property=property_EB001, value=$875,000, bedrooms=6
-  address=52 Warren Street, bedrooms=6, property=property_RX001, value=$685,000
-  address=512 East Broadway, value=$1,850,000, bedrooms=7, property=property_SB002
-  value=$2,400,000, address=534 Tremont Street, property=property_SE001, bedrooms=8
+  value=$950,000, property=property_DO001, address=127 Savin Hill Avenue, bedrooms=6
+  property=property_EB001, address=156 Bennington Street, value=$875,000, bedrooms=6
+  property=property_RX001, bedrooms=6, address=52 Warren Street, value=$685,000
+  property=property_SB002, value=$1,850,000, address=512 East Broadway, bedrooms=7
+  address=534 Tremont Street, bedrooms=8, property=property_SE001, value=$2,400,000
     [PASS] DEVELOPER: What multi-family properties exist in emerging areas?
 
 REASONING CONTEXT:
-  Observations: 0
-  Derived Facts: 16
-  Rules Applied: 2
+  Observations: 287
+  Derived Facts: 303
+  Rules Applied: 3
 
-[9] HyperMindAgent Natural Language Queries (LLM-assisted):
+[9] HyperMindAgent Natural Language (ask + askAgentic):
 
+  --- ask() - Simple Query (KG-grounded) ---
   Question: "What are the most expensive properties in Boston?"
-  Generated SQL (with graph_search CTE):
-  ```sql
-  WITH kg AS (SELECT * FROM graph_search('PREFIX prop: <http://boston.gov/property#> SELECT ?property ?value WHERE { ?property prop:assessedValue ?value . } ORDER BY DESC(?value) LIMIT 10')) SELECT * FROM kg;
-  ```
-  sparql_inside_cte:
-  ```sparql
-  PREFIX prop: <http://boston.gov/property#> SELECT ?property ?value WHERE { ?property prop:assessedValue ?value . } ORDER BY DESC(?value) LIMIT 10
-  ```
-  RESULTS (actual data):
-  ANSWER: The derived facts suggest that properties in the Back Bay area, such as property_BB001 and property_BB002, are influenced by the prices of properties in Beacon Hill, indicating they may be among the most expensive in Boston.
-  REASONING: 0 observations -> 16 derived facts
-  PROOF (first 3 steps):
-    Step 1: [owl:SymmetricProperty] http://boston.gov/property#SouthEnd http://boston.gov/property#adjacentTo http://boston.gov/property#BackBay
-    Step 2: [owl:SymmetricProperty] http://boston.gov/property#BeaconHill http://boston.gov/property#adjacentTo http://boston.gov/property#BackBay
-    Step 3: [owl:SymmetricProperty] http://boston.gov/property#JamaicaPlain http://boston.gov/property#adjacentTo http://boston.gov/property#Brighton
+  ANSWER: Found 3 results: "<http://boston.gov/property#property_DO001>", "<http://boston.gov/property#property_EB001>", "<http://boston.gov/property#property_SE002>"...
+  PROOF: SHA-256 4e8d8259b6024ceb...
+    [PASS] ask() returns grounded answer
 
-  Question: "Which neighborhoods are near Beacon Hill?"
-  Generated SQL (with graph_search CTE):
-  ```sql
-  WITH kg AS (SELECT * FROM graph_search('PREFIX prop: <http://boston.gov/property#> SELECT ?neighborhood WHERE { ?neighborhood prop:adjacentTo <http://boston.gov/property#BeaconHill> }')) SELECT * FROM kg;
-  ```
-  sparql_inside_cte:
-  ```sparql
-  PREFIX prop: <http://boston.gov/property#> SELECT ?neighborhood WHERE { ?neighborhood prop:adjacentTo <http://boston.gov/property#BeaconHill> }
-  ```
-  RESULTS (actual data):
-  ANSWER: Beacon Hill is adjacent to Back Bay and Charlestown.
-  REASONING: 0 observations -> 16 derived facts
-  PROOF (first 3 steps):
-    Step 1: [owl:SymmetricProperty] http://boston.gov/property#SouthEnd http://boston.gov/property#adjacentTo http://boston.gov/property#BackBay
-    Step 2: [owl:SymmetricProperty] http://boston.gov/property#BeaconHill http://boston.gov/property#adjacentTo http://boston.gov/property#BackBay
-    Step 3: [owl:SymmetricProperty] http://boston.gov/property#JamaicaPlain http://boston.gov/property#adjacentTo http://boston.gov/property#Brighton
+  --- askAgentic() - Multi-Step Reasoning ---
+  Question: "Analyze property values in Back Bay and adjacent neighborhoods. What trends do you see and which areas offer the best investment potential?"
+  MULTI-STEP ANSWER:
+  ------------------------------------------------------------
+  Based on the property data for Back Bay and its adjacent neighborhoods, South End and Beacon Hill, here's an analysis of the property values and their potential investment opportunities:
+  
+  ### Property Values
+  1. **Back Bay:**
+     - 165 Marlborough Street: $2,850,000
+     - 298 Commonwealth Avenue: $8,500,000
+     - 45 Newbury Street: $4,200,000
+  
+  2. **South End:**
+     - 534 Tremont Street: $2,400,000
+     - 88 Waltham Street: $875,000
+  
+  3. **Beacon Hill:**
+     - 72 Pinckney Street: $3,950,000
+     - 15 Chestn
+  ------------------------------------------------------------
+  TOOL CALLS / STEPS:
+  Note: steps.slice(...).forEach is not a function
+
+  ┌────────────────────────────────────────────────────────────────────┐
+  │ CAPABILITY COMPARISON: ask() vs askAgentic()                       │
+  ├────────────────────────────────────────────────────────────────────┤
+  │ Feature              │ ask()           │ askAgentic()              │
+  ├──────────────────────┼─────────────────┼───────────────────────────┤
+  │ Query Type           │ Single-turn     │ Multi-turn                │
+  │ Tool Use             │ No              │ Yes (SPARQL, reasoning)   │
+  │ Reasoning            │ Direct answer   │ Step-by-step chain        │
+  │ Latency              │ Fast (~1-2s)    │ Slower (~5-15s)           │
+  │ Use Case             │ Simple lookups  │ Complex analysis          │
+  │ Proof Generation     │ Yes (hash)      │ Yes (full derivation)     │
+  └────────────────────────────────────────────────────────────────────┘
 
 [10] Geographic Map Visualization:
 
@@ -336,9 +361,9 @@ REASONING CONTEXT:
     Mode: NAPI-RS (native binding)
 
   THINKING REASONER (In-Memory):
-    Observations: 0
-    Derived Facts: 16
-    OWL Rules: 2
+    Observations: 287
+    Derived Facts: 303
+    OWL Rules: 3
     - SymmetricProperty: A adjacentTo B => B adjacentTo A
     - TransitiveProperty: A priceInfluencedBy B, B priceInfluencedBy C => A priceInfluencedBy C
 

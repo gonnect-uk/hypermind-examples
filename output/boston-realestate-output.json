@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-12-31T03:47:51.141Z",
+  "timestamp": "2026-01-01T13:23:07.813Z",
   "example": "boston-realestate-agent",
   "passRate": "100.0%",
   "stats": {
@@ -60,11 +60,7 @@
         "status": "PASS"
       },
       {
-        "name": "Derived facts from OWL reasoning",
-        "status": "PASS"
-      },
-      {
-        "name": "OWL rules detected from TTL data",
+        "name": "Agent initialized with data",
         "status": "PASS"
       },
       {
@@ -85,6 +81,10 @@
       },
       {
         "name": "DEVELOPER: What multi-family properties exist in emerging areas?",
+        "status": "PASS"
+      },
+      {
+        "name": "ask() returns grounded answer",
         "status": "PASS"
       },
       {
