@@ -161,11 +161,11 @@ Step 8: [OBSERVATION] hernangomez__juancho teammateOf osman__cedi
 
 ---
 
-## HyperMindAgent.call() Response Structure
+## HyperMindAgent ask() Response Structure
 
 **Note**: HyperMindAgent generates SQL with `graph_search()` CTE - the universal format that handles all scenarios. SDK delegates to Rust for execution.
 
-**ACTUAL OUTPUT** - `agent.call("Who are the teammates of Lessort?")`:
+**ACTUAL OUTPUT** - `agent.ask("Who are the teammates of Lessort?", llmConfig)`:
 
 ```javascript
 {
@@ -203,7 +203,7 @@ Step 8: [OBSERVATION] hernangomez__juancho teammateOf osman__cedi
 }
 ```
 
-**TABLE Format** - `agent.call("Who are the teammates of Lessort?")` with `answerFormat: 'table'`:
+**TABLE Format** - `agent.ask("Who are the teammates of Lessort?", llmConfig)` with table formatting:
 
 ```
 ┌────────────────────────────────────────┐

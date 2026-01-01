@@ -113,14 +113,17 @@ ThinkingReasoner runs automatically inside HyperMindAgent:
 
 ```javascript
 const agent = new HyperMindAgent({ name: 'demo', kg: db })
-const result = await agent.call("Who knows who?")
+const llmConfig = { provider: 'openai', apiKey: process.env.OPENAI_API_KEY, model: 'gpt-4o' }
+const result = agent.ask("Who knows who?", llmConfig)
 
 // Access reasoning stats from response
-console.log(result.thinkingGraph.derivationChain)
-console.log(result.reasoningStats)
+console.log(result.answer)           // Natural language answer
+console.log(result.reasoning)        // LLM's reasoning for the approach
+console.log(result.proofHash)        // SHA-256 verification hash
+console.log(result.capabilitiesUsed) // ["query", "count", ...]
 ```
 
-The `thinkingGraph.derivationChain` contains the complete proof chain from ThinkingReasoner.
+The `proofHash` provides cryptographic verification of the reasoning chain.
 
 ---
 

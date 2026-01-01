@@ -148,11 +148,15 @@ const { HyperMindAgent } = require('rust-kgdb')
 
 const agent = new HyperMindAgent({ name: 'legal-analyst', kg: db })
 
-const result = await agent.call('Who argued Brown v. Board of Education?')
+const result = agent.ask('Who argued Brown v. Board of Education?', {
+  provider: 'openai',
+  apiKey: process.env.OPENAI_API_KEY,
+  model: 'gpt-4o'
+})
 
 console.log(result.answer)           // "Thurgood Marshall, Robert L. Carter..."
-console.log(result.proof.hash)       // "sha256:92be3c44..." (verifiable)
-console.log(result.explanation.sql_queries[0].sql)  // SQL with graph_search() CTE
+console.log(result.proofHash)        // "sha256:92be3c44..." (verifiable)
+console.log(result.reasoning)        // LLM's reasoning for the approach
 ```
 
 **Generated SQL with graph_search() CTE:**
@@ -178,14 +182,15 @@ SELECT * FROM kg
 HyperMindAgent returns formatted answers (not just "Found X results"):
 
 ```javascript
-// TEXT format (default) - Natural language
+// ask() - Dynamic Proxy with LLM code generation
 const agent = new HyperMindAgent({ name: 'demo', kg: db })
-const result = await agent.call("Who are the teammates of Lessort?")
+const llmConfig = { provider: 'openai', apiKey: process.env.OPENAI_API_KEY, model: 'gpt-4o' }
+const result = agent.ask("Who are the teammates of Lessort?", llmConfig)
 console.log(result.answer)
 // → "Cedi Osman, Jerian Grant, Lorenzo Brown, Kendrick Nunn, Kostas Sloukas and 106 more"
 
-// TABLE format - Professional tabular output
-const agent = new HyperMindAgent({ name: 'demo', kg: db, answerFormat: 'table' })
+// askAgentic() - Multi-turn tool calling for complex analysis
+const agenticResult = agent.askAgentic("Analyze property values across neighborhoods", llmConfig)
 // → ┌────────────────────────────────────────┐
 //   │ Results (111 total)                     │
 //   ├────────────────────────────────────────┤
@@ -225,26 +230,25 @@ const agent = new HyperMindAgent({ name: 'demo', kg: db, answerFormat: 'json' })
 - [Digital Twin](DIGITAL_TWIN.md) - Smart Building IoT, HVAC automation, real sensor data
 - [Music Recommendation](MUSIC_RECOMMENDATION.md) - Artist influence, semantic discovery
 - [BRAIN Fraud & Underwriting](BRAIN_FRAUD_UNDERWRITING.md) - 5 scenarios, KGDB + Snowflake + BigQuery
-- [Euroleague Analytics](EUROLEAGUE_ANALYTICS.md) - 18 assertions, 100% pass
-- [Boston Real Estate](BOSTON_REALESTATE.md) - 19 assertions, 100% pass
-- [US Legal Case](LEGAL_CASE.md) - 20 assertions, 100% pass
+- [Euroleague Analytics](EUROLEAGUE_ANALYTICS.md) - 18/18 tests, 100% pass
+- [Boston Real Estate](BOSTON_REALESTATE.md) - 19/19 tests, 100% pass
+- [US Legal Case](LEGAL_CASE.md) - 21/21 tests, 100% pass
 - [Federation Setup](FEDERATION_SETUP.md) - Cross-database guide
 
 ---
 
 ## Benchmarks
 
-### Demo Pass Rates (verified with GPT-4o, December 2025)
+### Demo Pass Rates (verified January 2026)
 
 | Demo | Pass Rate | Tests |
 |------|-----------|-------|
-| Integration Test | **100%** | 17/17 |
-| Music Recommendation | **100%** | 15/15 |
-| Digital Twin | **100%** | 13/13 |
-| Boston Real Estate | **100%** | 20/20 |
-| Euroleague Basketball | **100%** | 17/17 |
-| US Legal Case | **100%** | 20/20 |
-| **TOTAL** | **100%** | **102/102** |
+| Music Recommendation | **100%** | 14/14 |
+| Digital Twin | **100%** | 12/12 |
+| Boston Real Estate | **100%** | 19/19 |
+| Euroleague Basketball | **100%** | 18/18 |
+| US Legal Case | **100%** | 21/21 |
+| **TOTAL** | **100%** | **84/84** |
 
 ### SQL with graph_search() CTE Generation
 

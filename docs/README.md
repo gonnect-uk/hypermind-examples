@@ -76,15 +76,15 @@ const result = agent.askAgentic(question, llmConfig)
 
 ---
 
-## Demo Results (100% Pass Rate)
+## Demo Results (100% Pass Rate - January 2026)
 
 | Example | Tests | Status |
 |---------|-------|--------|
-| [Music Recommendation](../examples/music-recommendation-agent.js) | 15/15 | ✅ 100% |
+| [Music Recommendation](../examples/music-recommendation-agent.js) | 14/14 | ✅ 100% |
 | [Euroleague Basketball](../examples/euroleague-basketball-agent.js) | 18/18 | ✅ 100% |
 | [Legal Case](../examples/legal-case-agent.js) | 21/21 | ✅ 100% |
-| [Digital Twin](../examples/digital-twin-smart-building.js) | 13/13 | ✅ 100% |
-| [Boston Real Estate](../examples/boston-realestate-agent.js) | 21/21 | ✅ 100% |
+| [Digital Twin](../examples/digital-twin-smart-building.js) | 12/12 | ✅ 100% |
+| [Boston Real Estate](../examples/boston-realestate-agent.js) | 19/19 | ✅ 100% |
 
 ---
 

@@ -231,12 +231,15 @@ const agent = new HyperMindAgent({
 })
 
 // 4. Query across all databases
-const result = await agent.call(
-  'Find high-risk customers with large transactions and recent claims'
+const llmConfig = { provider: 'openai', apiKey: process.env.OPENAI_API_KEY, model: 'gpt-4o' }
+const result = agent.ask(
+  'Find high-risk customers with large transactions and recent claims',
+  llmConfig
 )
 
-console.log(result.sqlGenerated)  // Shows federated SQL
+console.log(result.reasoning)     // LLM reasoning for the approach
 console.log(result.answer)        // Natural language answer
+console.log(result.proofHash)     // SHA-256 verification hash
 ```
 
 ---

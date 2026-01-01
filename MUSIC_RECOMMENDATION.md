@@ -501,13 +501,15 @@ const agent = new HyperMindAgent({
 // 2. Shortest paths for recommendation diversity
 // 3. Genre clustering for similarity matching
 
-const result = await agent.call(
-  'Who are the most influential artists in my listening history?'
+const result = agent.ask(
+  'Who are the most influential artists in my listening history?',
+  { provider: 'openai', apiKey: process.env.OPENAI_API_KEY, model: 'gpt-4o' }
 );
 
 // Returns answer with proof hash
-console.log(result.answer);
-console.log(`Proof: ${result.proof.hash}`);
+console.log(result.answer)
+console.log(result.reasoning)
+console.log(`Proof: ${result.proofHash}`)
 ```
 
 ### Performance Characteristics

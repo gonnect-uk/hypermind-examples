@@ -169,11 +169,11 @@ Step 8: [OBSERVATION] Dorchester adjacentTo SouthBoston
 
 ---
 
-## HyperMindAgent.call() Response Structure
+## HyperMindAgent ask() Response Structure
 
 **Note**: HyperMindAgent generates SQL with `graph_search()` CTE - the universal format that handles all scenarios. SDK delegates to Rust for execution.
 
-**ACTUAL OUTPUT** - `agent.call("Which neighborhoods are near Beacon Hill?")`:
+**ACTUAL OUTPUT** - `agent.ask("Which neighborhoods are near Beacon Hill?", llmConfig)`:
 
 ```javascript
 {
@@ -202,7 +202,7 @@ Step 8: [OBSERVATION] Dorchester adjacentTo SouthBoston
 }
 ```
 
-**TABLE Format** - `agent.call("What properties are in Boston?")` with `answerFormat: 'table'`:
+**TABLE Format** - `agent.ask("What properties are in Boston?", llmConfig)` with table formatting:
 
 ```
 ┌────────────────────────────────────────┐

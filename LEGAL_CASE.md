@@ -174,11 +174,11 @@ Step 7: [INFERENCE] ThurgoodMarshall mentored ConstanceBakerMotley (TransitivePr
 
 ---
 
-## HyperMindAgent.call() Response Structure
+## HyperMindAgent ask() Response Structure
 
 **Note**: HyperMindAgent generates SQL with `graph_search()` CTE - the universal format that handles all scenarios. SDK delegates to Rust for execution.
 
-**ACTUAL OUTPUT** - `agent.call("Who was the lead attorney in Brown v. Board of Education?")`:
+**ACTUAL OUTPUT** - `agent.ask("Who was the lead attorney in Brown v. Board of Education?", llmConfig)`:
 
 ```javascript
 {

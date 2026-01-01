@@ -172,15 +172,15 @@ ex:marshall a ex:Attorney ;
 
 ## Benchmark Results
 
-### Demo Pass Rates (with GPT-4o)
+### Demo Pass Rates (January 2026)
 
 | Demo | Pass Rate |
 |------|-----------|
-| Music Recommendation | **100%** (15/15) |
+| Music Recommendation | **100%** (14/14) |
 | Euroleague Basketball | **100%** (18/18) |
 | Legal Case | **100%** (21/21) |
-| Digital Twin | **100%** (13/13) |
-| Boston Real Estate | **100%** (21/21) |
+| Digital Twin | **100%** (12/12) |
+| Boston Real Estate | **100%** (19/19) |
 
 ### LUBM Benchmark (SPARQL generation)
 
