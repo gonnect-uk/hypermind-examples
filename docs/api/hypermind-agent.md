@@ -2,7 +2,38 @@
 
 HyperMindAgent combines LLM planning with knowledge graph reasoning for grounded, explainable AI.
 
-**npm package:** [`rust-kgdb`](https://www.npmjs.com/package/rust-kgdb) (v0.8.16+)
+**npm package:** [`rust-kgdb`](https://www.npmjs.com/package/rust-kgdb)
+
+---
+
+## Quick Start
+
+```javascript
+const { GraphDB, HyperMindAgent, getVersion } = require('rust-kgdb')
+
+// Create in-memory knowledge graph
+const db = new GraphDB('http://example.org/')
+db.loadTtl('@prefix ex: <http://example.org/> . ex:alice ex:knows ex:bob .', null)
+
+// Create HyperMindAgent with native Rust runtime
+const agent = new HyperMindAgent()
+agent.loadTtl('@prefix ex: <http://example.org/> . ex:alice ex:knows ex:bob .')
+
+// Train embeddings (configurable)
+agent.trainEmbeddingsWithConfig(50, 6, 3)  // 50 walks, 6 length, 3 epochs
+
+// Use ask() - Dynamic Proxy with full reasoning
+const llmConfig = {
+  provider: 'openai',
+  apiKey: process.env.OPENAI_API_KEY,
+  model: 'gpt-4o'
+}
+const result = agent.ask('Who does alice know?', llmConfig)
+console.log(result.answer)      // "bob"
+console.log(result.reasoning)   // "To find who alice knows..."
+console.log(result.rhaiCode)    // Generated Rhai code
+console.log(result.proofHash)   // SHA-256 hash
+```
 
 ---
 
@@ -14,253 +45,179 @@ const agent = new HyperMindAgent(options)
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `options.name` | `string` | Agent name for identification |
-| `options.kg` | `GraphDB` | Knowledge graph instance |
-| `options.apiKey` | `string?` | Optional OpenAI/Anthropic API key |
-| `options.model` | `string?` | LLM model (default: 'gpt-4o') |
-| `options.answerFormat` | `string?` | Output format: 'text' (default), 'table', 'json' |
+| `options.name` | `string?` | Agent name for identification |
 
 **Example:**
 ```javascript
-const { GraphDB, HyperMindAgent } = require('rust-kgdb')
+const { HyperMindAgent } = require('rust-kgdb')
 
-const db = new GraphDB('http://example.org/')
-db.loadTtl('...', null)
-
-const agent = new HyperMindAgent({
-  name: 'my-agent',
-  kg: db,
-  apiKey: process.env.OPENAI_API_KEY,  // Optional
-  answerFormat: 'text'                  // 'text' | 'table' | 'json'
-})
+const agent = new HyperMindAgent()
+// or
+const agent = new HyperMindAgent({ name: 'my-agent' })
 ```
 
 ---
 
-## Answer Formats
+## Key Methods
 
-HyperMindAgent supports three output formats. Entity names are automatically extracted from URIs (e.g., `lessort__mathias` → `Mathias Lessort`).
+### loadTtl(ttlData)
 
-### TEXT Format (Default)
-
-Natural language listing of entities:
+Load Turtle data into the agent's knowledge graph.
 
 ```javascript
-const agent = new HyperMindAgent({ name: 'demo', kg: db, answerFormat: 'text' })
-const result = await agent.call("Who are the teammates of Lessort?")
+agent.loadTtl(`
+  @prefix ex: <http://example.org/> .
+  @prefix owl: <http://www.w3.org/2002/07/owl#> .
 
-console.log(result.answer)
-// "Cedi Osman, Jerian Grant, Lorenzo Brown, Kendrick Nunn, Kostas Sloukas and 106 more"
+  ex:knows a owl:SymmetricProperty .
+  ex:alice ex:knows ex:bob .
+`)
 ```
 
-### TABLE Format
+### trainEmbeddingsWithConfig(walksPerEntity, walkLength, epochs)
 
-Professional tabular output:
+Train RDF2Vec embeddings with configurable parameters.
 
 ```javascript
-const agent = new HyperMindAgent({ name: 'demo', kg: db, answerFormat: 'table' })
-const result = await agent.call("Who are the teammates of Lessort?")
+// Fast training (for demos)
+agent.trainEmbeddingsWithConfig(50, 6, 3)
 
-console.log(result.answer)
-// ┌────────────────────────────────────────┐
-// │ Results (111 total)                     │
-// ├────────────────────────────────────────┤
-// │  Cedi Osman                            │
-// │  Jerian Grant                          │
-// │  Lorenzo Brown                         │
-// │  Kendrick Nunn                         │
-// │  Kostas Sloukas                        │
-// │  Marius Grigonis                       │
-// │  Mathias Lessort                       │
-// │  Juancho Hernangomez                   │
-// │  Konstantinos Mitoglou                 │
-// │  ... and 96 more                       │
-// └────────────────────────────────────────┘
-```
-
-### JSON Format
-
-Structured data for programmatic use:
-
-```javascript
-const agent = new HyperMindAgent({ name: 'demo', kg: db, answerFormat: 'json' })
-const result = await agent.call("Who are the teammates of Lessort?")
-
-console.log(result.answer)
-// {
-//   "count": 111,
-//   "results": [
-//     { "s": "Jerian Grant", "o": "Cedi Osman" },
-//     { "s": "Lorenzo Brown", "o": "Cedi Osman" },
-//     { "s": "Mathias Lessort", "o": "Cedi Osman" },
-//     ...
-//   ],
-//   "reasoning": {
-//     "observations": 0,
-//     "derivedFacts": 0,
-//     "rulesApplied": 0
-//   }
-// }
-```
-
----
-
-## With vs Without API Key
-
-### With API Key
-
-When an API key is provided, HyperMindAgent uses the LLM for intent classification and planning, but query generation remains deterministic (schema-based).
-
-```javascript
-const agent = new HyperMindAgent({
-  name: 'euroleague',
-  kg: db,
-  apiKey: process.env.OPENAI_API_KEY,
-  model: 'gpt-4o'
-})
-
-const result = await agent.call("Who are the teammates of Lessort?")
-console.log(result.answer)
-// "Cedi Osman, Jerian Grant, Lorenzo Brown, Kendrick Nunn, Kostas Sloukas and 106 more"
-```
-
-### Without API Key
-
-Works identically - schema-based query generation produces the same results:
-
-```javascript
-const agent = new HyperMindAgent({
-  name: 'euroleague',
-  kg: db
-  // No apiKey - uses schema-based reasoning only
-})
-
-const result = await agent.call("Who are the teammates of Lessort?")
-console.log(result.answer)
-// "Cedi Osman, Jerian Grant, Lorenzo Brown, Kendrick Nunn, Kostas Sloukas and 106 more"
-```
-
-**Key Point:** The LLM is optional. Query generation is deterministic from schema, ensuring reproducible results.
-
----
-
-## Real Output Examples
-
-### Euroleague Basketball
-
-**Question:** "Who are the teammates of Lessort?"
-
-```javascript
-{
-  "answer": "Cedi Osman, Jerian Grant, Lorenzo Brown, Kendrick Nunn, Kostas Sloukas and 106 more",
-  "sparql": "SELECT ?s ?o WHERE { ?s <http://euroleague.net/ontology#teammateOf> ?o } LIMIT 100",
-  "resultCount": 111,
-  "thinkingGraph": {
-    "observations": 0,
-    "derivedFacts": 0,
-    "derivationChain": 0
-  }
-}
-```
-
-**Raw Results (first 5):**
-```json
-[
-  { "o": "http://euroleague.net/player/osman__cedi", "s": "http://euroleague.net/player/none" },
-  { "o": "http://euroleague.net/player/osman__cedi", "s": "http://euroleague.net/player/grant__jerian" },
-  { "o": "http://euroleague.net/player/osman__cedi", "s": "http://euroleague.net/player/brown__lorenzo" },
-  { "o": "http://euroleague.net/player/osman__cedi", "s": "http://euroleague.net/player/nunn__kendrick" },
-  { "s": "http://euroleague.net/player/sloukas__kostas", "o": "http://euroleague.net/player/osman__cedi" }
-]
-```
-
-### Legal Case (Brown v. Board)
-
-**Question:** "Who argued the Brown v. Board case?"
-
-```javascript
-{
-  "answer": "BrownVBoard, OliverHill, GeorgeHayes, JamesNabrit, LouisRedding and 4 more",
-  "sparql": "SELECT ?s ?o WHERE { ?s <http://law.gov/case#arguedBy> ?o } LIMIT 100"
-}
-```
-
-**Raw Results (first 5):**
-```json
-[
-  { "s": "http://law.gov/case#BrownVBoard", "o": "http://law.gov/case#OliverHill" },
-  { "o": "http://law.gov/case#GeorgeHayes", "s": "http://law.gov/case#BrownVBoard" },
-  { "o": "http://law.gov/case#JamesNabrit", "s": "http://law.gov/case#BrownVBoard" },
-  { "o": "http://law.gov/case#LouisRedding", "s": "http://law.gov/case#BrownVBoard" },
-  { "o": "http://law.gov/case#RobertCarter", "s": "http://law.gov/case#BrownVBoard" }
-]
-```
-
----
-
-## Methods
-
-### call(question)
-
-Ask a natural language question. Returns answer with full reasoning trace.
-
-```javascript
-const result = await agent.call(question)
+// Full training (for production)
+agent.trainEmbeddingsWithConfig(200, 10, 5)
 ```
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `question` | `string` | Natural language question |
+| `walksPerEntity` | `number` | Random walks per entity (default: 50) |
+| `walkLength` | `number` | Length of each walk (default: 6) |
+| `epochs` | `number` | Training epochs (default: 3) |
 
-**Returns:** `AgentResult`
+---
+
+## ask() - Dynamic Proxy
+
+Generate code dynamically to answer questions. LLM generates Rhai code that executes against the knowledge graph.
 
 ```javascript
-interface AgentResult {
-  answer: string              // Formatted answer (text/table/json)
-  explanation: object         // Execution trace with SPARQL queries
-  raw_results: object[]       // Raw SPARQL query results
-  inferences: object[]        // Applied reasoning rules
-  thinkingGraph: ThinkingGraph  // Reasoning trace
-  derivedFacts: object[]      // Facts derived via OWL rules
-  proofs: object[]            // Cryptographic proofs
-  reasoningStats: object      // Reasoning statistics
+const llmConfig = {
+  provider: 'openai',
+  apiKey: process.env.OPENAI_API_KEY,
+  model: 'gpt-4o'
+}
+
+const result = agent.ask('What are the most expensive properties in Boston?', llmConfig)
+```
+
+**Returns:** `AskResult`
+
+```javascript
+{
+  answer: string,           // Natural language answer
+  reasoning: string,        // LLM's reasoning for the approach
+  rhaiCode: string,         // Generated Rhai code
+  capabilitiesUsed: string[], // ["query", "count", ...]
+  proofHash: string,        // SHA-256 proof hash
+  executionTimeUs: number   // Execution time in microseconds
+}
+```
+
+**Example Output:**
+```javascript
+{
+  answer: 'Found 5 results: "property_BB002", "property_BH001", ...',
+  reasoning: 'To find the most expensive properties, we query for properties and their assessed values, then sort by value descending...',
+  rhaiCode: 'let sparql = "SELECT ?p ?v WHERE { ?p a :Property . ?p :assessedValue ?v } ORDER BY DESC(?v)";\nlet results = query(sparql);...',
+  capabilitiesUsed: ['query', 'count', 'load_ttl', 'federate', 'graph_search'],
+  proofHash: 'd027713343646b18...',
+  executionTimeUs: 2760
 }
 ```
 
 ---
 
-## ThinkingGraph Structure
+## askAgentic() - Tool Calling
 
-The `thinkingGraph` contains the complete reasoning trace:
+Multi-turn tool calling loop for complex analysis. The LLM iteratively calls tools to gather information.
 
 ```javascript
-interface ThinkingGraph {
-  observations: Observation[]     // Ground truth facts from KG
-  derivedFacts: DerivedFact[]     // Facts derived via OWL rules
-  derivationChain: Step[]         // Proof steps
-  rulesApplied: number            // Count of OWL rules used
-}
+const result = agent.askAgentic(
+  'Analyze property values in Back Bay and adjacent neighborhoods. What trends do you see?',
+  llmConfig
+)
+```
 
-interface Observation {
-  type: 'observation'
-  fact: string                    // e.g., "alice knows bob"
-  source: 'knowledge_graph'
-}
+**Returns:** `AgenticResult`
 
-interface DerivedFact {
-  fact: string                    // e.g., "bob knows alice"
-  rule: string                    // e.g., "SymmetricProperty"
-  usedObservations: number[]      // References to source observations
-}
-
-interface Step {
-  step: number
-  type: 'observation' | 'inference' | 'rule'
-  fact: string
-  rule?: string                   // OWL rule applied
-  usedSteps?: number[]            // Previous steps used
+```javascript
+{
+  answer: string,           // Detailed natural language answer
+  reasoning: string,        // "Completed in N turns"
+  toolCalls: string,        // JSON of tool calls made
+  capabilitiesUsed: string[], // ["query", ...]
+  proofHash: string,        // SHA-256 proof hash
+  executionTimeUs: number   // Execution time in microseconds
 }
 ```
+
+**Example Output:**
+```javascript
+{
+  answer: 'The analysis of property values in Back Bay and adjacent neighborhoods reveals:\n\n### Back Bay:\n- Properties have higher assessed values ($2.8M to $8.5M)\n\n### South End:\n- Lower values ($875K to $2.4M)\n\n### Beacon Hill:\n- Strong values ($1.6M to $3.9M)...',
+  reasoning: 'Completed in 4 turns',
+  toolCalls: 'query({"sparql":"SELECT ?neighborhood ?property ?value WHERE {..."})',
+  capabilitiesUsed: ['query'],
+  proofHash: '8ca3e570c0b96b14...',
+  executionTimeUs: 10699650
+}
+```
+
+---
+
+## ask() vs askAgentic() Comparison
+
+| Feature | ask() (Dynamic Proxy) | askAgentic() (Tool Calling) |
+|---------|----------------------|----------------------------|
+| Execution Mode | Rhai Code Generation | Multi-turn dialogue |
+| Reasoning | LLM generates code | Step-by-step tool calls |
+| Proof Generation | SHA-256 hash | SHA-256 hash |
+| Capabilities Tracked | Yes | Yes |
+| Latency | Fast (~1-5s) | Slower (~5-15s) |
+| Use Case | Simple queries | Complex analysis |
+
+---
+
+## Available Capabilities
+
+Both `ask()` and `askAgentic()` have access to these capabilities:
+
+| Capability | Description |
+|------------|-------------|
+| `query` | Execute SPARQL SELECT queries |
+| `construct` | Execute SPARQL CONSTRUCT queries |
+| `count` | Count query results |
+| `is_empty` | Check if results are empty |
+| `load_ttl` | Load Turtle data |
+| `federate` | Execute federated queries |
+| `graph_search` | Search across graphs |
+| `apply_rules` | Apply OWL reasoning rules |
+| `derive` | Derive new facts |
+| `explain` | Explain reasoning |
+| `extract_schema` | Extract ontology schema |
+| `get_classes` | List OWL classes |
+| `get_properties` | List properties |
+| `store_memory` | Store to working memory |
+| `recall_memory` | Recall from memory |
+| `persist_memory` | Persist memory |
+| `embed` | Get entity embedding |
+| `similar` | Find similar entities |
+| `similarity` | Calculate similarity score |
+| `pagerank` | Run PageRank algorithm |
+| `triangle_count` | Count triangles |
+| `connected_components` | Find connected components |
+| `shortest_paths` | Find shortest paths |
+| `label_propagation` | Run label propagation |
+| `show_definition` | Show capability definition |
+| `list_all_capabilities` | List all capabilities |
 
 ---
 
@@ -280,15 +237,27 @@ HyperMindAgent automatically detects OWL properties in your TTL data:
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix ex: <http://example.org/> .
 
-ex:knows a owl:SymmetricProperty .
-ex:alice ex:knows ex:bob .
+ex:adjacentTo a owl:SymmetricProperty .
+ex:priceInfluencedBy a owl:TransitiveProperty .
+
+ex:BackBay ex:adjacentTo ex:SouthEnd .
 ```
 
 ---
 
-## Explore the Examples
+## Demo Results (100% Pass Rate)
 
-Run the examples to see HyperMindAgent in action:
+| Example | Tests | Status |
+|---------|-------|--------|
+| [Music Recommendation](../../examples/music-recommendation-agent.js) | 15/15 | 100% |
+| [Euroleague Basketball](../../examples/euroleague-basketball-agent.js) | 18/18 | 100% |
+| [Legal Case](../../examples/legal-case-agent.js) | 21/21 | 100% |
+| [Digital Twin](../../examples/digital-twin-smart-building.js) | 13/13 | 100% |
+| [Boston Real Estate](../../examples/boston-realestate-agent.js) | 21/21 | 100% |
+
+---
+
+## Run the Examples
 
 ```bash
 # Clone the repository
@@ -298,16 +267,14 @@ cd hypermind-examples
 # Install dependencies
 npm install
 
-# Run examples
+# Run examples (requires OPENAI_API_KEY for ask/askAgentic)
+export OPENAI_API_KEY=your-key
 npm run euroleague   # Euroleague basketball analytics
 npm run boston       # Boston real estate
 npm run legal        # Brown v. Board of Education
+npm run music        # Music recommendation
+npm run digital-twin # Smart building IoT
 ```
-
-**Live Examples:**
-- [Euroleague Basketball](https://github.com/gonnect-uk/hypermind-examples/blob/main/examples/euroleague-basketball-agent.js)
-- [Boston Real Estate](https://github.com/gonnect-uk/hypermind-examples/blob/main/examples/boston-realestate-agent.js)
-- [Legal Case Analysis](https://github.com/gonnect-uk/hypermind-examples/blob/main/examples/legal-case-agent.js)
 
 ---
 

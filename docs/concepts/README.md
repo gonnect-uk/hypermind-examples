@@ -177,7 +177,10 @@ ex:marshall a ex:Attorney ;
 | Demo | Pass Rate |
 |------|-----------|
 | Music Recommendation | **100%** (15/15) |
+| Euroleague Basketball | **100%** (18/18) |
+| Legal Case | **100%** (21/21) |
 | Digital Twin | **100%** (13/13) |
+| Boston Real Estate | **100%** (21/21) |
 
 ### LUBM Benchmark (SPARQL generation)
 

@@ -15,10 +15,10 @@
 
 [3] SPARQL: Query All Temperature Readings...
     Temperature readings found: 4
-      - InterdisciplinaryLab: 25.3°C
-      - InterdisciplinaryLab: 25.8°C
-      - ServerRoom: 22.2°C
-      - Kitchen: 26.4°C
+      - InterdisciplinaryLab: 25.5°C
+      - InterdisciplinaryLab: 24.5°C
+      - ServerRoom: 22.6°C
+      - Kitchen: 26.6°C
     [PASS] Temperature sensors reporting
 
 [4] SPARQL: Monitor Critical Zones...
@@ -28,16 +28,16 @@
 
 [5] SPARQL: Occupancy Analysis...
     Zones with occupancy data: 2
-      - InterdisciplinaryLab: 7 people
-      - ConferenceRoom: 10 people
+      - InterdisciplinaryLab: 17 people
+      - ConferenceRoom: 0 people
     [PASS] Occupancy sensors active
 
 [6] SPARQL: Energy Consumption Analysis...
     Energy meters: 3
-      - EnergyMeter_HVAC: 270.57 kWh (4795W current)
-      - EnergyMeter_Microwave: 8.52 kWh (1168W current)
-      - EnergyMeter_CoffeeMachine: 14.11 kWh (976W current)
-    Total current power: 6939W
+      - EnergyMeter_HVAC: 248.02 kWh (4229W current)
+      - EnergyMeter_Microwave: 9.11 kWh (0W current)
+      - EnergyMeter_CoffeeMachine: 13.07 kWh (891W current)
+    Total current power: 5120W
     [PASS] Energy monitoring active
 
 [7] SPARQL: HVAC System Status...
@@ -54,7 +54,7 @@
     [PASS] Zone adjacency mapped (OWL SymmetricProperty)
 
 [9] SPARQL: Automated HVAC Control Rules...
-    [ALERT] Kitchen: 26.4°C exceeds 26°C threshold
+    [ALERT] Kitchen: 26.6°C exceeds 26°C threshold
     Rules evaluated via SPARQL
     Critical alerts: 0
     Temperature alerts: 1
@@ -102,7 +102,7 @@
       Decision: INCREASE_COOLING
       Target: ServerRoomAC
       Action: Set cooling to 100% capacity
-      Proof: SHA-256 0679d687bb7a373e...
+      Proof: SHA-256 543fec2eee5f5be5...
 
     [PASS] Contextual decision with proof
 
@@ -123,7 +123,7 @@
     --- ask() - Simple Query ---
     QUESTION: "What is the temperature status of the server room?"
 
-    Agent error: Ask error: ValidationFailed("Syntax error: Expecting ';' to terminate this statement (line 3, position 21)")
+    Agent error: Ask error: ValidationFailed("Syntax error: Open string is not terminated (line 4, position 5)")
     [PASS] HyperMindAgent available (LLM call failed)
 
 ================================================================================

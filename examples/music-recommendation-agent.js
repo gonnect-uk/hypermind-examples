@@ -932,7 +932,9 @@ async function runMusicRecommendationDemo() {
       });
 
       console.log('    Answer: ' + askResult.answer);
+      console.log('    Reasoning: ' + (askResult.reasoning || 'N/A'));
       console.log('    Rhai Code: ' + (askResult.rhaiCode ? askResult.rhaiCode.substring(0, 80) + '...' : 'N/A'));
+      console.log('    Capabilities Used: ' + (askResult.capabilitiesUsed?.join(', ') || 'query'));
       console.log('    Proof Hash: ' + askResult.proofHash.substring(0, 16) + '...');
       console.log('    Execution Time: ' + (askResult.executionTimeUs / 1000).toFixed(2) + 'ms');
       console.log();
@@ -948,11 +950,26 @@ async function runMusicRecommendationDemo() {
       });
 
       console.log('    Answer: ' + agenticResult.answer);
-      console.log('    Reasoning: ' + (agenticResult.reasoning ? agenticResult.reasoning.substring(0, 100) + '...' : 'N/A'));
+      console.log('    Reasoning: ' + (agenticResult.reasoning || 'N/A'));
       console.log('    Tool Calls: ' + agenticResult.toolCalls.substring(0, 80) + '...');
       console.log('    Capabilities Used: ' + agenticResult.capabilitiesUsed.join(', '));
       console.log('    Proof Hash: ' + agenticResult.proofHash.substring(0, 16) + '...');
       console.log('    Execution Time: ' + (agenticResult.executionTimeUs / 1000).toFixed(2) + 'ms');
+      console.log();
+
+      // Display comparison table
+      console.log('    ┌' + '─'.repeat(68) + '┐');
+      console.log('    │ CAPABILITY COMPARISON: ask() vs askAgentic()' + ' '.repeat(22) + '│');
+      console.log('    ├' + '─'.repeat(68) + '┤');
+      console.log('    │ Feature              │ ask() (Dynamic Proxy) │ askAgentic() (Tools)  │');
+      console.log('    ├──────────────────────┼───────────────────────┼───────────────────────┤');
+      console.log('    │ Execution Mode       │ Rhai Code Generation  │ Tool Calling Loop     │');
+      console.log('    │ Reasoning            │ LLM generates code    │ Multi-turn dialogue   │');
+      console.log('    │ Proof Generation     │ ✓ SHA-256 hash        │ ✓ SHA-256 hash        │');
+      console.log('    │ Capabilities Used    │ ✓ Tracked             │ ✓ Tracked             │');
+      console.log('    │ Latency              │ Fast (~1-5s)          │ Slower (~5-15s)       │');
+      console.log('    │ Use Case             │ Simple queries        │ Complex analysis      │');
+      console.log('    └' + '─'.repeat(68) + '┘');
       console.log();
 
       console.log('    [PASS] HyperMindAgent ask() and askAgentic() successful');

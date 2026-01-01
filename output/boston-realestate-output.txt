@@ -143,8 +143,8 @@ SELECT ?address ?value ?bedrooms WHERE {
 
 RESULTS: 2 bindings
 SAMPLE (first 5):
-  value=$2,850,000, bedrooms=3, property=property_BB001, address=165 Marlborough Street
-  value=$8,500,000, property=property_BB002, bedrooms=6, address=298 Commonwealth Avenue
+  address=165 Marlborough Street, property=property_BB001, bedrooms=3, value=$2,850,000
+  address=298 Commonwealth Avenue, bedrooms=6, property=property_BB002, value=$8,500,000
     [PASS] INVESTOR: What are the highest-value properties in Back Bay?
 
 REASONING CONTEXT:
@@ -168,7 +168,7 @@ SELECT ?neighbor ?label WHERE {
 RESULTS: 2 bindings
 SAMPLE (first 5):
   neighbor=SouthEnd, label=South End
-  neighbor=BeaconHill, label=Beacon Hill
+  label=Beacon Hill, neighbor=BeaconHill
     [PASS] HOME BUYER: Which neighborhoods are adjacent to Back Bay?
 
 REASONING CONTEXT:
@@ -191,11 +191,11 @@ SELECT ?property ?influenced ?address WHERE {
 
 RESULTS: 7 bindings
 SAMPLE (first 5):
-  address=165 Marlborough Street, influenced=property_BB002, property=property_BB001
-  address=298 Commonwealth Avenue, influenced=property_BH001, property=property_BB002
-  address=72 Pinckney Street, influenced=property_BH002, property=property_BH001
-  influenced=property_DO002, property=property_DO001, address=127 Savin Hill Avenue
-  address=42 Sedgwick Street, influenced=property_JP002, property=property_JP001
+  influenced=property_BB002, address=165 Marlborough Street, property=property_BB001
+  address=298 Commonwealth Avenue, property=property_BB002, influenced=property_BH001
+  property=property_BH001, address=72 Pinckney Street, influenced=property_BH002
+  property=property_DO001, address=127 Savin Hill Avenue, influenced=property_DO002
+  influenced=property_JP002, property=property_JP001, address=42 Sedgwick Street
     [PASS] APPRAISER: What properties influence pricing in the market?
 
 REASONING CONTEXT:
@@ -219,8 +219,8 @@ SELECT ?address ?year WHERE {
 
 RESULTS: 2 bindings
 SAMPLE (first 5):
-  address=72 Pinckney Street, property=property_BH001, year=1830
-  year=1845, address=15 Chestnut Street, property=property_BH002
+  year=1830, property=property_BH001, address=72 Pinckney Street
+  address=15 Chestnut Street, year=1845, property=property_BH002
     [PASS] HISTORIAN: What are the oldest properties in Beacon Hill?
 
 REASONING CONTEXT:
@@ -246,10 +246,10 @@ SELECT ?address ?value ?bedrooms WHERE {
 RESULTS: 5 bindings
 SAMPLE (first 5):
   value=$950,000, property=property_DO001, address=127 Savin Hill Avenue, bedrooms=6
-  property=property_EB001, address=156 Bennington Street, value=$875,000, bedrooms=6
-  property=property_RX001, bedrooms=6, address=52 Warren Street, value=$685,000
-  property=property_SB002, value=$1,850,000, address=512 East Broadway, bedrooms=7
-  address=534 Tremont Street, bedrooms=8, property=property_SE001, value=$2,400,000
+  value=$875,000, address=156 Bennington Street, bedrooms=6, property=property_EB001
+  property=property_RX001, bedrooms=6, value=$685,000, address=52 Warren Street
+  property=property_SB002, address=512 East Broadway, bedrooms=7, value=$1,850,000
+  value=$2,400,000, property=property_SE001, bedrooms=8, address=534 Tremont Street
     [PASS] DEVELOPER: What multi-family properties exist in emerging areas?
 
 REASONING CONTEXT:
@@ -261,32 +261,44 @@ REASONING CONTEXT:
 
   --- ask() - Simple Query (KG-grounded) ---
   Question: "What are the most expensive properties in Boston?"
-  ANSWER: Found 3 results: "<http://boston.gov/property#property_DO001>", "<http://boston.gov/property#property_EB001>", "<http://boston.gov/property#property_SE002>"...
-  PROOF: SHA-256 4e8d8259b6024ceb...
+  ANSWER: Found 5 results: "<http://boston.gov/property#property_DO001>", "<http://boston.gov/property#property_EB001>", "<http://boston.gov/property#property_SE002>", "<http://boston.gov/property#property_BB002>", "<http://boston.gov/property#property_DO002>"
+  REASONING: To find the most expensive properties in Boston, we need to query the knowledge graph for properties and their assessed values. Then, we sort the resulting list by the assessed value in descending order to identify the most expensive ones. Finally, from the sorted list, we take the top results (e.g., top 5) and extract the property URIs.
+  RHAI CODE: // Rhai code here - compose objects naturally
+
+// Step 1: Query to get propertie...
+  CAPABILITIES: query, construct, count, is_empty, load_ttl, federate, graph_search, apply_rules, derive, explain, extract_schema, get_classes, get_properties, store_memory, recall_memory, persist_memory, embed, similar, similarity, pagerank, triangle_count, connected_components, shortest_paths, label_propagation, show_definition, list_all_capabilities
+  PROOF HASH: d027713343646b18...
+  EXECUTION: 2.76ms
     [PASS] ask() returns grounded answer
 
   --- askAgentic() - Multi-Step Reasoning ---
   Question: "Analyze property values in Back Bay and adjacent neighborhoods. What trends do you see and which areas offer the best investment potential?"
-  MULTI-STEP ANSWER:
-  ------------------------------------------------------------
-  Based on the property data for Back Bay and its adjacent neighborhoods, South End and Beacon Hill, here's an analysis of the property values and their potential investment opportunities:
-  
-  ### Property Values
-  1. **Back Bay:**
-     - 165 Marlborough Street: $2,850,000
-     - 298 Commonwealth Avenue: $8,500,000
-     - 45 Newbury Street: $4,200,000
-  
-  2. **South End:**
-     - 534 Tremont Street: $2,400,000
-     - 88 Waltham Street: $875,000
-  
-  3. **Beacon Hill:**
-     - 72 Pinckney Street: $3,950,000
-     - 15 Chestn
-  ------------------------------------------------------------
-  TOOL CALLS / STEPS:
-  Note: steps.slice(...).forEach is not a function
+  ANSWER: The analysis of property values in Back Bay and its adjacent neighborhoods: South End and Beacon Hill, reveals several insights:
+
+### Back Bay:
+- Properties in Back Bay have higher assessed values compared to the adjacent neighborhoods.
+- The property values range significantly, with one property as high as $8,500,000 and another at $2,850,000.
+
+### South End:
+- Properties in the South End generally show lower values in comparison to Back Bay.
+- The recorded properties are valued at $2,400,000 and $875,000, indicating a more affordable entry point.
+
+### Beacon Hill:
+- Beacon Hill's property values vary, with one property assessed at $3,950,000 and another at $1,650,000.
+- The values in Beacon Hill are generally higher than in the South End, but some are lower compared to Back Bay.
+
+### Investment Potential:
+- **Back Bay** demonstrates higher property values, which may indicate higher demand and potential returns but also represents a higher investment barrier.
+- **South End** has lower values, which might offer a more accessible investment opportunity with potential for value growth due to its proximity to Back Bay.
+- **Beacon Hill** shows strong property values similar to Back Bay, indicating stable demand, which might attract investors looking for high-value investments with potential appreciation.
+
+For the best investment potential, consider Back Bay for high-value investments and South End for more affordable entry with growth opportunities.
+  REASONING: Completed in 4 turns
+  TOOL CALLS: query({"sparql":"SELECT ?neighborhood ?property ?value WHERE {\n  ?property a <h...
+  CAPABILITIES: query
+  PROOF HASH: 8ca3e570c0b96b14...
+  EXECUTION: 10699.65ms
+    [PASS] askAgentic() performs multi-step analysis
 
   ┌────────────────────────────────────────────────────────────────────┐
   │ CAPABILITY COMPARISON: ask() vs askAgentic()                       │
@@ -337,9 +349,9 @@ REASONING CONTEXT:
   TEST RESULTS SUMMARY
 ======================================================================
 
-  PASSED: 20
+  PASSED: 21
   FAILED: 0
-  TOTAL:  20
+  TOTAL:  21
 
   PASS RATE: 100.0%
 

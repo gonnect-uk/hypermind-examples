@@ -481,17 +481,15 @@ SELECT ?player (COUNT(?steal) AS ?steal_count) WHERE {
   try {
     const askResult = agent.ask(simpleQuestion, llmConfig)
 
-    const answer = askResult.answer || askResult.response || askResult.text ||
-      (typeof askResult === 'string' ? askResult : JSON.stringify(askResult).substring(0, 300))
-    console.log(`  ANSWER: ${answer.substring(0, 150)}...`)
-
-    // Generate proof hash
-    const proofPayload = JSON.stringify({ question: simpleQuestion, answer: answer.substring(0, 100) })
-    const proofHash = require('crypto').createHash('sha256').update(proofPayload).digest('hex').substring(0, 16)
-    console.log(`  PROOF: SHA-256 ${proofHash}...`)
+    console.log('  ANSWER: ' + askResult.answer)
+    console.log('  REASONING: ' + (askResult.reasoning || 'Direct query execution'))
+    console.log('  RHAI CODE: ' + (askResult.rhaiCode ? askResult.rhaiCode.substring(0, 80) + '...' : 'N/A'))
+    console.log('  CAPABILITIES: ' + (askResult.capabilitiesUsed?.join(', ') || 'query'))
+    console.log('  PROOF HASH: ' + (askResult.proofHash ? askResult.proofHash.substring(0, 16) + '...' : 'N/A'))
+    console.log('  EXECUTION: ' + (askResult.executionTimeUs / 1000).toFixed(2) + 'ms')
 
     test('ask() returns grounded answer', () => {
-      assert(answer.length > 10, 'Expected non-empty answer')
+      assert(askResult.answer && askResult.answer.length > 0, 'Expected non-empty answer')
     })
   } catch (e) {
     console.log(`  Note: ${e.message}`)
@@ -509,23 +507,12 @@ SELECT ?player (COUNT(?steal) AS ?steal_count) WHERE {
     try {
       const agenticResult = agent.askAgentic(complexQuestion, llmConfig)
 
-      const answer = agenticResult.answer || agenticResult.response || agenticResult.text ||
-        (typeof agenticResult === 'string' ? agenticResult : JSON.stringify(agenticResult).substring(0, 400))
-      console.log('  MULTI-STEP ANSWER:')
-      console.log('  ' + '-'.repeat(60))
-      answer.substring(0, 400).split('\n').forEach(line => {
-        console.log(`  ${line}`)
-      })
-      console.log('  ' + '-'.repeat(60))
-
-      // Show tool calls if available
-      if (agenticResult.toolCalls || agenticResult.steps) {
-        console.log('  TOOL CALLS / STEPS:')
-        const steps = agenticResult.toolCalls || agenticResult.steps || []
-        steps.slice(0, 3).forEach((step, i) => {
-          console.log(`    ${i + 1}. ${step.name || step.tool || step.action}`)
-        })
-      }
+      console.log('  ANSWER: ' + agenticResult.answer)
+      console.log('  REASONING: ' + (agenticResult.reasoning || 'Multi-step analysis'))
+      console.log('  TOOL CALLS: ' + (agenticResult.toolCalls ? agenticResult.toolCalls.substring(0, 80) + '...' : 'N/A'))
+      console.log('  CAPABILITIES: ' + (agenticResult.capabilitiesUsed?.join(', ') || 'query'))
+      console.log('  PROOF HASH: ' + (agenticResult.proofHash ? agenticResult.proofHash.substring(0, 16) + '...' : 'N/A'))
+      console.log('  EXECUTION: ' + (agenticResult.executionTimeUs / 1000).toFixed(2) + 'ms')
     } catch (e) {
       console.log(`  Note: ${e.message}`)
     }

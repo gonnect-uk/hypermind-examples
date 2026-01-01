@@ -21,7 +21,7 @@ npm run boston
 | Metric | Value |
 |--------|-------|
 | **Pass Rate** | 100.0% |
-| **Tests Passed** | 20 |
+| **Tests Passed** | 21 |
 | **Tests Failed** | 0 |
 
 ---

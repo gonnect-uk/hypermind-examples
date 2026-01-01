@@ -846,19 +846,12 @@ async function runDigitalTwinDemo() {
 
       const askResult = agent.ask(simpleQuestion, llmConfig);
 
-      console.log('    ANSWER:');
-      console.log('    ' + '-'.repeat(60));
-      const askAnswer = askResult.answer || askResult.response || askResult.text ||
-        (typeof askResult === 'string' ? askResult : JSON.stringify(askResult).substring(0, 300));
-      askAnswer.split('\n').forEach(line => {
-        console.log('    ' + line);
-      });
-      console.log('    ' + '-'.repeat(60));
-
-      // Show SPARQL generated
-      if (askResult.sparql || askResult.query) {
-        console.log('    SPARQL: ' + (askResult.sparql || askResult.query).substring(0, 100) + '...');
-      }
+      console.log('    ANSWER: ' + askResult.answer);
+      console.log('    REASONING: ' + (askResult.reasoning || 'Direct query execution'));
+      console.log('    RHAI CODE: ' + (askResult.rhaiCode ? askResult.rhaiCode.substring(0, 80) + '...' : 'N/A'));
+      console.log('    CAPABILITIES: ' + (askResult.capabilitiesUsed?.join(', ') || 'query'));
+      console.log('    PROOF HASH: ' + (askResult.proofHash ? askResult.proofHash.substring(0, 16) + '...' : 'N/A'));
+      console.log('    EXECUTION: ' + (askResult.executionTimeUs / 1000).toFixed(2) + 'ms');
       console.log();
 
       // =====================================================================
@@ -871,52 +864,27 @@ async function runDigitalTwinDemo() {
 
       const agenticResult = agent.askAgentic(agenticQuestion, llmConfig);
 
-      console.log('    MULTI-STEP ANSWER:');
-      console.log('    ' + '-'.repeat(60));
-      const agenticAnswer = agenticResult.answer || agenticResult.response || agenticResult.text ||
-        (typeof agenticResult === 'string' ? agenticResult : JSON.stringify(agenticResult).substring(0, 400));
-      agenticAnswer.split('\n').forEach(line => {
-        console.log('    ' + line);
-      });
-      console.log('    ' + '-'.repeat(60));
-
-      // Show tool calls if any
-      if (agenticResult.toolCalls || agenticResult.steps) {
-        console.log('    TOOL CALLS / STEPS:');
-        const steps = agenticResult.toolCalls || agenticResult.steps || [];
-        steps.slice(0, 3).forEach((step, i) => {
-          console.log(`      ${i + 1}. ${step.name || step.tool || step.action}: ${step.result?.substring(0, 50) || '...'}`);
-        });
-      }
-
-      // Show reasoning chain if available
-      if (agenticResult.reasoning || agenticResult.thinkingGraph) {
-        console.log('    REASONING CHAIN:');
-        const reasoning = agenticResult.reasoning || agenticResult.thinkingGraph;
-        if (Array.isArray(reasoning)) {
-          reasoning.slice(0, 3).forEach((step, i) => {
-            console.log(`      ${i + 1}. ${step}`);
-          });
-        }
-      }
+      console.log('    ANSWER: ' + agenticResult.answer);
+      console.log('    REASONING: ' + (agenticResult.reasoning || 'Multi-step analysis'));
+      console.log('    TOOL CALLS: ' + (agenticResult.toolCalls ? agenticResult.toolCalls.substring(0, 80) + '...' : 'N/A'));
+      console.log('    CAPABILITIES: ' + (agenticResult.capabilitiesUsed?.join(', ') || 'query'));
+      console.log('    PROOF HASH: ' + (agenticResult.proofHash ? agenticResult.proofHash.substring(0, 16) + '...' : 'N/A'));
+      console.log('    EXECUTION: ' + (agenticResult.executionTimeUs / 1000).toFixed(2) + 'ms');
       console.log();
 
-      // Show proof - generate SHA-256 hash from combined results
-      const proofPayload = JSON.stringify({
-        simpleQuestion,
-        agenticQuestion,
-        askAnswer,
-        agenticAnswer: agenticAnswer.substring(0, 200),
-        kgEvidence: kgFacts.slice(0, 3).map(r => ({
-          property: r.bindings.property?.split('#').pop(),
-          value: r.bindings.value
-        })),
-        timestamp: Date.now()
-      });
-      const proofHash = require('crypto').createHash('sha256')
-        .update(proofPayload)
-        .digest('hex').substring(0, 16);
-      console.log('    PROOF HASH: SHA-256 ' + proofHash + '...');
+      // Display comparison table
+      console.log('    ┌' + '─'.repeat(68) + '┐');
+      console.log('    │ CAPABILITY COMPARISON: ask() vs askAgentic()' + ' '.repeat(22) + '│');
+      console.log('    ├' + '─'.repeat(68) + '┤');
+      console.log('    │ Feature              │ ask() (Dynamic Proxy) │ askAgentic() (Tools)  │');
+      console.log('    ├──────────────────────┼───────────────────────┼───────────────────────┤');
+      console.log('    │ Execution Mode       │ Rhai Code Generation  │ Tool Calling Loop     │');
+      console.log('    │ Reasoning            │ LLM generates code    │ Multi-turn dialogue   │');
+      console.log('    │ Proof Generation     │ ✓ SHA-256 hash        │ ✓ SHA-256 hash        │');
+      console.log('    │ Capabilities Used    │ ✓ Tracked             │ ✓ Tracked             │');
+      console.log('    │ Latency              │ Fast (~1-5s)          │ Slower (~5-15s)       │');
+      console.log('    │ Use Case             │ Simple queries        │ Complex analysis      │');
+      console.log('    └' + '─'.repeat(68) + '┘');
       console.log();
 
       console.log('    [PASS] HyperMindAgent ask() + askAgentic() successful');

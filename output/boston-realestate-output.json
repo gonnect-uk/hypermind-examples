@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-01T13:23:07.813Z",
+  "timestamp": "2026-01-01T16:59:21.284Z",
   "example": "boston-realestate-agent",
   "passRate": "100.0%",
   "stats": {
@@ -8,7 +8,7 @@
     "properties": 18
   },
   "testResults": {
-    "passed": 20,
+    "passed": 21,
     "failed": 0,
     "assertions": [
       {
@@ -85,6 +85,10 @@
       },
       {
         "name": "ask() returns grounded answer",
+        "status": "PASS"
+      },
+      {
+        "name": "askAgentic() performs multi-step analysis",
         "status": "PASS"
       },
       {

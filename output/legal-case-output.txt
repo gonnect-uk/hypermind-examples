@@ -147,11 +147,11 @@ SELECT ?attorney ?name ?role WHERE {
 
 RESULTS: 9 bindings
 SAMPLE (first 5):
-  attorney=OliverHill, role=NAACP Virginia Attorney, name=Oliver Hill
-  attorney=GeorgeHayes, name=George E.C. Hayes, role=Washington D.C. Attorney
-  role=Howard University Law School Professor, name=James Nabrit Jr., attorney=JamesNabrit
-  name=Louis L. Redding, attorney=LouisRedding, role=Delaware Attorney
-  attorney=RobertCarter, name=Robert L. Carter, role=NAACP Legal Defense Fund Attorney
+  name=Oliver Hill, role=NAACP Virginia Attorney, attorney=OliverHill
+  role=Washington D.C. Attorney, attorney=GeorgeHayes, name=George E.C. Hayes
+  role=Howard University Law School Professor, attorney=JamesNabrit, name=James Nabrit Jr.
+  role=Delaware Attorney, attorney=LouisRedding, name=Louis L. Redding
+  attorney=RobertCarter, role=NAACP Legal Defense Fund Attorney, name=Robert L. Carter
     [PASS] LAW STUDENT: Who were the key attorneys in Brown v. Board of Education?
 
 REASONING CONTEXT:
@@ -175,10 +175,10 @@ SELECT ?justice ?name ?role WHERE {
 
 RESULTS: 9 bindings
 SAMPLE (first 5):
-  role=Associate Justice, justice=TomClark, name=Tom C. Clark
-  role=Associate Justice, name=Hugo Black, justice=HugoBlack
-  justice=EarlWarren, name=Earl Warren, role=Chief Justice
-  name=Stanley Reed, role=Associate Justice, justice=StanleyReed
+  justice=TomClark, name=Tom C. Clark, role=Associate Justice
+  name=Hugo Black, role=Associate Justice, justice=HugoBlack
+  role=Chief Justice, justice=EarlWarren, name=Earl Warren
+  name=Stanley Reed, justice=StanleyReed, role=Associate Justice
   name=Harold Burton, justice=HaroldBurton, role=Associate Justice
     [PASS] LEGAL HISTORIAN: Which Supreme Court justices decided the case unanimously?
 
@@ -203,11 +203,11 @@ SELECT ?plaintiff ?name ?role WHERE {
 
 RESULTS: 7 bindings
 SAMPLE (first 5):
-  role=Student Plaintiff (Kansas), name=Linda Brown, plaintiff=LindaBrown
-  plaintiff=EthelBelton, role=Student Plaintiff (Delaware), name=Ethel Louise Belton
-  name=Harry Briggs Jr., plaintiff=HarryBriggs, role=Student Plaintiff (South Carolina)
+  plaintiff=LindaBrown, role=Student Plaintiff (Kansas), name=Linda Brown
+  name=Ethel Louise Belton, plaintiff=EthelBelton, role=Student Plaintiff (Delaware)
+  plaintiff=HarryBriggs, role=Student Plaintiff (South Carolina), name=Harry Briggs Jr.
   name=Oliver Brown, plaintiff=OliverBrown, role=Lead Plaintiff (Kansas)
-  plaintiff=BarbaraJohns, name=Barbara Rose Johns, role=Student Organizer (Virginia)
+  name=Barbara Rose Johns, plaintiff=BarbaraJohns, role=Student Organizer (Virginia)
     [PASS] CIVIL RIGHTS RESEARCHER: Who were the named plaintiffs in the consolidated cases?
 
 REASONING CONTEXT:
@@ -231,7 +231,7 @@ SELECT ?overruled ?label ?holding WHERE {
 
 RESULTS: 1 bindings
 SAMPLE (first 5):
-  label=Plessy v. Ferguson, holding=Separate but equal doctrine, overruled=PlessyVFerguson
+  label=Plessy v. Ferguson, overruled=PlessyVFerguson, holding=Separate but equal doctrine
     [PASS] CONSTITUTIONAL SCHOLAR: What case did Brown v. Board overrule?
 
 REASONING CONTEXT:
@@ -254,8 +254,8 @@ SELECT ?colleague ?name WHERE {
 
 RESULTS: 3 bindings
 SAMPLE (first 5):
-  colleague=RobertCarter, name=Robert L. Carter
-  name=Jack Greenberg, colleague=JackGreenberg
+  name=Robert L. Carter, colleague=RobertCarter
+  colleague=JackGreenberg, name=Jack Greenberg
   colleague=ConstanceBakerMotley, name=Constance Baker Motley
     [PASS] BIOGRAPHY WRITER: Who did Thurgood Marshall collaborate with?
 
@@ -279,9 +279,9 @@ SELECT ?mentor ?mentee ?menteeName WHERE {
 
 RESULTS: 3 bindings
 SAMPLE (first 5):
-  mentee=JackGreenberg, mentor=ThurgoodMarshall, menteeName=Jack Greenberg
-  menteeName=Constance Baker Motley, mentee=ConstanceBakerMotley, mentor=JackGreenberg
-  mentee=ConstanceBakerMotley, mentor=ThurgoodMarshall, menteeName=Constance Baker Motley
+  menteeName=Jack Greenberg, mentor=ThurgoodMarshall, mentee=JackGreenberg
+  menteeName=Constance Baker Motley, mentor=JackGreenberg, mentee=ConstanceBakerMotley
+  mentee=ConstanceBakerMotley, menteeName=Constance Baker Motley, mentor=ThurgoodMarshall
     [PASS] ACADEMIC: What was the mentorship chain at NAACP Legal Defense Fund?
 
 REASONING CONTEXT:
@@ -293,19 +293,19 @@ REASONING CONTEXT:
 
   --- ask() - Simple Query (KG-grounded) ---
   Question: "Who was the lead attorney in Brown v. Board of Education?"
-  Note: Ask error: ExecutionFailed("Indexer unavailable: () [string] (line 3, position 35)")
+  Note: Ask error: LlmError("Failed to parse LLM response as JSON: invalid escape at line 2 column 315. Response: ```json\n{\n  \"code\": \"// Rhai code here - compose objects naturally\\n\\n// SPARQL query to find the lead attorney in Brown v. Board of Education\\nlet sparql = \\\"SELECT ?attorney WHERE { ?case :caseNumber 'Brown_v_Board_Education' ; :plaintiff ?plaintiff . ?plaintiff :representedBy ?attorney . }\\\";\\n\\n// Execute SPARQL query\\ nlet results = query(sparql);\\n\\n// Get the first attorney from the results\\nlet row = first(results);\\nlet attorney = row[\\\"attorney\\\"];\\n\\nattorney\",\n  \"reasoning\": \"To find the lead attorney for Brown v. Board of Education, we need to query the knowledge graph for the case using its case number or identifier, typically a unique value assigned to the case. We then find the relationship between the plaintiff and the attorney who represented them using the ':representedBy' property.\",\n  \"capabilities_used\": [\"query\"],\n  \"expected_type\": \"string\",\n  \"confidence\": 0.95\n}\n```")
     [PASS] ask() returns grounded answer
 
   --- askAgentic() - Multi-Step Reasoning ---
   Question: "Analyze the legal strategy in Brown v. Board of Education. Who were the key attorneys and what was their approach to overturning Plessy v. Ferguson?"
-  MULTI-STEP ANSWER:
-  ------------------------------------------------------------
-  It looks like there is no detailed information available in the current knowledge graph regarding the specific legal strategy and key attorneys involved in the Brown v. Board of Education case with respect to overturning Plessy v. Ferguson.
-  
-  However, historically, the key attorney involved in Brown v. Board of Education was Thurgood Marshall, who later became a U.S. Supreme Court Justice. He was t
-  ------------------------------------------------------------
-  TOOL CALLS / STEPS:
-  Note: steps.slice(...).forEach is not a function
+  ANSWER: The knowledge graph does not contain specific information about the attorneys or their legal strategy for the case "Brown v. Board of Education" based on the queries I executed.
+
+However, historically, we know that the key attorneys involved in the case included Thurgood Marshall, who later became the first African American Supreme Court Justice, along with a team of NAACP (National Association for the Advancement of Colored People) attorneys. Their strategy was to challenge the "separate but equal" doctrine established by Plessy v. Ferguson by demonstrating that segregation in public education created inherent inequalities that violated the Equal Protection Clause of the Fourteenth Amendment. They presented sociological evidence, such as the famous experiments conducted by Dr. Kenneth Clark using dolls to illustrate the negative psychological effects of segregation on African American children. This approach aimed to show that separate facilities were inherently unequal and detrimental, paving the way for the Supreme Court's ruling to overturn Plessy v. Ferguson.
+  REASONING: Completed in 3 turns
+  TOOL CALLS: query({"sparql":"SELECT ?attorney ?approach WHERE { ?case <http://www.w3.org/200...
+  CAPABILITIES: query
+  PROOF HASH: 7eb5cdf62c57a4c8...
+  EXECUTION: 6320.35ms
 
   ┌────────────────────────────────────────────────────────────────────┐
   │ CAPABILITY COMPARISON: ask() vs askAgentic()                       │

@@ -136,7 +136,7 @@ SELECT ?player WHERE {
 
 RESULTS: 3 bindings
 SAMPLE (first 5):
-  e=e00011, player=lessort__mathias
+  player=lessort__mathias, e=e00011
   player=mitoglou__konstantinos, e=e00028
   player=mattisseck__jonas, e=e00030
     [PASS] JOURNALIST: Who made the defensive steals?
@@ -162,9 +162,9 @@ SELECT ?player WHERE {
 RESULTS: 8 bindings
 SAMPLE (first 5):
   e=e00007, player=nunn__kendrick
-  e=e00014, player=rapieque__elias
-  e=e00016, player=nunn__kendrick
-  player=hermannsson__martin, e=e00032
+  player=rapieque__elias, e=e00014
+  player=nunn__kendrick, e=e00016
+  e=e00032, player=hermannsson__martin
   player=brown__lorenzo, e=e00051
     [PASS] COACH: Which players distributed the ball best with assists?
 
@@ -190,10 +190,10 @@ SELECT ?player ?label WHERE {
 RESULTS: 35 bindings
 SAMPLE (first 5):
   player=grigonis__marius, e=e00002, label=1 -  0 pt)
-  player=koumadje__khalifa, e=e00004, label=1 -  0 pt)
-  e=e00006, label=1 -  2 pt), player=lessort__mathias
-  label=1 -  2 pt), player=nunn__kendrick, e=e00012
-  label=1 -  2 pt), player=olinde__louis, e=e00013
+  e=e00004, label=1 -  0 pt), player=koumadje__khalifa
+  player=lessort__mathias, label=1 -  2 pt), e=e00006
+  player=nunn__kendrick, label=1 -  2 pt), e=e00012
+  label=1 -  2 pt), e=e00013, player=olinde__louis
     [PASS] ANALYST: Who made scoring plays (Shots)?
 
 REASONING CONTEXT:
@@ -231,24 +231,37 @@ REASONING CONTEXT:
 
   --- ask() - Simple Query (KG-grounded) ---
   Question: "Who are the players with steals in this game?"
-  ANSWER: No results found....
-  PROOF: SHA-256 6641dc5d09af8872...
+  ANSWER: Found 3 results: "<http://euroleague.net/player/lessort__mathias>", "<http://euroleague.net/player/mitoglou__konstantinos>", "<http://euroleague.net/player/mattisseck__jonas>"
+  REASONING: To find players with steals in the game, we first need to identify entities classified as steals and then retrieve associated players. Using SPARQL, I query for events of type Steal and extract the player associated with each event. Finally, I ensure that we return a unique list of players using the unique function.
+  RHAI CODE: // Rhai code here - compose objects naturally
+
+// Step 1: Query to find players ...
+  CAPABILITIES: query, construct, count, is_empty, load_ttl, federate, graph_search, apply_rules, derive, explain, extract_schema, get_classes, get_properties, store_memory, recall_memory, persist_memory, embed, similar, similarity, pagerank, triangle_count, connected_components, shortest_paths, label_propagation, show_definition, list_all_capabilities
+  PROOF HASH: e99e5c550a9b816c...
+  EXECUTION: 3.22ms
     [PASS] ask() returns grounded answer
 
   --- askAgentic() - Multi-Step Reasoning ---
   Question: "Analyze the defensive performance in this game. Who made steals and which team had better defense?"
-  MULTI-STEP ANSWER:
-  ------------------------------------------------------------
-  During the game, the following players made steals:
-  
-  1. **Lessort Mathias** from Panathinaikos made a steal.
-  2. **Mitoglou Konstantinos** from Panathinaikos made a steal.
-  3. **Mattisseck Jonas** from Alba Berlin made a steal.
-  
-  Regarding the defensive performance, the team Panathinaikos had better defense in terms of steals, recording a total of 2 steals, while Alba Berlin had 1 steal.
-  ------------------------------------------------------------
-  TOOL CALLS / STEPS:
-  Note: steps.slice(...).forEach is not a function
+  ANSWER: In the game analyzed, the following players made steals:
+
+- Mathias Lessort from team Panathinaikos (PAN)
+- Konstantinos Mitoglou from team Panathinaikos (PAN)
+- Jonas Mattisseck from team Alba Berlin (BER)
+
+Both teams recorded the same number of steals, so additional factors like fouls may be considered to determine overall defensive performance. 
+
+Regarding fouls, players from both teams committed fouls as well:
+
+- Panathinaikos players with fouls include Mathias Lessort, Konstantinos Mitoglou, Lorenzo Brown, Marius Grigonis, and Kendrick Nunn.
+- Alba Berlin players with fouls include Khalifa Koumadje, Martin Hermannsson, Jonas Mattisseck, Elias Rapieque, Trevion Williams, Will McDowell-White, and Yanni Wetzell.
+
+Defensive effectiveness also involves considering turnovers forced, defensive rebounds, and opponent shooting percentages, which aren't detailed in the given data. However, the number of fouls could suggest discipline issues that might offset good defense. Overall, the defensive efforts appear balanced between the two teams, as both recorded equivalent steals, but the foul data might indicate Panathinaikos had a slightly more disciplined defense due to fewer players fouling out.
+  REASONING: Completed in 4 turns
+  TOOL CALLS: query({"sparql":"SELECT ?player ?team WHERE { ?s a <http://euroleague.net/ontolo...
+  CAPABILITIES: query
+  PROOF HASH: f8219c3546be180a...
+  EXECUTION: 13131.35ms
 
   ┌────────────────────────────────────────────────────────────────────┐
   │ CAPABILITY COMPARISON: ask() vs askAgentic()                       │
